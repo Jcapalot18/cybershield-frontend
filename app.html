@@ -902,6 +902,20 @@ function showPage(name, el) {
   el.classList.add('active');
 }
 
+async function startUpgrade(plan) {
+  const btn = event.target;
+  btn.textContent = 'Redirecting to payment...';
+  btn.disabled = true;
+  const data = await api('/billing/upgrade', {method:'POST', body: JSON.stringify({plan})});
+  if (data.url) {
+    window.location.href = data.url;
+  } else if (data.error) {
+    btn.textContent = 'Pay & upgrade now — $199/mo';
+    btn.disabled = false;
+    alert(data.error);
+  }
+}
+
 async function loadThreats() {
   const data = await api('/dashboard/threats');
   const el = document.getElementById('threat-rows');
@@ -1187,9 +1201,9 @@ async function runBreach() {
               <a href="index.html#pricing" style="display:inline-flex;align-items:center;gap:8px;background:#FF6B00;color:#fff;padding:10px 22px;border-radius:8px;font-size:0.875rem;font-weight:700;text-decoration:none;font-family:'Hanken Grotesk',sans-serif">
                 View upgrade options →
               </a>
-              <a href="https://buy.stripe.com/cNiaEY5DL8Dx2n1dN04ZG01" target="_blank" style="display:inline-flex;align-items:center;gap:8px;background:#0a0a0a;color:#fff;padding:10px 22px;border-radius:8px;font-size:0.875rem;font-weight:700;text-decoration:none;font-family:'Hanken Grotesk',sans-serif">
-                Upgrade now — $199/mo
-              </a>
+              <button onclick="startUpgrade('business')" style="display:inline-flex;align-items:center;gap:8px;background:#0a0a0a;color:#fff;padding:10px 22px;border-radius:8px;font-size:0.875rem;font-weight:700;border:none;cursor:pointer;font-family:'Hanken Grotesk',sans-serif">
+                Pay & upgrade now — $199/mo
+              </button>
             </div>
           </div>
         </div>`;
@@ -1278,9 +1292,9 @@ async function runScan() {
                 View upgrade options
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
               </a>
-              <a href="https://buy.stripe.com/cNiaEY5DL8Dx2n1dN04ZG01" target="_blank" style="display:inline-flex;align-items:center;gap:8px;background:#0a0a0a;color:#fff;padding:10px 22px;border-radius:8px;font-size:0.875rem;font-weight:700;text-decoration:none;font-family:'Hanken Grotesk',sans-serif;transition:background 0.2s" onmouseover="this.style.background='#1a1a1a'" onmouseout="this.style.background='#0a0a0a'">
-                Upgrade now — $199/mo
-              </a>
+              <button onclick="startUpgrade('business')" style="display:inline-flex;align-items:center;gap:8px;background:#0a0a0a;color:#fff;padding:10px 22px;border-radius:8px;font-size:0.875rem;font-weight:700;border:none;cursor:pointer;font-family:'Hanken Grotesk',sans-serif;transition:background 0.2s" onmouseover="this.style.background='#1a1a1a'" onmouseout="this.style.background='#0a0a0a'">
+                Pay & upgrade now — $199/mo
+              </button>
             </div>
           </div>
         </div>`;
