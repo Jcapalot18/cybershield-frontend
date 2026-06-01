@@ -226,8 +226,8 @@ footer{background:var(--dark);padding:3rem 2rem}
       <a href="#threats">Threat feed</a>
     </div>
     <div class="nav-right">
-      <a href="app.html" class="btn-ghost-nav">Sign in</a>
-      <a href="app.html?signup=true" class="btn-orange-nav">Start free trial</a>
+      <a href="app.html" class="btn-ghost-nav" id="nav-signin">Sign in</a>
+      <a href="app.html?signup=true" class="btn-orange-nav" id="nav-cta">Start free trial</a>
     </div>
   </div>
 </nav>
@@ -669,6 +669,29 @@ async function handleSignup(){
   msg.textContent="You're on the list! Check your email for next steps.";
   document.getElementById('signup-email').value='';
 }
+</script>
+<script>
+// Update nav if user is logged in
+(function(){
+  const token = sessionStorage.getItem('cs_token');
+  const email = sessionStorage.getItem('cs_email');
+  if (!token) return;
+  document.addEventListener('DOMContentLoaded', function(){
+    const signin = document.getElementById('nav-signin');
+    const cta = document.getElementById('nav-cta');
+    if (signin) {
+      signin.textContent = email ? email.split('@')[0] : 'My account';
+      signin.href = 'app.html';
+      signin.style.color = '#FF6B00';
+      signin.style.borderColor = '#FF6B00';
+      signin.style.fontWeight = '700';
+    }
+    if (cta) {
+      cta.textContent = 'Go to dashboard →';
+      cta.href = 'app.html';
+    }
+  });
+})();
 </script>
 </body>
 </html>
