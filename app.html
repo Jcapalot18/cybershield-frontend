@@ -34,7 +34,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 .auth-title{font-size:1.5rem;font-weight:700;color:var(--text);margin-bottom:6px}
 .auth-sub{font-size:0.9rem;color:var(--muted);margin-bottom:1.75rem}
 .form-label{display:block;font-size:0.8rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px}
-.form-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:11px 14px;color:var(--text);font-size:0.95rem;font-family:inherit;outline:none;transition:border-color 0.2s;margin-bottom:14px}
+.form-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:11px 14px;color:var(--text);font-size:0.95rem;font-family:inherit;outline:none;transition:border-color 0.2s;margin-bottom:16px;display:block}
 .form-input:focus{border-color:var(--accent)}
 .form-input::placeholder{color:var(--dim)}
 .btn-primary{width:100%;background:var(--accent);color:#fff;border:none;border-radius:8px;padding:12px;font-size:1rem;font-weight:600;cursor:pointer;font-family:inherit;transition:background 0.2s;margin-bottom:14px}
@@ -605,10 +605,18 @@ if (params.get('signup') === 'true' || params.get('plan')) {
     api('/auth/me').then(data => {
       if (data && data.user) {
         enterApp(data);
-      } else {
+      } else if (data && data.error && (data.error.includes('Invalid') || data.error.includes('expired') || data.error.includes('token'))) {
+        // Only clear token on explicit auth failures
         localStorage.removeItem('cs_token');
         token = null;
+        document.getElementById('auth-page').style.display = 'flex';
+      } else {
+        // Network error - keep token and try to restore session
+        enterApp({user: {email: ''}, stats: {}});
       }
+    }).catch(() => {
+      // Network error - keep token and restore session
+      enterApp({user: {email: ''}, stats: {}});
     });
   }
 }
