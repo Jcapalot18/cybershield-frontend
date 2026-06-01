@@ -157,10 +157,13 @@ a{color:var(--accent2);text-decoration:none}
 .section-sub{font-size:0.78rem;color:var(--muted);margin-bottom:1rem}
 </style>
 <script>
-// Show auth screen immediately if no token - prevents flash
-if(!localStorage.getItem('cs_token')){
+// Show auth screen if no token OR if coming from landing page signup
+var hasToken = localStorage.getItem('cs_token');
+var isSignup = window.location.search.includes('signup') || window.location.search.includes('plan');
+if(!hasToken || isSignup){
   document.addEventListener('DOMContentLoaded',function(){
     document.getElementById('auth-screen').style.display='flex';
+    document.getElementById('app-screen').style.display='none';
   });
 }
 </script>
