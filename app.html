@@ -551,10 +551,11 @@ input.field-input::placeholder{color:rgba(255,255,255,0.2)}
     </div>
     <div style="margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid rgba(255,255,255,0.07)">
       <div style="font-size:0.78rem;color:rgba(255,255,255,0.3);margin-bottom:0.75rem">Already subscribed?</div>
-      <button onclick="openBillingPortal();closeUpgradeModal();" style="background:none;border:1px solid rgba(255,255,255,0.1);border-radius:4px;padding:9px 16px;color:rgba(255,255,255,0.4);font-size:0.78rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;width:100%" onmouseover="this.style.color='#fff';this.style.borderColor='rgba(255,255,255,0.3)'" onmouseout="this.style.color='rgba(255,255,255,0.4)';this.style.borderColor='rgba(255,255,255,0.1)'">
+      <div id="sub-status-display" style="font-size:0.72rem;margin-bottom:0.75rem;display:none"></div>
+      <button id="portal-btn" onclick="openBillingPortal()" style="background:none;border:1px solid rgba(255,255,255,0.1);border-radius:4px;padding:9px 16px;color:rgba(255,255,255,0.4);font-size:0.78rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;width:100%" onmouseover="this.style.color='#fff';this.style.borderColor='rgba(255,255,255,0.3)'" onmouseout="this.style.color='rgba(255,255,255,0.4)';this.style.borderColor='rgba(255,255,255,0.1)'">
         Manage or cancel subscription →
       </button>
-      <div style="font-size:0.68rem;color:rgba(255,255,255,0.2);margin-top:0.5rem;text-align:center">Opens Stripe billing portal · Cancel anytime</div>
+      <div style="font-size:0.68rem;color:rgba(255,255,255,0.2);margin-top:0.5rem;text-align:center">Opens Stripe billing portal · Cancel anytime · Access continues until period ends</div>
     </div>
   </div>
 </div>
@@ -865,7 +866,33 @@ async function inviteMember(){
 }
 
 // ── Upgrade ──────────────────────────────────────────────
-function openUpgradeModal(){ document.getElementById('upgrade-modal').classList.add('show'); }
+function openUpgradeModal(){ 
+  document.getElementById('billing-msg')?.remove();
+  document.getElementById('upgrade-modal').classList.add('show'); 
+  loadSubStatus();
+}
+
+async function loadSubStatus(){
+  try{
+    const r = await fetch(`${API}/billing/subscription`,{headers:{'Authorization':'Bearer '+authToken}});
+    const d = await r.json();
+    const el = document.getElementById('sub-status-display');
+    if(!el) return;
+    const statusColors = {trialing:'#fbbf24', active:'#4ade80', past_due:'#f87171', canceled:'rgba(255,255,255,0.3)'};
+    const statusLabels = {trialing:'Free trial active', active:'Paid · Active', past_due:'Payment past due', canceled:'Canceled'};
+    const color = statusColors[d.status] || 'rgba(255,255,255,0.3)';
+    const label = statusLabels[d.status] || d.status;
+    let detail = '';
+    if(d.status==='trialing' && d.trialEndsAt){
+      const days = Math.max(0, Math.ceil((new Date(d.trialEndsAt)-Date.now())/(1000*60*60*24)));
+      detail = ` · ${days} day${days!==1?'s':''} remaining — cancel now to avoid being charged`;
+    } else if(d.currentPeriodEnd){
+      detail = ` · Renews ${new Date(d.currentPeriodEnd).toLocaleDateString()}`;
+    }
+    el.style.display = 'block';
+    el.innerHTML = `<span style="color:${color}">●</span> <span style="color:rgba(255,255,255,0.5)">${label}</span><span style="color:rgba(255,255,255,0.3)">${detail}</span>`;
+  }catch(e){}
+}
 function closeUpgradeModal(){ document.getElementById('upgrade-modal').classList.remove('show'); }
 
 async function doUpgrade(plan){
@@ -877,20 +904,33 @@ async function doUpgrade(plan){
 }
 
 async function openBillingPortal(){
+  const btn = event?.target;
+  if(btn){ btn.textContent='Opening...'; btn.disabled=true; }
   try{
-    const r=await fetch(`${API}/billing/portal`,{method:'POST',headers:{'Authorization':'Bearer '+authToken}});
-    const d=await r.json();
+    const r = await fetch(`${API}/billing/portal`,{method:'POST',headers:{'Authorization':'Bearer '+authToken}});
+    const d = await r.json();
     if(d.url){
-      window.open(d.url);
-    } else if(d.error && d.error.includes('No billing account')){
-      // Trial user — no Stripe customer yet, send them to upgrade
-      openUpgradeModal();
+      window.open(d.url, '_blank');
+    } else if(r.status===400 && d.error?.includes('No billing account')){
+      // Signed up but Stripe checkout wasn't completed
+      showBillingMessage('⚠ No active subscription found. If you signed up but never completed checkout, <span style="color:var(--orange);cursor:pointer;text-decoration:underline" onclick="doUpgrade(\'starter\')">click here to complete setup</span>.');
     } else {
-      alert(d.error || 'Could not open billing portal. Please try again.');
+      showBillingMessage('⚠ '+(d.error||'Could not open billing portal. Email support@cybershield.io for help.'));
     }
   }catch(e){
-    alert('Connection error. Please try again.');
+    showBillingMessage('⚠ Connection error. Please try again.');
   }
+  if(btn){ btn.textContent='Manage or cancel subscription →'; btn.disabled=false; }
+}
+
+function showBillingMessage(html){
+  // Remove any existing message
+  document.getElementById('billing-msg')?.remove();
+  const el = document.createElement('div');
+  el.id = 'billing-msg';
+  el.style.cssText = 'margin-top:0.75rem;padding:10px 14px;background:rgba(255,85,0,0.06);border:1px solid rgba(255,85,0,0.2);border-radius:4px;font-size:0.78rem;color:rgba(255,255,255,0.5);line-height:1.6';
+  el.innerHTML = html;
+  document.querySelector('#upgrade-modal .modal').appendChild(el);
 }
 
 // ── Logout ───────────────────────────────────────────────
