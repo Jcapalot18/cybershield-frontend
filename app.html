@@ -2,1458 +2,831 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>CyberShield — Dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#000000;
-  --s1:#0a0a0a;
-  --s2:#111111;
-  --s3:#161616;
-  --b1:#1a1a1a;
-  --b2:#252525;
-  --b3:#333333;
-  --c:#FF6B00;
-  --c2:#e05a00;
-  --cg:rgba(255,107,0,0.08);
-  --cg2:rgba(255,107,0,0.15);
-  --green:#4ade80;
-  --red:#f87171;
-  --amber:#fbbf24;
-  --t1:#ffffff;
-  --t2:#999999;
-  --t3:#666666;
-  --t4:#333333;
+  --bg:#0d0d0d;
+  --sidebar:#0a0a0a;
+  --topbar:#0a0a0a;
+  --card:#141414;
+  --card2:#1a1a1a;
+  --border:rgba(255,255,255,0.07);
+  --orange:#FF5500;
+  --orange-dim:rgba(255,85,0,0.1);
+  --orange-border:rgba(255,85,0,0.25);
+  --text:#fff;
+  --muted:rgba(255,255,255,0.45);
+  --dim:rgba(255,255,255,0.2);
+  --success:#4ade80;
+  --warning:#fbbf24;
+  --danger:#f87171;
+  --sidebar-w:220px;
+  --topbar-h:58px;
 }
-html,body{height:100%;background:var(--bg);color:var(--t1);font-family:'Hanken Grotesk',system-ui,sans-serif;font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
-::selection{background:var(--cg2);color:#FF6B00}
+html,body{height:100%;overflow:hidden}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.5}
+a{text-decoration:none;color:inherit}
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.12);border-radius:2px}
 
-/* LOGO SVG */
-.logo-svg{flex-shrink:0}
+/* ── APP SHELL ───────────────────────────────────────── */
+.app{display:flex;height:100vh;overflow:hidden}
 
-/* AUTH PAGE */
-.auth-page{min-height:100vh;display:none;background:#ffffff}
-.auth-grid{display:none}
-.auth-glow{display:none}
-.auth-split{display:grid;grid-template-columns:1fr 1fr;min-height:100vh}
-.auth-photo-side{position:relative;overflow:hidden;background:#0a0a0a}
-.auth-photo-side img{width:100%;height:100%;object-fit:cover;filter:grayscale(20%) brightness(0.7);opacity:0.9}
-.auth-photo-overlay{position:absolute;inset:0;background:rgba(255,107,0,0.45);mix-blend-mode:multiply}
-.auth-photo-content{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:3rem;z-index:2}
-.auth-photo-brand{display:flex;align-items:center;gap:12px;position:absolute;top:2.5rem;left:3rem;z-index:2}
-.auth-photo-brand-name{font-family:'Hanken Grotesk',sans-serif;font-size:1.2rem;font-weight:800;color:#ffffff;letter-spacing:-0.01em}
-.auth-photo-quote{font-family:'Hanken Grotesk',sans-serif;font-size:1.4rem;font-weight:700;color:#ffffff;line-height:1.4;margin-bottom:1rem;letter-spacing:-0.02em}
-.auth-photo-sub{font-size:0.9rem;color:rgba(255,255,255,0.7);line-height:1.6}
-.auth-form-side{display:flex;align-items:center;justify-content:center;padding:3rem;background:#ffffff}
-.auth-card{width:100%;max-width:420px;background:transparent;border:none;border-radius:0;padding:0}
-@media(max-width:768px){.auth-split{grid-template-columns:1fr}.auth-photo-side{display:none}.auth-form-side{padding:2rem}}
-.auth-brand{display:flex;align-items:center;gap:12px;margin-bottom:2.25rem}
-.auth-brand-name{font-family:'Hanken Grotesk',sans-serif;font-size:1.2rem;font-weight:800;color:#0a0a0a;letter-spacing:-0.02em}
-.auth-brand-name span{color:#FF6B00}
-.auth-title{font-family:'Hanken Grotesk',sans-serif;font-size:1.6rem;font-weight:800;color:#0a0a0a;letter-spacing:-0.03em;margin-bottom:6px}
-.auth-sub{font-size:0.9rem;color:#666;margin-bottom:1.75rem;line-height:1.6}
-.auth-error{background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.2);border-radius:8px;padding:10px 14px;font-size:0.875rem;color:#fca5a5;margin-bottom:1.25rem;display:none}
-.form-group{margin-bottom:1.1rem}
-.form-label{display:block;font-size:0.75rem;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:7px;font-family:'Hanken Grotesk',sans-serif}
-.form-input{width:100%;background:#f7f7f7;border:1px solid #e5e5e5;border-radius:8px;padding:12px 14px;color:#0a0a0a;font-size:0.95rem;font-family:inherit;outline:none;transition:border-color 0.2s}
-.form-input:focus{border-color:#FF6B00}
-.form-input::placeholder{color:#bbb}
-.btn-auth{width:100%;background:#FF6B00;color:#000000;border:none;border-radius:8px;padding:13px;font-size:0.95rem;font-weight:700;cursor:pointer;font-family:'Hanken Grotesk',sans-serif;letter-spacing:-0.01em;transition:all 0.2s;margin-top:6px}
-.btn-auth:hover{background:#ff8533;transform:translateY(-1px)}
-.btn-auth:disabled{opacity:0.5;cursor:not-allowed;transform:none}
-.auth-switch{font-size:0.875rem;color:var(--t3);text-align:center;margin-top:1.25rem}
-.auth-switch a{color:#FF6B00;cursor:pointer;font-weight:500;text-decoration:none}
-.auth-switch a:hover{text-decoration:underline}
+/* ── SIDEBAR ─────────────────────────────────────────── */
+.sidebar{width:var(--sidebar-w);flex-shrink:0;background:var(--sidebar);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:20;overflow:hidden}
+.sidebar-brand{padding:0 1.25rem;height:var(--topbar-h);display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);flex-shrink:0}
+.sidebar-brand a{display:flex;align-items:center;gap:10px;font-weight:700;font-size:1rem;letter-spacing:-0.02em;color:#fff}
+.sidebar-brand svg{width:24px;height:24px;flex-shrink:0}
+.sidebar-brand .accent{color:var(--orange)}
+.sidebar-nav{flex:1;padding:1rem 0.75rem;overflow-y:auto;display:flex;flex-direction:column;gap:2px}
+.nav-section-label{font-size:0.62rem;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:rgba(255,255,255,0.2);padding:0.75rem 0.625rem 0.4rem;margin-top:0.5rem}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 0.625rem;border-radius:5px;cursor:pointer;transition:all 0.15s;color:var(--muted);font-size:0.82rem;font-weight:500;position:relative}
+.nav-item:hover{color:#fff;background:rgba(255,255,255,0.04)}
+.nav-item.active{color:#fff;background:rgba(255,85,0,0.1);border:1px solid rgba(255,85,0,0.15)}
+.nav-item.active::before{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);width:3px;height:16px;background:var(--orange);border-radius:0 2px 2px 0}
+.nav-icon{width:16px;height:16px;flex-shrink:0;stroke:currentColor;fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+.nav-badge{margin-left:auto;background:var(--orange);color:#fff;font-size:0.58rem;font-weight:800;padding:2px 6px;border-radius:2px;min-width:18px;text-align:center}
+.nav-badge.green{background:rgba(74,222,128,0.15);color:var(--success);border:1px solid rgba(74,222,128,0.2)}
+.sidebar-footer{padding:1rem 0.75rem;border-top:1px solid var(--border);flex-shrink:0}
+.sidebar-plan{display:flex;align-items:center;justify-content:space-between;padding:10px 0.75rem;background:var(--orange-dim);border:1px solid var(--orange-border);border-radius:5px;margin-bottom:0.75rem}
+.sidebar-plan-name{font-size:0.72rem;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:0.08em}
+.sidebar-plan-upgrade{font-size:0.7rem;color:var(--orange);cursor:pointer;transition:opacity 0.2s}
+.sidebar-plan-upgrade:hover{opacity:0.7}
+.sidebar-user{display:flex;align-items:center;gap:10px}
+.sidebar-avatar{width:30px;height:30px;border-radius:50%;background:var(--orange-dim);border:1px solid var(--orange-border);display:flex;align-items:center;justify-content:center;font-size:0.68rem;font-weight:800;color:var(--orange);flex-shrink:0}
+.sidebar-user-info{min-width:0;flex:1}
+.sidebar-user-name{font-size:0.78rem;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sidebar-user-role{font-size:0.68rem;color:var(--muted)}
+.signout-btn{background:none;border:none;cursor:pointer;color:var(--muted);padding:4px;border-radius:3px;transition:color 0.2s;display:flex;align-items:center}
+.signout-btn:hover{color:#fff}
 
-/* APP */
-.app{display:none;height:100vh;flex-direction:column}
+/* ── MAIN ────────────────────────────────────────────── */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
 
-/* TOPBAR */
-.topbar{height:64px;background:#0a0a0a;border-bottom:1px solid #1a1a1a;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;flex-shrink:0}
-.topbar-left{display:flex;align-items:center;gap:12px}
-.topbar-brand{font-family:'Hanken Grotesk',sans-serif;font-size:1.15rem;font-weight:900;color:#ffffff;letter-spacing:-0.02em}
-.topbar-brand span{color:#FF6B00}
-.topbar-right{display:flex;align-items:center;gap:14px}
-.topbar-status{display:flex;align-items:center;gap:6px;font-size:0.82rem;color:rgba(255,255,255,0.4)}
-.status-dot{width:7px;height:7px;border-radius:50%;background:#4ade80;box-shadow:0 0 6px #4ade80;flex-shrink:0}
-.topbar-email{font-size:0.85rem;color:rgba(255,255,255,0.5);font-weight:400}
-.btn-signout{background:transparent;border:1px solid #252525;color:var(--t3);border-radius:7px;padding:7px 16px;font-size:0.82rem;font-weight:500;cursor:pointer;font-family:inherit;transition:all 0.2s}
-.btn-signout:hover{border-color:#FF6B00;color:#FF6B00;background:rgba(255,107,0,0.08)}
+/* ── TOPBAR ──────────────────────────────────────────── */
+.topbar{height:var(--topbar-h);background:var(--topbar);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 1.75rem;flex-shrink:0;gap:1rem}
+.topbar-title{font-size:0.95rem;font-weight:700;color:#fff;letter-spacing:-0.01em}
+.topbar-right{display:flex;align-items:center;gap:0.75rem}
+.topbar-status{display:flex;align-items:center;gap:6px;font-size:0.72rem;color:var(--muted)}
+.status-dot{width:6px;height:6px;border-radius:50%;background:var(--success);animation:pulse 2s ease-in-out infinite;flex-shrink:0}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(1.4)}}
+.topbar-btn{background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:4px;padding:7px 14px;color:var(--muted);font-size:0.78rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s}
+.topbar-btn:hover{color:#fff;border-color:rgba(255,255,255,0.2)}
+.topbar-btn.orange{background:var(--orange);color:#fff;border-color:var(--orange)}
+.topbar-btn.orange:hover{background:#FF7733}
 
-/* APP BODY */
-.app-body{display:flex;flex:1;overflow:hidden}
+/* ── CONTENT ─────────────────────────────────────────── */
+.content{flex:1;overflow-y:auto;padding:1.75rem}
+.page{display:none}
+.page.active{display:block}
 
-/* SIDEBAR */
-.sidebar{width:220px;flex-shrink:0;background:#0a0a0a;border-right:1px solid #1a1a1a;padding:1.5rem 1rem;display:flex;flex-direction:column;gap:2px;overflow-y:auto}
-.nav-section-label{font-size:0.68rem;font-weight:700;color:rgba(255,255,255,0.2);text-transform:uppercase;letter-spacing:0.12em;padding:10px 12px 6px;margin-top:6px;font-family:'Hanken Grotesk',sans-serif}
-.nav-section-label:first-child{margin-top:0}
-.nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;font-size:0.875rem;font-weight:500;color:rgba(255,255,255,0.45);transition:all 0.15s;border:none;background:none;width:100%;text-align:left;font-family:inherit;letter-spacing:0.01em}
-.nav-item:hover{background:rgba(255,255,255,0.06);color:#ffffff}
-.nav-item.active{background:rgba(255,107,0,0.12);color:#FF6B00;border:1px solid rgba(255,107,0,0.25)}
-.nav-item svg{width:17px;height:17px;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+/* ── CARDS ───────────────────────────────────────────── */
+.card{background:var(--card);border:1px solid var(--border);border-radius:7px;overflow:hidden}
+.card-header{padding:1.1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.card-title{font-size:0.82rem;font-weight:700;color:#fff;letter-spacing:-0.01em}
+.card-body{padding:1.25rem}
+.card-action{font-size:0.72rem;color:var(--orange);font-weight:600;cursor:pointer;transition:opacity 0.2s}
+.card-action:hover{opacity:0.7}
 
-/* MAIN */
-.main{flex:1;overflow-y:auto;padding:2rem 2.5rem;background:#f5f5f7;position:relative}
-.page{display:none;position:relative;z-index:1}
-.page.active{display:block;position:relative;z-index:1}
+/* ── DASHBOARD GRID ──────────────────────────────────── */
+.dash-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.25rem}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:7px;padding:1.1rem 1.25rem;position:relative;overflow:hidden}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--orange),transparent)}
+.stat-card.green::before{background:linear-gradient(90deg,var(--success),transparent)}
+.stat-card.red::before{background:linear-gradient(90deg,var(--danger),transparent)}
+.stat-card.yellow::before{background:linear-gradient(90deg,var(--warning),transparent)}
+.stat-label{font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:0.5rem}
+.stat-value{font-size:2rem;font-weight:700;letter-spacing:-0.04em;color:#fff;line-height:1;margin-bottom:4px}
+.stat-value.orange{color:var(--orange)}
+.stat-value.green{color:var(--success)}
+.stat-value.red{color:var(--danger)}
+.stat-sub{font-size:0.7rem;color:var(--muted)}
 
-/* PAGE HEADER */
-.page-header{margin-bottom:2rem}
-.page-title{font-family:'Hanken Grotesk',sans-serif;font-size:1.4rem;font-weight:800;color:#0a0a0a;margin-bottom:4px;letter-spacing:-0.02em}
-.page-sub{font-size:0.875rem;color:#888}
+/* ── CONTENT GRIDS ───────────────────────────────────── */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem}
+.three-col{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.25rem}
 
-/* STATS GRID */
-.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:1.75rem}
-.stat-box{background:#ffffff;border:1px solid #e5e5e5;border-radius:12px;padding:1.25rem 1.5rem;box-shadow:0 1px 4px rgba(0,0,0,0.04)}
-.stat-box-label{font-size:0.75rem;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;font-family:'Hanken Grotesk',sans-serif}
-.stat-box-value{font-family:'Hanken Grotesk',sans-serif;font-size:2rem;font-weight:800;color:#0a0a0a;line-height:1}
-.stat-box-value.red{color:var(--red)}
-.stat-box-value.cyan{color:#FF6B00}
+/* ── SCORE RING ──────────────────────────────────────── */
+.score-ring-wrap{display:flex;align-items:center;gap:1.5rem;padding:1.25rem}
+.score-ring-svg{flex-shrink:0}
+.score-details{display:flex;flex-direction:column;gap:0.5rem}
+.score-num{font-size:2.5rem;font-weight:700;letter-spacing:-0.05em;line-height:1}
+.score-label{font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em}
+.score-bar-item{display:flex;flex-direction:column;gap:3px}
+.score-bar-label{font-size:0.65rem;color:var(--muted)}
+.score-bar-track{height:4px;background:rgba(255,255,255,0.08);border-radius:2px;overflow:hidden;width:120px}
+.score-bar-fill{height:100%;border-radius:2px;transition:width 1s cubic-bezier(0.4,0,0.2,1)}
 
-/* CARD */
-.card{background:#ffffff;border:1px solid #e5e5e5;border-radius:12px;overflow:hidden;margin-bottom:1.5rem;box-shadow:0 1px 4px rgba(0,0,0,0.04)}
-.card-head{padding:14px 20px;border-bottom:1px solid #f0f0f0;display:flex;align-items:center;justify-content:space-between}
-.card-head-title{font-size:0.72rem;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:0.1em;font-family:'Hanken Grotesk',sans-serif}
-.card-head-meta{font-size:0.78rem;color:#bbb}
+/* ── THREAT FEED ─────────────────────────────────────── */
+.threat-list{display:flex;flex-direction:column;gap:0}
+.threat-item{display:flex;align-items:center;justify-content:space-between;gap:0.75rem;padding:0.85rem 1.25rem;border-bottom:1px solid var(--border);cursor:pointer;transition:background 0.15s;text-decoration:none;color:inherit}
+.threat-item:last-child{border-bottom:none}
+.threat-item:hover{background:rgba(255,255,255,0.025)}
+.threat-title{font-size:0.8rem;font-weight:600;color:#fff;margin-bottom:2px;line-height:1.3}
+.threat-src{font-size:0.68rem;color:var(--muted)}
+.badge{font-size:0.6rem;font-weight:800;padding:3px 9px;border-radius:2px;white-space:nowrap;text-transform:uppercase;letter-spacing:0.06em;flex-shrink:0}
+.badge-critical{background:rgba(220,38,38,0.12);color:#f87171;border:1px solid rgba(248,113,113,0.15)}
+.badge-high{background:rgba(234,179,8,0.08);color:#fbbf24;border:1px solid rgba(251,191,36,0.15)}
+.badge-medium{background:var(--orange-dim);color:var(--orange);border:1px solid var(--orange-border)}
 
-/* THREAT ROWS */
-.threat-row{padding:14px 20px;border-bottom:1px solid #f0f0f0;display:flex;align-items:center;justify-content:space-between;gap:12px}
-.threat-row:last-child{border-bottom:none}
-.threat-row:hover{background:#fafafa}
-.t-indicator{width:3px;height:32px;border-radius:2px;flex-shrink:0}
-.t-critical{background:var(--red)}
-.t-high{background:var(--amber)}
-.t-medium{background:#FF6B00}
-.t-name{font-size:0.9rem;font-weight:500;color:#0a0a0a;margin-bottom:2px}
-.t-meta{font-size:0.75rem;color:#aaa}
-.badge{font-size:0.67rem;font-weight:700;padding:3px 9px;border-radius:100px;white-space:nowrap;letter-spacing:0.05em;text-transform:uppercase}
-.b-critical{background:rgba(248,113,113,0.1);color:#fca5a5;border:1px solid rgba(248,113,113,0.2)}
-.b-high{background:rgba(251,191,36,0.1);color:#fde68a;border:1px solid rgba(251,191,36,0.2)}
-.b-medium{background:rgba(34,211,238,0.1);color:#FF6B00;border:1px solid rgba(255,107,0,0.2)}
+/* ── TRAINING ────────────────────────────────────────── */
+.training-module{background:var(--card2);border:1px solid var(--border);border-radius:6px;overflow:hidden;transition:border-color 0.2s}
+.training-module:hover{border-color:var(--orange-border)}
+.training-img{height:110px;overflow:hidden;position:relative}
+.training-img img{width:100%;height:100%;object-fit:cover;filter:brightness(0.5);transition:filter 0.3s}
+.training-module:hover .training-img img{filter:brightness(0.65)}
+.training-img-badge{position:absolute;top:8px;left:8px;background:var(--orange);color:#fff;font-size:0.58rem;font-weight:800;padding:3px 10px;border-radius:2px;text-transform:uppercase;letter-spacing:0.08em}
+.training-body{padding:1rem}
+.training-title{font-size:0.82rem;font-weight:700;color:#fff;margin-bottom:4px}
+.training-desc{font-size:0.72rem;color:var(--muted);line-height:1.5;margin-bottom:0.75rem}
+.training-progress{height:3px;background:rgba(255,255,255,0.07);border-radius:2px;overflow:hidden;margin-bottom:6px}
+.training-progress-fill{height:100%;background:var(--orange);border-radius:2px;transition:width 1.2s cubic-bezier(0.4,0,0.2,1)}
+.training-meta{display:flex;justify-content:space-between;font-size:0.65rem;color:var(--muted)}
+.training-start{display:inline-flex;align-items:center;gap:5px;font-size:0.72rem;font-weight:700;color:var(--orange);cursor:pointer;margin-top:0.5rem;transition:gap 0.2s}
+.training-start:hover{gap:8px}
 
-/* BREACH */
-.input-row{display:flex;gap:10px;padding:16px 20px;background:#fff}
-.field-input{flex:1;background:#f5f5f5;border:1.5px solid #e5e5e5;border-radius:8px;padding:11px 14px;color:#0a0a0a;font-size:0.9rem;font-family:inherit;outline:none;transition:border-color 0.2s}
-.field-input:focus{border-color:#FF6B00}
-.field-input::placeholder{color:#bbb}
-.btn-action{background:#FF6B00;color:#000000;border:none;border-radius:8px;padding:11px 20px;font-size:0.875rem;font-weight:700;cursor:pointer;font-family:'Hanken Grotesk',sans-serif;white-space:nowrap;transition:all 0.2s;letter-spacing:-0.01em}
-.btn-action:hover{background:#ff8533}
-.btn-action:disabled{opacity:0.5;cursor:not-allowed}
-.result-body{padding:0 20px 16px}
-.alert-red{background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.2);border-radius:8px;padding:12px 14px;font-size:0.875rem;color:#fca5a5;margin-bottom:10px}
-.alert-green{background:rgba(74,222,128,0.06);border:1px solid rgba(74,222,128,0.2);border-radius:8px;padding:12px 14px;font-size:0.875rem;color:#86efac}
-.breach-item{background:#f7f7f7;border:1px solid #e5e5e5;border-radius:8px;padding:10px 14px;margin-bottom:8px}
-.breach-item-name{font-size:0.9rem;font-weight:600;color:#0a0a0a;margin-bottom:2px;font-family:'Hanken Grotesk',sans-serif}
-.breach-item-data{font-size:0.78rem;color:var(--t3);line-height:1.5}
-.history-row{display:flex;justify-content:space-between;align-items:center;padding:10px 20px;border-bottom:1px solid #f0f0f0;font-size:0.875rem;color:#444}
-.history-row:last-child{border-bottom:none}
-.history-row:hover{background:#fafafa}
-
-/* SCANNER */
-.scan-results-wrap{padding:0 20px 16px}
-.risk-header{display:flex;align-items:center;gap:18px;background:#f7f7f7;border-radius:10px;padding:16px;margin-bottom:14px;border:1px solid #e5e5e5}
-.risk-ring{width:68px;height:68px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;border:2px solid}
-.risk-num{font-family:'Hanken Grotesk',sans-serif;font-size:1.4rem;font-weight:800;line-height:1}
-.risk-sub{font-size:0.6rem;text-transform:uppercase;letter-spacing:0.08em;margin-top:1px;font-family:'Hanken Grotesk',sans-serif}
-.risk-info-label{font-size:0.7rem;color:var(--t3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;font-family:'Hanken Grotesk',sans-serif}
-.risk-info-level{font-family:'Hanken Grotesk',sans-serif;font-size:1.1rem;font-weight:800;text-transform:capitalize;letter-spacing:-0.01em}
-.risk-info-url{font-size:0.82rem;color:var(--t3);margin-top:2px}
-.findings-label{font-size:0.7rem;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:0.1em;margin:14px 0 8px;font-family:'Hanken Grotesk',sans-serif}
-.finding-row{padding:12px 0;border-bottom:1px solid var(--b1);display:flex;gap:10px;align-items:flex-start}
-.finding-row:last-child{border-bottom:none}
-.finding-title{font-size:0.9rem;font-weight:600;color:#0a0a0a;margin-bottom:3px;font-family:'Hanken Grotesk',sans-serif}
-.finding-desc{font-size:0.82rem;color:var(--t2);line-height:1.6}
-.rec-num{width:24px;height:24px;border-radius:50%;background:rgba(255,107,0,0.08);border:1px solid rgba(255,107,0,0.2);color:#FF6B00;font-size:0.78rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;font-family:'Hanken Grotesk',sans-serif}
-
-/* TRAINING */
-.topics-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-.topic-card{background:#ffffff;border:1px solid #e5e5e5;border-radius:12px;overflow:hidden;cursor:pointer;transition:all 0.25s;position:relative}
-.topic-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#FF6B00,transparent);opacity:0;transition:opacity 0.3s}
-.topic-card:hover{border-color:#FF6B00;box-shadow:0 8px 24px rgba(255,107,0,0.1);transform:translateY(-2px)}
-.topic-card:hover::before{opacity:0.6}
-.topic-module{font-size:0.68rem;font-weight:700;color:#FF6B00;text-transform:uppercase;letter-spacing:0.12em;margin-bottom:8px;font-family:'Hanken Grotesk',sans-serif}
-.topic-title{font-family:'Hanken Grotesk',sans-serif;font-size:0.925rem;font-weight:700;color:#0a0a0a;margin-bottom:4px;letter-spacing:-0.01em}
-.topic-sub{font-size:0.78rem;color:#888}
-.lesson-box{background:#f7f7f7;border:1px solid #e5e5e5;border-radius:10px;padding:1.5rem;font-size:0.9rem;color:#333;line-height:1.8;max-height:380px;overflow-y:auto;margin-bottom:14px}
-.quiz-q{font-family:'Hanken Grotesk',sans-serif;font-size:0.975rem;font-weight:700;color:#fff;margin-bottom:12px;letter-spacing:-0.01em}
-.quiz-opt{padding:12px 14px;border-radius:8px;border:1px solid #252525;font-size:0.875rem;cursor:pointer;margin-bottom:8px;color:var(--t2);background:var(--s2);transition:all 0.15s;font-family:inherit}
-.quiz-opt:hover{border-color:#FF6B00;color:#0a0a0a;background:#fff}
-.quiz-opt.selected{border-color:#FF6B00;background:var(--cg);color:#FF6B00}
-.quiz-opt.correct{border-color:var(--green);background:rgba(74,222,128,0.08);color:#86efac}
-.quiz-opt.wrong{border-color:var(--red);background:rgba(248,113,113,0.08);color:#fca5a5}
-.result-card{text-align:center;padding:3rem 2rem;background:#ffffff;border:1px solid #e5e5e5;border-radius:14px;box-shadow:0 4px 20px rgba(0,0,0,0.06)}
-.result-score{font-family:'Hanken Grotesk',sans-serif;font-size:4rem;font-weight:800;line-height:1;margin-bottom:10px;letter-spacing:-0.04em}
-.result-label{font-family:'Hanken Grotesk',sans-serif;font-size:1rem;font-weight:700;color:#0a0a0a;margin-bottom:6px}
-.result-msg{font-size:0.875rem;color:var(--t2);margin-bottom:1.75rem}
-.action-row{display:flex;gap:10px;margin-top:14px}
-.btn-secondary{padding:10px 20px;border-radius:8px;font-size:0.875rem;font-weight:600;cursor:pointer;font-family:'Hanken Grotesk',sans-serif;border:1px solid #252525;background:var(--s2);color:var(--t1);transition:all 0.15s;letter-spacing:-0.01em}
-.btn-secondary:hover{background:#f5f5f5;border-color:#FF6B00;color:#FF6B00}
-.btn-primary-sm{padding:10px 20px;border-radius:8px;font-size:0.875rem;font-weight:700;cursor:pointer;font-family:'Hanken Grotesk',sans-serif;background:#FF6B00;color:#000000;border:none;transition:all 0.15s;letter-spacing:-0.01em}
-.btn-primary-sm:hover{background:#ff8533}
-.btn-primary-sm:disabled{opacity:0.4;cursor:not-allowed}
-.loading{text-align:center;padding:3rem;color:#888;font-size:0.9rem;display:flex;flex-direction:column;align-items:center;gap:10px}
-.spinner{width:28px;height:28px;border:2px solid var(--b2);border-top-color:#FF6B00;border-radius:50%;animation:spin 0.8s linear infinite}
+/* ── BREACH & SCANNER ────────────────────────────────── */
+.tool-form{display:flex;flex-direction:column;gap:0.875rem;padding:1.25rem}
+.form-group{display:flex;flex-direction:column;gap:0.4rem}
+label.field-label{font-size:0.72rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em}
+input.field-input,textarea.field-input{background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:4px;padding:10px 12px;color:#fff;font-size:0.875rem;font-family:'DM Sans',sans-serif;outline:none;transition:border 0.2s;resize:none}
+input.field-input:focus,textarea.field-input:focus{border-color:var(--orange);background:rgba(255,85,0,0.03)}
+input.field-input::placeholder{color:rgba(255,255,255,0.2)}
+.run-btn{background:var(--orange);color:#fff;border:none;border-radius:4px;padding:11px 20px;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;display:flex;align-items:center;gap:8px;justify-content:center}
+.run-btn:hover{background:#FF7733;transform:translateY(-1px);box-shadow:0 6px 20px rgba(255,85,0,0.25)}
+.run-btn:disabled{opacity:0.6;cursor:default;transform:none;box-shadow:none}
+.results-area{padding:1.25rem;display:flex;flex-direction:column;gap:0.75rem}
+.result-row{display:flex;align-items:flex-start;justify-content:space-between;gap:0.75rem;padding:0.85rem 1rem;background:rgba(255,255,255,0.025);border-radius:5px;border:1px solid var(--border)}
+.result-key{font-size:0.78rem;font-weight:600;color:var(--muted)}
+.result-val{font-size:0.78rem;font-weight:600;color:#fff;text-align:right;max-width:60%}
+.result-val.pass{color:var(--success)}
+.result-val.fail{color:var(--danger)}
+.result-val.warn{color:var(--warning)}
+.scan-steps{display:flex;flex-direction:column;gap:0.5rem;padding:1.25rem}
+.scan-step{display:flex;align-items:center;gap:10px;font-size:0.78rem;color:var(--muted)}
+.scan-step.done{color:#fff}
+.scan-step-icon{width:16px;height:16px;border-radius:50%;border:1.5px solid currentColor;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:0.55rem;font-weight:800}
+.scan-step.done .scan-step-icon{background:var(--success);border-color:var(--success);color:#000}
+.scan-step.active .scan-step-icon{border-color:var(--orange);color:var(--orange);animation:spin 1s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
-@keyframes glow{0%,100%{box-shadow:0 0 8px rgba(255,107,0,0.4)}50%{box-shadow:0 0 22px rgba(255,107,0,0.7)}}
-@keyframes scanLine{0%{top:0;opacity:0}5%{opacity:0.8}90%{opacity:0.8}100%{top:100%;opacity:0}}
-@keyframes ringFill{from{stroke-dashoffset:251}to{stroke-dashoffset:63}}
-@keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
-@keyframes shimmer{0%,100%{opacity:0.4}50%{opacity:0.9}}
-@keyframes radarSpin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-@keyframes pulseDot{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.6);opacity:0}}
-@keyframes slideIn{from{opacity:0;transform:translateX(-12px)}to{opacity:1;transform:translateX(0)}}
-@keyframes slideUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
-@keyframes glowPulse{0%,100%{box-shadow:0 0 0 0 rgba(255,107,0,0)}50%{box-shadow:0 0 0 8px rgba(255,107,0,0.08)}}
-@keyframes countUp{from{opacity:0;transform:scale(0.7)}to{opacity:1;transform:scale(1)}}
-@keyframes borderGlow{0%,100%{border-color:rgba(255,107,0,0.2)}50%{border-color:rgba(255,107,0,0.7)}}
-@keyframes scanProgress{from{width:0%}to{width:100%}}
-@keyframes threatSlide{from{opacity:0;transform:translateX(-16px)}to{opacity:1;transform:translateX(0)}}
-@keyframes topicPop{from{opacity:0;transform:scale(0.94) translateY(12px)}to{opacity:1;transform:scale(1) translateY(0)}}
-@keyframes orbitSpin{from{transform:rotate(0deg) translateX(52px) rotate(0deg)}to{transform:rotate(360deg) translateX(52px) rotate(-360deg)}}
-@keyframes ripple{0%{transform:scale(1);opacity:0.6}100%{transform:scale(2.4);opacity:0}}
-.anim-fade{animation:fadeUp 0.5s ease forwards}
-.anim-glow{animation:glow 2s ease-in-out infinite}
-.stat-card-anim{animation:slideUp 0.5s cubic-bezier(.4,0,.2,1) both}
-.topic-card-anim{animation:topicPop 0.45s cubic-bezier(.4,0,.2,1) both}
+.progress-bar{height:3px;background:rgba(255,255,255,0.07);border-radius:2px;overflow:hidden;margin:0 1.25rem 1.25rem}
+.progress-fill{height:100%;background:var(--orange);border-radius:2px;transition:width 0.4s}
+.limit-box{margin:1.25rem;background:rgba(255,85,0,0.06);border:1px solid var(--orange-border);border-radius:5px;padding:1rem;display:flex;align-items:flex-start;gap:0.75rem}
+.limit-box-icon{color:var(--orange);flex-shrink:0;font-size:1rem}
+.limit-box-text{font-size:0.78rem;color:var(--muted);line-height:1.6}
+.limit-box-text strong{color:#fff}
+.limit-box-upgrade{margin-top:0.5rem;display:inline-flex;align-items:center;gap:5px;font-size:0.75rem;font-weight:700;color:var(--orange);cursor:pointer;transition:opacity 0.2s}
+.limit-box-upgrade:hover{opacity:0.7}
+
+/* ── TEAM TABLE ──────────────────────────────────────── */
+.team-table{width:100%;border-collapse:collapse}
+.team-table th{font-size:0.62rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);padding:0.6rem 1.25rem;text-align:left;border-bottom:1px solid var(--border)}
+.team-table td{padding:0.875rem 1.25rem;border-bottom:1px solid rgba(255,255,255,0.04);font-size:0.8rem;vertical-align:middle}
+.team-table tr:last-child td{border-bottom:none}
+.team-avatar{width:28px;height:28px;border-radius:50%;background:var(--orange-dim);display:flex;align-items:center;justify-content:center;font-size:0.6rem;font-weight:800;color:var(--orange)}
+.status-pill{font-size:0.62rem;font-weight:700;padding:3px 9px;border-radius:2px;text-transform:uppercase;letter-spacing:0.04em}
+.status-pill.active{background:rgba(74,222,128,0.1);color:var(--success);border:1px solid rgba(74,222,128,0.15)}
+.status-pill.inactive{background:rgba(255,255,255,0.04);color:var(--muted);border:1px solid var(--border)}
+.add-member-form{padding:1.25rem;display:grid;grid-template-columns:1fr 1fr auto;gap:0.75rem;align-items:end;border-top:1px solid var(--border)}
+
+/* ── UPGRADE MODAL ───────────────────────────────────── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:200;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.modal-overlay.show{display:flex}
+.modal{background:#111;border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:2.5rem;max-width:480px;width:90%;position:relative}
+.modal-title{font-size:1.3rem;font-weight:700;color:#fff;margin-bottom:0.5rem}
+.modal-sub{font-size:0.875rem;color:var(--muted);margin-bottom:2rem}
+.modal-plans{display:flex;flex-direction:column;gap:0.75rem}
+.modal-plan{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.25rem;border:1px solid var(--border);border-radius:6px;cursor:pointer;transition:all 0.2s}
+.modal-plan:hover{border-color:var(--orange-border);background:var(--orange-dim)}
+.modal-plan.current{border-color:var(--orange-border);background:var(--orange-dim)}
+.modal-plan-name{font-weight:700;color:#fff;font-size:0.875rem}
+.modal-plan-price{font-size:0.78rem;color:var(--muted)}
+.modal-plan-badge{font-size:0.62rem;font-weight:800;padding:3px 10px;background:var(--orange);color:#fff;border-radius:2px;text-transform:uppercase;letter-spacing:0.06em}
+.modal-close{position:absolute;top:1rem;right:1rem;background:none;border:none;color:var(--muted);cursor:pointer;font-size:1.25rem;line-height:1;transition:color 0.2s;font-family:'DM Sans',sans-serif}
+.modal-close:hover{color:#fff}
+
+@media(max-width:768px){
+  .sidebar{display:none}
+  .dash-grid{grid-template-columns:repeat(2,1fr)}
+  .two-col,.three-col{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
 
-<!-- Decide what to show before render -->
-<script>
-(function(){
-  var t = sessionStorage.getItem('cs_token');
-  var p = new URLSearchParams(window.location.search);
-  var isSignup = p.get('signup') || p.get('plan');
-  if(isSignup){
-    document.addEventListener('DOMContentLoaded',function(){
-      document.getElementById('auth-page').style.display='flex';
-      if(p.get('plan') || p.get('signup')==='true') showReg();
-    });
-  } else if(t){
-    document.addEventListener('DOMContentLoaded',function(){
-      document.getElementById('app').style.display='flex';
-    });
-  } else {
-    document.addEventListener('DOMContentLoaded',function(){
-      document.getElementById('auth-page').style.display='flex';
-    });
-  }
-})();
-</script>
-
-<!-- AUTH -->
-<div class="auth-page" id="auth-page">
-  <div class="auth-split">
-    <div class="auth-photo-side">
-      <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=1200&q=80&fit=crop" alt="Cybersecurity protection"/>
-      <div class="auth-photo-overlay"></div>
-      <div class="auth-photo-brand">
-        <svg width="30" height="35" viewBox="0 0 38 44" fill="none">
-          <path d="M19 2L36 8.5V24C36 34.5 27.5 41 19 43C10.5 41 2 34.5 2 24V8.5L19 2Z" fill="rgba(255,255,255,0.15)" stroke="white" stroke-width="1.75"/>
-          <path d="M19 13L27 17.5L19 22L11 17.5Z" fill="rgba(255,255,255,0.2)" stroke="white" stroke-width="1.5" stroke-linejoin="round"/>
-          <path d="M11 17.5L19 22V30L11 25.5Z" fill="rgba(255,255,255,0.08)" stroke="white" stroke-width="1.5" stroke-linejoin="round"/>
-          <path d="M27 17.5L19 22V30L27 25.5Z" fill="rgba(255,255,255,0.12)" stroke="white" stroke-width="1.5" stroke-linejoin="round"/>
-        </svg>
-        <span class="auth-photo-brand-name">CyberShield</span>
-      </div>
-      <div class="auth-photo-content">
-        <div class="auth-photo-quote">"The only security platform built specifically for small businesses."</div>
-        <div class="auth-photo-sub">AI-powered training, breach monitoring, and vulnerability scanning — no IT team required.</div>
-      </div>
-    </div>
-    <div class="auth-form-side">
-    <div class="auth-card">
-    <div class="auth-brand">
-      <a href="index.html" style="display:flex;align-items:center;gap:12px;text-decoration:none">
-      <svg class="logo-svg" width="34" height="40" viewBox="0 0 38 44" fill="none">
-        <path d="M19 2L36 8.5V24C36 34.5 27.5 41 19 43C10.5 41 2 34.5 2 24V8.5L19 2Z" fill="rgba(255,107,0,0.05)" stroke="#ffffff" stroke-width="1.5"/>
-        <path d="M19 13L27 17.5L19 22L11 17.5Z" fill="rgba(255,107,0,0.1)" stroke="#ffffff" stroke-width="1.25" stroke-linejoin="round"/>
-        <path d="M11 17.5L19 22V30L11 25.5Z" fill="rgba(255,255,255,0.03)" stroke="#ffffff" stroke-width="1.25" stroke-linejoin="round"/>
-        <path d="M27 17.5L19 22V30L27 25.5Z" fill="rgba(255,107,0,0.07)" stroke="#ffffff" stroke-width="1.25" stroke-linejoin="round"/>
-      </svg>
-      <span class="auth-brand-name">Cyber<span>Shield</span></span>
-      </a>
-    </div>
-    <div id="auth-error" class="auth-error"></div>
-    <div id="login-form">
-      <div class="auth-title">Welcome back</div>
-      <div class="auth-sub">Sign in to your security dashboard</div>
-      <div class="form-group"><label class="form-label">Email address</label><input class="form-input" type="email" id="l-email" placeholder="you@company.com"/></div>
-      <div class="form-group"><label class="form-label">Password</label><input class="form-input" type="password" id="l-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/></div>
-      <button class="btn-auth" id="login-btn" onclick="doLogin()">Sign in</button>
-      <div class="auth-switch" style="color:var(--t3)">No account? <a onclick="showReg()" style="color:#FF6B00">Start your free trial</a></div>
-    </div>
-    <div id="register-form" style="display:none">
-      <div class="auth-title">Create account</div>
-      <div class="auth-sub">14-day free trial — no credit card required</div>
-      <div class="form-group"><label class="form-label">Company name</label><input class="form-input" type="text" id="r-company" placeholder="Acme Corp"/></div>
-      <div class="form-group"><label class="form-label">Your full name</label><input class="form-input" type="text" id="r-name" placeholder="Jane Smith"/></div>
-      <div class="form-group"><label class="form-label">Work email</label><input class="form-input" type="email" id="r-email" placeholder="jane@acme.com"/></div>
-      <div class="form-group"><label class="form-label">Password</label><input class="form-input" type="password" id="r-pass" placeholder="Min 8 characters"/></div>
-      <button class="btn-auth" id="reg-btn" onclick="doRegister()">Create account & start trial</button>
-      <div class="auth-switch" style="color:var(--t3)">Already have an account? <a onclick="showLogin()" style="color:#FF6B00">Sign in</a></div>
-    </div>
-    </div>
-    </div>
-  </div>
-</div>
-
-<!-- APP -->
 <div class="app" id="app">
-  <div class="topbar">
-    <div class="topbar-left">
-      <svg class="logo-svg" width="30" height="34" viewBox="0 0 38 44" fill="none">
-        <path d="M19 2L36 8.5V24C36 34.5 27.5 41 19 43C10.5 41 2 34.5 2 24V8.5L19 2Z" fill="rgba(255,107,0,0.05)" stroke="#ffffff" stroke-width="1.5"/>
-        <path d="M19 13L27 17.5L19 22L11 17.5Z" fill="rgba(255,107,0,0.1)" stroke="#ffffff" stroke-width="1.25" stroke-linejoin="round"/>
-        <path d="M11 17.5L19 22V30L11 25.5Z" fill="rgba(255,255,255,0.03)" stroke="#ffffff" stroke-width="1.25" stroke-linejoin="round"/>
-        <path d="M27 17.5L19 22V30L27 25.5Z" fill="rgba(255,107,0,0.07)" stroke="#ffffff" stroke-width="1.25" stroke-linejoin="round"/>
-      </svg>
-      <span class="topbar-brand">Cyber<span>Shield</span></span>
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <a href="index.html">
+        <svg viewBox="0 0 30 36" fill="none">
+          <path d="M15 1L29 6.5V21C29 30 22 35.5 15 37.5C8 35.5 1 30 1 21V6.5L15 1Z" fill="rgba(255,85,0,0.08)" stroke="#FF5500" stroke-width="1.5"/>
+          <path d="M15 11L20 14L15 17L10 14Z" fill="rgba(255,85,0,0.15)" stroke="#FF5500" stroke-width="1.25" stroke-linejoin="round"/>
+          <path d="M10 14L15 17V23L10 20Z" stroke="#FF5500" stroke-width="1.25" stroke-linejoin="round"/>
+          <path d="M20 14L15 17V23L20 20Z" fill="rgba(255,85,0,0.08)" stroke="#FF5500" stroke-width="1.25" stroke-linejoin="round"/>
+        </svg>
+        Cyber<span class="accent">Shield</span>
       </a>
     </div>
-    <div class="topbar-right">
-      <div class="topbar-status"><span class="status-dot"></span>System online</div>
-      <span class="topbar-email" id="user-email"></span>
-      <button class="btn-signout" onclick="doLogout()">Sign out</button>
-    </div>
-  </div>
-  <div class="app-body">
-    <div class="sidebar">
-      <div class="nav-section-label">Platform</div>
-      <button class="nav-item active" onclick="showPage('dashboard',this)">
-        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    <nav class="sidebar-nav">
+      <div class="nav-item active" onclick="showPage('dashboard',this)">
+        <svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
         Dashboard
-      </button>
-      <button class="nav-item" onclick="showPage('breach',this)">
-        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-        Breach monitor
-      </button>
-      <button class="nav-item" onclick="showPage('scanner',this)">
-        <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
-        Scanner
-      </button>
-      <button class="nav-item" onclick="showPage('training',this)">
-        <svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-        Training
-      </button>
+      </div>
+      <div class="nav-section-label">Security tools</div>
+      <div class="nav-item" onclick="showPage('training',this)">
+        <svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        AI Training
+      </div>
+      <div class="nav-item" onclick="showPage('breach',this)">
+        <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        Breach Monitor
+      </div>
+      <div class="nav-item" onclick="showPage('scanner',this)">
+        <svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+        Vulnerability Scanner
+      </div>
+      <div class="nav-section-label">Account</div>
+      <div class="nav-item" onclick="showPage('team',this)">
+        <svg class="nav-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Team
+      </div>
+      <div class="nav-item" onclick="openBillingPortal()">
+        <svg class="nav-icon" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+        Billing
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-plan">
+        <div>
+          <div class="sidebar-plan-name" id="plan-badge">Starter</div>
+        </div>
+        <div class="sidebar-plan-upgrade" onclick="openUpgradeModal()">Upgrade →</div>
+      </div>
+      <div class="sidebar-user">
+        <div class="sidebar-avatar" id="sidebar-avatar">CS</div>
+        <div class="sidebar-user-info">
+          <div class="sidebar-user-name" id="sidebar-name">Loading...</div>
+          <div class="sidebar-user-role" id="sidebar-role">Owner</div>
+        </div>
+        <button class="signout-btn" onclick="doLogout()" title="Sign out">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        </button>
+      </div>
     </div>
-    <div class="main" id="main-area">
-      <!-- Animated background canvas -->
-      <canvas id="bg-canvas" style="position:fixed;top:64px;left:220px;right:0;bottom:0;pointer-events:none;z-index:0;opacity:0.35"></canvas>
+  </aside>
 
-      <!-- DASHBOARD -->
-      <div id="page-dashboard" class="page active">
-        <!-- Dashboard hero banner -->
-        <div style="background:#0a0a0a;border-radius:14px;padding:2rem 2.5rem;margin-bottom:1.5rem;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:space-between">
-          <div style="position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=1200&q=60&fit=crop') center/cover;opacity:0.15"></div>
-          <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,107,0,0.15) 0%,rgba(0,0,0,0) 100%)"></div>
-          <div style="position:relative;z-index:1">
-            <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#FF6B00;margin-bottom:6px;font-family:'Hanken Grotesk',sans-serif">Security overview</div>
-            <div style="font-family:'Hanken Grotesk',sans-serif;font-size:1.6rem;font-weight:900;color:#ffffff;letter-spacing:-0.025em;margin-bottom:4px" id="dash-title">Welcome back</div>
-            <div style="font-size:0.875rem;color:rgba(255,255,255,0.5)" id="dash-sub">Loading your security data...</div>
-          </div>
-          <div style="position:relative;z-index:1;display:flex;align-items:center;gap:10px">
-            <div style="background:rgba(74,222,128,0.12);border:1px solid rgba(74,222,128,0.3);border-radius:8px;padding:10px 18px;text-align:center">
-              <div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:rgba(255,255,255,0.5);margin-bottom:4px;font-family:'Hanken Grotesk',sans-serif">Status</div>
-              <div style="font-size:0.9rem;font-weight:700;color:#4ade80;display:flex;align-items:center;gap:6px"><span style="width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block"></span>Protected</div>
-            </div>
-          </div>
-        </div>
-        <!-- Stats row -->
-        <div class="stats-row">
-          <div class="stat-card-anim" style="animation-delay:0.05s;background:#0a0a0a;border-radius:12px;padding:1.25rem 1.5rem;position:relative;overflow:hidden;animation:glowPulse 3s ease-in-out infinite,slideUp 0.5s ease both">
-            <div style="position:absolute;top:0;right:0;width:60px;height:60px;background:rgba(255,107,0,0.08);border-radius:0 12px 0 100%"></div>
-            <div style="position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#FF6B00,transparent);opacity:0.4"></div>
-            <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:rgba(255,255,255,0.35);margin-bottom:10px;font-family:'Hanken Grotesk',sans-serif">Trainings</div>
-            <div style="font-family:'Hanken Grotesk',sans-serif;font-size:2.2rem;font-weight:900;color:#ffffff;line-height:1;animation:countUp 0.6s 0.3s both" id="s-train">0</div>
-          </div>
-          <div class="stat-card-anim" style="animation-delay:0.15s;background:#FF6B00;border-radius:12px;padding:1.25rem 1.5rem;position:relative;overflow:hidden;animation:slideUp 0.5s 0.1s ease both">
-            <div style="position:absolute;top:0;right:0;width:60px;height:60px;background:rgba(255,255,255,0.1);border-radius:0 12px 0 100%"></div>
-            <div style="position:absolute;bottom:0;left:0;right:0;height:2px;background:rgba(255,255,255,0.3)"></div>
-            <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:rgba(255,255,255,0.6);margin-bottom:10px;font-family:'Hanken Grotesk',sans-serif">Breaches detected</div>
-            <div style="font-family:'Hanken Grotesk',sans-serif;font-size:2.2rem;font-weight:900;color:#ffffff;line-height:1;animation:countUp 0.6s 0.4s both" id="s-breach">0</div>
-          </div>
-          <div class="stat-card-anim" style="animation-delay:0.25s;background:#0a0a0a;border-radius:12px;padding:1.25rem 1.5rem;position:relative;overflow:hidden;animation:glowPulse 3s 1s ease-in-out infinite,slideUp 0.5s 0.2s ease both">
-            <div style="position:absolute;top:0;right:0;width:60px;height:60px;background:rgba(255,107,0,0.08);border-radius:0 12px 0 100%"></div>
-            <div style="position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#FF6B00);opacity:0.4"></div>
-            <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:rgba(255,255,255,0.35);margin-bottom:10px;font-family:'Hanken Grotesk',sans-serif">Scans performed</div>
-            <div style="font-family:'Hanken Grotesk',sans-serif;font-size:2.2rem;font-weight:900;color:#ffffff;line-height:1;animation:countUp 0.6s 0.5s both" id="s-scans">0</div>
-          </div>
-          <div class="stat-card-anim" style="animation-delay:0.35s;background:#f87171;border-radius:12px;padding:1.25rem 1.5rem;position:relative;overflow:hidden;animation:slideUp 0.5s 0.3s ease both">
-            <div style="position:absolute;top:0;right:0;width:60px;height:60px;background:rgba(255,255,255,0.1);border-radius:0 12px 0 100%"></div>
-            <div style="position:absolute;bottom:0;left:0;right:0;height:2px;background:rgba(255,255,255,0.3)"></div>
-            <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:rgba(255,255,255,0.6);margin-bottom:10px;font-family:'Hanken Grotesk',sans-serif">Active threats</div>
-            <div style="font-family:'Hanken Grotesk',sans-serif;font-size:2.2rem;font-weight:900;color:#ffffff;line-height:1;animation:countUp 0.6s 0.6s both">6</div>
-          </div>
-        </div>
-        <!-- Two column row: security score + quick actions -->
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:1.5rem">
-          <!-- Security score -->
-          <div style="background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:1.5rem">
-            <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#888;margin-bottom:1.25rem;font-family:'Hanken Grotesk',sans-serif">Security score</div>
-            <div style="display:flex;align-items:center;gap:1.5rem;margin-bottom:1.25rem">
-              <svg width="100" height="100" viewBox="0 0 100 100" style="flex-shrink:0">
-                <circle cx="50" cy="50" r="40" fill="none" stroke="#f0f0f0" stroke-width="10"/>
-                <circle id="score-ring" cx="50" cy="50" r="40" fill="none" stroke="#FF6B00" stroke-width="10" stroke-dasharray="251" stroke-dashoffset="188" stroke-linecap="round" transform="rotate(-90 50 50)" style="transition:stroke-dashoffset 1.5s ease,stroke 0.5s ease"/>
-                <text id="score-num" x="50" y="46" text-anchor="middle" font-family="Hanken Grotesk,sans-serif" font-size="18" font-weight="900" fill="#0a0a0a">—</text>
-                <text x="50" y="60" text-anchor="middle" font-family="Hanken Grotesk,sans-serif" font-size="9" fill="#888">/ 100</text>
-              </svg>
-              <div>
-                <div id="score-label" style="font-size:1.1rem;font-weight:800;color:#FF6B00;margin-bottom:4px;font-family:'Hanken Grotesk',sans-serif">Calculating...</div>
-                <div id="score-issues" style="font-size:0.8rem;color:#666;line-height:1.6;margin-bottom:10px">Loading...</div>
-                <div style="font-size:0.75rem;font-weight:600;color:#FF6B00;cursor:pointer" onclick="showPage('scanner',document.querySelectorAll('.nav-item')[2])">Run a scan to improve →</div>
-              </div>
-            </div>
-            <div style="padding-top:1.25rem;border-top:1px solid #f0f0f0">
-              <div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#bbb;margin-bottom:10px;font-family:'Hanken Grotesk',sans-serif">Score breakdown</div>
-              <div style="display:flex;flex-direction:column;gap:8px">
-                <div style="display:flex;align-items:center;justify-content:space-between;font-size:0.82rem">
-                  <span style="color:#666">Training modules completed</span>
-                  <span id="score-train-pts" style="font-weight:700;color:#FF6B00">+0</span>
-                </div>
-                <div style="display:flex;align-items:center;justify-content:space-between;font-size:0.82rem">
-                  <span style="color:#666">Vulnerability scans run</span>
-                  <span id="score-scan-pts" style="font-weight:700;color:#FF6B00">+0</span>
-                </div>
-                <div style="display:flex;align-items:center;justify-content:space-between;font-size:0.82rem">
-                  <span style="color:#666">Breaches detected</span>
-                  <span id="score-breach-pts" style="font-weight:700;color:#f87171">-0</span>
-                </div>
-                <div style="display:flex;align-items:center;justify-content:space-between;font-size:0.82rem;padding-top:8px;border-top:1px solid #f0f0f0;margin-top:2px">
-                  <span style="color:#0a0a0a;font-weight:700">Total score</span>
-                  <span id="score-total-pts" style="font-weight:900;color:#FF6B00;font-size:1rem">—</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- Quick actions -->
-          <div style="background:#0a0a0a;border-radius:12px;padding:1.5rem">
-            <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.25);margin-bottom:1.25rem;font-family:'Hanken Grotesk',sans-serif">Quick actions</div>
-            <div style="display:flex;flex-direction:column;gap:8px">
-              <div onclick="showPage('breach',document.querySelectorAll('.nav-item')[1])" style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:rgba(255,255,255,0.04);border-radius:8px;cursor:pointer;transition:all 0.2s;border:1px solid rgba(255,255,255,0.06)" onmouseover="this.style.borderColor='#FF6B00';this.style.background='rgba(255,107,0,0.08)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.06)';this.style.background='rgba(255,255,255,0.04)'">
-                <div style="width:36px;height:36px;background:rgba(248,113,113,0.12);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f87171" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-                </div>
-                <div><div style="font-size:0.875rem;font-weight:700;color:#ffffff;font-family:'Hanken Grotesk',sans-serif">Check for breaches</div><div style="font-size:0.75rem;color:rgba(255,255,255,0.35)">Scan company emails now</div></div>
-                <svg style="margin-left:auto;color:rgba(255,255,255,0.2)" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-              </div>
-              <div onclick="showPage('scanner',document.querySelectorAll('.nav-item')[2])" style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:rgba(255,255,255,0.04);border-radius:8px;cursor:pointer;transition:all 0.2s;border:1px solid rgba(255,255,255,0.06)" onmouseover="this.style.borderColor='#FF6B00';this.style.background='rgba(255,107,0,0.08)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.06)';this.style.background='rgba(255,255,255,0.04)'">
-                <div style="width:36px;height:36px;background:rgba(255,107,0,0.12);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF6B00" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                </div>
-                <div><div style="font-size:0.875rem;font-weight:700;color:#ffffff;font-family:'Hanken Grotesk',sans-serif">Run vulnerability scan</div><div style="font-size:0.75rem;color:rgba(255,255,255,0.35)">Check website security</div></div>
-                <svg style="margin-left:auto;color:rgba(255,255,255,0.2)" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-              </div>
-              <div onclick="showPage('training',document.querySelectorAll('.nav-item')[3])" style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:rgba(255,255,255,0.04);border-radius:8px;cursor:pointer;transition:all 0.2s;border:1px solid rgba(255,255,255,0.06)" onmouseover="this.style.borderColor='#FF6B00';this.style.background='rgba(255,107,0,0.08)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.06)';this.style.background='rgba(255,255,255,0.04)'">
-                <div style="width:36px;height:36px;background:rgba(255,107,0,0.12);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF6B00" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-                </div>
-                <div><div style="font-size:0.875rem;font-weight:700;color:#ffffff;font-family:'Hanken Grotesk',sans-serif">Start a training module</div><div style="font-size:0.75rem;color:rgba(255,255,255,0.35)">20 modules available</div></div>
-                <svg style="margin-left:auto;color:rgba(255,255,255,0.2)" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- Threat feed -->
-        <div style="background:#0a0a0a;border-radius:12px;overflow:hidden;margin-bottom:1.5rem" id="threat-feed-card">
-          <div style="padding:14px 20px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:space-between">
-            <div style="display:flex;align-items:center;gap:10px">
-              <span style="width:7px;height:7px;border-radius:50%;background:#4ade80;display:block;animation:pulseDot 2s ease-out infinite"></span>
-              <span style="font-size:0.72rem;font-weight:700;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:0.1em;font-family:'Hanken Grotesk',sans-serif">Live threat intelligence</span>
-            </div>
-            <div style="display:flex;align-items:center;gap:12px">
-              <span style="font-size:0.75rem;color:rgba(255,255,255,0.2)" id="threat-last-updated">Loading...</span>
-              <a href="https://thecyberwire.com" target="_blank" style="font-size:0.75rem;color:#FF6B00;font-weight:600;text-decoration:none;font-family:'Hanken Grotesk',sans-serif">CyberWire Daily →</a>
-            </div>
-          </div>
-          <div id="threat-rows"><div style="padding:2rem;text-align:center;color:rgba(255,255,255,0.3);font-size:0.875rem"><div class="spinner" style="margin:0 auto 10px"></div>Fetching latest threats...</div></div>
-        </div>
-        <!-- Image strip with security stats -->
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px">
-          <div style="border-radius:12px;overflow:hidden;position:relative;height:160px">
-            <img src="https://images.unsplash.com/photo-1614064641938-3bbee52942c7?w=700&q=75&fit=crop" style="width:100%;height:100%;object-fit:cover;filter:brightness(0.6)"/>
-            <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,107,0,0.5) 0%,rgba(0,0,0,0.3) 100%)"></div>
-            <div style="position:absolute;inset:0;padding:1.25rem;display:flex;flex-direction:column;justify-content:flex-end">
-              <div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.6);margin-bottom:4px;font-family:'Hanken Grotesk',sans-serif">This week</div>
-              <div style="font-family:'Hanken Grotesk',sans-serif;font-size:1.4rem;font-weight:900;color:#fff;letter-spacing:-0.02em">247 threats blocked</div>
-            </div>
-          </div>
-          <div style="border-radius:12px;overflow:hidden;position:relative;height:160px">
-            <img src="https://images.unsplash.com/photo-1510511459019-5dda7724fd87?w=700&q=75&fit=crop" style="width:100%;height:100%;object-fit:cover;filter:brightness(0.5)"/>
-            <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(10,10,10,0.7) 0%,rgba(255,107,0,0.3) 100%)"></div>
-            <div style="position:absolute;inset:0;padding:1.25rem;display:flex;flex-direction:column;justify-content:flex-end">
-              <div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.6);margin-bottom:4px;font-family:'Hanken Grotesk',sans-serif">Next training due</div>
-              <div style="font-family:'Hanken Grotesk',sans-serif;font-size:1.4rem;font-weight:900;color:#fff;letter-spacing:-0.02em">Phishing awareness</div>
-            </div>
-          </div>
-        </div>
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-title" id="topbar-title">Dashboard</div>
+      <div class="topbar-right">
+        <div class="topbar-status"><div class="status-dot"></div>System online</div>
+        <button class="topbar-btn" onclick="openUpgradeModal()">Upgrade plan</button>
+        <button class="topbar-btn orange" id="topbar-action" onclick="showPage('scanner',document.querySelector('[onclick*=scanner]'))">Run scan →</button>
       </div>
+    </div>
 
-      <!-- BREACH -->
-      <div id="page-breach" class="page">
-        <div style="background:#0a0a0a;border-radius:14px;padding:2rem 2.5rem;margin-bottom:1.5rem;position:relative;overflow:hidden;display:flex;align-items:center;gap:2rem">
-          <div style="position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1563986768609-322da13575f3?w=1200&q=60&fit=crop') center/cover;opacity:0.12"></div>
-          <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(248,113,113,0.12) 0%,rgba(0,0,0,0) 100%)"></div>
-          <div style="width:52px;height:52px;background:rgba(248,113,113,0.15);border:1.5px solid rgba(248,113,113,0.3);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative;z-index:1">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f87171" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <div class="content">
+
+      <!-- ── DASHBOARD PAGE ── -->
+      <div class="page active" id="page-dashboard">
+        <div class="dash-grid">
+          <div class="stat-card green">
+            <div class="stat-label">Security score</div>
+            <div class="stat-value green" id="dash-score">—</div>
+            <div class="stat-sub" id="dash-score-label">Calculating...</div>
           </div>
-          <div style="position:relative;z-index:1">
-            <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#f87171;margin-bottom:4px;font-family:'Hanken Grotesk',sans-serif">Breach monitor</div>
-            <div style="font-family:'Hanken Grotesk',sans-serif;font-size:1.4rem;font-weight:900;color:#fff;letter-spacing:-0.02em;margin-bottom:4px">12+ billion credentials monitored</div>
-            <div style="font-size:0.875rem;color:rgba(255,255,255,0.45)">Check if any company email appears in a known data breach</div>
+          <div class="stat-card">
+            <div class="stat-label">Trainings completed</div>
+            <div class="stat-value orange" id="dash-trainings">—</div>
+            <div class="stat-sub">Total modules finished</div>
+          </div>
+          <div class="stat-card red">
+            <div class="stat-label">Breaches detected</div>
+            <div class="stat-value red" id="dash-breaches">—</div>
+            <div class="stat-sub">Emails checked against HIBP</div>
+          </div>
+          <div class="stat-card yellow">
+            <div class="stat-label">Scans run</div>
+            <div class="stat-value" id="dash-scans">—</div>
+            <div class="stat-sub">Vulnerability scans this month</div>
+          </div>
+        </div>
+        <div class="two-col">
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Security Score</span>
+              <span class="card-action" onclick="showPage('training',document.querySelector('[onclick*=training]'))">Improve score →</span>
+            </div>
+            <div class="score-ring-wrap">
+              <svg class="score-ring-svg" width="90" height="90" viewBox="0 0 90 90">
+                <circle cx="45" cy="45" r="38" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="8"/>
+                <circle id="score-circle" cx="45" cy="45" r="38" fill="none" stroke="#FF5500" stroke-width="8" stroke-linecap="round" stroke-dasharray="238.76" stroke-dashoffset="238.76" transform="rotate(-90 45 45)" style="transition:stroke-dashoffset 1.2s cubic-bezier(0.4,0,0.2,1)"/>
+              </svg>
+              <div class="score-details">
+                <div>
+                  <div class="score-num" id="score-display">—</div>
+                  <div class="score-label" id="score-label" style="color:var(--orange)">Loading</div>
+                </div>
+                <div class="score-bar-item">
+                  <div class="score-bar-label">Training contribution</div>
+                  <div class="score-bar-track"><div class="score-bar-fill" id="bar-training" style="width:0%;background:var(--orange)"></div></div>
+                </div>
+                <div class="score-bar-item">
+                  <div class="score-bar-label">Scan coverage</div>
+                  <div class="score-bar-track"><div class="score-bar-fill" id="bar-scan" style="width:0%;background:var(--success)"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Live Threat Intelligence</span>
+              <div style="display:flex;align-items:center;gap:5px"><div class="status-dot"></div><span style="font-size:0.65rem;color:var(--muted)">Live</span></div>
+            </div>
+            <div class="threat-list" id="dash-threats">
+              <div style="padding:1.5rem;color:var(--muted);font-size:0.78rem;text-align:center">Loading threat feed...</div>
+            </div>
           </div>
         </div>
         <div class="card">
-          <div class="card-head"><span class="card-head-title">Check an email address</span></div>
-          <div class="input-row">
-            <input class="field-input" type="email" id="breach-email" placeholder="employee@company.com" onkeydown="if(event.key==='Enter')runBreach()"/>
-            <button class="btn-action" id="breach-btn" onclick="runBreach()">Check now</button>
+          <div class="card-header">
+            <span class="card-title">Recent Activity</span>
           </div>
-          <div class="result-body" id="breach-results"></div>
-        </div>
-        <!-- Animated breach visualization -->
-        <div style="background:#0a0a0a;border-radius:12px;padding:1.5rem;margin-bottom:1.5rem;display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:center;overflow:hidden;position:relative">
-          <div style="position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?w=900&q=60&fit=crop') center/cover;opacity:0.08"></div>
-          <div style="position:relative;z-index:1">
-            <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.3);margin-bottom:10px;font-family:'Hanken Grotesk',sans-serif">Protection status</div>
-            <div style="font-family:'Hanken Grotesk',sans-serif;font-size:1.5rem;font-weight:900;color:#fff;margin-bottom:6px;letter-spacing:-0.02em">Monitoring active</div>
-            <div style="font-size:0.875rem;color:rgba(255,255,255,0.45);line-height:1.6;margin-bottom:1.25rem">CyberShield continuously checks your emails against the world's largest breach database — updated daily.</div>
-            <div style="display:flex;gap:16px">
-              <div style="text-align:center"><div style="font-family:'Hanken Grotesk',sans-serif;font-size:1.6rem;font-weight:900;color:#FF6B00;letter-spacing:-0.03em">12B+</div><div style="font-size:0.72rem;color:rgba(255,255,255,0.35);font-weight:600;text-transform:uppercase;letter-spacing:0.08em">Credentials</div></div>
-              <div style="width:1px;background:rgba(255,255,255,0.08)"></div>
-              <div style="text-align:center"><div style="font-family:'Hanken Grotesk',sans-serif;font-size:1.6rem;font-weight:900;color:#FF6B00;letter-spacing:-0.03em">600+</div><div style="font-size:0.72rem;color:rgba(255,255,255,0.35);font-weight:600;text-transform:uppercase;letter-spacing:0.08em">Breach sources</div></div>
-              <div style="width:1px;background:rgba(255,255,255,0.08)"></div>
-              <div style="text-align:center"><div style="font-family:'Hanken Grotesk',sans-serif;font-size:1.6rem;font-weight:900;color:#FF6B00;letter-spacing:-0.03em">24/7</div><div style="font-size:0.72rem;color:rgba(255,255,255,0.35);font-weight:600;text-transform:uppercase;letter-spacing:0.08em">Monitoring</div></div>
-            </div>
+          <div class="threat-list" id="dash-activity">
+            <div style="padding:1.5rem;color:var(--muted);font-size:0.78rem;text-align:center">No recent activity. Start with a vulnerability scan or training module.</div>
           </div>
-          <!-- Animated radar -->
-          <div style="position:relative;z-index:1;display:flex;align-items:center;justify-content:center;height:180px">
-            <svg viewBox="0 0 180 180" width="180" height="180" style="position:absolute">
-              <circle cx="90" cy="90" r="75" fill="none" stroke="rgba(255,107,0,0.06)" stroke-width="1"/>
-              <circle cx="90" cy="90" r="55" fill="none" stroke="rgba(255,107,0,0.1)" stroke-width="1"/>
-              <circle cx="90" cy="90" r="35" fill="none" stroke="rgba(255,107,0,0.16)" stroke-width="1"/>
-              <line x1="90" y1="15" x2="90" y2="165" stroke="rgba(255,107,0,0.05)" stroke-width="1"/>
-              <line x1="15" y1="90" x2="165" y2="90" stroke="rgba(255,107,0,0.05)" stroke-width="1"/>
-              <g style="transform-origin:90px 90px;animation:radarSpin 4s linear infinite">
-                <path d="M90 90 L90 15 A75 75 0 0 1 155 68 Z" fill="rgba(255,107,0,0.12)"/>
-                <line x1="90" y1="90" x2="90" y2="15" stroke="#FF6B00" stroke-width="1.5" stroke-linecap="round"/>
-              </g>
-              <circle cx="90" cy="90" r="6" fill="#FF6B00"/>
-              <circle cx="90" cy="90" r="6" fill="#FF6B00" style="animation:pulseDot 2s ease-out infinite"/>
-              <circle cx="130" cy="55" r="4" fill="rgba(248,113,113,0.8)"/>
-              <circle cx="50" cy="120" r="3" fill="rgba(255,107,0,0.6)"/>
-              <circle cx="145" cy="110" r="3" fill="rgba(255,255,255,0.3)"/>
-            </svg>
-          </div>
-        </div>
-        <!-- How it works -->
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:1.5rem">
-          <div style="background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:1.5rem;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,0.04);transition:all 0.25s" onmouseover="this.style.transform='translateY(-4px)';this.style.borderColor='#ffd4b0';this.style.boxShadow='0 12px 30px rgba(255,107,0,0.1)'" onmouseout="this.style.transform='';this.style.borderColor='#e5e5e5';this.style.boxShadow='0 1px 4px rgba(0,0,0,0.04)'">
-            <div style="width:52px;height:52px;background:#fff3eb;border:1.5px solid #ffd4b0;border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FF6B00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-            </div>
-            <div style="font-size:0.9rem;font-weight:800;color:#0a0a0a;margin-bottom:6px;font-family:'Hanken Grotesk',sans-serif">Enter email</div>
-            <div style="font-size:0.8rem;color:#888;line-height:1.6">Type any company email address you want to check</div>
-          </div>
-          <div style="background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:1.5rem;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,0.04);transition:all 0.25s" onmouseover="this.style.transform='translateY(-4px)';this.style.borderColor='#ffd4b0';this.style.boxShadow='0 12px 30px rgba(255,107,0,0.1)'" onmouseout="this.style.transform='';this.style.borderColor='#e5e5e5';this.style.boxShadow='0 1px 4px rgba(0,0,0,0.04)'">
-            <div style="width:52px;height:52px;background:#fff3eb;border:1.5px solid #ffd4b0;border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FF6B00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-            </div>
-            <div style="font-size:0.9rem;font-weight:800;color:#0a0a0a;margin-bottom:6px;font-family:'Hanken Grotesk',sans-serif">We scan 12B+ records</div>
-            <div style="font-size:0.8rem;color:#888;line-height:1.6">Instantly checked against the HaveIBeenPwned database</div>
-          </div>
-          <div style="background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:1.5rem;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,0.04);transition:all 0.25s" onmouseover="this.style.transform='translateY(-4px)';this.style.borderColor='#ffd4b0';this.style.boxShadow='0 12px 30px rgba(255,107,0,0.1)'" onmouseout="this.style.transform='';this.style.borderColor='#e5e5e5';this.style.boxShadow='0 1px 4px rgba(0,0,0,0.04)'">
-            <div style="width:52px;height:52px;background:#fff3eb;border:1.5px solid #ffd4b0;border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FF6B00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
-            </div>
-            <div style="font-size:0.9rem;font-weight:800;color:#0a0a0a;margin-bottom:6px;font-family:'Hanken Grotesk',sans-serif">Get instant results</div>
-            <div style="font-size:0.8rem;color:#888;line-height:1.6">See exactly which breaches exposed this email and what data was stolen</div>
-          </div>
-        </div>
-        <!-- Photo highlight strip -->
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:1.5rem">
-          <div style="border-radius:12px;overflow:hidden;height:120px;position:relative">
-            <img src="https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?w=500&q=70&fit=crop" style="width:100%;height:100%;object-fit:cover;filter:brightness(0.55)"/>
-            <div style="position:absolute;inset:0;background:rgba(248,113,113,0.45);mix-blend-mode:multiply"></div>
-            <div style="position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:12px">
-              <div style="font-size:0.65rem;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.6);margin-bottom:2px;font-family:'Hanken Grotesk',sans-serif">Most common</div>
-              <div style="font-size:0.9rem;font-weight:800;color:#fff;font-family:'Hanken Grotesk',sans-serif">Password breaches</div>
-            </div>
-          </div>
-          <div style="border-radius:12px;overflow:hidden;height:120px;position:relative">
-            <img src="https://images.unsplash.com/photo-1614064850003-13dbfd69fd11?w=500&q=70&fit=crop" style="width:100%;height:100%;object-fit:cover;filter:brightness(0.5)"/>
-            <div style="position:absolute;inset:0;background:rgba(255,107,0,0.45);mix-blend-mode:multiply"></div>
-            <div style="position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:12px">
-              <div style="font-size:0.65rem;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.6);margin-bottom:2px;font-family:'Hanken Grotesk',sans-serif">Growing threat</div>
-              <div style="font-size:0.9rem;font-weight:800;color:#fff;font-family:'Hanken Grotesk',sans-serif">Email harvesting</div>
-            </div>
-          </div>
-          <div style="border-radius:12px;overflow:hidden;height:120px;position:relative">
-            <img src="https://images.unsplash.com/photo-1510511459019-5dda7724fd87?w=500&q=70&fit=crop" style="width:100%;height:100%;object-fit:cover;filter:brightness(0.5)"/>
-            <div style="position:absolute;inset:0;background:rgba(10,10,10,0.5);mix-blend-mode:multiply"></div>
-            <div style="position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:12px">
-              <div style="font-size:0.65rem;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.6);margin-bottom:2px;font-family:'Hanken Grotesk',sans-serif">High risk</div>
-              <div style="font-size:0.9rem;font-weight:800;color:#fff;font-family:'Hanken Grotesk',sans-serif">Financial data exposed</div>
-            </div>
-          </div>
-        </div>
-        <!-- Types of data checked -->
-        <div style="background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:1.5rem;margin-bottom:1.5rem;box-shadow:0 1px 4px rgba(0,0,0,0.04)">
-          <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#888;margin-bottom:1rem;font-family:'Hanken Grotesk',sans-serif">Data types we detect in breaches</div>
-          <div style="display:flex;flex-wrap:wrap;gap:8px">
-            <span style="background:#fff3eb;border:1px solid #ffd4b0;color:#FF6B00;font-size:0.78rem;font-weight:600;padding:5px 12px;border-radius:100px">Passwords</span>
-            <span style="background:#fff3eb;border:1px solid #ffd4b0;color:#FF6B00;font-size:0.78rem;font-weight:600;padding:5px 12px;border-radius:100px">Email addresses</span>
-            <span style="background:#fff3eb;border:1px solid #ffd4b0;color:#FF6B00;font-size:0.78rem;font-weight:600;padding:5px 12px;border-radius:100px">Phone numbers</span>
-            <span style="background:#fff3eb;border:1px solid #ffd4b0;color:#FF6B00;font-size:0.78rem;font-weight:600;padding:5px 12px;border-radius:100px">Credit card data</span>
-            <span style="background:#fff3eb;border:1px solid #ffd4b0;color:#FF6B00;font-size:0.78rem;font-weight:600;padding:5px 12px;border-radius:100px">Physical addresses</span>
-            <span style="background:#fff3eb;border:1px solid #ffd4b0;color:#FF6B00;font-size:0.78rem;font-weight:600;padding:5px 12px;border-radius:100px">Social security numbers</span>
-            <span style="background:#fff3eb;border:1px solid #ffd4b0;color:#FF6B00;font-size:0.78rem;font-weight:600;padding:5px 12px;border-radius:100px">Usernames</span>
-            <span style="background:#fff3eb;border:1px solid #ffd4b0;color:#FF6B00;font-size:0.78rem;font-weight:600;padding:5px 12px;border-radius:100px">IP addresses</span>
-            <span style="background:#fff3eb;border:1px solid #ffd4b0;color:#FF6B00;font-size:0.78rem;font-weight:600;padding:5px 12px;border-radius:100px">Security questions</span>
-            <span style="background:#f7f7f7;border:1px solid #e5e5e5;color:#888;font-size:0.78rem;font-weight:600;padding:5px 12px;border-radius:100px">+ more</span>
-          </div>
-        </div>
-        <div class="card" id="breach-history-card" style="display:none">
-          <div class="card-head"><span class="card-head-title">Recent checks</span></div>
-          <div id="breach-history"></div>
         </div>
       </div>
 
-      <!-- SCANNER -->
-      <div id="page-scanner" class="page">
-        <div style="background:#0a0a0a;border-radius:14px;padding:2rem 2.5rem;margin-bottom:1.5rem;position:relative;overflow:hidden;display:flex;align-items:center;gap:2rem">
-          <div style="position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=1200&q=60&fit=crop') center/cover;opacity:0.12"></div>
-          <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,107,0,0.12) 0%,rgba(0,0,0,0) 100%)"></div>
-          <div style="width:52px;height:52px;background:rgba(255,107,0,0.12);border:1.5px solid rgba(255,107,0,0.3);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative;z-index:1">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FF6B00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+      <!-- ── TRAINING PAGE ── -->
+      <div class="page" id="page-training">
+        <div class="three-col" id="training-modules">
+          <div class="training-module">
+            <div class="training-img">
+              <img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=600&q=70&fit=crop" alt="Phishing"/>
+              <div class="training-img-badge">Week 1</div>
+            </div>
+            <div class="training-body">
+              <div class="training-title">Phishing & Social Engineering</div>
+              <div class="training-desc">Recognize modern phishing attacks based on this week's live threat data from CyberWire Daily.</div>
+              <div class="training-progress"><div class="training-progress-fill" style="width:0%"></div></div>
+              <div class="training-meta"><span>0% complete</span><span>5 min</span></div>
+              <div class="training-start" onclick="startTraining('phishing')">Start training →</div>
+            </div>
           </div>
-          <div style="position:relative;z-index:1">
-            <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#FF6B00;margin-bottom:4px;font-family:'Hanken Grotesk',sans-serif">Vulnerability scanner</div>
-            <div style="font-family:'Hanken Grotesk',sans-serif;font-size:1.4rem;font-weight:900;color:#fff;letter-spacing:-0.02em;margin-bottom:4px">Real checks. Zero guesswork.</div>
-            <div style="font-size:0.875rem;color:rgba(255,255,255,0.45)">SSL certificates, DNS, security headers, cookie flags — 100% accurate results</div>
+          <div class="training-module">
+            <div class="training-img">
+              <img src="https://images.unsplash.com/photo-1563986768609-322da13575f3?w=600&q=70&fit=crop" alt="Passwords"/>
+              <div class="training-img-badge">Week 2</div>
+            </div>
+            <div class="training-body">
+              <div class="training-title">Password Security & MFA</div>
+              <div class="training-desc">Best practices for passwords and multi-factor authentication in your business.</div>
+              <div class="training-progress"><div class="training-progress-fill" style="width:0%"></div></div>
+              <div class="training-meta"><span>0% complete</span><span>5 min</span></div>
+              <div class="training-start" onclick="startTraining('passwords')">Start training →</div>
+            </div>
+          </div>
+          <div class="training-module">
+            <div class="training-img">
+              <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=600&q=70&fit=crop" alt="Ransomware"/>
+              <div class="training-img-badge">Week 3</div>
+            </div>
+            <div class="training-body">
+              <div class="training-title">Ransomware Defense</div>
+              <div class="training-desc">Understand how ransomware spreads and the steps to protect your business data.</div>
+              <div class="training-progress"><div class="training-progress-fill" style="width:0%"></div></div>
+              <div class="training-meta"><span>0% complete</span><span>5 min</span></div>
+              <div class="training-start" onclick="startTraining('ransomware')">Start training →</div>
+            </div>
           </div>
         </div>
+        <!-- Training Modal -->
+        <div class="modal-overlay" id="training-modal">
+          <div class="modal" style="max-width:600px">
+            <button class="modal-close" onclick="closeTrainingModal()">×</button>
+            <div id="training-modal-content" style="min-height:200px">
+              <div style="color:var(--muted);font-size:0.875rem">Loading training...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── BREACH PAGE ── -->
+      <div class="page" id="page-breach">
+        <div class="two-col">
+          <div class="card">
+            <div class="card-header"><span class="card-title">Check email for breaches</span></div>
+            <div class="tool-form">
+              <div class="form-group">
+                <label class="field-label">Email address</label>
+                <input class="field-input" type="email" id="breach-email" placeholder="employee@company.com"/>
+              </div>
+              <button class="run-btn" id="breach-btn" onclick="runBreach()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                Check for breaches
+              </button>
+            </div>
+            <div class="results-area" id="breach-results"></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><span class="card-title">Recent breach checks</span></div>
+            <div class="threat-list" id="breach-history">
+              <div style="padding:1.5rem;color:var(--muted);font-size:0.78rem;text-align:center">No checks yet.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SCANNER PAGE ── -->
+      <div class="page" id="page-scanner">
+        <div class="two-col">
+          <div class="card">
+            <div class="card-header"><span class="card-title">Vulnerability scan</span></div>
+            <div class="tool-form">
+              <div class="form-group">
+                <label class="field-label">Website URL</label>
+                <input class="field-input" type="url" id="scan-url" placeholder="https://yourwebsite.com"/>
+              </div>
+              <button class="run-btn" id="scan-btn" onclick="runScan()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                Run vulnerability scan
+              </button>
+            </div>
+            <div id="scan-steps-area" style="display:none">
+              <div class="progress-bar"><div class="progress-fill" id="scan-progress" style="width:0%"></div></div>
+              <div class="scan-steps" id="scan-steps">
+                <div class="scan-step" id="step-ssl"><div class="scan-step-icon">1</div>SSL Certificate</div>
+                <div class="scan-step" id="step-headers"><div class="scan-step-icon">2</div>Security Headers</div>
+                <div class="scan-step" id="step-dns"><div class="scan-step-icon">3</div>DNS Configuration</div>
+                <div class="scan-step" id="step-cookies"><div class="scan-step-icon">4</div>Cookie Flags</div>
+              </div>
+            </div>
+            <div id="scan-limit-area"></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><span class="card-title">Scan results</span></div>
+            <div class="results-area" id="scan-results">
+              <div style="color:var(--muted);font-size:0.78rem;text-align:center;padding:1.5rem 0">Run a scan to see your vulnerability report.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── TEAM PAGE ── -->
+      <div class="page" id="page-team">
         <div class="card">
-          <div class="card-head"><span class="card-head-title">Scan a website</span></div>
-          <div class="input-row">
-            <input class="field-input" type="text" id="scan-url" placeholder="https://yourcompany.com" onkeydown="if(event.key==='Enter')runScan()"/>
-            <button class="btn-action" id="scan-btn" onclick="runScan()">Scan</button>
+          <div class="card-header">
+            <span class="card-title">Team members</span>
+            <span class="card-action" id="seats-info">— / — seats</span>
           </div>
-          <div class="scan-results-wrap" id="scan-results"></div>
-        </div>
-        <!-- Scanner visualization -->
-        <div style="background:#0a0a0a;border-radius:12px;overflow:hidden;margin-bottom:1.5rem;position:relative">
-          <div style="position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1542744094-24638eff58bb?w=1200&q=60&fit=crop') center/cover;opacity:0.1"></div>
-          <div style="position:relative;z-index:1;padding:1.75rem;display:grid;grid-template-columns:1fr auto;gap:2rem;align-items:center">
-            <div>
-              <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.3);margin-bottom:8px;font-family:'Hanken Grotesk',sans-serif">How scanning works</div>
-              <div style="font-family:'Hanken Grotesk',sans-serif;font-size:1.3rem;font-weight:900;color:#fff;margin-bottom:8px;letter-spacing:-0.02em">Enter any URL. Get real results in seconds.</div>
-              <div style="font-size:0.875rem;color:rgba(255,255,255,0.45);line-height:1.7;margin-bottom:1.25rem">We run actual HTTP checks against your website — not simulations. Every finding is a real, verifiable security issue with a clear fix.</div>
-              <div style="display:flex;flex-wrap:wrap;gap:8px">
-                <span style="background:rgba(255,107,0,0.12);border:1px solid rgba(255,107,0,0.25);color:#FF6B00;font-size:0.75rem;font-weight:700;padding:4px 12px;border-radius:100px;font-family:'Hanken Grotesk',sans-serif">SSL/TLS</span>
-                <span style="background:rgba(255,107,0,0.12);border:1px solid rgba(255,107,0,0.25);color:#FF6B00;font-size:0.75rem;font-weight:700;padding:4px 12px;border-radius:100px;font-family:'Hanken Grotesk',sans-serif">HTTP Headers</span>
-                <span style="background:rgba(255,107,0,0.12);border:1px solid rgba(255,107,0,0.25);color:#FF6B00;font-size:0.75rem;font-weight:700;padding:4px 12px;border-radius:100px;font-family:'Hanken Grotesk',sans-serif">DNS / SPF / DMARC</span>
-                <span style="background:rgba(255,107,0,0.12);border:1px solid rgba(255,107,0,0.25);color:#FF6B00;font-size:0.75rem;font-weight:700;padding:4px 12px;border-radius:100px;font-family:'Hanken Grotesk',sans-serif">Cookie Security</span>
-                <span style="background:rgba(255,107,0,0.12);border:1px solid rgba(255,107,0,0.25);color:#FF6B00;font-size:0.75rem;font-weight:700;padding:4px 12px;border-radius:100px;font-family:'Hanken Grotesk',sans-serif">Risk Score 0-100</span>
-              </div>
+          <table class="team-table" id="team-table">
+            <thead>
+              <tr>
+                <th></th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Last login</th>
+              </tr>
+            </thead>
+            <tbody id="team-tbody">
+              <tr><td colspan="6" style="text-align:center;color:var(--muted);padding:2rem">Loading team...</td></tr>
+            </tbody>
+          </table>
+          <div class="add-member-form" id="add-member-form">
+            <div class="form-group">
+              <label class="field-label">Full name</label>
+              <input class="field-input" type="text" id="invite-name" placeholder="Jane Smith"/>
             </div>
-            <!-- Animated scan rings -->
-            <div style="width:140px;height:140px;position:relative;flex-shrink:0;display:flex;align-items:center;justify-content:center">
-              <svg viewBox="0 0 140 140" width="140" height="140">
-                <circle cx="70" cy="70" r="62" fill="none" stroke="rgba(255,107,0,0.06)" stroke-width="1.5" stroke-dasharray="4 4"/>
-                <circle cx="70" cy="70" r="48" fill="none" stroke="rgba(255,107,0,0.1)" stroke-width="1.5" stroke-dasharray="3 6"/>
-                <circle cx="70" cy="70" r="34" fill="none" stroke="rgba(255,107,0,0.18)" stroke-width="1.5"/>
-                <circle cx="70" cy="70" r="62" fill="none" stroke="rgba(255,107,0,0.6)" stroke-width="1.5" stroke-dasharray="30 361" style="animation:radarSpin 3s linear infinite;transform-origin:70px 70px"/>
-                <circle cx="70" cy="70" r="20" fill="rgba(255,107,0,0.12)" stroke="#FF6B00" stroke-width="1.5"/>
-                <path d="M62 70L68 76L80 62" stroke="#FF6B00" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-              </svg>
+            <div class="form-group">
+              <label class="field-label">Email</label>
+              <input class="field-input" type="email" id="invite-email" placeholder="jane@company.com"/>
             </div>
+            <button class="run-btn" onclick="inviteMember()">Add member</button>
           </div>
-        </div>
-        <!-- What we check -->
-        <div style="background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:1.5rem;margin-bottom:1.5rem;box-shadow:0 1px 4px rgba(0,0,0,0.04)">
-          <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#888;margin-bottom:1.25rem;font-family:'Hanken Grotesk',sans-serif">What we scan for</div>
-          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
-            <div style="display:flex;align-items:flex-start;gap:12px;padding:14px;background:#f7f7f7;border-radius:10px;border:1px solid #e5e5e5">
-              <div style="width:38px;height:38px;background:#fff3eb;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF6B00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-              </div>
-              <div><div style="font-size:0.85rem;font-weight:700;color:#0a0a0a;margin-bottom:2px;font-family:'Hanken Grotesk',sans-serif">SSL Certificate</div><div style="font-size:0.78rem;color:#888;line-height:1.5">Validity, expiry, configuration</div></div>
-            </div>
-            <div style="display:flex;align-items:flex-start;gap:12px;padding:14px;background:#f7f7f7;border-radius:10px;border:1px solid #e5e5e5">
-              <div style="width:38px;height:38px;background:#fff3eb;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF6B00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-              </div>
-              <div><div style="font-size:0.85rem;font-weight:700;color:#0a0a0a;margin-bottom:2px;font-family:'Hanken Grotesk',sans-serif">Security Headers</div><div style="font-size:0.78rem;color:#888;line-height:1.5">HSTS, CSP, X-Frame-Options</div></div>
-            </div>
-            <div style="display:flex;align-items:flex-start;gap:12px;padding:14px;background:#f7f7f7;border-radius:10px;border:1px solid #e5e5e5">
-              <div style="width:38px;height:38px;background:#fff3eb;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF6B00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
-              </div>
-              <div><div style="font-size:0.85rem;font-weight:700;color:#0a0a0a;margin-bottom:2px;font-family:'Hanken Grotesk',sans-serif">DNS Security</div><div style="font-size:0.78rem;color:#888;line-height:1.5">SPF, DMARC email protection</div></div>
-            </div>
-            <div style="display:flex;align-items:flex-start;gap:12px;padding:14px;background:#f7f7f7;border-radius:10px;border:1px solid #e5e5e5">
-              <div style="width:38px;height:38px;background:#fff3eb;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF6B00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M12 6v6l4 2"/></svg>
-              </div>
-              <div><div style="font-size:0.85rem;font-weight:700;color:#0a0a0a;margin-bottom:2px;font-family:'Hanken Grotesk',sans-serif">Cookie Flags</div><div style="font-size:0.78rem;color:#888;line-height:1.5">Secure, HttpOnly, SameSite</div></div>
-            </div>
-            <div style="display:flex;align-items:flex-start;gap:12px;padding:14px;background:#f7f7f7;border-radius:10px;border:1px solid #e5e5e5">
-              <div style="width:38px;height:38px;background:#fff3eb;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF6B00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-              </div>
-              <div><div style="font-size:0.85rem;font-weight:700;color:#0a0a0a;margin-bottom:2px;font-family:'Hanken Grotesk',sans-serif">Risk Score</div><div style="font-size:0.78rem;color:#888;line-height:1.5">0-100 overall security rating</div></div>
-            </div>
-            <div style="display:flex;align-items:flex-start;gap:12px;padding:14px;background:#f7f7f7;border-radius:10px;border:1px solid #e5e5e5">
-              <div style="width:38px;height:38px;background:#fff3eb;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF6B00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-              </div>
-              <div><div style="font-size:0.85rem;font-weight:700;color:#0a0a0a;margin-bottom:2px;font-family:'Hanken Grotesk',sans-serif">Fix Recommendations</div><div style="font-size:0.78rem;color:#888;line-height:1.5">Plain-English remediation steps</div></div>
-            </div>
-          </div>
-        </div>
-        <!-- Photo highlights -->
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1.5rem">
-          <div style="border-radius:12px;overflow:hidden;height:130px;position:relative">
-            <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=70&fit=crop" style="width:100%;height:100%;object-fit:cover;filter:brightness(0.5)"/>
-            <div style="position:absolute;inset:0;background:rgba(255,107,0,0.4);mix-blend-mode:multiply"></div>
-            <div style="position:absolute;inset:0;padding:1.25rem;display:flex;flex-direction:column;justify-content:flex-end">
-              <div style="font-size:0.65rem;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.55);margin-bottom:3px;font-family:'Hanken Grotesk',sans-serif">Did you know</div>
-              <div style="font-size:0.95rem;font-weight:800;color:#fff;font-family:'Hanken Grotesk',sans-serif">95% of breaches are caused by misconfiguration</div>
-            </div>
-          </div>
-          <div style="border-radius:12px;overflow:hidden;height:130px;position:relative">
-            <img src="https://images.unsplash.com/photo-1563986768494-4dee2763ff3f?w=600&q=70&fit=crop" style="width:100%;height:100%;object-fit:cover;filter:brightness(0.45)"/>
-            <div style="position:absolute;inset:0;background:rgba(10,10,10,0.55);mix-blend-mode:multiply"></div>
-            <div style="position:absolute;inset:0;padding:1.25rem;display:flex;flex-direction:column;justify-content:flex-end">
-              <div style="font-size:0.65rem;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.55);margin-bottom:3px;font-family:'Hanken Grotesk',sans-serif">Protection</div>
-              <div style="font-size:0.95rem;font-weight:800;color:#fff;font-family:'Hanken Grotesk',sans-serif">Run scans monthly to stay ahead of attackers</div>
-            </div>
-          </div>
-        </div>
-        <!-- Pro tip -->
-        <div style="background:linear-gradient(135deg,#fff3eb 0%,#fff 100%);border:1.5px solid #ffd4b0;border-radius:12px;padding:1.5rem;display:flex;align-items:flex-start;gap:14px">
-          <div style="width:40px;height:40px;background:#FF6B00;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-          </div>
-          <div>
-            <div style="font-size:0.9rem;font-weight:800;color:#0a0a0a;margin-bottom:4px;font-family:'Hanken Grotesk',sans-serif">Pro tip: Scan before your next client meeting</div>
-            <div style="font-size:0.85rem;color:#666;line-height:1.6">Many clients and insurance providers now require proof of website security. Run a scan and share the report to demonstrate due diligence.</div>
-          </div>
+          <div style="padding:0 1.25rem 1rem;font-size:0.72rem;color:var(--muted)" id="invite-msg"></div>
         </div>
       </div>
 
-      <!-- TRAINING -->
-      <div id="page-training" class="page">
-        <div style="border-radius:12px;overflow:hidden;margin-bottom:1.5rem;position:relative;height:180px">
-          <img src="https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=1200&q=75&fit=crop" style="width:100%;height:100%;object-fit:cover;filter:brightness(0.45)"/>
-          <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(10,10,10,0.85) 0%,rgba(255,107,0,0.2) 100%)"></div>
-          <!-- Animated scan line -->
-          <div style="position:absolute;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,107,0,0.8),transparent);animation:scanLine 4s linear infinite"></div>
-          <div style="position:absolute;inset:0;padding:1.75rem;display:flex;flex-direction:column;justify-content:center">
-            <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:rgba(255,255,255,0.4);margin-bottom:8px;font-family:'Hanken Grotesk',sans-serif">AI security training</div>
-            <div style="font-family:'Hanken Grotesk',sans-serif;font-size:1.7rem;font-weight:900;color:#ffffff;letter-spacing:-0.025em;margin-bottom:6px">Learn today's threats. Today.</div>
-            <div style="font-size:0.9rem;color:rgba(255,255,255,0.5)">20 modules · Live threat intelligence · 5 minutes each</div>
-          </div>
-          <!-- Stats badges -->
-          <div style="position:absolute;top:1.5rem;right:1.5rem;display:flex;gap:8px">
-            <div style="background:rgba(255,107,0,0.9);color:#fff;font-size:0.72rem;font-weight:800;padding:5px 12px;border-radius:100px;font-family:'Hanken Grotesk',sans-serif">20 modules</div>
-            <div style="background:rgba(10,10,10,0.7);border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.7);font-size:0.72rem;font-weight:700;padding:5px 12px;border-radius:100px;font-family:'Hanken Grotesk',sans-serif">Updated daily</div>
-          </div>
-        </div>
-        <div id="training-home">
-          <div class="topics-grid" id="topics-grid"></div>
-        </div>
-        <div id="training-lesson" style="display:none">
-          <div class="loading" id="lesson-loading"><div class="spinner"></div>Generating lesson from live threat data...</div>
-          <div id="lesson-content" style="display:none">
-            <div style="font-size:0.72rem;font-weight:700;color:#FF6B00;text-transform:uppercase;letter-spacing:0.12em;margin-bottom:10px;font-family:'Hanken Grotesk',sans-serif" id="lesson-label"></div>
-            <div class="lesson-box" id="lesson-text"></div>
-            <div class="action-row">
-              <button class="btn-primary-sm" onclick="startQuiz()">Take quiz</button>
-              <button class="btn-secondary" onclick="resetTraining()">Back to topics</button>
-            </div>
-          </div>
-        </div>
-        <div id="training-quiz" style="display:none">
-          <div class="loading" id="quiz-loading"><div class="spinner"></div>Generating quiz questions...</div>
-          <div id="quiz-content" style="display:none"></div>
-        </div>
-        <div id="training-result" style="display:none">
-          <div class="result-card">
-            <div class="result-score" id="result-score"></div>
-            <div class="result-label" id="result-label"></div>
-            <div class="result-msg" id="result-msg"></div>
-            <button class="btn-primary-sm" onclick="resetTraining()">Train on another topic</button>
-          </div>
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<!-- UPGRADE MODAL -->
+<div class="modal-overlay" id="upgrade-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeUpgradeModal()">×</button>
+    <div class="modal-title">Upgrade your plan</div>
+    <div class="modal-sub">You're currently on the <strong id="modal-current-plan" style="color:#fff">Starter</strong> plan. Upgrade for more scans, seats, and features.</div>
+    <div class="modal-plans">
+      <div class="modal-plan" onclick="doUpgrade('starter')">
+        <div>
+          <div class="modal-plan-name">Starter</div>
+          <div class="modal-plan-price">$49/month · 10 seats · 5 scans</div>
         </div>
       </div>
-
+      <div class="modal-plan" onclick="doUpgrade('business')">
+        <div>
+          <div class="modal-plan-name">Business</div>
+          <div class="modal-plan-price">$199/month · 50 seats · Unlimited scans</div>
+        </div>
+        <div class="modal-plan-badge">Popular</div>
+      </div>
+      <div class="modal-plan" onclick="doUpgrade('enterprise')">
+        <div>
+          <div class="modal-plan-name">Enterprise</div>
+          <div class="modal-plan-price">$599/month · Unlimited seats · Everything</div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
 <script>
 const API = 'https://cybershield-backend-production-492b.up.railway.app';
-let token = null;
-let currentQuiz = null;
-let selectedAnswers = {};
-let breachHistory = [];
-let currentTopic = '';
-let idleTimer = null;
+let authToken = null, userData = null, companyData = null;
 
-async function api(path, opts={}) {
-  const h = {'Content-Type':'application/json'};
-  if (token) h['Authorization'] = 'Bearer ' + token;
-  try {
-    const r = await fetch(API + path, {...opts, headers: h});
-    return r.json();
-  } catch(e) { return {error: 'Network error. Please try again.'}; }
-}
-
-function showError(msg) {
-  const el = document.getElementById('auth-error');
-  el.textContent = msg; el.style.display = 'block';
-}
-
-function showLogin() {
-  document.getElementById('login-form').style.display = 'block';
-  document.getElementById('register-form').style.display = 'none';
-  document.getElementById('auth-error').style.display = 'none';
-}
-
-function showReg() {
-  document.getElementById('login-form').style.display = 'none';
-  document.getElementById('register-form').style.display = 'block';
-  document.getElementById('auth-error').style.display = 'none';
-}
-
-function startIdleTimer() {
-  clearTimeout(idleTimer);
-  idleTimer = setTimeout(doLogout, 30 * 60 * 1000);
-}
-['click','keypress','mousemove'].forEach(e => document.addEventListener(e, startIdleTimer));
-
-async function doLogin() {
-  const email = document.getElementById('l-email').value;
-  const password = document.getElementById('l-pass').value;
-  if (!email || !password) return showError('Please enter your email and password.');
-  const btn = document.getElementById('login-btn');
-  btn.textContent = 'Signing in...'; btn.disabled = true;
-  const data = await api('/auth/login', {method:'POST', body: JSON.stringify({email, password})});
-  btn.textContent = 'Sign in'; btn.disabled = false;
-  if (data.error) return showError(data.error);
-  token = data.accessToken;
-  sessionStorage.setItem('cs_token', token);
-  if (data.user && data.user.email) sessionStorage.setItem('cs_email', data.user.email);
-  enterApp(data);
-}
-
-async function doRegister() {
-  const companyName = document.getElementById('r-company').value;
-  const fullName = document.getElementById('r-name').value;
-  const email = document.getElementById('r-email').value;
-  const password = document.getElementById('r-pass').value;
-  if (!companyName || !fullName || !email || !password) return showError('All fields are required.');
-  if (password.length < 8) return showError('Password must be at least 8 characters.');
-  const btn = document.getElementById('reg-btn');
-  btn.textContent = 'Creating your account...'; btn.disabled = true;
-  const plan = new URLSearchParams(window.location.search).get('plan') || 'starter';
-  const data = await api('/auth/register', {method:'POST', body: JSON.stringify({companyName, fullName, email, password, plan})});
-  btn.textContent = 'Create account & start trial'; btn.disabled = false;
-  if (data.error) return showError(data.error);
-  token = data.accessToken;
-  sessionStorage.setItem('cs_token', token);
-  if (data.user && data.user.email) sessionStorage.setItem('cs_email', data.user.email);
-  if (data.checkoutUrl) {
-    window.location.href = data.checkoutUrl;
-  } else {
-    enterApp(data);
+// ── Auth guard ───────────────────────────────────────────
+(function(){
+  authToken = sessionStorage.getItem('cs_token');
+  if(!authToken){
+    window.location.href = 'auth.html';
+    return;
   }
-}
+  userData = JSON.parse(sessionStorage.getItem('cs_user') || '{}');
+  companyData = JSON.parse(sessionStorage.getItem('cs_company') || '{}');
+  // Handle payment success
+  const p = new URLSearchParams(window.location.search);
+  if(p.get('payment') === 'success'){
+    history.replaceState({},'',window.location.pathname);
+  }
+  initApp();
+})();
 
-function enterApp(data) {
-  document.getElementById('auth-page').style.display = 'none';
-  document.getElementById('app').style.display = 'flex';
-  if (data.user) document.getElementById('user-email').textContent = data.user.email || '';
-  startIdleTimer();
+function initApp(){
+  // Sidebar user info
+  const email = sessionStorage.getItem('cs_email') || '';
+  document.getElementById('sidebar-name').textContent = userData.fullName || email.split('@')[0] || 'User';
+  document.getElementById('sidebar-role').textContent = (userData.role||'member').charAt(0).toUpperCase()+(userData.role||'member').slice(1);
+  document.getElementById('sidebar-avatar').textContent = (userData.fullName||email).slice(0,2).toUpperCase();
+  document.getElementById('plan-badge').textContent = (companyData.plan||'starter').charAt(0).toUpperCase()+(companyData.plan||'starter').slice(1);
+  document.getElementById('modal-current-plan').textContent = (companyData.plan||'starter').charAt(0).toUpperCase()+(companyData.plan||'starter').slice(1);
   loadDashboard();
   loadThreats();
-  loadTopics();
 }
 
-function doLogout() {
-  token = null;
-  sessionStorage.removeItem('cs_token');
-  sessionStorage.removeItem('cs_email');
-  clearTimeout(idleTimer);
-  document.getElementById('app').style.display = 'none';
-  document.getElementById('auth-page').style.display = 'flex';
-  showLogin();
+// ── Page navigation ──────────────────────────────────────
+function showPage(name, navEl){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  if(navEl) navEl.classList.add('active');
+  document.getElementById('topbar-title').textContent = name.charAt(0).toUpperCase()+name.slice(1).replace('-',' ');
+  if(name==='team') loadTeam();
 }
 
-function showPage(name, el) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
-  document.getElementById('page-' + name).classList.add('active');
-  el.classList.add('active');
+// ── Dashboard ────────────────────────────────────────────
+async function loadDashboard(){
+  try{
+    const r = await fetch(`${API}/dashboard`,{headers:{'Authorization':'Bearer '+authToken}});
+    if(!r.ok) return;
+    const d = await r.json();
+    const stats = d.stats || {};
+    const score = stats.securityScore || 50;
+    document.getElementById('dash-score').textContent = score;
+    document.getElementById('dash-trainings').textContent = stats.trainingsCompleted || 0;
+    document.getElementById('dash-breaches').textContent = stats.breachesFound || 0;
+    document.getElementById('dash-scans').textContent = stats.scansThisMonth || 0;
+    // Score ring
+    const circumference = 238.76;
+    const offset = circumference - (score/100)*circumference;
+    document.getElementById('score-circle').style.strokeDashoffset = offset;
+    document.getElementById('score-display').textContent = score;
+    const colors = {excellent:'#4ade80',good:'#fbbf24',fair:'#FF5500','at risk':'#f87171'};
+    const label = score>=80?'Excellent':score>=65?'Good':score>=45?'Fair':'At Risk';
+    document.getElementById('score-label').textContent = label;
+    document.getElementById('score-label').style.color = colors[label.toLowerCase().replace(' ','')]||'#FF5500';
+    // Score color on ring
+    const ringColor = score>=80?'#4ade80':score>=65?'#fbbf24':'#FF5500';
+    document.getElementById('score-circle').style.stroke = ringColor;
+    // Bars
+    document.getElementById('bar-training').style.width = Math.min((stats.trainingsCompleted||0)*20,100)+'%';
+    document.getElementById('bar-scan').style.width = (stats.scansThisMonth||0)>0?'100%':'10%';
+    // Stat cards
+    document.getElementById('dash-score-label').textContent = label;
+  }catch(e){}
 }
 
-async function startUpgrade(plan) {
-  const btn = event.target;
-  const origText = btn.textContent;
-  btn.textContent = 'Redirecting to payment...';
-  btn.disabled = true;
-  try {
-    const data = await api('/billing/upgrade', {
-      method:'POST',
-      body: JSON.stringify({
-        plan,
-        successUrl: 'https://cybershield-frontend-five.vercel.app/app.html?upgraded=true',
-        cancelUrl: 'https://cybershield-frontend-five.vercel.app/app.html'
-      })
-    });
-    if (data && data.url) {
-      window.location.href = data.url;
-    } else {
-      btn.textContent = origText;
-      btn.disabled = false;
-      alert('Error: ' + (data?.error || 'Could not create payment session. Please try again.'));
-    }
-  } catch(e) {
-    btn.textContent = origText;
-    btn.disabled = false;
-    alert('Network error. Please try again.');
-  }
+async function loadThreats(){
+  try{
+    const r = await fetch(`${API}/dashboard/threats`);
+    const d = await r.json();
+    if(!d.threats||!d.threats.length) return;
+    const colors = {critical:'badge-critical',high:'badge-high',medium:'badge-medium'};
+    document.getElementById('dash-threats').innerHTML = d.threats.slice(0,5).map(t=>`
+      <a href="${t.link}" target="_blank" rel="noopener" class="threat-item">
+        <div><div class="threat-title">${t.title}</div><div class="threat-src">${t.pubDate}</div></div>
+        <span class="badge ${colors[t.severity]||'badge-medium'}">${t.severity}</span>
+      </a>`).join('');
+  }catch(e){}
 }
 
-async function loadThreats() {
-  const data = await api('/dashboard/threats');
-  const el = document.getElementById('threat-rows');
-  const upd = document.getElementById('threat-last-updated');
-  if (!el) return;
-  if (!data.threats || data.threats.length === 0) {
-    el.innerHTML = '<div style="padding:1.5rem;text-align:center;color:rgba(255,255,255,0.3)">No threats available right now.</div>';
-    return;
-  }
-  if (upd && data.lastUpdated) {
-    const d = new Date(data.lastUpdated);
-    upd.textContent = 'Updated ' + d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
-  }
-  const colors = {critical:'#f87171', high:'#fbbf24', medium:'#FF6B00'};
-  const badges = {critical:'b-critical', high:'b-high', medium:'b-medium'};
-  el.innerHTML = data.threats.map((t,i) => `
-    <a href="${t.link}" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 20px;${i<data.threats.length-1?'border-bottom:1px solid rgba(255,255,255,0.05);':''}transition:background 0.15s;text-decoration:none" onmouseover="this.style.background='rgba(255,255,255,0.04)'" onmouseout="this.style.background='transparent'">
-      <div style="display:flex;align-items:center;gap:12px;flex:1;min-width:0">
-        <span style="width:3px;height:34px;border-radius:2px;background:${colors[t.severity]||colors.medium};flex-shrink:0;display:block"></span>
-        <div style="min-width:0">
-          <div style="font-size:0.9rem;font-weight:600;color:#ffffff;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${t.title}</div>
-          <div style="font-size:0.75rem;color:rgba(255,255,255,0.3)">${t.pubDate} · CyberWire Daily</div>
-        </div>
-      </div>
-      <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
-        <span class="badge ${badges[t.severity]||badges.medium}">${t.severity}</span>
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-      </div>
-    </a>`).join('');
-  // Stagger animate each row
-  el.querySelectorAll('a').forEach((row, i) => {
-    row.style.opacity = '0';
-    row.style.transform = 'translateX(-12px)';
-    row.style.transition = 'opacity 0.35s ease, transform 0.35s ease';
-    setTimeout(() => { row.style.opacity = '1'; row.style.transform = 'translateX(0)'; }, i * 80);
-  });
-}
-
-// Auto-refresh threats every 5 minutes
-setInterval(loadThreats, 5 * 60 * 1000);
-
-async function loadDashboard() {
-  const data = await api('/dashboard/stats');
-  if (!data || !data.stats) return;
-
-  const trainings = Number(data.stats.trainings?.total) || 0;
-  const breaches   = Number(data.stats.breachChecks) || 0;
-  const scans      = Number(data.stats.scans) || 0;
-
-  // Update stat cards
-  const s = (id) => document.getElementById(id);
-  if (s('s-train')) s('s-train').textContent = trainings;
-  if (s('s-breach')) s('s-breach').textContent = breaches;
-  if (s('s-scans')) s('s-scans').textContent = scans;
-  if (s('dash-sub')) s('dash-sub').textContent = (data.company?.name || 'Your company') + ' · ' + (data.company?.plan || 'starter') + ' plan';
-  if (s('dash-title')) s('dash-title').textContent = 'Welcome, ' + (data.company?.name || 'your company');
-
-  // ── Security score calculation ──
-  const trainPts  = Math.min(trainings * 4, 20);
-  const scanPts   = scans > 0 ? (scans >= 3 ? 20 : 15) : -10;
-  const breachPts = -Math.min(breaches * 3, 25);
-  let score = Math.max(10, Math.min(100, Math.round(50 + trainPts + scanPts + breachPts)));
-
-  let label = 'At Risk', color = '#f87171';
-  if (score >= 80) { label = 'Excellent'; color = '#4ade80'; }
-  else if (score >= 65) { label = 'Good';     color = '#FF6B00'; }
-  else if (score >= 45) { label = 'Fair';     color = '#fbbf24'; }
-
-  const issues = (breaches > 0 ? 1 : 0) + (scans === 0 ? 1 : 0) + (trainings < 3 ? 1 : 0);
-  const issueText = issues === 0 ? 'All clear — no issues found!' : issues + ' issue' + (issues > 1 ? 's' : '') + ' need attention';
-
-  if (s('score-ring')) { s('score-ring').style.strokeDashoffset = 251 - (score/100)*251; s('score-ring').style.stroke = color; }
-  if (s('score-num'))  s('score-num').textContent = score;
-  if (s('score-label')) { s('score-label').textContent = label; s('score-label').style.color = color; }
-  if (s('score-issues')) s('score-issues').textContent = issueText;
-  if (s('score-total-pts')) { s('score-total-pts').textContent = score; s('score-total-pts').style.color = color; }
-
-  const fmt = (v) => (v >= 0 ? '+' : '') + v;
-  if (s('score-train-pts'))  { s('score-train-pts').textContent  = fmt(trainPts);  s('score-train-pts').style.color  = trainPts  > 0 ? '#4ade80' : '#bbb'; }
-  if (s('score-scan-pts'))   { s('score-scan-pts').textContent   = fmt(scanPts);   s('score-scan-pts').style.color   = scanPts   > 0 ? '#4ade80' : '#f87171'; }
-  if (s('score-breach-pts')) { s('score-breach-pts').textContent = fmt(breachPts); s('score-breach-pts').style.color = breachPts < 0 ? '#f87171' : '#4ade80'; }
-}
-
-async function loadTopics() {
-  const data = await api('/training/topics');
-  if (!data.topics) return;
-  const grid = document.getElementById('topics-grid');
-  const photos = [
-    'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=400&q=70&fit=crop',
-    'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400&q=70&fit=crop',
-    'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=400&q=70&fit=crop',
-    'https://images.unsplash.com/photo-1563986768609-322da13575f3?w=400&q=70&fit=crop',
-    'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=400&q=70&fit=crop',
-    'https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=400&q=70&fit=crop',
-  ];
-  grid.innerHTML = data.topics.map((t, i) => `
-    <div class="topic-card" onclick="generateLesson('${t.replace(/'/g,"\\'").replace(/"/g,"&quot;")}')">
-      <div style="height:130px;position:relative;overflow:hidden;background:#111">
-        <img src="${photos[i % photos.length]}" alt="${t}" style="width:100%;height:100%;object-fit:cover;filter:grayscale(15%) brightness(0.75);transition:transform 0.4s ease" loading="lazy"/>
-        <div style="position:absolute;inset:0;background:rgba(255,107,0,0.4);mix-blend-mode:multiply"></div>
-        <div style="position:absolute;bottom:10px;left:12px;background:#FF6B00;color:#fff;font-size:0.65rem;font-weight:800;padding:3px 10px;border-radius:100px;text-transform:uppercase;letter-spacing:0.06em;font-family:'Hanken Grotesk',sans-serif">Module ${String(i+1).padStart(2,'0')}</div>
-      </div>
-      <div style="padding:1rem 1.1rem">
-        <div class="topic-title">${t}</div>
-        <div class="topic-sub">5-min lesson + quiz →</div>
-      </div>
-    </div>`).join('');
-}
-
-async function generateLesson(topic) {
-  currentTopic = topic;
-  document.getElementById('training-home').style.display = 'none';
-  document.getElementById('training-lesson').style.display = 'block';
-  document.getElementById('lesson-loading').style.display = 'flex';
-  document.getElementById('lesson-content').style.display = 'none';
-  const data = await api('/training/lesson', {method:'POST', body: JSON.stringify({topic})});
-  document.getElementById('lesson-loading').style.display = 'none';
-  document.getElementById('lesson-content').style.display = 'block';
-  document.getElementById('lesson-label').textContent = topic;
-  const lessonRaw = data.lesson || data.error || 'Failed to load lesson.';
-  function mdToHtml(md) {
-    const lines = md.split('\n');
-    let html = '';
-    let inList = false;
-    for (let i = 0; i < lines.length; i++) {
-      const line = lines[i];
-      if (line.startsWith('### ')) {
-        if (inList) { html += '</ul>'; inList = false; }
-        html += '<h4 style="font-size:0.95rem;font-weight:700;color:#222;margin:1rem 0 0.4rem">' + line.slice(4) + '</h4>';
-      } else if (line.startsWith('## ')) {
-        if (inList) { html += '</ul>'; inList = false; }
-        html += '<h3 style="font-size:1.05rem;font-weight:800;color:#0a0a0a;margin:1.25rem 0 0.5rem">' + line.slice(3) + '</h3>';
-      } else if (line.startsWith('# ')) {
-        if (inList) { html += '</ul>'; inList = false; }
-        html += '<h2 style="font-size:1.2rem;font-weight:900;color:#0a0a0a;margin:1rem 0 0.75rem">' + line.slice(2) + '</h2>';
-      } else if (line.startsWith('- ') || line.startsWith('• ')) {
-        if (!inList) { html += '<ul style="padding-left:1.5rem;margin:0.75rem 0">'; inList = true; }
-        html += '<li style="margin-bottom:5px;color:#333">' + line.slice(2) + '</li>';
-      } else if (/^[0-9]+\. /.test(line)) {
-        if (!inList) { html += '<ol style="padding-left:1.5rem;margin:0.75rem 0">'; inList = true; }
-        html += '<li style="margin-bottom:5px;color:#333">' + line.replace(/^[0-9]+\. /, '') + '</li>';
-      } else if (line.trim() === '') {
-        if (inList) { html += '</ul>'; inList = false; }
-        html += '<br>';
-      } else {
-        if (inList) { html += '</ul>'; inList = false; }
-        html += '<p style="margin-bottom:0.6rem;color:#333">' + line + '</p>';
-      }
-    }
-    if (inList) html += '</ul>';
-    return html;
-  }
-  document.getElementById('lesson-text').innerHTML = mdToHtml(lessonRaw);
-}
-
-async function startQuiz() {
-  document.getElementById('training-lesson').style.display = 'none';
-  document.getElementById('training-quiz').style.display = 'block';
-  document.getElementById('quiz-loading').style.display = 'flex';
-  document.getElementById('quiz-content').style.display = 'none';
-  selectedAnswers = {};
-  const seed = Math.floor(Math.random() * 10000);
-  const data = await api('/training/quiz', {method:'POST', body: JSON.stringify({topic: currentTopic, seed})});
-  currentQuiz = data.quiz;
-  document.getElementById('quiz-loading').style.display = 'none';
-  document.getElementById('quiz-content').style.display = 'block';
-  renderQuiz();
-}
-
-function renderQuiz() {
-  let html = '';
-  currentQuiz.questions.forEach((q, qi) => {
-    html += `<div style="margin-bottom:1.75rem"><div class="quiz-q">${qi+1}. ${q.q}</div>`;
-    q.options.forEach((opt, oi) => {
-      html += `<div class="quiz-opt" id="opt-${qi}-${oi}" onclick="selectAnswer(${qi},${oi})">${opt}</div>`;
-    });
-    html += '</div>';
-  });
-  html += `<button class="btn-primary-sm" id="quiz-submit" onclick="submitQuiz()" disabled>Submit answers</button>`;
-  document.getElementById('quiz-content').innerHTML = html;
-}
-
-function selectAnswer(qi, oi) {
-  currentQuiz.questions[qi].options.forEach((_,i) => {
-    const el = document.getElementById(`opt-${qi}-${i}`);
-    if (el) el.className = 'quiz-opt' + (i===oi?' selected':'');
-  });
-  selectedAnswers[qi] = oi;
-  const btn = document.getElementById('quiz-submit');
-  if (btn) btn.disabled = Object.keys(selectedAnswers).length < currentQuiz.questions.length;
-}
-
-async function submitQuiz() {
-  let correct = 0;
-  currentQuiz.questions.forEach((q,qi) => {
-    const chosen = selectedAnswers[qi];
-    q.options.forEach((_,i) => {
-      const el = document.getElementById(`opt-${qi}-${i}`);
-      if (!el) return;
-      if (i===q.correct) el.className='quiz-opt correct';
-      else if (i===chosen) el.className='quiz-opt wrong';
-    });
-    if (chosen===q.correct) correct++;
-  });
-  const score = Math.round((correct/currentQuiz.questions.length)*100);
-  await api('/training/complete', {method:'POST', body: JSON.stringify({topic: currentTopic, score})});
-  setTimeout(() => {
-    document.getElementById('training-quiz').style.display = 'none';
-    document.getElementById('training-result').style.display = 'block';
-    const passed = score >= 67;
-    const scoreEl = document.getElementById('result-score');
-    scoreEl.textContent = score + '%';
-    scoreEl.style.color = passed ? 'var(--green)' : 'var(--red)';
-    document.getElementById('result-label').textContent = passed ? 'Training complete!' : 'Review recommended';
-    document.getElementById('result-msg').textContent = passed ? 'Your score has been recorded in your security dashboard.' : 'Consider reviewing the lesson material and retaking the quiz.';
-    loadDashboard();
-  }, 600);
-}
-
-function resetTraining() {
-  document.getElementById('training-home').style.display = 'block';
-  document.getElementById('training-lesson').style.display = 'none';
-  document.getElementById('training-quiz').style.display = 'none';
-  document.getElementById('training-result').style.display = 'none';
-}
-
-async function runBreach() {
-  const email = document.getElementById('breach-email').value.trim();
-  if (!email) return;
-  const btn = document.getElementById('breach-btn');
-  btn.textContent = 'Scanning...'; btn.disabled = true;
-  // Animated scanning UI
-  document.getElementById('breach-results').innerHTML = `
-    <div style="padding:1.5rem 0">
-      <div style="display:flex;align-items:center;gap:14px;margin-bottom:1.25rem">
-        <div style="position:relative;width:44px;height:44px;flex-shrink:0">
-          <svg viewBox="0 0 44 44" width="44" height="44" style="position:absolute;inset:0">
-            <circle cx="22" cy="22" r="18" fill="none" stroke="rgba(255,107,0,0.12)" stroke-width="3"/>
-            <circle cx="22" cy="22" r="18" fill="none" stroke="#FF6B00" stroke-width="3" stroke-dasharray="113" stroke-dashoffset="113" stroke-linecap="round" transform="rotate(-90 22 22)" style="animation:scanProgress 2s linear infinite;transition:stroke-dashoffset 0.3s"/>
-          </svg>
-          <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center">
-            <div style="width:8px;height:8px;border-radius:50%;background:#FF6B00;animation:pulseDot 1s ease-in-out infinite"></div>
+// ── Training ─────────────────────────────────────────────
+async function startTraining(topic){
+  const modal = document.getElementById('training-modal');
+  const content = document.getElementById('training-modal-content');
+  modal.classList.add('show');
+  content.innerHTML = '<div style="color:var(--muted);font-size:0.875rem;padding:1rem 0">Generating AI lesson from latest threat intelligence...</div>';
+  try{
+    const r = await fetch(`${API}/training/lesson`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+authToken},body:JSON.stringify({topic})});
+    const d = await r.json();
+    if(d.lesson){
+      content.innerHTML = `
+        <div class="modal-title" style="margin-bottom:1rem">${d.lesson.title||'Security Training'}</div>
+        <div style="font-size:0.875rem;color:var(--muted);line-height:1.8;white-space:pre-wrap;margin-bottom:1.5rem;max-height:300px;overflow-y:auto">${d.lesson.content||d.lesson}</div>
+        ${d.quiz?`
+        <div style="border-top:1px solid var(--border);padding-top:1.25rem;margin-top:0.5rem">
+          <div style="font-size:0.82rem;font-weight:700;color:#fff;margin-bottom:0.75rem">Quick Quiz</div>
+          <div style="font-size:0.82rem;color:var(--muted);margin-bottom:1rem">${d.quiz.question}</div>
+          <div style="display:flex;flex-direction:column;gap:0.5rem">
+            ${d.quiz.options.map((opt,i)=>`<button onclick="selectQuizAnswer(this,${i===d.quiz.correctIndex})" style="background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:4px;padding:9px 14px;color:rgba(255,255,255,0.7);font-size:0.8rem;cursor:pointer;text-align:left;font-family:'DM Sans',sans-serif;transition:all 0.2s">${opt}</button>`).join('')}
           </div>
-        </div>
-        <div>
-          <div style="font-size:0.9rem;font-weight:700;color:#0a0a0a;font-family:'Hanken Grotesk',sans-serif;margin-bottom:3px">Scanning breach databases...</div>
-          <div style="font-size:0.8rem;color:#888">Checking 12+ billion records for <strong>${email}</strong></div>
-        </div>
-      </div>
-      <!-- Progress steps -->
-      <div style="display:flex;flex-direction:column;gap:8px" id="scan-steps">
-        <div class="scan-step" style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:#f7f7f7;border-radius:8px;animation:slideIn 0.3s 0.1s both">
-          <div style="width:18px;height:18px;border-radius:50%;border:2px solid #FF6B00;display:flex;align-items:center;justify-content:center;flex-shrink:0;animation:spin 1s linear infinite"><div style="width:6px;height:6px;border-radius:50%;background:#FF6B00"></div></div>
-          <span style="font-size:0.82rem;color:#444">Connecting to HaveIBeenPwned database</span>
-        </div>
-        <div class="scan-step" style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:#f7f7f7;border-radius:8px;animation:slideIn 0.3s 0.4s both;opacity:0" id="step2">
-          <div style="width:18px;height:18px;border-radius:50%;border:2px solid #FF6B00;display:flex;align-items:center;justify-content:center;flex-shrink:0;animation:spin 1s linear infinite"><div style="width:6px;height:6px;border-radius:50%;background:#FF6B00"></div></div>
-          <span style="font-size:0.82rem;color:#444">Scanning breach records...</span>
-        </div>
-        <div class="scan-step" style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:#f7f7f7;border-radius:8px;animation:slideIn 0.3s 0.7s both;opacity:0" id="step3">
-          <div style="width:18px;height:18px;border-radius:50%;border:2px solid #FF6B00;display:flex;align-items:center;justify-content:center;flex-shrink:0;animation:spin 1s linear infinite"><div style="width:6px;height:6px;border-radius:50%;background:#FF6B00"></div></div>
-          <span style="font-size:0.82rem;color:#444">Analyzing results...</span>
-        </div>
-      </div>
-    </div>`;
-  // Stagger the step animations
-  setTimeout(() => { const s = document.getElementById('step2'); if(s) s.style.opacity='1'; }, 600);
-  setTimeout(() => { const s = document.getElementById('step3'); if(s) s.style.opacity='1'; }, 1200);
-  const data = await api('/breach/check', {method:'POST', body: JSON.stringify({email})});
-  btn.textContent = 'Check now'; btn.disabled = false;
-  if (data.error) {
-    const isLimit = data.error.toLowerCase().includes('limit') || data.error.toLowerCase().includes('upgrade');
-    if (isLimit) {
-      document.getElementById('breach-results').innerHTML = `
-        <div style="background:#fff3eb;border:1.5px solid #ffd4b0;border-radius:12px;padding:1.75rem;display:flex;align-items:flex-start;gap:16px;margin-top:8px">
-          <div style="width:44px;height:44px;background:#FF6B00;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-          </div>
-          <div style="flex:1">
-            <div style="font-family:'Hanken Grotesk',sans-serif;font-size:1rem;font-weight:800;color:#0a0a0a;margin-bottom:4px">Upgrade required</div>
-            <div style="font-size:0.875rem;color:#666;line-height:1.6;margin-bottom:1.25rem">${data.error} Upgrade to Business for bulk breach checking, unlimited scans, and more.</div>
-            <div style="display:flex;gap:10px;flex-wrap:wrap">
-              <a href="index.html#pricing" style="display:inline-flex;align-items:center;gap:8px;background:#FF6B00;color:#fff;padding:10px 22px;border-radius:8px;font-size:0.875rem;font-weight:700;text-decoration:none;font-family:'Hanken Grotesk',sans-serif">
-                View upgrade options →
-              </a>
-              <button onclick="startUpgrade('business')" style="display:inline-flex;align-items:center;gap:8px;background:#0a0a0a;color:#fff;padding:10px 22px;border-radius:8px;font-size:0.875rem;font-weight:700;border:none;cursor:pointer;font-family:'Hanken Grotesk',sans-serif">
-                Pay & upgrade now — $199/mo
-              </button>
-            </div>
-          </div>
-        </div>`;
-    } else {
-      document.getElementById('breach-results').innerHTML = `<div class="alert-red">${data.error}</div>`;
+        </div>`:''}
+      `;
     }
-    return;
+  }catch(e){
+    content.innerHTML = '<div style="color:var(--danger);font-size:0.875rem">Failed to load training. Please try again.</div>';
   }
-  breachHistory.unshift({email, count: data.breachCount, date: new Date().toLocaleDateString()});
-  let html = '';
-  if (data.breachCount === 0) {
-    html = `<div class="alert-green">✓ No breaches found. <strong>${email}</strong> has not appeared in any known data breaches.</div>`;
+}
+
+function selectQuizAnswer(btn, correct){
+  btn.parentElement.querySelectorAll('button').forEach(b=>{b.disabled=true;b.style.pointerEvents='none';});
+  if(correct){
+    btn.style.background='rgba(74,222,128,0.1)';btn.style.borderColor='rgba(74,222,128,0.3)';btn.style.color='#4ade80';
+    recordTraining();
   } else {
-    html = `<div class="alert-red">⚠ Found in <strong>${data.breachCount} breach${data.breachCount>1?'es':''}</strong>. Change this password immediately on all accounts where it was used.</div>`;
-    (data.breaches||[]).forEach(b => {
-      html += `<div class="breach-item"><div class="breach-item-name">${b.name}</div><div class="breach-item-data">Data exposed: ${(b.dataClasses||[]).join(', ')} · Breach date: ${b.breachDate}</div></div>`;
-    });
+    btn.style.background='rgba(248,113,113,0.1)';btn.style.borderColor='rgba(248,113,113,0.3)';btn.style.color='#f87171';
   }
-  document.getElementById('breach-results').innerHTML = html;
-  if (breachHistory.length > 0) {
-    document.getElementById('breach-history-card').style.display = 'block';
-    document.getElementById('breach-history').innerHTML = breachHistory.slice(0,6).map(h =>
-      `<div class="history-row"><span>${h.email}</span><span style="color:${h.count>0?'var(--red)':'var(--green)'};font-weight:600;font-family:'Hanken Grotesk',sans-serif">${h.count>0?h.count+' breach'+(h.count>1?'es':''):'Clean'}</span></div>`
-    ).join('');
-  }
-  loadDashboard();
 }
 
-async function runScan() {
+async function recordTraining(){
+  try{await fetch(`${API}/training/complete`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+authToken},body:JSON.stringify({topic:'training'})});}catch(e){}
+}
+function closeTrainingModal(){ document.getElementById('training-modal').classList.remove('show'); }
+
+// ── Breach ───────────────────────────────────────────────
+async function runBreach(){
+  const email = document.getElementById('breach-email').value.trim();
+  if(!email) return;
+  const btn = document.getElementById('breach-btn');
+  const results = document.getElementById('breach-results');
+  btn.textContent = 'Checking...'; btn.disabled = true;
+  results.innerHTML = '';
+  try{
+    const r = await fetch(`${API}/breach/check`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+authToken},body:JSON.stringify({email})});
+    const d = await r.json();
+    if(r.status===402||d.limitReached){
+      results.innerHTML = `<div class="limit-box"><div class="limit-box-icon">⚠</div><div class="limit-box-text"><strong>Scan limit reached.</strong> Upgrade to Business for unlimited breach checks.<div class="limit-box-upgrade" onclick="openUpgradeModal()">Upgrade now →</div></div></div>`;
+    } else if(d.breaches && d.breaches.length>0){
+      results.innerHTML = `
+        <div class="result-row"><span class="result-key" style="color:#f87171">⚠ ${d.breaches.length} breach${d.breaches.length>1?'es':''} found</span></div>
+        ${d.breaches.map(b=>`<div class="result-row"><span class="result-key">${b.Name}</span><span class="result-val warn">${b.BreachDate}</span></div>`).join('')}
+      `;
+      // Add to history
+      addBreachHistory(email,'⚠ '+d.breaches.length+' breach'+( d.breaches.length>1?'es':''),'warn');
+    } else {
+      results.innerHTML = `<div class="result-row"><span class="result-key" style="color:var(--success)">✓ No breaches found</span><span class="result-val pass">Secure</span></div>`;
+      addBreachHistory(email,'✓ Secure','pass');
+    }
+  }catch(e){ results.innerHTML=`<div style="color:var(--danger);font-size:0.78rem;padding:0.5rem">Error checking email. Please try again.</div>`; }
+  btn.textContent='Check for breaches'; btn.disabled=false;
+}
+
+function addBreachHistory(email, status, cls){
+  const hist = document.getElementById('breach-history');
+  if(hist.querySelector('div[style]')) hist.innerHTML='';
+  const el = document.createElement('div');
+  el.className = 'threat-item';
+  el.innerHTML = `<span class="threat-title">${email}</span><span class="result-val ${cls}" style="font-size:0.72rem">${status}</span>`;
+  hist.insertBefore(el, hist.firstChild);
+}
+
+// ── Scanner ──────────────────────────────────────────────
+async function runScan(){
   const url = document.getElementById('scan-url').value.trim();
-  if (!url) return;
+  if(!url) return;
   const btn = document.getElementById('scan-btn');
-  btn.textContent = 'Scanning...'; btn.disabled = true;
-  // Animated scan progress
-  const checks = ['Resolving DNS records','Checking SSL certificate','Testing security headers','Scanning cookie flags','Analyzing SPF & DMARC','Computing risk score'];
-  let checkIdx = 0;
-  document.getElementById('scan-results').innerHTML = `
-    <div style="padding:1.25rem 0">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-        <span style="font-size:0.82rem;font-weight:600;color:#0a0a0a;font-family:'Hanken Grotesk',sans-serif" id="scan-check-label">Initializing scan...</span>
-        <span style="font-size:0.8rem;color:#FF6B00;font-weight:700;font-family:'Hanken Grotesk',sans-serif" id="scan-pct">0%</span>
-      </div>
-      <div style="background:#f0f0f0;border-radius:100px;height:6px;overflow:hidden;margin-bottom:1.25rem">
-        <div id="scan-bar" style="height:100%;background:linear-gradient(90deg,#FF6B00,#ff9500);border-radius:100px;width:0%;transition:width 0.5s ease"></div>
-      </div>
-      <div id="scan-checklist" style="display:flex;flex-direction:column;gap:6px"></div>
-    </div>`;
-  const interval = setInterval(() => {
-    if (checkIdx >= checks.length) { clearInterval(interval); return; }
-    const pct = Math.round(((checkIdx + 1) / checks.length) * 95);
-    const bar = document.getElementById('scan-bar');
-    const pctEl = document.getElementById('scan-pct');
-    const label = document.getElementById('scan-check-label');
-    const list = document.getElementById('scan-checklist');
-    if (bar) bar.style.width = pct + '%';
-    if (pctEl) pctEl.textContent = pct + '%';
-    if (label) label.textContent = checks[checkIdx] + '...';
-    if (list) {
-      const row = document.createElement('div');
-      row.style.cssText = 'display:flex;align-items:center;gap:8px;padding:6px 10px;background:#f7f7f7;border-radius:6px;animation:slideIn 0.3s ease both;font-size:0.8rem;color:#555';
-      row.innerHTML = '<span style="color:#FF6B00;font-weight:700;flex-shrink:0">→</span>' + checks[checkIdx];
-      list.appendChild(row);
-    }
-    checkIdx++;
-  }, 500);
-  const data = await api('/scanner/scan', {method:'POST', body: JSON.stringify({url})});
-  clearInterval(interval);
-  const bar = document.getElementById('scan-bar');
-  const pctEl = document.getElementById('scan-pct');
-  if (bar) bar.style.width = '100%';
-  if (pctEl) pctEl.textContent = '100%';
-  btn.textContent = 'Scan'; btn.disabled = false;
-  if (data.error) {
-    const isLimit = data.error.toLowerCase().includes('limit') || data.error.toLowerCase().includes('upgrade');
-    if (isLimit) {
-      document.getElementById('scan-results').innerHTML = `
-        <div style="background:#fff3eb;border:1.5px solid #ffd4b0;border-radius:12px;padding:1.75rem;display:flex;align-items:flex-start;gap:16px;margin-top:8px">
-          <div style="width:44px;height:44px;background:#FF6B00;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-          </div>
-          <div style="flex:1">
-            <div style="font-family:'Hanken Grotesk',sans-serif;font-size:1rem;font-weight:800;color:#0a0a0a;margin-bottom:4px">Monthly scan limit reached (5/5)</div>
-            <div style="font-size:0.875rem;color:#666;line-height:1.6;margin-bottom:1.25rem">You've used all 5 scans included in your Starter plan. Upgrade to Business for unlimited scans, plus bulk breach checking, Slack alerts, and monthly PDF reports.</div>
-            <div style="display:flex;gap:10px;flex-wrap:wrap">
-              <a href="index.html#pricing" style="display:inline-flex;align-items:center;gap:8px;background:#FF6B00;color:#fff;padding:10px 22px;border-radius:8px;font-size:0.875rem;font-weight:700;text-decoration:none;font-family:'Hanken Grotesk',sans-serif;transition:background 0.2s" onmouseover="this.style.background='#e05a00'" onmouseout="this.style.background='#FF6B00'">
-                View upgrade options
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-              </a>
-              <button onclick="startUpgrade('business')" style="display:inline-flex;align-items:center;gap:8px;background:#0a0a0a;color:#fff;padding:10px 22px;border-radius:8px;font-size:0.875rem;font-weight:700;border:none;cursor:pointer;font-family:'Hanken Grotesk',sans-serif;transition:background 0.2s" onmouseover="this.style.background='#1a1a1a'" onmouseout="this.style.background='#0a0a0a'">
-                Pay & upgrade now — $199/mo
-              </button>
-            </div>
-          </div>
-        </div>`;
-    } else {
-      document.getElementById('scan-results').innerHTML = `<div class="alert-red">${data.error}</div>`;
-    }
-    return;
+  const steps = document.getElementById('scan-steps-area');
+  const results = document.getElementById('scan-results');
+  const limitArea = document.getElementById('scan-limit-area');
+  btn.textContent='Scanning...'; btn.disabled=true;
+  steps.style.display='block'; limitArea.innerHTML='';
+  results.innerHTML='';
+  const stepIds=['step-ssl','step-headers','step-dns','step-cookies'];
+  let progress=0;
+  function advanceStep(i){
+    if(i>0) { document.getElementById(stepIds[i-1]).classList.remove('active'); document.getElementById(stepIds[i-1]).classList.add('done'); document.getElementById(stepIds[i-1]).querySelector('.scan-step-icon').textContent='✓'; }
+    if(i<stepIds.length){ document.getElementById(stepIds[i]).classList.add('active'); }
+    progress = ((i+1)/stepIds.length)*100;
+    document.getElementById('scan-progress').style.width=progress+'%';
   }
-  const colors = {critical:'var(--red)',high:'var(--amber)',medium:'var(--c)',low:'var(--green)'};
-  const rc = colors[data.riskLevel] || colors.medium;
-  let html = `<div class="risk-header">
-    <div class="risk-ring" style="border-color:${rc}">
-      <div class="risk-num" style="color:${rc}">${data.riskScore}</div>
-      <div class="risk-sub" style="color:${rc}">/ 100</div>
-    </div>
-    <div>
-      <div class="risk-info-label">Risk level</div>
-      <div class="risk-info-level" style="color:${rc}">${data.riskLevel}</div>
-      <div class="risk-info-url">${url}</div>
-    </div>
-  </div>
-  <div class="findings-label">Findings (${(data.findings||[]).length})</div>`;
-  (data.findings||[]).forEach(f => {
-    html += `<div class="finding-row"><span class="badge b-${f.severity}" style="flex-shrink:0;margin-top:3px">${f.severity}</span><div><div class="finding-title">${f.issue}</div><div class="finding-desc">${f.description}</div></div></div>`;
-  });
-  html += `<div class="findings-label" style="margin-top:16px">Remediation steps</div>`;
-  (data.recommendations||[]).forEach(r => {
-    html += `<div class="finding-row"><div class="rec-num">${r.priority}</div><div><div class="finding-title">${r.action}</div><div class="finding-desc">${r.detail}</div></div></div>`;
-  });
-  document.getElementById('scan-results').innerHTML = html;
-  loadDashboard();
+  advanceStep(0);
+  const timer = setInterval(()=>{ const next=stepIds.findIndex(s=>document.getElementById(s).classList.contains('active')); if(next<stepIds.length-1) advanceStep(next+1); },700);
+  try{
+    const r = await fetch(`${API}/scanner/scan`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+authToken},body:JSON.stringify({url})});
+    const d = await r.json();
+    clearInterval(timer);
+    stepIds.forEach((sid,i)=>{ advanceStep(i+1); });
+    document.getElementById('scan-progress').style.width='100%';
+    if(r.status===402||d.limitReached){
+      limitArea.innerHTML=`<div class="limit-box"><div class="limit-box-icon">⚠</div><div class="limit-box-text"><strong>Monthly scan limit reached.</strong> Starter plan includes 5 scans/month. Upgrade to Business for unlimited scans.<div class="limit-box-upgrade" onclick="openUpgradeModal()">Upgrade now →</div></div></div>`;
+      btn.textContent='Run vulnerability scan'; btn.disabled=false;
+      return;
+    }
+    const checks = d.results || d;
+    const renderVal = (v)=>{
+      if(v===true||v==='pass'||v==='ok'||v==='valid'||v==='configured') return 'pass';
+      if(v===false||v==='fail'||v==='missing'||v==='invalid'||v==='error') return 'fail';
+      return 'warn';
+    };
+    const labels = {'ssl':'SSL Certificate','hsts':'HSTS Header','csp':'Content Security Policy','xframe':'X-Frame-Options','xss':'XSS Protection','spf':'SPF Record','dmarc':'DMARC Policy','cookies':'Secure Cookies'};
+    results.innerHTML = Object.entries(checks).map(([k,v])=>`
+      <div class="result-row">
+        <span class="result-key">${labels[k]||k}</span>
+        <span class="result-val ${renderVal(v)}">${typeof v==='boolean'?(v?'✓ Pass':'✗ Fail'):v}</span>
+      </div>`).join('');
+  }catch(e){
+    clearInterval(timer);
+    results.innerHTML='<div style="color:var(--danger);font-size:0.78rem">Scan failed. Please check the URL and try again.</div>';
+  }
+  btn.textContent='Run vulnerability scan'; btn.disabled=false;
 }
 
-// ── Animated dot grid background ──────────────────────────────
-function initBgCanvas() {
-  const canvas = document.getElementById('bg-canvas');
-  if (!canvas) return;
-  const mainEl = document.getElementById('main-area');
-  function resize() {
-    canvas.width = mainEl.offsetWidth;
-    canvas.height = window.innerHeight - 64;
-  }
-  resize();
-  window.addEventListener('resize', resize);
-  const ctx = canvas.getContext('2d');
-  const dots = [];
-  const lines = [];
-  const NUM = 55;
-  for (let i = 0; i < NUM; i++) {
-    dots.push({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      vx: (Math.random() - 0.5) * 0.35,
-      vy: (Math.random() - 0.5) * 0.35,
-      r: Math.random() * 2.5 + 1,
-      pulse: Math.random() * Math.PI * 2
-    });
-  }
-  function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    const t = Date.now() / 1000;
-    // Update positions
-    dots.forEach(d => {
-      d.x += d.vx;
-      d.y += d.vy;
-      d.pulse += 0.02;
-      if (d.x < 0 || d.x > canvas.width) d.vx *= -1;
-      if (d.y < 0 || d.y > canvas.height) d.vy *= -1;
-    });
-    // Draw connection lines
-    for (let i = 0; i < dots.length; i++) {
-      for (let j = i + 1; j < dots.length; j++) {
-        const dx = dots[i].x - dots[j].x;
-        const dy = dots[i].y - dots[j].y;
-        const dist = Math.sqrt(dx*dx + dy*dy);
-        if (dist < 140) {
-          const alpha = (1 - dist/140) * 0.15;
-          ctx.beginPath();
-          ctx.moveTo(dots[i].x, dots[i].y);
-          ctx.lineTo(dots[j].x, dots[j].y);
-          ctx.strokeStyle = `rgba(255,107,0,${alpha})`;
-          ctx.lineWidth = 1;
-          ctx.stroke();
-        }
-      }
-    }
-    // Draw dots
-    dots.forEach(d => {
-      const pulse = (Math.sin(d.pulse) + 1) / 2;
-      const r = d.r + pulse * 1;
-      ctx.beginPath();
-      ctx.arc(d.x, d.y, r, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(255,107,0,${0.15 + pulse * 0.2})`;
-      ctx.fill();
-    });
-    requestAnimationFrame(draw);
-  }
-  draw();
+// ── Team ─────────────────────────────────────────────────
+async function loadTeam(){
+  try{
+    const r = await fetch(`${API}/auth/team`,{headers:{'Authorization':'Bearer '+authToken}});
+    const d = await r.json();
+    document.getElementById('seats-info').textContent = `${d.team.length} / ${d.seats} seats`;
+    document.getElementById('team-tbody').innerHTML = d.team.map(u=>`
+      <tr>
+        <td><div class="team-avatar">${(u.full_name||u.email).slice(0,2).toUpperCase()}</div></td>
+        <td style="color:#fff">${u.full_name||'—'}</td>
+        <td style="color:var(--muted)">${u.email}</td>
+        <td style="color:var(--muted);text-transform:capitalize">${u.role}</td>
+        <td><span class="status-pill ${u.is_active?'active':'inactive'}">${u.is_active?'Active':'Inactive'}</span></td>
+        <td style="color:var(--muted)">${u.last_login?new Date(u.last_login).toLocaleDateString():'Never'}</td>
+      </tr>`).join('');
+  }catch(e){}
 }
-document.addEventListener('DOMContentLoaded', initBgCanvas);
 
-// Restore session if token exists
-const savedToken = sessionStorage.getItem('cs_token');
-const isSignupFlow = new URLSearchParams(window.location.search).get('signup') || new URLSearchParams(window.location.search).get('plan');
+async function inviteMember(){
+  const fullName = document.getElementById('invite-name').value.trim();
+  const email = document.getElementById('invite-email').value.trim();
+  const msg = document.getElementById('invite-msg');
+  if(!fullName||!email){msg.textContent='Please fill in name and email.';msg.style.color='var(--danger)';return;}
+  try{
+    const r=await fetch(`${API}/auth/invite`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+authToken},body:JSON.stringify({fullName,email})});
+    const d=await r.json();
+    if(!r.ok){msg.textContent=d.error||'Failed to add member.';msg.style.color='var(--danger)';}
+    else{msg.textContent='Member added! Temp password: '+d.tempPassword;msg.style.color='var(--success)';loadTeam();document.getElementById('invite-name').value='';document.getElementById('invite-email').value='';}
+  }catch(e){msg.textContent='Connection error.';msg.style.color='var(--danger)';}
+}
 
-if (savedToken && !isSignupFlow) {
-  token = savedToken;
-  // Show app immediately - don't wait for API
-  document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('auth-page').style.display = 'none';
-    document.getElementById('app').style.display = 'flex';
-  });
-  // Then verify and load data
-  api('/auth/me').then(data => {
-    if (data && data.user) {
-      const emailEl = document.getElementById('user-email');
-      if (emailEl) emailEl.textContent = data.user.email || '';
-      startIdleTimer();
-      loadDashboard();
-      loadThreats();
-      loadTopics();
-    } else if (data && data.error && (data.error.includes('Invalid') || data.error.includes('expired') || data.error.includes('token'))) {
-      // Real auth failure - force login
-      sessionStorage.removeItem('cs_token');
-  sessionStorage.removeItem('cs_email');
-      token = null;
-      document.getElementById('app').style.display = 'none';
-      document.getElementById('auth-page').style.display = 'flex';
-    } else {
-      // Network error - still try to load dashboard
-      startIdleTimer();
-      loadDashboard();
-      loadThreats();
-      loadTopics();
-    }
-  }).catch(() => {
-    // Network error - keep session, try to load
-    startIdleTimer();
-    loadDashboard();
-    loadThreats();
-    loadTopics();
-  });
+// ── Upgrade ──────────────────────────────────────────────
+function openUpgradeModal(){ document.getElementById('upgrade-modal').classList.add('show'); }
+function closeUpgradeModal(){ document.getElementById('upgrade-modal').classList.remove('show'); }
+
+async function doUpgrade(plan){
+  try{
+    const r=await fetch(`${API}/billing/upgrade`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+authToken},body:JSON.stringify({plan})});
+    const d=await r.json();
+    if(d.url) window.location.href=d.url;
+  }catch(e){}
+}
+
+async function openBillingPortal(){
+  try{
+    const r=await fetch(`${API}/billing/portal`,{method:'POST',headers:{'Authorization':'Bearer '+authToken}});
+    const d=await r.json();
+    if(d.url) window.open(d.url);
+  }catch(e){}
+}
+
+// ── Logout ───────────────────────────────────────────────
+function doLogout(){
+  sessionStorage.clear();
+  window.location.href='auth.html';
 }
 </script>
 </body>
