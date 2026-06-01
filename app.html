@@ -97,9 +97,9 @@ html,body{height:100%;background:var(--bg);color:var(--t1);font-family:'Hanken G
 .nav-item svg{width:17px;height:17px;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 
 /* MAIN */
-.main{flex:1;overflow-y:auto;padding:2rem 2.5rem;background:#f7f7f7}
-.page{display:none}
-.page.active{display:block}
+.main{flex:1;overflow-y:auto;padding:2rem 2.5rem;background:#f5f5f7;position:relative}
+.page{display:none;position:relative;z-index:1}
+.page.active{display:block;position:relative;z-index:1}
 
 /* PAGE HEADER */
 .page-header{margin-bottom:2rem}
@@ -340,7 +340,9 @@ html,body{height:100%;background:var(--bg);color:var(--t1);font-family:'Hanken G
         Training
       </button>
     </div>
-    <div class="main">
+    <div class="main" id="main-area">
+      <!-- Animated background canvas -->
+      <canvas id="bg-canvas" style="position:fixed;top:64px;left:220px;right:0;bottom:0;pointer-events:none;z-index:0;opacity:0.35"></canvas>
 
       <!-- DASHBOARD -->
       <div id="page-dashboard" class="page active">
@@ -528,26 +530,53 @@ html,body{height:100%;background:var(--bg);color:var(--t1);font-family:'Hanken G
         </div>
         <!-- How it works -->
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:1.5rem">
-          <div style="background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:1.5rem;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,0.04)">
+          <div style="background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:1.5rem;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,0.04);transition:all 0.25s" onmouseover="this.style.transform='translateY(-4px)';this.style.borderColor='#ffd4b0';this.style.boxShadow='0 12px 30px rgba(255,107,0,0.1)'" onmouseout="this.style.transform='';this.style.borderColor='#e5e5e5';this.style.boxShadow='0 1px 4px rgba(0,0,0,0.04)'">
             <div style="width:52px;height:52px;background:#fff3eb;border:1.5px solid #ffd4b0;border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FF6B00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
             </div>
             <div style="font-size:0.9rem;font-weight:800;color:#0a0a0a;margin-bottom:6px;font-family:'Hanken Grotesk',sans-serif">Enter email</div>
             <div style="font-size:0.8rem;color:#888;line-height:1.6">Type any company email address you want to check</div>
           </div>
-          <div style="background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:1.5rem;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,0.04)">
+          <div style="background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:1.5rem;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,0.04);transition:all 0.25s" onmouseover="this.style.transform='translateY(-4px)';this.style.borderColor='#ffd4b0';this.style.boxShadow='0 12px 30px rgba(255,107,0,0.1)'" onmouseout="this.style.transform='';this.style.borderColor='#e5e5e5';this.style.boxShadow='0 1px 4px rgba(0,0,0,0.04)'">
             <div style="width:52px;height:52px;background:#fff3eb;border:1.5px solid #ffd4b0;border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FF6B00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
             </div>
             <div style="font-size:0.9rem;font-weight:800;color:#0a0a0a;margin-bottom:6px;font-family:'Hanken Grotesk',sans-serif">We scan 12B+ records</div>
             <div style="font-size:0.8rem;color:#888;line-height:1.6">Instantly checked against the HaveIBeenPwned database</div>
           </div>
-          <div style="background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:1.5rem;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,0.04)">
+          <div style="background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:1.5rem;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,0.04);transition:all 0.25s" onmouseover="this.style.transform='translateY(-4px)';this.style.borderColor='#ffd4b0';this.style.boxShadow='0 12px 30px rgba(255,107,0,0.1)'" onmouseout="this.style.transform='';this.style.borderColor='#e5e5e5';this.style.boxShadow='0 1px 4px rgba(0,0,0,0.04)'">
             <div style="width:52px;height:52px;background:#fff3eb;border:1.5px solid #ffd4b0;border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FF6B00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
             </div>
             <div style="font-size:0.9rem;font-weight:800;color:#0a0a0a;margin-bottom:6px;font-family:'Hanken Grotesk',sans-serif">Get instant results</div>
             <div style="font-size:0.8rem;color:#888;line-height:1.6">See exactly which breaches exposed this email and what data was stolen</div>
+          </div>
+        </div>
+        <!-- Photo highlight strip -->
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:1.5rem">
+          <div style="border-radius:12px;overflow:hidden;height:120px;position:relative">
+            <img src="https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?w=500&q=70&fit=crop" style="width:100%;height:100%;object-fit:cover;filter:brightness(0.55)"/>
+            <div style="position:absolute;inset:0;background:rgba(248,113,113,0.45);mix-blend-mode:multiply"></div>
+            <div style="position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:12px">
+              <div style="font-size:0.65rem;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.6);margin-bottom:2px;font-family:'Hanken Grotesk',sans-serif">Most common</div>
+              <div style="font-size:0.9rem;font-weight:800;color:#fff;font-family:'Hanken Grotesk',sans-serif">Password breaches</div>
+            </div>
+          </div>
+          <div style="border-radius:12px;overflow:hidden;height:120px;position:relative">
+            <img src="https://images.unsplash.com/photo-1614064850003-13dbfd69fd11?w=500&q=70&fit=crop" style="width:100%;height:100%;object-fit:cover;filter:brightness(0.5)"/>
+            <div style="position:absolute;inset:0;background:rgba(255,107,0,0.45);mix-blend-mode:multiply"></div>
+            <div style="position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:12px">
+              <div style="font-size:0.65rem;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.6);margin-bottom:2px;font-family:'Hanken Grotesk',sans-serif">Growing threat</div>
+              <div style="font-size:0.9rem;font-weight:800;color:#fff;font-family:'Hanken Grotesk',sans-serif">Email harvesting</div>
+            </div>
+          </div>
+          <div style="border-radius:12px;overflow:hidden;height:120px;position:relative">
+            <img src="https://images.unsplash.com/photo-1510511459019-5dda7724fd87?w=500&q=70&fit=crop" style="width:100%;height:100%;object-fit:cover;filter:brightness(0.5)"/>
+            <div style="position:absolute;inset:0;background:rgba(10,10,10,0.5);mix-blend-mode:multiply"></div>
+            <div style="position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:12px">
+              <div style="font-size:0.65rem;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.6);margin-bottom:2px;font-family:'Hanken Grotesk',sans-serif">High risk</div>
+              <div style="font-size:0.9rem;font-weight:800;color:#fff;font-family:'Hanken Grotesk',sans-serif">Financial data exposed</div>
+            </div>
           </div>
         </div>
         <!-- Types of data checked -->
@@ -662,6 +691,25 @@ html,body{height:100%;background:var(--bg);color:var(--t1);font-family:'Hanken G
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF6B00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
               </div>
               <div><div style="font-size:0.85rem;font-weight:700;color:#0a0a0a;margin-bottom:2px;font-family:'Hanken Grotesk',sans-serif">Fix Recommendations</div><div style="font-size:0.78rem;color:#888;line-height:1.5">Plain-English remediation steps</div></div>
+            </div>
+          </div>
+        </div>
+        <!-- Photo highlights -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1.5rem">
+          <div style="border-radius:12px;overflow:hidden;height:130px;position:relative">
+            <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=70&fit=crop" style="width:100%;height:100%;object-fit:cover;filter:brightness(0.5)"/>
+            <div style="position:absolute;inset:0;background:rgba(255,107,0,0.4);mix-blend-mode:multiply"></div>
+            <div style="position:absolute;inset:0;padding:1.25rem;display:flex;flex-direction:column;justify-content:flex-end">
+              <div style="font-size:0.65rem;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.55);margin-bottom:3px;font-family:'Hanken Grotesk',sans-serif">Did you know</div>
+              <div style="font-size:0.95rem;font-weight:800;color:#fff;font-family:'Hanken Grotesk',sans-serif">95% of breaches are caused by misconfiguration</div>
+            </div>
+          </div>
+          <div style="border-radius:12px;overflow:hidden;height:130px;position:relative">
+            <img src="https://images.unsplash.com/photo-1563986768494-4dee2763ff3f?w=600&q=70&fit=crop" style="width:100%;height:100%;object-fit:cover;filter:brightness(0.45)"/>
+            <div style="position:absolute;inset:0;background:rgba(10,10,10,0.55);mix-blend-mode:multiply"></div>
+            <div style="position:absolute;inset:0;padding:1.25rem;display:flex;flex-direction:column;justify-content:flex-end">
+              <div style="font-size:0.65rem;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.55);margin-bottom:3px;font-family:'Hanken Grotesk',sans-serif">Protection</div>
+              <div style="font-size:0.95rem;font-weight:800;color:#fff;font-family:'Hanken Grotesk',sans-serif">Run scans monthly to stay ahead of attackers</div>
             </div>
           </div>
         </div>
@@ -1159,6 +1207,74 @@ async function runScan() {
   document.getElementById('scan-results').innerHTML = html;
   loadDashboard();
 }
+
+// ── Animated dot grid background ──────────────────────────────
+function initBgCanvas() {
+  const canvas = document.getElementById('bg-canvas');
+  if (!canvas) return;
+  const mainEl = document.getElementById('main-area');
+  function resize() {
+    canvas.width = mainEl.offsetWidth;
+    canvas.height = window.innerHeight - 64;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+  const ctx = canvas.getContext('2d');
+  const dots = [];
+  const lines = [];
+  const NUM = 55;
+  for (let i = 0; i < NUM; i++) {
+    dots.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      vx: (Math.random() - 0.5) * 0.35,
+      vy: (Math.random() - 0.5) * 0.35,
+      r: Math.random() * 2.5 + 1,
+      pulse: Math.random() * Math.PI * 2
+    });
+  }
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const t = Date.now() / 1000;
+    // Update positions
+    dots.forEach(d => {
+      d.x += d.vx;
+      d.y += d.vy;
+      d.pulse += 0.02;
+      if (d.x < 0 || d.x > canvas.width) d.vx *= -1;
+      if (d.y < 0 || d.y > canvas.height) d.vy *= -1;
+    });
+    // Draw connection lines
+    for (let i = 0; i < dots.length; i++) {
+      for (let j = i + 1; j < dots.length; j++) {
+        const dx = dots[i].x - dots[j].x;
+        const dy = dots[i].y - dots[j].y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist < 140) {
+          const alpha = (1 - dist/140) * 0.15;
+          ctx.beginPath();
+          ctx.moveTo(dots[i].x, dots[i].y);
+          ctx.lineTo(dots[j].x, dots[j].y);
+          ctx.strokeStyle = `rgba(255,107,0,${alpha})`;
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        }
+      }
+    }
+    // Draw dots
+    dots.forEach(d => {
+      const pulse = (Math.sin(d.pulse) + 1) / 2;
+      const r = d.r + pulse * 1;
+      ctx.beginPath();
+      ctx.arc(d.x, d.y, r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255,107,0,${0.15 + pulse * 0.2})`;
+      ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
+document.addEventListener('DOMContentLoaded', initBgCanvas);
 
 // Restore session if token exists
 const savedToken = sessionStorage.getItem('cs_token');
