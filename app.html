@@ -207,8 +207,19 @@ html,body{height:100%;background:var(--bg);color:var(--t1);font-family:'Hanken G
 @keyframes radarSpin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 @keyframes pulseDot{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.6);opacity:0}}
 @keyframes slideIn{from{opacity:0;transform:translateX(-12px)}to{opacity:1;transform:translateX(0)}}
+@keyframes slideUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes glowPulse{0%,100%{box-shadow:0 0 0 0 rgba(255,107,0,0)}50%{box-shadow:0 0 0 8px rgba(255,107,0,0.08)}}
+@keyframes countUp{from{opacity:0;transform:scale(0.7)}to{opacity:1;transform:scale(1)}}
+@keyframes borderGlow{0%,100%{border-color:rgba(255,107,0,0.2)}50%{border-color:rgba(255,107,0,0.7)}}
+@keyframes scanProgress{from{width:0%}to{width:100%}}
+@keyframes threatSlide{from{opacity:0;transform:translateX(-16px)}to{opacity:1;transform:translateX(0)}}
+@keyframes topicPop{from{opacity:0;transform:scale(0.94) translateY(12px)}to{opacity:1;transform:scale(1) translateY(0)}}
+@keyframes orbitSpin{from{transform:rotate(0deg) translateX(52px) rotate(0deg)}to{transform:rotate(360deg) translateX(52px) rotate(-360deg)}}
+@keyframes ripple{0%{transform:scale(1);opacity:0.6}100%{transform:scale(2.4);opacity:0}}
 .anim-fade{animation:fadeUp 0.5s ease forwards}
 .anim-glow{animation:glow 2s ease-in-out infinite}
+.stat-card-anim{animation:slideUp 0.5s cubic-bezier(.4,0,.2,1) both}
+.topic-card-anim{animation:topicPop 0.45s cubic-bezier(.4,0,.2,1) both}
 </style>
 </head>
 <body>
@@ -351,25 +362,29 @@ html,body{height:100%;background:var(--bg);color:var(--t1);font-family:'Hanken G
         </div>
         <!-- Stats row -->
         <div class="stats-row">
-          <div style="background:#0a0a0a;border-radius:12px;padding:1.25rem 1.5rem;position:relative;overflow:hidden">
+          <div class="stat-card-anim" style="animation-delay:0.05s;background:#0a0a0a;border-radius:12px;padding:1.25rem 1.5rem;position:relative;overflow:hidden;animation:glowPulse 3s ease-in-out infinite,slideUp 0.5s ease both">
             <div style="position:absolute;top:0;right:0;width:60px;height:60px;background:rgba(255,107,0,0.08);border-radius:0 12px 0 100%"></div>
+            <div style="position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#FF6B00,transparent);opacity:0.4"></div>
             <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:rgba(255,255,255,0.35);margin-bottom:10px;font-family:'Hanken Grotesk',sans-serif">Trainings</div>
-            <div style="font-family:'Hanken Grotesk',sans-serif;font-size:2.2rem;font-weight:900;color:#ffffff;line-height:1" id="s-train">—</div>
+            <div style="font-family:'Hanken Grotesk',sans-serif;font-size:2.2rem;font-weight:900;color:#ffffff;line-height:1;animation:countUp 0.6s 0.3s both" id="s-train">—</div>
           </div>
-          <div style="background:#FF6B00;border-radius:12px;padding:1.25rem 1.5rem;position:relative;overflow:hidden">
+          <div class="stat-card-anim" style="animation-delay:0.15s;background:#FF6B00;border-radius:12px;padding:1.25rem 1.5rem;position:relative;overflow:hidden;animation:slideUp 0.5s 0.1s ease both">
             <div style="position:absolute;top:0;right:0;width:60px;height:60px;background:rgba(255,255,255,0.1);border-radius:0 12px 0 100%"></div>
+            <div style="position:absolute;bottom:0;left:0;right:0;height:2px;background:rgba(255,255,255,0.3)"></div>
             <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:rgba(255,255,255,0.6);margin-bottom:10px;font-family:'Hanken Grotesk',sans-serif">Breaches detected</div>
-            <div style="font-family:'Hanken Grotesk',sans-serif;font-size:2.2rem;font-weight:900;color:#ffffff;line-height:1" id="s-breach">—</div>
+            <div style="font-family:'Hanken Grotesk',sans-serif;font-size:2.2rem;font-weight:900;color:#ffffff;line-height:1;animation:countUp 0.6s 0.4s both" id="s-breach">—</div>
           </div>
-          <div style="background:#0a0a0a;border-radius:12px;padding:1.25rem 1.5rem;position:relative;overflow:hidden">
+          <div class="stat-card-anim" style="animation-delay:0.25s;background:#0a0a0a;border-radius:12px;padding:1.25rem 1.5rem;position:relative;overflow:hidden;animation:glowPulse 3s 1s ease-in-out infinite,slideUp 0.5s 0.2s ease both">
             <div style="position:absolute;top:0;right:0;width:60px;height:60px;background:rgba(255,107,0,0.08);border-radius:0 12px 0 100%"></div>
+            <div style="position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#FF6B00);opacity:0.4"></div>
             <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:rgba(255,255,255,0.35);margin-bottom:10px;font-family:'Hanken Grotesk',sans-serif">Scans performed</div>
-            <div style="font-family:'Hanken Grotesk',sans-serif;font-size:2.2rem;font-weight:900;color:#ffffff;line-height:1" id="s-scans">—</div>
+            <div style="font-family:'Hanken Grotesk',sans-serif;font-size:2.2rem;font-weight:900;color:#ffffff;line-height:1;animation:countUp 0.6s 0.5s both" id="s-scans">—</div>
           </div>
-          <div style="background:#f87171;border-radius:12px;padding:1.25rem 1.5rem;position:relative;overflow:hidden">
+          <div class="stat-card-anim" style="animation-delay:0.35s;background:#f87171;border-radius:12px;padding:1.25rem 1.5rem;position:relative;overflow:hidden;animation:slideUp 0.5s 0.3s ease both">
             <div style="position:absolute;top:0;right:0;width:60px;height:60px;background:rgba(255,255,255,0.1);border-radius:0 12px 0 100%"></div>
+            <div style="position:absolute;bottom:0;left:0;right:0;height:2px;background:rgba(255,255,255,0.3)"></div>
             <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:rgba(255,255,255,0.6);margin-bottom:10px;font-family:'Hanken Grotesk',sans-serif">Active threats</div>
-            <div style="font-family:'Hanken Grotesk',sans-serif;font-size:2.2rem;font-weight:900;color:#ffffff;line-height:1">6</div>
+            <div style="font-family:'Hanken Grotesk',sans-serif;font-size:2.2rem;font-weight:900;color:#ffffff;line-height:1;animation:countUp 0.6s 0.6s both">6</div>
           </div>
         </div>
         <!-- Two column row: security score + quick actions -->
@@ -844,6 +859,13 @@ async function loadThreats() {
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
       </div>
     </a>`).join('');
+  // Stagger animate each row
+  el.querySelectorAll('a').forEach((row, i) => {
+    row.style.opacity = '0';
+    row.style.transform = 'translateX(-12px)';
+    row.style.transition = 'opacity 0.35s ease, transform 0.35s ease';
+    setTimeout(() => { row.style.opacity = '1'; row.style.transform = 'translateX(0)'; }, i * 80);
+  });
 }
 
 // Auto-refresh threats every 5 minutes
@@ -1007,8 +1029,44 @@ async function runBreach() {
   const email = document.getElementById('breach-email').value.trim();
   if (!email) return;
   const btn = document.getElementById('breach-btn');
-  btn.textContent = 'Checking...'; btn.disabled = true;
-  document.getElementById('breach-results').innerHTML = '';
+  btn.textContent = 'Scanning...'; btn.disabled = true;
+  // Animated scanning UI
+  document.getElementById('breach-results').innerHTML = `
+    <div style="padding:1.5rem 0">
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:1.25rem">
+        <div style="position:relative;width:44px;height:44px;flex-shrink:0">
+          <svg viewBox="0 0 44 44" width="44" height="44" style="position:absolute;inset:0">
+            <circle cx="22" cy="22" r="18" fill="none" stroke="rgba(255,107,0,0.12)" stroke-width="3"/>
+            <circle cx="22" cy="22" r="18" fill="none" stroke="#FF6B00" stroke-width="3" stroke-dasharray="113" stroke-dashoffset="113" stroke-linecap="round" transform="rotate(-90 22 22)" style="animation:scanProgress 2s linear infinite;transition:stroke-dashoffset 0.3s"/>
+          </svg>
+          <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center">
+            <div style="width:8px;height:8px;border-radius:50%;background:#FF6B00;animation:pulseDot 1s ease-in-out infinite"></div>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:0.9rem;font-weight:700;color:#0a0a0a;font-family:'Hanken Grotesk',sans-serif;margin-bottom:3px">Scanning breach databases...</div>
+          <div style="font-size:0.8rem;color:#888">Checking 12+ billion records for <strong>${email}</strong></div>
+        </div>
+      </div>
+      <!-- Progress steps -->
+      <div style="display:flex;flex-direction:column;gap:8px" id="scan-steps">
+        <div class="scan-step" style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:#f7f7f7;border-radius:8px;animation:slideIn 0.3s 0.1s both">
+          <div style="width:18px;height:18px;border-radius:50%;border:2px solid #FF6B00;display:flex;align-items:center;justify-content:center;flex-shrink:0;animation:spin 1s linear infinite"><div style="width:6px;height:6px;border-radius:50%;background:#FF6B00"></div></div>
+          <span style="font-size:0.82rem;color:#444">Connecting to HaveIBeenPwned database</span>
+        </div>
+        <div class="scan-step" style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:#f7f7f7;border-radius:8px;animation:slideIn 0.3s 0.4s both;opacity:0" id="step2">
+          <div style="width:18px;height:18px;border-radius:50%;border:2px solid #FF6B00;display:flex;align-items:center;justify-content:center;flex-shrink:0;animation:spin 1s linear infinite"><div style="width:6px;height:6px;border-radius:50%;background:#FF6B00"></div></div>
+          <span style="font-size:0.82rem;color:#444">Scanning breach records...</span>
+        </div>
+        <div class="scan-step" style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:#f7f7f7;border-radius:8px;animation:slideIn 0.3s 0.7s both;opacity:0" id="step3">
+          <div style="width:18px;height:18px;border-radius:50%;border:2px solid #FF6B00;display:flex;align-items:center;justify-content:center;flex-shrink:0;animation:spin 1s linear infinite"><div style="width:6px;height:6px;border-radius:50%;background:#FF6B00"></div></div>
+          <span style="font-size:0.82rem;color:#444">Analyzing results...</span>
+        </div>
+      </div>
+    </div>`;
+  // Stagger the step animations
+  setTimeout(() => { const s = document.getElementById('step2'); if(s) s.style.opacity='1'; }, 600);
+  setTimeout(() => { const s = document.getElementById('step3'); if(s) s.style.opacity='1'; }, 1200);
   const data = await api('/breach/check', {method:'POST', body: JSON.stringify({email})});
   btn.textContent = 'Check now'; btn.disabled = false;
   if (data.error) { document.getElementById('breach-results').innerHTML = `<div class="alert-red">${data.error}</div>`; return; }
@@ -1037,8 +1095,44 @@ async function runScan() {
   if (!url) return;
   const btn = document.getElementById('scan-btn');
   btn.textContent = 'Scanning...'; btn.disabled = true;
-  document.getElementById('scan-results').innerHTML = '<div class="loading"><div class="spinner"></div>Running security checks...</div>';
+  // Animated scan progress
+  const checks = ['Resolving DNS records','Checking SSL certificate','Testing security headers','Scanning cookie flags','Analyzing SPF & DMARC','Computing risk score'];
+  let checkIdx = 0;
+  document.getElementById('scan-results').innerHTML = `
+    <div style="padding:1.25rem 0">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <span style="font-size:0.82rem;font-weight:600;color:#0a0a0a;font-family:'Hanken Grotesk',sans-serif" id="scan-check-label">Initializing scan...</span>
+        <span style="font-size:0.8rem;color:#FF6B00;font-weight:700;font-family:'Hanken Grotesk',sans-serif" id="scan-pct">0%</span>
+      </div>
+      <div style="background:#f0f0f0;border-radius:100px;height:6px;overflow:hidden;margin-bottom:1.25rem">
+        <div id="scan-bar" style="height:100%;background:linear-gradient(90deg,#FF6B00,#ff9500);border-radius:100px;width:0%;transition:width 0.5s ease"></div>
+      </div>
+      <div id="scan-checklist" style="display:flex;flex-direction:column;gap:6px"></div>
+    </div>`;
+  const interval = setInterval(() => {
+    if (checkIdx >= checks.length) { clearInterval(interval); return; }
+    const pct = Math.round(((checkIdx + 1) / checks.length) * 95);
+    const bar = document.getElementById('scan-bar');
+    const pctEl = document.getElementById('scan-pct');
+    const label = document.getElementById('scan-check-label');
+    const list = document.getElementById('scan-checklist');
+    if (bar) bar.style.width = pct + '%';
+    if (pctEl) pctEl.textContent = pct + '%';
+    if (label) label.textContent = checks[checkIdx] + '...';
+    if (list) {
+      const row = document.createElement('div');
+      row.style.cssText = 'display:flex;align-items:center;gap:8px;padding:6px 10px;background:#f7f7f7;border-radius:6px;animation:slideIn 0.3s ease both;font-size:0.8rem;color:#555';
+      row.innerHTML = '<span style="color:#FF6B00;font-weight:700;flex-shrink:0">→</span>' + checks[checkIdx];
+      list.appendChild(row);
+    }
+    checkIdx++;
+  }, 500);
   const data = await api('/scanner/scan', {method:'POST', body: JSON.stringify({url})});
+  clearInterval(interval);
+  const bar = document.getElementById('scan-bar');
+  const pctEl = document.getElementById('scan-pct');
+  if (bar) bar.style.width = '100%';
+  if (pctEl) pctEl.textContent = '100%';
   btn.textContent = 'Scan'; btn.disabled = false;
   if (data.error) { document.getElementById('scan-results').innerHTML = `<div class="alert-red">${data.error}</div>`; return; }
   const colors = {critical:'var(--red)',high:'var(--amber)',medium:'var(--c)',low:'var(--green)'};
