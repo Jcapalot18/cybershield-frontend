@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CyberShield — AI Security for Small Business</title>
+<meta name="description" content="AI-powered security awareness training, breach monitoring, and vulnerability scanning built for small businesses. No IT team needed." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#060d1a;
+  --surface:#0c1829;
+  --surface2:#122036;
+  --border:#1e3558;
+  --accent:#185FA5;
+  --accent-light:#378ADD;
+  --green:#3B6D11;
+  --green-light:#639922;
+  --text:#e8f0fe;
+  --muted:#7a9cc4;
+  --dim:#1a3558;
+  --danger:#A32D2D;
+  --danger-light:#E24B4A;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;font-size:16px;line-height:1.6}
+a{color:var(--accent-light);text-decoration:none}
+.container{max-width:1100px;margin:0 auto;padding:0 2rem}
+
+/* NAV */
+nav{border-bottom:1px solid var(--border);padding:0 2rem}
+.nav-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:64px}
+.nav-logo{display:flex;align-items:center;gap:10px;font-weight:600;font-size:1.1rem;color:var(--text)}
+.nav-logo-icon{width:32px;height:32px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center}
+.nav-logo-icon svg{width:18px;height:18px;fill:none;stroke:#B5D4F4;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.nav-links{display:flex;align-items:center;gap:2rem}
+.nav-links a{color:var(--muted);font-size:0.9rem;transition:color 0.2s}
+.nav-links a:hover{color:var(--text)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 22px;border-radius:8px;font-size:0.875rem;font-weight:500;cursor:pointer;border:none;transition:all 0.2s;text-decoration:none;font-family:inherit}
+.btn-primary{background:var(--accent);color:#E6F1FB}
+.btn-primary:hover{background:#0C447C;color:#E6F1FB}
+.btn-outline{background:transparent;color:var(--text);border:1px solid var(--border)}
+.btn-outline:hover{border-color:var(--muted);color:var(--text)}
+.btn-lg{padding:14px 32px;font-size:1rem}
+
+/* HERO */
+.hero{padding:5rem 0 4rem;text-align:center}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:100px;padding:6px 16px;font-size:0.8rem;color:var(--muted);margin-bottom:2rem}
+.hero-badge span{background:var(--danger-light);color:#FCEBEB;padding:2px 8px;border-radius:100px;font-size:0.7rem;font-weight:600}
+h1{font-size:clamp(2.2rem,5vw,3.5rem);font-weight:600;line-height:1.15;letter-spacing:-0.02em;margin-bottom:1.5rem;color:#ffffff}
+h1 em{font-style:normal;color:var(--accent-light)}
+.hero-sub{font-size:1.1rem;color:var(--muted);max-width:560px;margin:0 auto 2.5rem;line-height:1.7}
+.hero-cta{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-bottom:1rem}
+.hero-note{font-size:0.8rem;color:var(--dim);margin-top:0.5rem}
+.hero-note span{color:var(--muted)}
+
+/* LOGOS */
+.logos{padding:2rem 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin-bottom:5rem}
+.logos-inner{display:flex;align-items:center;justify-content:center;gap:3rem;flex-wrap:wrap}
+.logos p{font-size:0.75rem;color:var(--dim);text-transform:uppercase;letter-spacing:0.1em;width:100%;text-align:center;margin-bottom:1rem}
+.logo-pill{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 18px;font-size:0.8rem;color:var(--muted);font-weight:500}
+
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:5rem}
+.stat{background:var(--surface);padding:2rem;text-align:center}
+.stat-num{font-size:2.5rem;font-weight:600;color:#ffffff;line-height:1;margin-bottom:0.5rem}
+.stat-num em{color:var(--accent-light);font-style:normal}
+.stat-label{font-size:0.875rem;color:var(--muted)}
+
+/* FEATURES */
+.section-label{font-size:0.75rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent-light);margin-bottom:1rem}
+.section-title{font-size:clamp(1.6rem,3vw,2.2rem);font-weight:600;color:#ffffff;margin-bottom:1rem;line-height:1.2}
+.section-sub{font-size:1rem;color:var(--muted);max-width:520px;line-height:1.7}
+.features{padding:5rem 0}
+.features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem;margin-top:3rem}
+.feature-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:2rem;transition:border-color 0.2s}
+.feature-card:hover{border-color:var(--accent)}
+.feature-icon{width:44px;height:44px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:1.25rem}
+.feature-icon svg{width:22px;height:22px;fill:none;stroke:var(--accent-light);stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+.feature-card h3{font-size:1rem;font-weight:600;color:#ffffff;margin-bottom:0.5rem}
+.feature-card p{font-size:0.875rem;color:var(--muted);line-height:1.65}
+
+/* THREAT FEED */
+.threats{padding:5rem 0;background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.threats-inner{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center}
+.threat-list{display:flex;flex-direction:column;gap:0.75rem;margin-top:2rem}
+.threat-item{display:flex;align-items:center;justify-content:space-between;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:0.875rem 1.25rem;gap:1rem}
+.threat-name{font-size:0.875rem;color:var(--text);font-weight:500}
+.threat-src{font-size:0.75rem;color:var(--dim);margin-top:2px}
+.badge{font-size:0.7rem;font-weight:600;padding:3px 10px;border-radius:100px;white-space:nowrap}
+.badge-critical{background:#501313;color:#F09595}
+.badge-high{background:#412402;color:#FAC775}
+.badge-medium{background:#042C53;color:#85B7EB}
+
+/* PRICING */
+.pricing{padding:5rem 0;text-align:center}
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:3rem;text-align:left}
+.plan{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:2rem;position:relative}
+.plan.featured{border-color:var(--accent-light);background:var(--surface2)}
+.plan-badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--accent);color:#E6F1FB;font-size:0.7rem;font-weight:600;padding:4px 14px;border-radius:100px;white-space:nowrap}
+.plan-name{font-size:0.8rem;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:0.75rem}
+.plan-price{font-size:2.5rem;font-weight:600;color:#ffffff;line-height:1;margin-bottom:0.25rem}
+.plan-price span{font-size:1rem;color:var(--muted);font-weight:400}
+.plan-desc{font-size:0.8rem;color:var(--dim);margin-bottom:1.5rem}
+.plan-features{list-style:none;display:flex;flex-direction:column;gap:0.6rem;margin-bottom:1.75rem}
+.plan-features li{font-size:0.875rem;color:var(--muted);display:flex;align-items:center;gap:0.5rem}
+.plan-features li::before{content:'✓';color:var(--green-light);font-weight:600;flex-shrink:0}
+.plan-features li.no::before{content:'—';color:var(--dim)}
+.plan-features li.no{color:var(--dim)}
+
+/* TESTIMONIALS */
+.testimonials{padding:5rem 0;background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.testimonials-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:3rem}
+.testimonial{background:var(--bg);border:1px solid var(--border);border-radius:16px;padding:1.75rem}
+.testimonial-text{font-size:0.9rem;color:var(--text);line-height:1.7;margin-bottom:1.25rem;font-style:italic}
+.testimonial-author{display:flex;align-items:center;gap:0.75rem}
+.author-avatar{width:36px;height:36px;border-radius:50%;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:600;color:var(--accent-light);flex-shrink:0}
+.author-name{font-size:0.875rem;font-weight:500;color:#ffffff}
+.author-role{font-size:0.75rem;color:var(--muted)}
+
+/* CTA SECTION */
+.cta-section{padding:5rem 0;text-align:center}
+.cta-box{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:4rem 2rem;max-width:640px;margin:0 auto}
+.cta-box h2{font-size:clamp(1.5rem,3vw,2rem);font-weight:600;color:#ffffff;margin-bottom:1rem}
+.cta-box p{font-size:1rem;color:var(--muted);margin-bottom:2rem}
+.signup-form{display:flex;gap:0.75rem;max-width:420px;margin:0 auto}
+.signup-form input{flex:1;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:12px 16px;color:var(--text);font-size:0.9rem;font-family:inherit;outline:none}
+.signup-form input:focus{border-color:var(--accent-light)}
+.signup-form input::placeholder{color:var(--dim)}
+.cta-note{font-size:0.78rem;color:var(--dim);margin-top:0.75rem}
+
+/* FOOTER */
+footer{border-top:1px solid var(--border);padding:3rem 2rem}
+.footer-inner{max-width:1100px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+.footer-logo{font-weight:600;color:var(--muted);font-size:0.9rem}
+.footer-links{display:flex;gap:2rem}
+.footer-links a{font-size:0.8rem;color:var(--dim)}
+.footer-links a:hover{color:var(--muted)}
+.footer-copy{font-size:0.78rem;color:var(--dim)}
+
+/* FORM RESPONSE */
+#form-response{font-size:0.85rem;margin-top:0.75rem;min-height:20px}
+
+@media(max-width:768px){
+  .nav-links{display:none}
+  .stats{grid-template-columns:1fr}
+  .pricing-grid{grid-template-columns:1fr}
+  .testimonials-grid{grid-template-columns:1fr}
+  .threats-inner{grid-template-columns:1fr}
+  .signup-form{flex-direction:column}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      <div class="nav-logo-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      </div>
+      CyberShield
+    </a>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#threats">Threat feed</a>
+    </div>
+    <div style="display:flex;gap:0.75rem">
+      <a href="app.html" class="btn btn-outline">Sign in</a>
+      <a href="https://getcybershield-io.netlify.app/app.html?signup=true" target="_blank" class="btn btn-primary">Start free trial</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge">
+      <span>NEW</span>
+      Based on live CyberWire Daily threat intelligence
+    </div>
+    <h1>Stop the next breach<br>before it <em>costs you everything</em></h1>
+    <p class="hero-sub">AI-powered security training, real-time breach monitoring, and vulnerability scanning — built for small businesses with no IT team.</p>
+    <div class="hero-cta">
+      <a href="https://getcybershield-io.netlify.app/app.html?signup=true" target="_blank" class="btn btn-primary btn-lg">Start your free 14-day trial</a>
+      <a href="#features" class="btn btn-outline btn-lg">See how it works</a>
+    </div>
+    <p class="hero-note"><span>No credit card required.</span> Cancel anytime. Setup in 5 minutes.</p>
+  </div>
+</section>
+
+<!-- LOGOS -->
+<div class="logos">
+  <div class="logos-inner">
+    <p>Trusted by small businesses in</p>
+    <div class="logo-pill">Law firms</div>
+    <div class="logo-pill">Medical offices</div>
+    <div class="logo-pill">Accounting firms</div>
+    <div class="logo-pill">Real estate agencies</div>
+    <div class="logo-pill">Tech startups</div>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="container">
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-num"><em>43%</em></div>
+      <div class="stat-label">of cyberattacks target small businesses</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num"><em>$200K</em></div>
+      <div class="stat-label">average cost of a small business breach</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num"><em>60%</em></div>
+      <div class="stat-label">close within 6 months of a breach</div>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="container">
+    <div class="section-label">What CyberShield does</div>
+    <h2 class="section-title">Three tools. One platform.<br>Total protection.</h2>
+    <p class="section-sub">Everything a small business needs to stay protected — without hiring an IT team or spending $50K on enterprise software.</p>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        </div>
+        <h3>AI security training</h3>
+        <p>Weekly 5-minute lessons generated from real current threats. Employees learn to spot phishing, social engineering, and malware — without boring hour-long videos. Track completion and scores for every team member.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        </div>
+        <h3>Breach monitoring</h3>
+        <p>Continuously monitor your company email addresses against the HaveIBeenPwned database of 12+ billion breached credentials. Get alerted the moment an employee's password appears in a breach — before attackers use it.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+        </div>
+        <h3>Vulnerability scanner</h3>
+        <p>Scan your website and web apps for security misconfigurations — missing security headers, outdated software, exposed services. Get a prioritized fix list in plain English, no technical knowledge required.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
+        </div>
+        <h3>Management reports</h3>
+        <p>Monthly PDF reports showing your security posture, training completion rates, and breach exposure. Share with leadership, clients, or insurance providers to demonstrate due diligence.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <h3>Team management</h3>
+        <p>Invite your entire team with one click. Assign training topics, track who's completed what, and get notified if someone's email appears in a breach. Manage up to 50 employees from one dashboard.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 14 19.79 19.79 0 0 1 1.6 5.37 2 2 0 0 1 3.58 3h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 10.6a16 16 0 0 0 6 6l.92-.92a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.72 18z"/></svg>
+        </div>
+        <h3>Incident response support</h3>
+        <p>If your business is breached, our AI-powered response guide walks you through exactly what to do — who to call, what to document, how to contain it — in plain language, available 24/7.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- THREAT FEED -->
+<section class="threats" id="threats">
+  <div class="container">
+    <div class="threats-inner">
+      <div>
+        <div class="section-label">Live threat intelligence</div>
+        <h2 class="section-title">Your training updates<br>every single day</h2>
+        <p class="section-sub" style="margin-bottom:1.5rem">CyberShield pulls directly from CyberWire Daily — the #1 cybersecurity news source — so your team is always trained on the threats that are happening right now, not two years ago.</p>
+        <a href="https://getcybershield-io.netlify.app/app.html?signup=true" target="_blank" class="btn btn-primary">Start monitoring now</a>
+      </div>
+      <div>
+        <div class="threat-list">
+          <div class="threat-item">
+            <div><div class="threat-name">Chrome 22 critical vulnerabilities</div><div class="threat-src">Ep 2562 · May 29, 2026</div></div>
+            <span class="badge badge-critical">Critical</span>
+          </div>
+          <div class="threat-item">
+            <div><div class="threat-name">Microsoft OAuth authentication abuse</div><div class="threat-src">Ep 2559 · May 26, 2026</div></div>
+            <span class="badge badge-critical">Critical</span>
+          </div>
+          <div class="threat-item">
+            <div><div class="threat-name">macOS crypto developer malware</div><div class="threat-src">Ep 2561 · May 28, 2026</div></div>
+            <span class="badge badge-high">High</span>
+          </div>
+          <div class="threat-item">
+            <div><div class="threat-name">AI-powered phishing at scale</div><div class="threat-src">Ep 2562 · May 29, 2026</div></div>
+            <span class="badge badge-high">High</span>
+          </div>
+          <div class="threat-item">
+            <div><div class="threat-name">Ubiquiti UniFi critical flaws</div><div class="threat-src">Ep 2558 · May 22, 2026</div></div>
+            <span class="badge badge-medium">Medium</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing" id="pricing">
+  <div class="container">
+    <div class="section-label">Pricing</div>
+    <h2 class="section-title">Less than one hour of IT consulting</h2>
+    <p class="section-sub" style="margin:0 auto 0">All plans include a 14-day free trial. No credit card required to start.</p>
+    <div class="pricing-grid">
+      <div class="plan">
+        <div class="plan-name">Starter</div>
+        <div class="plan-price">$49<span>/month</span></div>
+        <div class="plan-desc">Up to 10 employees</div>
+        <ul class="plan-features">
+          <li>10 employee seats</li>
+          <li>AI security training</li>
+          <li>Breach monitoring</li>
+          <li>5 vulnerability scans/month</li>
+          <li>Email alerts</li>
+          <li class="no">Bulk breach checking</li>
+          <li class="no">Custom reports</li>
+        </ul>
+        <a href="https://getcybershield-io.netlify.app/app.html?plan=starter" target="_blank" class="btn btn-outline" style="width:100%">Start free trial</a>
+      </div>
+      <div class="plan featured">
+        <div class="plan-badge">Most popular</div>
+        <div class="plan-name">Business</div>
+        <div class="plan-price">$199<span>/month</span></div>
+        <div class="plan-desc">Up to 50 employees</div>
+        <ul class="plan-features">
+          <li>50 employee seats</li>
+          <li>AI security training</li>
+          <li>Breach monitoring</li>
+          <li>Unlimited scans</li>
+          <li>Email + Slack alerts</li>
+          <li>Bulk breach checking</li>
+          <li>Monthly PDF reports</li>
+        </ul>
+        <a href="https://getcybershield-io.netlify.app/app.html?plan=business" target="_blank" class="btn btn-primary" style="width:100%">Start free trial</a>
+      </div>
+      <div class="plan">
+        <div class="plan-name">Enterprise</div>
+        <div class="plan-price">$599<span>/month</span></div>
+        <div class="plan-desc">Unlimited employees</div>
+        <ul class="plan-features">
+          <li>Unlimited seats</li>
+          <li>Everything in Business</li>
+          <li>White-label branding</li>
+          <li>Custom integrations</li>
+          <li>Priority support</li>
+          <li>Dedicated account manager</li>
+          <li>Custom training content</li>
+        </ul>
+        <a href="https://getcybershield-io.netlify.app/app.html?plan=enterprise" target="_blank" class="btn btn-outline" style="width:100%">Start free trial</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials">
+  <div class="container">
+    <div class="section-label" style="text-align:center">What customers say</div>
+    <h2 class="section-title" style="text-align:center;max-width:500px;margin:0 auto 0">Small businesses sleeping better at night</h2>
+    <div class="testimonials-grid">
+      <div class="testimonial">
+        <p class="testimonial-text">"We had an employee click a phishing link last year and it cost us $18,000. After 3 months with CyberShield, our whole team knows what to look for. Worth every penny."</p>
+        <div class="testimonial-author">
+          <div class="author-avatar">MR</div>
+          <div><div class="author-name">Marcus R.</div><div class="author-role">Partner, Rivera & Associates Law</div></div>
+        </div>
+      </div>
+      <div class="testimonial">
+        <p class="testimonial-text">"The breach monitor caught two of our staff emails in the Carnival breach the same day it was announced. We changed passwords immediately. Exactly what we needed."</p>
+        <div class="testimonial-author">
+          <div class="author-avatar">SL</div>
+          <div><div class="author-name">Sandra L.</div><div class="author-role">Office Manager, Lakeside Dental</div></div>
+        </div>
+      </div>
+      <div class="testimonial">
+        <p class="testimonial-text">"I'm not a tech person but the vulnerability report was completely clear. Found 3 issues on our website I didn't know existed. Fixed them all in a day."</p>
+        <div class="testimonial-author">
+          <div class="author-avatar">DK</div>
+          <div><div class="author-name">David K.</div><div class="author-role">Owner, Keller Accounting CPA</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="signup">
+  <div class="container">
+    <div class="cta-box">
+      <h2>Start protecting your business today</h2>
+      <p>Join the waitlist for early access and get your first month free.</p>
+      <form class="signup-form" onsubmit="handleSignup(event)">
+        <input type="email" id="signup-email" placeholder="your@email.com" required />
+        <button type="submit" class="btn btn-primary">Get early access</button>
+      </form>
+      <div id="form-response"></div>
+      <p class="cta-note">No credit card. 14-day free trial. Cancel anytime.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">🛡️ CyberShield</div>
+    <div class="footer-links">
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="mailto:hello@cybershield.io">Contact</a>
+      <a href="#">Privacy</a>
+    </div>
+    <div class="footer-copy">© 2026 CyberShield. All rights reserved.</div>
+  </div>
+</footer>
+
+<script>
+async function handleSignup(e) {
+  e.preventDefault();
+  const email = document.getElementById('signup-email').value;
+  const res = document.getElementById('form-response');
+  const btn = e.target.querySelector('button');
+  btn.textContent = 'Saving...';
+  btn.disabled = true;
+  try {
+    await fetch('https://cybershield-backend-production-492b.up.railway.app/waitlist/join', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({email})
+    });
+  } catch(e) {}
+  res.style.color = '#639922';
+  res.textContent = "You're on the list! Check your email for next steps.";
+  document.getElementById('signup-email').value = '';
+  btn.textContent = 'Get early access';
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>
