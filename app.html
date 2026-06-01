@@ -848,6 +848,7 @@ async function doLogin() {
   if (data.error) return showError(data.error);
   token = data.accessToken;
   sessionStorage.setItem('cs_token', token);
+  if (data.user && data.user.email) sessionStorage.setItem('cs_email', data.user.email);
   enterApp(data);
 }
 
@@ -866,6 +867,7 @@ async function doRegister() {
   if (data.error) return showError(data.error);
   token = data.accessToken;
   sessionStorage.setItem('cs_token', token);
+  if (data.user && data.user.email) sessionStorage.setItem('cs_email', data.user.email);
   if (data.checkoutUrl) {
     window.location.href = data.checkoutUrl;
   } else {
@@ -886,6 +888,7 @@ function enterApp(data) {
 function doLogout() {
   token = null;
   sessionStorage.removeItem('cs_token');
+  sessionStorage.removeItem('cs_email');
   clearTimeout(idleTimer);
   document.getElementById('app').style.display = 'none';
   document.getElementById('auth-page').style.display = 'flex';
@@ -942,13 +945,44 @@ setInterval(loadThreats, 5 * 60 * 1000);
 
 async function loadDashboard() {
   const data = await api('/dashboard/stats');
-  if (data.stats) {
-    document.getElementById('s-train').textContent = data.stats.trainings?.total || 0;
-    document.getElementById('s-breach').textContent = data.stats.breachChecks || 0;
-    document.getElementById('s-scans').textContent = data.stats.scans || 0;
-    document.getElementById('dash-sub').textContent = (data.company?.name || 'Your company') + ' · ' + (data.company?.plan || 'starter') + ' plan · 14-day trial';
-    const titleEl = document.getElementById('dash-title'); if(titleEl) titleEl.textContent = 'Welcome, ' + (data.company?.name || 'your company');
-  }
+  if (!data || !data.stats) return;
+
+  const trainings = Number(data.stats.trainings?.total) || 0;
+  const breaches   = Number(data.stats.breachChecks) || 0;
+  const scans      = Number(data.stats.scans) || 0;
+
+  // Update stat cards
+  const s = (id) => document.getElementById(id);
+  if (s('s-train')) s('s-train').textContent = trainings;
+  if (s('s-breach')) s('s-breach').textContent = breaches;
+  if (s('s-scans')) s('s-scans').textContent = scans;
+  if (s('dash-sub')) s('dash-sub').textContent = (data.company?.name || 'Your company') + ' · ' + (data.company?.plan || 'starter') + ' plan';
+  if (s('dash-title')) s('dash-title').textContent = 'Welcome, ' + (data.company?.name || 'your company');
+
+  // ── Security score calculation ──
+  const trainPts  = Math.min(trainings * 4, 20);
+  const scanPts   = scans > 0 ? (scans >= 3 ? 20 : 15) : -10;
+  const breachPts = -Math.min(breaches * 3, 25);
+  let score = Math.max(10, Math.min(100, Math.round(50 + trainPts + scanPts + breachPts)));
+
+  let label = 'At Risk', color = '#f87171';
+  if (score >= 80) { label = 'Excellent'; color = '#4ade80'; }
+  else if (score >= 65) { label = 'Good';     color = '#FF6B00'; }
+  else if (score >= 45) { label = 'Fair';     color = '#fbbf24'; }
+
+  const issues = (breaches > 0 ? 1 : 0) + (scans === 0 ? 1 : 0) + (trainings < 3 ? 1 : 0);
+  const issueText = issues === 0 ? 'All clear — no issues found!' : issues + ' issue' + (issues > 1 ? 's' : '') + ' need attention';
+
+  if (s('score-ring')) { s('score-ring').style.strokeDashoffset = 251 - (score/100)*251; s('score-ring').style.stroke = color; }
+  if (s('score-num'))  s('score-num').textContent = score;
+  if (s('score-label')) { s('score-label').textContent = label; s('score-label').style.color = color; }
+  if (s('score-issues')) s('score-issues').textContent = issueText;
+  if (s('score-total-pts')) { s('score-total-pts').textContent = score; s('score-total-pts').style.color = color; }
+
+  const fmt = (v) => (v >= 0 ? '+' : '') + v;
+  if (s('score-train-pts'))  { s('score-train-pts').textContent  = fmt(trainPts);  s('score-train-pts').style.color  = trainPts  > 0 ? '#4ade80' : '#bbb'; }
+  if (s('score-scan-pts'))   { s('score-scan-pts').textContent   = fmt(scanPts);   s('score-scan-pts').style.color   = scanPts   > 0 ? '#4ade80' : '#f87171'; }
+  if (s('score-breach-pts')) { s('score-breach-pts').textContent = fmt(breachPts); s('score-breach-pts').style.color = breachPts < 0 ? '#f87171' : '#4ade80'; }
 }
 
 async function loadTopics() {
@@ -1320,6 +1354,7 @@ if (savedToken && !isSignupFlow) {
     } else if (data && data.error && (data.error.includes('Invalid') || data.error.includes('expired') || data.error.includes('token'))) {
       // Real auth failure - force login
       sessionStorage.removeItem('cs_token');
+  sessionStorage.removeItem('cs_email');
       token = null;
       document.getElementById('app').style.display = 'none';
       document.getElementById('auth-page').style.display = 'flex';
