@@ -73,27 +73,27 @@ html,body{height:100%;background:var(--bg);color:var(--t1);font-family:'Hanken G
 .app{display:none;height:100vh;flex-direction:column}
 
 /* TOPBAR */
-.topbar{height:64px;background:#ffffff;border-bottom:1px solid #e5e5e5;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;flex-shrink:0}
+.topbar{height:64px;background:#0a0a0a;border-bottom:1px solid #1a1a1a;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;flex-shrink:0}
 .topbar-left{display:flex;align-items:center;gap:12px}
-.topbar-brand{font-family:'Hanken Grotesk',sans-serif;font-size:1.15rem;font-weight:900;color:#0a0a0a;letter-spacing:-0.02em}
+.topbar-brand{font-family:'Hanken Grotesk',sans-serif;font-size:1.15rem;font-weight:900;color:#ffffff;letter-spacing:-0.02em}
 .topbar-brand span{color:#FF6B00}
 .topbar-right{display:flex;align-items:center;gap:14px}
-.topbar-status{display:flex;align-items:center;gap:6px;font-size:0.82rem;color:#888}
+.topbar-status{display:flex;align-items:center;gap:6px;font-size:0.82rem;color:rgba(255,255,255,0.4)}
 .status-dot{width:7px;height:7px;border-radius:50%;background:#4ade80;box-shadow:0 0 6px #4ade80;flex-shrink:0}
-.topbar-email{font-size:0.85rem;color:#666;font-weight:400}
+.topbar-email{font-size:0.85rem;color:rgba(255,255,255,0.5);font-weight:400}
 .btn-signout{background:transparent;border:1px solid #252525;color:var(--t3);border-radius:7px;padding:7px 16px;font-size:0.82rem;font-weight:500;cursor:pointer;font-family:inherit;transition:all 0.2s}
-.btn-signout:hover{border-color:#FF6B00;color:#FF6B00}
+.btn-signout:hover{border-color:#FF6B00;color:#FF6B00;background:rgba(255,107,0,0.08)}
 
 /* APP BODY */
 .app-body{display:flex;flex:1;overflow:hidden}
 
 /* SIDEBAR */
-.sidebar{width:220px;flex-shrink:0;background:#fafafa;border-right:1px solid #e5e5e5;padding:1.5rem 1rem;display:flex;flex-direction:column;gap:2px;overflow-y:auto}
-.nav-section-label{font-size:0.68rem;font-weight:700;color:#bbb;text-transform:uppercase;letter-spacing:0.12em;padding:10px 12px 6px;margin-top:6px;font-family:'Hanken Grotesk',sans-serif}
+.sidebar{width:220px;flex-shrink:0;background:#0a0a0a;border-right:1px solid #1a1a1a;padding:1.5rem 1rem;display:flex;flex-direction:column;gap:2px;overflow-y:auto}
+.nav-section-label{font-size:0.68rem;font-weight:700;color:rgba(255,255,255,0.2);text-transform:uppercase;letter-spacing:0.12em;padding:10px 12px 6px;margin-top:6px;font-family:'Hanken Grotesk',sans-serif}
 .nav-section-label:first-child{margin-top:0}
-.nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;font-size:0.875rem;font-weight:500;color:#666;transition:all 0.15s;border:none;background:none;width:100%;text-align:left;font-family:inherit;letter-spacing:0.01em}
-.nav-item:hover{background:#f0f0f0;color:#0a0a0a}
-.nav-item.active{background:rgba(255,107,0,0.08);color:#FF6B00;border:1px solid rgba(255,107,0,0.2)}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;font-size:0.875rem;font-weight:500;color:rgba(255,255,255,0.45);transition:all 0.15s;border:none;background:none;width:100%;text-align:left;font-family:inherit;letter-spacing:0.01em}
+.nav-item:hover{background:rgba(255,255,255,0.06);color:#ffffff}
+.nav-item.active{background:rgba(255,107,0,0.12);color:#FF6B00;border:1px solid rgba(255,107,0,0.25)}
 .nav-item svg{width:17px;height:17px;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 
 /* MAIN */
@@ -340,15 +340,31 @@ html,body{height:100%;background:var(--bg);color:var(--t1);font-family:'Hanken G
         </div>
         <!-- Stats row -->
         <div class="stats-row">
-          <div class="stat-box" style="border-left:3px solid #FF6B00"><div class="stat-box-label">Trainings completed</div><div class="stat-box-value" id="s-train">—</div></div>
-          <div class="stat-box" style="border-left:3px solid #f87171"><div class="stat-box-label">Breaches detected</div><div class="stat-box-value red" id="s-breach">—</div></div>
-          <div class="stat-box" style="border-left:3px solid #FF6B00"><div class="stat-box-label">Scans performed</div><div class="stat-box-value" id="s-scans">—</div></div>
-          <div class="stat-box" style="border-left:3px solid #f87171"><div class="stat-box-label">Active threats</div><div class="stat-box-value red">6</div></div>
+          <div style="background:#0a0a0a;border-radius:12px;padding:1.25rem 1.5rem;position:relative;overflow:hidden">
+            <div style="position:absolute;top:0;right:0;width:60px;height:60px;background:rgba(255,107,0,0.08);border-radius:0 12px 0 100%"></div>
+            <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:rgba(255,255,255,0.35);margin-bottom:10px;font-family:'Hanken Grotesk',sans-serif">Trainings</div>
+            <div style="font-family:'Hanken Grotesk',sans-serif;font-size:2.2rem;font-weight:900;color:#ffffff;line-height:1" id="s-train">—</div>
+          </div>
+          <div style="background:#FF6B00;border-radius:12px;padding:1.25rem 1.5rem;position:relative;overflow:hidden">
+            <div style="position:absolute;top:0;right:0;width:60px;height:60px;background:rgba(255,255,255,0.1);border-radius:0 12px 0 100%"></div>
+            <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:rgba(255,255,255,0.6);margin-bottom:10px;font-family:'Hanken Grotesk',sans-serif">Breaches detected</div>
+            <div style="font-family:'Hanken Grotesk',sans-serif;font-size:2.2rem;font-weight:900;color:#ffffff;line-height:1" id="s-breach">—</div>
+          </div>
+          <div style="background:#0a0a0a;border-radius:12px;padding:1.25rem 1.5rem;position:relative;overflow:hidden">
+            <div style="position:absolute;top:0;right:0;width:60px;height:60px;background:rgba(255,107,0,0.08);border-radius:0 12px 0 100%"></div>
+            <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:rgba(255,255,255,0.35);margin-bottom:10px;font-family:'Hanken Grotesk',sans-serif">Scans performed</div>
+            <div style="font-family:'Hanken Grotesk',sans-serif;font-size:2.2rem;font-weight:900;color:#ffffff;line-height:1" id="s-scans">—</div>
+          </div>
+          <div style="background:#f87171;border-radius:12px;padding:1.25rem 1.5rem;position:relative;overflow:hidden">
+            <div style="position:absolute;top:0;right:0;width:60px;height:60px;background:rgba(255,255,255,0.1);border-radius:0 12px 0 100%"></div>
+            <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:rgba(255,255,255,0.6);margin-bottom:10px;font-family:'Hanken Grotesk',sans-serif">Active threats</div>
+            <div style="font-family:'Hanken Grotesk',sans-serif;font-size:2.2rem;font-weight:900;color:#ffffff;line-height:1">6</div>
+          </div>
         </div>
         <!-- Two column row: security score + quick actions -->
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:1.5rem">
           <!-- Security score -->
-          <div style="background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:1.5rem;box-shadow:0 1px 4px rgba(0,0,0,0.04)">
+          <div style="background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:1.5rem">
             <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#888;margin-bottom:1.25rem;font-family:'Hanken Grotesk',sans-serif">Security score</div>
             <div style="display:flex;align-items:center;gap:1.5rem">
               <svg width="100" height="100" viewBox="0 0 100 100">
@@ -365,38 +381,41 @@ html,body{height:100%;background:var(--bg);color:var(--t1);font-family:'Hanken G
             </div>
           </div>
           <!-- Quick actions -->
-          <div style="background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:1.5rem;box-shadow:0 1px 4px rgba(0,0,0,0.04)">
-            <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#888;margin-bottom:1.25rem;font-family:'Hanken Grotesk',sans-serif">Quick actions</div>
+          <div style="background:#0a0a0a;border-radius:12px;padding:1.5rem">
+            <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.25);margin-bottom:1.25rem;font-family:'Hanken Grotesk',sans-serif">Quick actions</div>
             <div style="display:flex;flex-direction:column;gap:8px">
-              <div onclick="showPage('breach',document.querySelectorAll('.nav-item')[1])" style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:#f7f7f7;border-radius:8px;cursor:pointer;transition:all 0.2s;border:1px solid transparent" onmouseover="this.style.borderColor='#FF6B00';this.style.background='#fff3eb'" onmouseout="this.style.borderColor='transparent';this.style.background='#f7f7f7'">
-                <div style="width:34px;height:34px;background:rgba(248,113,113,0.1);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+              <div onclick="showPage('breach',document.querySelectorAll('.nav-item')[1])" style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:rgba(255,255,255,0.04);border-radius:8px;cursor:pointer;transition:all 0.2s;border:1px solid rgba(255,255,255,0.06)" onmouseover="this.style.borderColor='#FF6B00';this.style.background='rgba(255,107,0,0.08)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.06)';this.style.background='rgba(255,255,255,0.04)'">
+                <div style="width:36px;height:36px;background:rgba(248,113,113,0.12);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f87171" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
                 </div>
-                <div><div style="font-size:0.875rem;font-weight:700;color:#0a0a0a;font-family:'Hanken Grotesk',sans-serif">Check for breaches</div><div style="font-size:0.75rem;color:#888">Scan company emails now</div></div>
+                <div><div style="font-size:0.875rem;font-weight:700;color:#ffffff;font-family:'Hanken Grotesk',sans-serif">Check for breaches</div><div style="font-size:0.75rem;color:rgba(255,255,255,0.35)">Scan company emails now</div></div>
+                <svg style="margin-left:auto;color:rgba(255,255,255,0.2)" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
               </div>
-              <div onclick="showPage('scanner',document.querySelectorAll('.nav-item')[2])" style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:#f7f7f7;border-radius:8px;cursor:pointer;transition:all 0.2s;border:1px solid transparent" onmouseover="this.style.borderColor='#FF6B00';this.style.background='#fff3eb'" onmouseout="this.style.borderColor='transparent';this.style.background='#f7f7f7'">
-                <div style="width:34px;height:34px;background:rgba(255,107,0,0.1);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+              <div onclick="showPage('scanner',document.querySelectorAll('.nav-item')[2])" style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:rgba(255,255,255,0.04);border-radius:8px;cursor:pointer;transition:all 0.2s;border:1px solid rgba(255,255,255,0.06)" onmouseover="this.style.borderColor='#FF6B00';this.style.background='rgba(255,107,0,0.08)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.06)';this.style.background='rgba(255,255,255,0.04)'">
+                <div style="width:36px;height:36px;background:rgba(255,107,0,0.12);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF6B00" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                 </div>
-                <div><div style="font-size:0.875rem;font-weight:700;color:#0a0a0a;font-family:'Hanken Grotesk',sans-serif">Run vulnerability scan</div><div style="font-size:0.75rem;color:#888">Check website security</div></div>
+                <div><div style="font-size:0.875rem;font-weight:700;color:#ffffff;font-family:'Hanken Grotesk',sans-serif">Run vulnerability scan</div><div style="font-size:0.75rem;color:rgba(255,255,255,0.35)">Check website security</div></div>
+                <svg style="margin-left:auto;color:rgba(255,255,255,0.2)" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
               </div>
-              <div onclick="showPage('training',document.querySelectorAll('.nav-item')[3])" style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:#f7f7f7;border-radius:8px;cursor:pointer;transition:all 0.2s;border:1px solid transparent" onmouseover="this.style.borderColor='#FF6B00';this.style.background='#fff3eb'" onmouseout="this.style.borderColor='transparent';this.style.background='#f7f7f7'">
-                <div style="width:34px;height:34px;background:rgba(255,107,0,0.1);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+              <div onclick="showPage('training',document.querySelectorAll('.nav-item')[3])" style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:rgba(255,255,255,0.04);border-radius:8px;cursor:pointer;transition:all 0.2s;border:1px solid rgba(255,255,255,0.06)" onmouseover="this.style.borderColor='#FF6B00';this.style.background='rgba(255,107,0,0.08)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.06)';this.style.background='rgba(255,255,255,0.04)'">
+                <div style="width:36px;height:36px;background:rgba(255,107,0,0.12);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF6B00" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
                 </div>
-                <div><div style="font-size:0.875rem;font-weight:700;color:#0a0a0a;font-family:'Hanken Grotesk',sans-serif">Start a training module</div><div style="font-size:0.75rem;color:#888">20 modules available</div></div>
+                <div><div style="font-size:0.875rem;font-weight:700;color:#ffffff;font-family:'Hanken Grotesk',sans-serif">Start a training module</div><div style="font-size:0.75rem;color:rgba(255,255,255,0.35)">20 modules available</div></div>
+                <svg style="margin-left:auto;color:rgba(255,255,255,0.2)" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
               </div>
             </div>
           </div>
         </div>
         <!-- Threat feed -->
-        <div class="card">
-          <div class="card-head"><span class="card-head-title">Live threat intelligence</span><span class="card-head-meta">Source: CyberWire Daily</span></div>
-          <div class="threat-row"><span class="t-indicator t-critical"></span><div style="flex:1"><div class="t-name">Chrome 22 critical vulnerabilities patched</div><div class="t-meta">Episode 2562 · May 29, 2026</div></div><span class="badge b-critical">Critical</span></div>
-          <div class="threat-row"><span class="t-indicator t-critical"></span><div style="flex:1"><div class="t-name">Microsoft OAuth authentication abuse campaign</div><div class="t-meta">Episode 2559 · May 26, 2026</div></div><span class="badge b-critical">Critical</span></div>
-          <div class="threat-row"><span class="t-indicator t-high"></span><div style="flex:1"><div class="t-name">macOS crypto developer malware targeting firms</div><div class="t-meta">Episode 2561 · May 28, 2026</div></div><span class="badge b-high">High</span></div>
-          <div class="threat-row"><span class="t-indicator t-high"></span><div style="flex:1"><div class="t-name">AI-powered phishing attacks at unprecedented scale</div><div class="t-meta">Episode 2562 · May 29, 2026</div></div><span class="badge b-high">High</span></div>
-          <div class="threat-row"><span class="t-indicator t-medium"></span><div style="flex:1"><div class="t-name">Ubiquiti UniFi critical security vulnerabilities</div><div class="t-meta">Episode 2558 · May 22, 2026</div></div><span class="badge b-medium">Medium</span></div>
+        <div style="background:#0a0a0a;border-radius:12px;overflow:hidden;margin-bottom:1.5rem">
+          <div style="padding:14px 20px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:space-between"><span style="font-size:0.72rem;font-weight:700;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.1em;font-family:'Hanken Grotesk',sans-serif">Live threat intelligence</span><span style="font-size:0.78rem;color:rgba(255,255,255,0.2)">Source: CyberWire Daily</span></div>
+          <div style="padding:14px 20px;border-bottom:1px solid rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:space-between;gap:12px;transition:background 0.15s;cursor:default" onmouseover="this.style.background='rgba(255,255,255,0.03)'" onmouseout="this.style.background='transparent'"><div style="display:flex;align-items:center;gap:12px;flex:1"><span style="width:3px;height:34px;border-radius:2px;background:#f87171;flex-shrink:0;display:block"></span><div><div style="font-size:0.9rem;font-weight:600;color:#ffffff;margin-bottom:2px">Chrome 22 critical vulnerabilities patched</div><div style="font-size:0.75rem;color:rgba(255,255,255,0.3)">Episode 2562 · May 29, 2026</div></div></div><span class="badge b-critical">Critical</span></div>
+          <div style="padding:14px 20px;border-bottom:1px solid rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:space-between;gap:12px;transition:background 0.15s;cursor:default" onmouseover="this.style.background='rgba(255,255,255,0.03)'" onmouseout="this.style.background='transparent'"><div style="display:flex;align-items:center;gap:12px;flex:1"><span style="width:3px;height:34px;border-radius:2px;background:#f87171;flex-shrink:0;display:block"></span><div><div style="font-size:0.9rem;font-weight:600;color:#ffffff;margin-bottom:2px">Microsoft OAuth authentication abuse campaign</div><div style="font-size:0.75rem;color:rgba(255,255,255,0.3)">Episode 2559 · May 26, 2026</div></div></div><span class="badge b-critical">Critical</span></div>
+          <div style="padding:14px 20px;border-bottom:1px solid rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:space-between;gap:12px;transition:background 0.15s;cursor:default" onmouseover="this.style.background='rgba(255,255,255,0.03)'" onmouseout="this.style.background='transparent'"><div style="display:flex;align-items:center;gap:12px;flex:1"><span style="width:3px;height:34px;border-radius:2px;background:#fbbf24;flex-shrink:0;display:block"></span><div><div style="font-size:0.9rem;font-weight:600;color:#ffffff;margin-bottom:2px">macOS crypto developer malware targeting firms</div><div style="font-size:0.75rem;color:rgba(255,255,255,0.3)">Episode 2561 · May 28, 2026</div></div></div><span class="badge b-high">High</span></div>
+          <div style="padding:14px 20px;border-bottom:1px solid rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:space-between;gap:12px;transition:background 0.15s;cursor:default" onmouseover="this.style.background='rgba(255,255,255,0.03)'" onmouseout="this.style.background='transparent'"><div style="display:flex;align-items:center;gap:12px;flex:1"><span style="width:3px;height:34px;border-radius:2px;background:#fbbf24;flex-shrink:0;display:block"></span><div><div style="font-size:0.9rem;font-weight:600;color:#ffffff;margin-bottom:2px">AI-powered phishing attacks at unprecedented scale</div><div style="font-size:0.75rem;color:rgba(255,255,255,0.3)">Episode 2562 · May 29, 2026</div></div></div><span class="badge b-high">High</span></div>
+          <div style="padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;transition:background 0.15s;cursor:default" onmouseover="this.style.background='rgba(255,255,255,0.03)'" onmouseout="this.style.background='transparent'"><div style="display:flex;align-items:center;gap:12px;flex:1"><span style="width:3px;height:34px;border-radius:2px;background:#FF6B00;flex-shrink:0;display:block"></span><div><div style="font-size:0.9rem;font-weight:600;color:#ffffff;margin-bottom:2px">Ubiquiti UniFi critical security vulnerabilities</div><div style="font-size:0.75rem;color:rgba(255,255,255,0.3)">Episode 2558 · May 22, 2026</div></div></div><span class="badge b-medium">Medium</span></div>
         </div>
       </div>
 
