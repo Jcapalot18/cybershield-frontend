@@ -600,6 +600,43 @@ const cObs=new IntersectionObserver(entries=>{
 },{threshold:0.4});
 const sg=document.querySelector('.stats-grid');if(sg)cObs.observe(sg);
 
+// Detect logged-in users - change pricing buttons
+(function() {
+  const token = sessionStorage.getItem('cs_token');
+  if (!token) return;
+  // User is logged in - update all "Start free trial" links to direct Stripe payment
+  document.addEventListener('DOMContentLoaded', function() {
+    const planLinks = {
+      'starter':    'https://buy.stripe.com/8x2fZi1nv4nh3r55gu4ZG00',
+      'business':   'https://buy.stripe.com/cNiaEY5DL8Dx2n1dN04ZG01',
+      'enterprise': 'https://buy.stripe.com/14AeVed6d4nh1iX10e4ZG02'
+    };
+    // Update all plan buttons
+    document.querySelectorAll('a[href*="app.html?plan="]').forEach(function(btn) {
+      const plan = btn.href.split('plan=')[1];
+      if (planLinks[plan]) {
+        btn.href = planLinks[plan];
+        btn.target = '_blank';
+        btn.textContent = 'Subscribe now — no free trial';
+        btn.style.background = '#0a0a0a';
+      }
+    });
+    // Update hero CTA buttons
+    document.querySelectorAll('a[href*="app.html?signup=true"], a[href*="app.html?signup"]').forEach(function(btn) {
+      btn.href = 'app.html';
+      btn.textContent = 'Go to dashboard';
+    });
+    // Add logged-in banner at top of pricing section
+    const pricingSection = document.getElementById('pricing');
+    if (pricingSection) {
+      const banner = document.createElement('div');
+      banner.style.cssText = 'background:#fff3eb;border:1.5px solid #ffd4b0;border-radius:10px;padding:12px 20px;margin-bottom:1.5rem;display:flex;align-items:center;gap:10px;font-size:0.875rem;font-family:Hanken Grotesk,sans-serif';
+      banner.innerHTML = '<span style="color:#FF6B00;font-size:1.1rem">ℹ</span><span style="color:#666">You already have an account. <strong style="color:#0a0a0a">Free trials are one per account.</strong> Clicking Subscribe will charge you immediately.</span><a href="app.html" style="margin-left:auto;background:#FF6B00;color:#fff;padding:6px 14px;border-radius:6px;font-size:0.8rem;font-weight:700;text-decoration:none;white-space:nowrap">Back to dashboard →</a>';
+      pricingSection.insertBefore(banner, pricingSection.firstChild);
+    }
+  });
+})();
+
 // Signup
 async function handleSignup(){
   const email=document.getElementById('signup-email').value.trim();
