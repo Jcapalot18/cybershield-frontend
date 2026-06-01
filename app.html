@@ -420,13 +420,18 @@ html,body{height:100%;background:var(--bg);color:var(--t1);font-family:'Hanken G
           </div>
         </div>
         <!-- Threat feed -->
-        <div style="background:#0a0a0a;border-radius:12px;overflow:hidden;margin-bottom:1.5rem">
-          <div style="padding:14px 20px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:space-between"><span style="font-size:0.72rem;font-weight:700;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.1em;font-family:'Hanken Grotesk',sans-serif">Live threat intelligence</span><span style="font-size:0.78rem;color:rgba(255,255,255,0.2)">Source: CyberWire Daily</span></div>
-          <div style="padding:14px 20px;border-bottom:1px solid rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:space-between;gap:12px;transition:background 0.15s;cursor:default" onmouseover="this.style.background='rgba(255,255,255,0.03)'" onmouseout="this.style.background='transparent'"><div style="display:flex;align-items:center;gap:12px;flex:1"><span style="width:3px;height:34px;border-radius:2px;background:#f87171;flex-shrink:0;display:block"></span><div><div style="font-size:0.9rem;font-weight:600;color:#ffffff;margin-bottom:2px">Chrome 22 critical vulnerabilities patched</div><div style="font-size:0.75rem;color:rgba(255,255,255,0.3)">Episode 2562 · May 29, 2026</div></div></div><span class="badge b-critical">Critical</span></div>
-          <div style="padding:14px 20px;border-bottom:1px solid rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:space-between;gap:12px;transition:background 0.15s;cursor:default" onmouseover="this.style.background='rgba(255,255,255,0.03)'" onmouseout="this.style.background='transparent'"><div style="display:flex;align-items:center;gap:12px;flex:1"><span style="width:3px;height:34px;border-radius:2px;background:#f87171;flex-shrink:0;display:block"></span><div><div style="font-size:0.9rem;font-weight:600;color:#ffffff;margin-bottom:2px">Microsoft OAuth authentication abuse campaign</div><div style="font-size:0.75rem;color:rgba(255,255,255,0.3)">Episode 2559 · May 26, 2026</div></div></div><span class="badge b-critical">Critical</span></div>
-          <div style="padding:14px 20px;border-bottom:1px solid rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:space-between;gap:12px;transition:background 0.15s;cursor:default" onmouseover="this.style.background='rgba(255,255,255,0.03)'" onmouseout="this.style.background='transparent'"><div style="display:flex;align-items:center;gap:12px;flex:1"><span style="width:3px;height:34px;border-radius:2px;background:#fbbf24;flex-shrink:0;display:block"></span><div><div style="font-size:0.9rem;font-weight:600;color:#ffffff;margin-bottom:2px">macOS crypto developer malware targeting firms</div><div style="font-size:0.75rem;color:rgba(255,255,255,0.3)">Episode 2561 · May 28, 2026</div></div></div><span class="badge b-high">High</span></div>
-          <div style="padding:14px 20px;border-bottom:1px solid rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:space-between;gap:12px;transition:background 0.15s;cursor:default" onmouseover="this.style.background='rgba(255,255,255,0.03)'" onmouseout="this.style.background='transparent'"><div style="display:flex;align-items:center;gap:12px;flex:1"><span style="width:3px;height:34px;border-radius:2px;background:#fbbf24;flex-shrink:0;display:block"></span><div><div style="font-size:0.9rem;font-weight:600;color:#ffffff;margin-bottom:2px">AI-powered phishing attacks at unprecedented scale</div><div style="font-size:0.75rem;color:rgba(255,255,255,0.3)">Episode 2562 · May 29, 2026</div></div></div><span class="badge b-high">High</span></div>
-          <div style="padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;transition:background 0.15s;cursor:default" onmouseover="this.style.background='rgba(255,255,255,0.03)'" onmouseout="this.style.background='transparent'"><div style="display:flex;align-items:center;gap:12px;flex:1"><span style="width:3px;height:34px;border-radius:2px;background:#FF6B00;flex-shrink:0;display:block"></span><div><div style="font-size:0.9rem;font-weight:600;color:#ffffff;margin-bottom:2px">Ubiquiti UniFi critical security vulnerabilities</div><div style="font-size:0.75rem;color:rgba(255,255,255,0.3)">Episode 2558 · May 22, 2026</div></div></div><span class="badge b-medium">Medium</span></div>
+        <div style="background:#0a0a0a;border-radius:12px;overflow:hidden;margin-bottom:1.5rem" id="threat-feed-card">
+          <div style="padding:14px 20px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:space-between">
+            <div style="display:flex;align-items:center;gap:10px">
+              <span style="width:7px;height:7px;border-radius:50%;background:#4ade80;display:block;animation:pulseDot 2s ease-out infinite"></span>
+              <span style="font-size:0.72rem;font-weight:700;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:0.1em;font-family:'Hanken Grotesk',sans-serif">Live threat intelligence</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px">
+              <span style="font-size:0.75rem;color:rgba(255,255,255,0.2)" id="threat-last-updated">Loading...</span>
+              <a href="https://thecyberwire.com" target="_blank" style="font-size:0.75rem;color:#FF6B00;font-weight:600;text-decoration:none;font-family:'Hanken Grotesk',sans-serif">CyberWire Daily →</a>
+            </div>
+          </div>
+          <div id="threat-rows"><div style="padding:2rem;text-align:center;color:rgba(255,255,255,0.3);font-size:0.875rem"><div class="spinner" style="margin:0 auto 10px"></div>Fetching latest threats...</div></div>
         </div>
         <!-- Image strip with security stats -->
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px">
@@ -790,6 +795,7 @@ function enterApp(data) {
   if (data.user) document.getElementById('user-email').textContent = data.user.email || '';
   startIdleTimer();
   loadDashboard();
+  loadThreats();
   loadTopics();
 }
 
@@ -808,6 +814,40 @@ function showPage(name, el) {
   document.getElementById('page-' + name).classList.add('active');
   el.classList.add('active');
 }
+
+async function loadThreats() {
+  const data = await api('/dashboard/threats');
+  const el = document.getElementById('threat-rows');
+  const upd = document.getElementById('threat-last-updated');
+  if (!el) return;
+  if (!data.threats || data.threats.length === 0) {
+    el.innerHTML = '<div style="padding:1.5rem;text-align:center;color:rgba(255,255,255,0.3)">No threats available right now.</div>';
+    return;
+  }
+  if (upd && data.lastUpdated) {
+    const d = new Date(data.lastUpdated);
+    upd.textContent = 'Updated ' + d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+  }
+  const colors = {critical:'#f87171', high:'#fbbf24', medium:'#FF6B00'};
+  const badges = {critical:'b-critical', high:'b-high', medium:'b-medium'};
+  el.innerHTML = data.threats.map((t,i) => `
+    <a href="${t.link}" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 20px;${i<data.threats.length-1?'border-bottom:1px solid rgba(255,255,255,0.05);':''}transition:background 0.15s;text-decoration:none" onmouseover="this.style.background='rgba(255,255,255,0.04)'" onmouseout="this.style.background='transparent'">
+      <div style="display:flex;align-items:center;gap:12px;flex:1;min-width:0">
+        <span style="width:3px;height:34px;border-radius:2px;background:${colors[t.severity]||colors.medium};flex-shrink:0;display:block"></span>
+        <div style="min-width:0">
+          <div style="font-size:0.9rem;font-weight:600;color:#ffffff;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${t.title}</div>
+          <div style="font-size:0.75rem;color:rgba(255,255,255,0.3)">${t.pubDate} · CyberWire Daily</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
+        <span class="badge ${badges[t.severity]||badges.medium}">${t.severity}</span>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      </div>
+    </a>`).join('');
+}
+
+// Auto-refresh threats every 5 minutes
+setInterval(loadThreats, 5 * 60 * 1000);
 
 async function loadDashboard() {
   const data = await api('/dashboard/stats');
@@ -1045,6 +1085,7 @@ if (savedToken && document.getElementById('app').style.display === 'flex') {
       token = savedToken;
       startIdleTimer();
       loadDashboard();
+      loadThreats();
       loadTopics();
     }
   });
