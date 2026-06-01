@@ -565,23 +565,39 @@ async function generateLesson(topic) {
   document.getElementById('lesson-content').style.display = 'block';
   document.getElementById('lesson-label').textContent = topic;
   const lessonRaw = data.lesson || data.error || 'Failed to load lesson.';
-  // Convert markdown to HTML
-  const lessonHtml = lessonRaw
-    .replace(/^# (.+)$/gm, '<h2 style="font-size:1.2rem;font-weight:800;color:#0a0a0a;margin-bottom:0.75rem;margin-top:1rem;letter-spacing:-0.02em">$1</h2>')
-    .replace(/^## (.+)$/gm, '<h3 style="font-size:1rem;font-weight:700;color:#0a0a0a;margin-bottom:0.5rem;margin-top:1.25rem">$1</h3>')
-    .replace(/^### (.+)$/gm, '<h4 style="font-size:0.95rem;font-weight:700;color:#333;margin-bottom:0.4rem;margin-top:1rem">$1</h4>')
-    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\*(.+?)\*/g, '<em>$1</em>')
-    .replace(/^[•\-\*] (.+)$/gm, '<li style="margin-bottom:6px;padding-left:4px">$1</li>')
-    .replace(/^(\d+)\. (.+)$/gm, '<li style="margin-bottom:6px;list-style-type:decimal;padding-left:4px">$2</li>')
-    .replace(/(<li[^>]*>.*<\/li>
-?)+/g, m => '<ul style="padding-left:1.5rem;margin:0.75rem 0">'+m+'</ul>')
-    .replace(/
-
-/g, '</p><p style="margin-bottom:0.75rem">')
-    .replace(/
-/g, '<br/>');
-  document.getElementById('lesson-text').innerHTML = '<p style="margin-bottom:0.75rem">'+lessonHtml+'</p>';
+  function mdToHtml(md) {
+    const lines = md.split('\n');
+    let html = '';
+    let inList = false;
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      if (line.startsWith('### ')) {
+        if (inList) { html += '</ul>'; inList = false; }
+        html += '<h4 style="font-size:0.95rem;font-weight:700;color:#222;margin:1rem 0 0.4rem">' + line.slice(4) + '</h4>';
+      } else if (line.startsWith('## ')) {
+        if (inList) { html += '</ul>'; inList = false; }
+        html += '<h3 style="font-size:1.05rem;font-weight:800;color:#0a0a0a;margin:1.25rem 0 0.5rem">' + line.slice(3) + '</h3>';
+      } else if (line.startsWith('# ')) {
+        if (inList) { html += '</ul>'; inList = false; }
+        html += '<h2 style="font-size:1.2rem;font-weight:900;color:#0a0a0a;margin:1rem 0 0.75rem">' + line.slice(2) + '</h2>';
+      } else if (line.startsWith('- ') || line.startsWith('• ')) {
+        if (!inList) { html += '<ul style="padding-left:1.5rem;margin:0.75rem 0">'; inList = true; }
+        html += '<li style="margin-bottom:5px;color:#333">' + line.slice(2) + '</li>';
+      } else if (/^[0-9]+\. /.test(line)) {
+        if (!inList) { html += '<ol style="padding-left:1.5rem;margin:0.75rem 0">'; inList = true; }
+        html += '<li style="margin-bottom:5px;color:#333">' + line.replace(/^[0-9]+\. /, '') + '</li>';
+      } else if (line.trim() === '') {
+        if (inList) { html += '</ul>'; inList = false; }
+        html += '<br>';
+      } else {
+        if (inList) { html += '</ul>'; inList = false; }
+        html += '<p style="margin-bottom:0.6rem;color:#333">' + line + '</p>';
+      }
+    }
+    if (inList) html += '</ul>';
+    return html;
+  }
+  document.getElementById('lesson-text').innerHTML = mdToHtml(lessonRaw);
 }
 
 async function startQuiz() {
