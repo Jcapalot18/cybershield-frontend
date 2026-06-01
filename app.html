@@ -397,14 +397,33 @@ html,body{height:100%;background:var(--bg);color:var(--t1);font-family:'Hanken G
             <div style="display:flex;align-items:center;gap:1.5rem">
               <svg width="100" height="100" viewBox="0 0 100 100">
                 <circle cx="50" cy="50" r="40" fill="none" stroke="#f0f0f0" stroke-width="10"/>
-                <circle cx="50" cy="50" r="40" fill="none" stroke="#FF6B00" stroke-width="10" stroke-dasharray="251" stroke-dashoffset="63" stroke-linecap="round" transform="rotate(-90 50 50)" style="animation:ringFill 1.5s ease-out forwards"/>
-                <text x="50" y="46" text-anchor="middle" font-family="Hanken Grotesk,sans-serif" font-size="18" font-weight="900" fill="#0a0a0a">75</text>
+                <circle cx="50" cy="50" r="40" fill="none" stroke="#FF6B00" stroke-width="10" stroke-dasharray="251" stroke-dashoffset="188" stroke-linecap="round" transform="rotate(-90 50 50)" data-score-ring style="transition:stroke-dashoffset 1.5s ease,stroke 0.5s ease"/>
+                <text x="50" y="46" text-anchor="middle" font-family="Hanken Grotesk,sans-serif" font-size="18" font-weight="900" fill="#0a0a0a" data-score-text>—</text>
                 <text x="50" y="60" text-anchor="middle" font-family="Hanken Grotesk,sans-serif" font-size="9" fill="#888">/ 100</text>
               </svg>
               <div>
-                <div style="font-size:1.1rem;font-weight:800;color:#FF6B00;margin-bottom:4px;font-family:'Hanken Grotesk',sans-serif">Good</div>
-                <div style="font-size:0.8rem;color:#666;line-height:1.6">3 issues need<br>your attention</div>
-                <div style="margin-top:10px;font-size:0.75rem;font-weight:600;color:#FF6B00;cursor:pointer" onclick="showPage('scanner',document.querySelectorAll('.nav-item')[2])">View details →</div>
+                <div style="font-size:1.1rem;font-weight:800;color:#FF6B00;margin-bottom:4px;font-family:'Hanken Grotesk',sans-serif" data-score-label>Calculating...</div>
+                <div style="font-size:0.8rem;color:#666;line-height:1.6" data-score-issues>Loading...</div>
+                <div style="margin-top:10px;font-size:0.75rem;font-weight:600;color:#FF6B00;cursor:pointer" onclick="showPage('scanner',document.querySelectorAll('.nav-item')[2])">Run a scan to improve →</div>
+              </div>
+            <!-- Score breakdown -->
+            <div style="margin-top:1.25rem;padding-top:1.25rem;border-top:1px solid #f0f0f0">
+              <div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#bbb;margin-bottom:10px;font-family:'Hanken Grotesk',sans-serif">Score breakdown</div>
+              <div style="display:flex;flex-direction:column;gap:6px">
+                <div style="display:flex;align-items:center;justify-content:space-between;font-size:0.8rem">
+                  <span style="color:#666">Training modules completed</span>
+                  <span style="font-weight:700;color:#FF6B00" data-score-train-pts>+0</span>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:space-between;font-size:0.8rem">
+                  <span style="color:#666">Vulnerability scans run</span>
+                  <span style="font-weight:700;color:#FF6B00" data-score-scan-pts>+0</span>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:space-between;font-size:0.8rem">
+                  <span style="color:#666">Breaches detected</span>
+                  <span style="font-weight:700;color:#f87171" data-score-breach-pts>-0</span>
+                </div>
+              </div>
+            </div>
               </div>
             </div>
           </div>
