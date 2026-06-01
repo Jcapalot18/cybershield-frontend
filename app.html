@@ -75,7 +75,7 @@ html,body{height:100%;background:var(--bg);color:var(--t1);font-family:'Hanken G
 /* TOPBAR */
 .topbar{height:64px;background:#ffffff;border-bottom:1px solid #e5e5e5;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;flex-shrink:0}
 .topbar-left{display:flex;align-items:center;gap:12px}
-.topbar-brand{font-family:'Hanken Grotesk',sans-serif;font-size:1.05rem;font-weight:800;color:#0a0a0a;letter-spacing:-0.02em}
+.topbar-brand{font-family:'Hanken Grotesk',sans-serif;font-size:1.15rem;font-weight:900;color:#0a0a0a;letter-spacing:-0.02em}
 .topbar-brand span{color:#FF6B00}
 .topbar-right{display:flex;align-items:center;gap:14px}
 .topbar-status{display:flex;align-items:center;gap:6px;font-size:0.82rem;color:#888}
@@ -322,15 +322,28 @@ html,body{height:100%;background:var(--bg);color:var(--t1);font-family:'Hanken G
 
       <!-- DASHBOARD -->
       <div id="page-dashboard" class="page active">
-        <div class="page-header">
-          <div class="page-title">Security overview</div>
-          <div class="page-sub" id="dash-sub">Loading your security data...</div>
+        <!-- Dashboard hero banner -->
+        <div style="background:#0a0a0a;border-radius:14px;padding:2rem 2.5rem;margin-bottom:1.5rem;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:space-between">
+          <div style="position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=1200&q=60&fit=crop') center/cover;opacity:0.15"></div>
+          <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,107,0,0.15) 0%,rgba(0,0,0,0) 100%)"></div>
+          <div style="position:relative;z-index:1">
+            <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#FF6B00;margin-bottom:6px;font-family:'Hanken Grotesk',sans-serif">Security overview</div>
+            <div style="font-family:'Hanken Grotesk',sans-serif;font-size:1.6rem;font-weight:900;color:#ffffff;letter-spacing:-0.025em;margin-bottom:4px" id="dash-title">Welcome back</div>
+            <div style="font-size:0.875rem;color:rgba(255,255,255,0.5)" id="dash-sub">Loading your security data...</div>
+          </div>
+          <div style="position:relative;z-index:1;display:flex;align-items:center;gap:10px">
+            <div style="background:rgba(74,222,128,0.12);border:1px solid rgba(74,222,128,0.3);border-radius:8px;padding:10px 18px;text-align:center">
+              <div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:rgba(255,255,255,0.5);margin-bottom:4px;font-family:'Hanken Grotesk',sans-serif">Status</div>
+              <div style="font-size:0.9rem;font-weight:700;color:#4ade80;display:flex;align-items:center;gap:6px"><span style="width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block"></span>Protected</div>
+            </div>
+          </div>
         </div>
+        <!-- Stats row -->
         <div class="stats-row">
-          <div class="stat-box"><div class="stat-box-label">Trainings</div><div class="stat-box-value" id="s-train">—</div></div>
-          <div class="stat-box"><div class="stat-box-label">Breaches detected</div><div class="stat-box-value red" id="s-breach">—</div></div>
-          <div class="stat-box"><div class="stat-box-label">Scans performed</div><div class="stat-box-value" id="s-scans">—</div></div>
-          <div class="stat-box"><div class="stat-box-label">Active threats</div><div class="stat-box-value red">6</div></div>
+          <div class="stat-box" style="border-left:3px solid #FF6B00"><div class="stat-box-label">Trainings completed</div><div class="stat-box-value" id="s-train">—</div></div>
+          <div class="stat-box" style="border-left:3px solid #f87171"><div class="stat-box-label">Breaches detected</div><div class="stat-box-value red" id="s-breach">—</div></div>
+          <div class="stat-box" style="border-left:3px solid #FF6B00"><div class="stat-box-label">Scans performed</div><div class="stat-box-value" id="s-scans">—</div></div>
+          <div class="stat-box" style="border-left:3px solid #f87171"><div class="stat-box-label">Active threats</div><div class="stat-box-value red">6</div></div>
         </div>
         <div class="card">
           <div class="card-head"><span class="card-head-title">Live threat intelligence</span><span class="card-head-meta">Source: CyberWire Daily</span></div>
@@ -344,9 +357,17 @@ html,body{height:100%;background:var(--bg);color:var(--t1);font-family:'Hanken G
 
       <!-- BREACH -->
       <div id="page-breach" class="page">
-        <div class="page-header">
-          <div class="page-title">Breach monitor</div>
-          <div class="page-sub">Check if your company emails appear in known data breaches</div>
+        <div style="background:#0a0a0a;border-radius:14px;padding:2rem 2.5rem;margin-bottom:1.5rem;position:relative;overflow:hidden;display:flex;align-items:center;gap:2rem">
+          <div style="position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1563986768609-322da13575f3?w=1200&q=60&fit=crop') center/cover;opacity:0.12"></div>
+          <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(248,113,113,0.12) 0%,rgba(0,0,0,0) 100%)"></div>
+          <div style="width:52px;height:52px;background:rgba(248,113,113,0.15);border:1.5px solid rgba(248,113,113,0.3);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative;z-index:1">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f87171" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          </div>
+          <div style="position:relative;z-index:1">
+            <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#f87171;margin-bottom:4px;font-family:'Hanken Grotesk',sans-serif">Breach monitor</div>
+            <div style="font-family:'Hanken Grotesk',sans-serif;font-size:1.4rem;font-weight:900;color:#fff;letter-spacing:-0.02em;margin-bottom:4px">12+ billion credentials monitored</div>
+            <div style="font-size:0.875rem;color:rgba(255,255,255,0.45)">Check if any company email appears in a known data breach</div>
+          </div>
         </div>
         <div class="card">
           <div class="card-head"><span class="card-head-title">Check an email address</span></div>
@@ -364,9 +385,17 @@ html,body{height:100%;background:var(--bg);color:var(--t1);font-family:'Hanken G
 
       <!-- SCANNER -->
       <div id="page-scanner" class="page">
-        <div class="page-header">
-          <div class="page-title">Vulnerability scanner</div>
-          <div class="page-sub">Real security checks — SSL, DNS, headers, cookies. 100% accurate.</div>
+        <div style="background:#0a0a0a;border-radius:14px;padding:2rem 2.5rem;margin-bottom:1.5rem;position:relative;overflow:hidden;display:flex;align-items:center;gap:2rem">
+          <div style="position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=1200&q=60&fit=crop') center/cover;opacity:0.12"></div>
+          <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,107,0,0.12) 0%,rgba(0,0,0,0) 100%)"></div>
+          <div style="width:52px;height:52px;background:rgba(255,107,0,0.12);border:1.5px solid rgba(255,107,0,0.3);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative;z-index:1">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FF6B00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+          </div>
+          <div style="position:relative;z-index:1">
+            <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#FF6B00;margin-bottom:4px;font-family:'Hanken Grotesk',sans-serif">Vulnerability scanner</div>
+            <div style="font-family:'Hanken Grotesk',sans-serif;font-size:1.4rem;font-weight:900;color:#fff;letter-spacing:-0.02em;margin-bottom:4px">Real checks. Zero guesswork.</div>
+            <div style="font-size:0.875rem;color:rgba(255,255,255,0.45)">SSL certificates, DNS, security headers, cookie flags — 100% accurate results</div>
+          </div>
         </div>
         <div class="card">
           <div class="card-head"><span class="card-head-title">Scan a website</span></div>
@@ -525,6 +554,7 @@ async function loadDashboard() {
     document.getElementById('s-breach').textContent = data.stats.breachChecks || 0;
     document.getElementById('s-scans').textContent = data.stats.scans || 0;
     document.getElementById('dash-sub').textContent = (data.company?.name || 'Your company') + ' · ' + (data.company?.plan || 'starter') + ' plan · 14-day trial';
+    const titleEl = document.getElementById('dash-title'); if(titleEl) titleEl.textContent = 'Welcome, ' + (data.company?.name || 'your company');
   }
 }
 
