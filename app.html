@@ -904,19 +904,29 @@ function showPage(name, el) {
 
 async function startUpgrade(plan) {
   const btn = event.target;
+  const origText = btn.textContent;
   btn.textContent = 'Redirecting to payment...';
   btn.disabled = true;
-  const data = await api('/billing/upgrade', {method:'POST', body: JSON.stringify({plan, successUrl: window.location.origin + '/app.html?upgraded=true', cancelUrl: window.location.origin + '/app.html'})});
-  if (data.url) {
-    window.location.href = data.url;
-  } else {
-    // Fallback to direct Stripe link if backend fails
-    const stripeLinks = {
-      starter:    'https://buy.stripe.com/8x2fZi1nv4nh3r55gu4ZG00',
-      business:   'https://buy.stripe.com/cNiaEY5DL8Dx2n1dN04ZG01',
-      enterprise: 'https://buy.stripe.com/14AeVed6d4nh1iX10e4ZG02'
-    };
-    window.location.href = stripeLinks[plan] || stripeLinks.business;
+  try {
+    const data = await api('/billing/upgrade', {
+      method:'POST',
+      body: JSON.stringify({
+        plan,
+        successUrl: 'https://cybershield-frontend-five.vercel.app/app.html?upgraded=true',
+        cancelUrl: 'https://cybershield-frontend-five.vercel.app/app.html'
+      })
+    });
+    if (data && data.url) {
+      window.location.href = data.url;
+    } else {
+      btn.textContent = origText;
+      btn.disabled = false;
+      alert('Error: ' + (data?.error || 'Could not create payment session. Please try again.'));
+    }
+  } catch(e) {
+    btn.textContent = origText;
+    btn.disabled = false;
+    alert('Network error. Please try again.');
   }
 }
 
