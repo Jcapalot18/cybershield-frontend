@@ -368,19 +368,19 @@ html,body{height:100%;background:var(--bg);color:var(--t1);font-family:'Hanken G
             <div style="position:absolute;top:0;right:0;width:60px;height:60px;background:rgba(255,107,0,0.08);border-radius:0 12px 0 100%"></div>
             <div style="position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#FF6B00,transparent);opacity:0.4"></div>
             <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:rgba(255,255,255,0.35);margin-bottom:10px;font-family:'Hanken Grotesk',sans-serif">Trainings</div>
-            <div style="font-family:'Hanken Grotesk',sans-serif;font-size:2.2rem;font-weight:900;color:#ffffff;line-height:1;animation:countUp 0.6s 0.3s both" id="s-train">—</div>
+            <div style="font-family:'Hanken Grotesk',sans-serif;font-size:2.2rem;font-weight:900;color:#ffffff;line-height:1;animation:countUp 0.6s 0.3s both" id="s-train">0</div>
           </div>
           <div class="stat-card-anim" style="animation-delay:0.15s;background:#FF6B00;border-radius:12px;padding:1.25rem 1.5rem;position:relative;overflow:hidden;animation:slideUp 0.5s 0.1s ease both">
             <div style="position:absolute;top:0;right:0;width:60px;height:60px;background:rgba(255,255,255,0.1);border-radius:0 12px 0 100%"></div>
             <div style="position:absolute;bottom:0;left:0;right:0;height:2px;background:rgba(255,255,255,0.3)"></div>
             <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:rgba(255,255,255,0.6);margin-bottom:10px;font-family:'Hanken Grotesk',sans-serif">Breaches detected</div>
-            <div style="font-family:'Hanken Grotesk',sans-serif;font-size:2.2rem;font-weight:900;color:#ffffff;line-height:1;animation:countUp 0.6s 0.4s both" id="s-breach">—</div>
+            <div style="font-family:'Hanken Grotesk',sans-serif;font-size:2.2rem;font-weight:900;color:#ffffff;line-height:1;animation:countUp 0.6s 0.4s both" id="s-breach">0</div>
           </div>
           <div class="stat-card-anim" style="animation-delay:0.25s;background:#0a0a0a;border-radius:12px;padding:1.25rem 1.5rem;position:relative;overflow:hidden;animation:glowPulse 3s 1s ease-in-out infinite,slideUp 0.5s 0.2s ease both">
             <div style="position:absolute;top:0;right:0;width:60px;height:60px;background:rgba(255,107,0,0.08);border-radius:0 12px 0 100%"></div>
             <div style="position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#FF6B00);opacity:0.4"></div>
             <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:rgba(255,255,255,0.35);margin-bottom:10px;font-family:'Hanken Grotesk',sans-serif">Scans performed</div>
-            <div style="font-family:'Hanken Grotesk',sans-serif;font-size:2.2rem;font-weight:900;color:#ffffff;line-height:1;animation:countUp 0.6s 0.5s both" id="s-scans">—</div>
+            <div style="font-family:'Hanken Grotesk',sans-serif;font-size:2.2rem;font-weight:900;color:#ffffff;line-height:1;animation:countUp 0.6s 0.5s both" id="s-scans">0</div>
           </div>
           <div class="stat-card-anim" style="animation-delay:0.35s;background:#f87171;border-radius:12px;padding:1.25rem 1.5rem;position:relative;overflow:hidden;animation:slideUp 0.5s 0.3s ease both">
             <div style="position:absolute;top:0;right:0;width:60px;height:60px;background:rgba(255,255,255,0.1);border-radius:0 12px 0 100%"></div>
@@ -1299,26 +1299,43 @@ document.addEventListener('DOMContentLoaded', initBgCanvas);
 
 // Restore session if token exists
 const savedToken = sessionStorage.getItem('cs_token');
-if (savedToken && document.getElementById('app').style.display === 'flex') {
+const isSignupFlow = new URLSearchParams(window.location.search).get('signup') || new URLSearchParams(window.location.search).get('plan');
+
+if (savedToken && !isSignupFlow) {
   token = savedToken;
+  // Show app immediately - don't wait for API
+  document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('auth-page').style.display = 'none';
+    document.getElementById('app').style.display = 'flex';
+  });
+  // Then verify and load data
   api('/auth/me').then(data => {
     if (data && data.user) {
-      document.getElementById('user-email').textContent = data.user.email || '';
+      const emailEl = document.getElementById('user-email');
+      if (emailEl) emailEl.textContent = data.user.email || '';
       startIdleTimer();
       loadDashboard();
+      loadThreats();
       loadTopics();
-    } else if (data.error && (data.error.includes('Invalid') || data.error.includes('expired'))) {
+    } else if (data && data.error && (data.error.includes('Invalid') || data.error.includes('expired') || data.error.includes('token'))) {
+      // Real auth failure - force login
       sessionStorage.removeItem('cs_token');
       token = null;
       document.getElementById('app').style.display = 'none';
       document.getElementById('auth-page').style.display = 'flex';
     } else {
-      token = savedToken;
+      // Network error - still try to load dashboard
       startIdleTimer();
       loadDashboard();
       loadThreats();
       loadTopics();
     }
+  }).catch(() => {
+    // Network error - keep session, try to load
+    startIdleTimer();
+    loadDashboard();
+    loadThreats();
+    loadTopics();
   });
 }
 </script>
