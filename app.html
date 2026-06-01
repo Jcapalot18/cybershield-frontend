@@ -1,389 +1,366 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>CyberShield — Dashboard</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#04090f;
-  --surface:#080f1a;
-  --surface2:#0c1520;
-  --border:#162030;
-  --border2:#1e3050;
-  --accent:#1a6fd4;
-  --accent2:#2a8fff;
+  --bg:#0a0a0f;
+  --surface:#111118;
+  --surface2:#1a1a24;
+  --border:#2a2a3a;
+  --accent:#4f46e5;
+  --accent-hover:#4338ca;
   --green:#22c55e;
   --red:#ef4444;
   --yellow:#f59e0b;
-  --text:#e2eaf5;
-  --muted:#5a7a9a;
-  --dim:#243040;
+  --text:#f1f0ff;
+  --muted:#8b8ba7;
+  --dim:#3a3a4a;
 }
-html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',system-ui,sans-serif;font-size:16px}
-a{color:var(--accent2);text-decoration:none}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;font-size:15px;line-height:1.5}
 
-/* AUTH */
-#auth-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:2rem}
-.auth-box{width:100%;max-width:400px;background:var(--surface);border:1px solid var(--border2);border-radius:12px;padding:2.5rem}
-.auth-logo{display:flex;align-items:center;gap:10px;margin-bottom:2rem}
-.auth-logo-icon{width:36px;height:36px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center}
-.auth-logo-icon svg{width:20px;height:20px;fill:none;stroke:#9dd4ff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.auth-logo-name{font-family:'IBM Plex Mono',monospace;font-size:1.1rem;font-weight:500;color:var(--text)}
-.auth-title{font-size:1.3rem;font-weight:600;margin-bottom:0.5rem;color:#fff}
-.auth-sub{font-size:0.85rem;color:var(--muted);margin-bottom:1.75rem}
-.field{margin-bottom:1rem}
-.field label{display:block;font-size:0.75rem;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;font-family:'IBM Plex Mono',monospace}
-.field input{width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:6px;padding:10px 12px;color:var(--text);font-size:0.875rem;font-family:inherit;outline:none;transition:border-color 0.2s}
-.field input:focus{border-color:var(--accent2)}
-.field input::placeholder{color:var(--dim)}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 20px;border-radius:6px;font-size:0.875rem;font-weight:500;cursor:pointer;border:none;font-family:inherit;transition:all 0.15s}
-.btn-primary{background:var(--accent);color:#e0f0ff;width:100%}
-.btn-primary:hover{background:#1560b8}
+/* AUTH PAGE */
+.auth-page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem;background:var(--bg)}
+.auth-card{width:100%;max-width:420px;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:2.5rem}
+.auth-brand{display:flex;align-items:center;gap:12px;margin-bottom:2rem}
+.auth-brand-icon{width:40px;height:40px;background:var(--accent);border-radius:10px;display:flex;align-items:center;justify-content:center}
+.auth-brand-icon svg{width:22px;height:22px;fill:none;stroke:#c7d2fe;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.auth-brand-name{font-size:1.2rem;font-weight:700;color:var(--text)}
+.auth-title{font-size:1.5rem;font-weight:700;color:var(--text);margin-bottom:6px}
+.auth-sub{font-size:0.9rem;color:var(--muted);margin-bottom:1.75rem}
+.form-label{display:block;font-size:0.8rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px}
+.form-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:11px 14px;color:var(--text);font-size:0.95rem;font-family:inherit;outline:none;transition:border-color 0.2s;margin-bottom:14px}
+.form-input:focus{border-color:var(--accent)}
+.form-input::placeholder{color:var(--dim)}
+.btn-primary{width:100%;background:var(--accent);color:#fff;border:none;border-radius:8px;padding:12px;font-size:1rem;font-weight:600;cursor:pointer;font-family:inherit;transition:background 0.2s;margin-bottom:14px}
+.btn-primary:hover{background:var(--accent-hover)}
 .btn-primary:disabled{opacity:0.5;cursor:not-allowed}
-.auth-switch{font-size:0.8rem;color:var(--muted);margin-top:1rem;text-align:center}
-.auth-switch a{color:var(--accent2);cursor:pointer}
-.auth-error{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:6px;padding:8px 12px;font-size:0.8rem;color:#fca5a5;margin-bottom:1rem;display:none}
+.auth-switch{font-size:0.875rem;color:var(--muted);text-align:center}
+.auth-switch a{color:#818cf8;cursor:pointer;font-weight:500}
+.auth-error{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:8px;padding:10px 14px;font-size:0.875rem;color:#fca5a5;margin-bottom:14px;display:none}
 
-/* APP */
-#app-screen{display:none;height:100vh;overflow:hidden;flex-direction:column}
-.topbar{height:60px;background:var(--surface);border-bottom:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between;padding:0 2rem;flex-shrink:0}
-.topbar-logo{display:flex;align-items:center;gap:10px;font-family:'IBM Plex Mono',monospace;font-size:1rem;font-weight:600;color:#ffffff;letter-spacing:0.02em}
-.topbar-logo-icon{width:34px;height:34px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center}
-.topbar-logo-icon svg{width:18px;height:18px;fill:none;stroke:#9dd4ff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.topbar-right{display:flex;align-items:center;gap:1.5rem}
-.topbar-user{font-size:0.85rem;color:var(--muted);font-family:'IBM Plex Mono',monospace;display:flex;align-items:center;gap:6px}
-.topbar-logout{font-size:0.85rem;color:var(--muted);cursor:pointer;background:transparent;border:1px solid var(--border2);font-family:inherit;padding:6px 14px;border-radius:6px;transition:all 0.15s;color:var(--text)}
-.topbar-logout:hover{background:var(--surface2);border-color:var(--border2)}
-.status-dot{width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block;flex-shrink:0}
+/* APP LAYOUT */
+.app{display:none;height:100vh;flex-direction:column}
+.topbar{height:64px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 2rem;flex-shrink:0}
+.topbar-left{display:flex;align-items:center;gap:12px}
+.topbar-icon{width:36px;height:36px;background:var(--accent);border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.topbar-icon svg{width:20px;height:20px;fill:none;stroke:#c7d2fe;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.topbar-name{font-size:1.1rem;font-weight:700;color:var(--text)}
+.topbar-right{display:flex;align-items:center;gap:16px}
+.topbar-email{font-size:0.85rem;color:var(--muted)}
+.topbar-dot{width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0}
+.btn-signout{background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:7px 16px;font-size:0.85rem;font-weight:500;cursor:pointer;font-family:inherit;transition:all 0.2s}
+.btn-signout:hover{border-color:var(--muted);color:var(--text)}
 
 .app-body{display:flex;flex:1;overflow:hidden}
-.sidebar{width:200px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);padding:1rem 0.75rem;display:flex;flex-direction:column;gap:2px;overflow-y:auto}
-.nav-section{font-size:0.65rem;font-weight:600;color:var(--dim);text-transform:uppercase;letter-spacing:0.12em;padding:8px 8px 4px;font-family:'IBM Plex Mono',monospace}
-.nav-item{display:flex;align-items:center;gap:8px;padding:9px 10px;border-radius:6px;cursor:pointer;font-size:0.95rem;color:var(--muted);transition:all 0.15s;border:none;background:none;width:100%;text-align:left;font-family:inherit}
-.nav-item:hover{background:var(--surface2);color:var(--text)}
-.nav-item.active{background:rgba(26,111,212,0.15);color:var(--accent2);border:1px solid rgba(26,111,212,0.2)}
-.nav-item svg{width:15px;height:15px;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.sidebar{width:220px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);padding:1.25rem 1rem;display:flex;flex-direction:column;gap:4px}
+.nav-section{font-size:0.7rem;font-weight:600;color:var(--dim);text-transform:uppercase;letter-spacing:0.1em;padding:12px 12px 6px;margin-top:8px}
+.nav-section:first-child{margin-top:0}
+.nav-btn{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;font-size:0.9rem;font-weight:500;color:var(--muted);transition:all 0.15s;border:none;background:none;width:100%;text-align:left;font-family:inherit}
+.nav-btn:hover{background:var(--surface2);color:var(--text)}
+.nav-btn.active{background:rgba(79,70,229,0.15);color:#818cf8;border:1px solid rgba(79,70,229,0.25)}
+.nav-btn svg{width:18px;height:18px;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 
-.main{flex:1;overflow-y:auto;padding:1.5rem}
+.main{flex:1;overflow-y:auto;padding:2rem}
 .page{display:none}
 .page.active{display:block}
+.page-title{font-size:1.5rem;font-weight:700;color:var(--text);margin-bottom:4px}
+.page-sub{font-size:0.9rem;color:var(--muted);margin-bottom:1.75rem}
 
-/* DASHBOARD */
-.page-header{margin-bottom:1.5rem}
-.page-title{font-size:1.4rem;font-weight:600;color:#fff;margin-bottom:6px}
-.page-sub{font-size:0.8rem;color:var(--muted)}
-.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1.5rem}
-.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1rem}
-.stat-label{font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;font-family:'IBM Plex Mono',monospace;margin-bottom:6px}
-.stat-value{font-size:2rem;font-weight:600;color:#fff;line-height:1;font-family:'IBM Plex Mono',monospace}
-.stat-value.green{color:var(--green)}
+/* CARDS */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:1.25rem}
+.card-head{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.card-head-title{font-size:0.8rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em}
+.card-head-meta{font-size:0.8rem;color:var(--dim)}
+
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:1.5rem}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.25rem}
+.stat-label{font-size:0.8rem;font-weight:500;color:var(--muted);margin-bottom:8px}
+.stat-value{font-size:2rem;font-weight:700;color:var(--text)}
 .stat-value.red{color:var(--red)}
 
-.card{background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:1rem}
-.card-head{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
-.card-head-title{font-size:0.72rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;font-family:'IBM Plex Mono',monospace}
-.card-head-meta{font-size:0.72rem;color:var(--dim)}
-.threat-row{padding:8px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:10px}
+/* THREAT FEED */
+.threat-row{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px}
 .threat-row:last-child{border-bottom:none}
-.threat-name{font-size:0.95rem;color:var(--text);font-weight:500}
-.threat-ep{font-size:0.72rem;color:var(--dim);margin-top:1px;font-family:'IBM Plex Mono',monospace}
-.badge{font-size:0.65rem;font-weight:600;padding:2px 8px;border-radius:100px;white-space:nowrap;font-family:'IBM Plex Mono',monospace}
-.badge-critical{background:rgba(239,68,68,0.15);color:#fca5a5;border:1px solid rgba(239,68,68,0.25)}
-.badge-high{background:rgba(245,158,11,0.15);color:#fcd34d;border:1px solid rgba(245,158,11,0.25)}
-.badge-medium{background:rgba(26,111,212,0.15);color:#7dd3fc;border:1px solid rgba(26,111,212,0.25)}
+.threat-name{font-size:0.95rem;font-weight:500;color:var(--text);margin-bottom:2px}
+.threat-ep{font-size:0.8rem;color:var(--dim)}
+.badge{font-size:0.72rem;font-weight:600;padding:3px 10px;border-radius:100px;white-space:nowrap}
+.badge-critical{background:rgba(239,68,68,0.15);color:#fca5a5;border:1px solid rgba(239,68,68,0.2)}
+.badge-high{background:rgba(245,158,11,0.15);color:#fcd34d;border:1px solid rgba(245,158,11,0.2)}
+.badge-medium{background:rgba(79,70,229,0.15);color:#a5b4fc;border:1px solid rgba(79,70,229,0.2)}
 
 /* BREACH */
-.breach-form{padding:14px;display:flex;gap:8px}
-.breach-form input{flex:1;background:var(--bg);border:1px solid var(--border2);border-radius:6px;padding:8px 12px;color:var(--text);font-size:0.875rem;font-family:inherit;outline:none}
-.breach-form input:focus{border-color:var(--accent2)}
-.breach-form input::placeholder{color:var(--dim)}
-.breach-btn{background:var(--accent);color:#e0f0ff;border:none;border-radius:6px;padding:8px 14px;font-size:0.82rem;font-weight:500;cursor:pointer;font-family:inherit;white-space:nowrap;transition:background 0.15s}
-.breach-btn:hover{background:#1560b8}
-.breach-btn:disabled{opacity:0.5;cursor:not-allowed}
-.breach-results{padding:0 14px 14px}
-.breach-clean{background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.25);border-radius:6px;padding:10px 12px;font-size:0.82rem;color:#86efac}
-.breach-found-banner{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.25);border-radius:6px;padding:10px 12px;font-size:0.82rem;color:#fca5a5;margin-bottom:8px}
-.breach-item{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:8px 10px;margin-bottom:6px}
-.breach-item-name{font-size:0.95rem;font-weight:500;color:var(--text)}
-.breach-item-data{font-size:0.72rem;color:var(--muted);margin-top:2px}
-.breach-history{padding:0 14px 14px}
-.history-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);font-size:0.78rem}
+.input-row{display:flex;gap:10px;padding:16px 18px}
+.breach-input{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text);font-size:0.95rem;font-family:inherit;outline:none}
+.breach-input:focus{border-color:var(--accent)}
+.breach-input::placeholder{color:var(--dim)}
+.btn-check{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:10px 20px;font-size:0.9rem;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;transition:background 0.2s}
+.btn-check:hover{background:var(--accent-hover)}
+.btn-check:disabled{opacity:0.5;cursor:not-allowed}
+.breach-body{padding:0 18px 16px}
+.alert-red{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.25);border-radius:8px;padding:12px 14px;font-size:0.9rem;color:#fca5a5;margin-bottom:10px}
+.alert-green{background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.25);border-radius:8px;padding:12px 14px;font-size:0.9rem;color:#86efac}
+.breach-item{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin-bottom:8px}
+.breach-item-name{font-size:0.95rem;font-weight:600;color:var(--text);margin-bottom:2px}
+.breach-item-data{font-size:0.8rem;color:var(--muted)}
+.history-row{display:flex;justify-content:space-between;align-items:center;padding:10px 18px;border-bottom:1px solid var(--border);font-size:0.9rem}
 .history-row:last-child{border-bottom:none}
 
 /* SCANNER */
-.scan-form{padding:14px;display:flex;gap:8px}
-.scan-form input{flex:1;background:var(--bg);border:1px solid var(--border2);border-radius:6px;padding:8px 12px;color:var(--text);font-size:0.875rem;font-family:inherit;outline:none}
-.scan-form input:focus{border-color:var(--accent2)}
-.scan-form input::placeholder{color:var(--dim)}
-.scan-results{padding:0 14px 14px}
-.risk-header{display:flex;align-items:center;gap:14px;background:var(--surface2);border-radius:6px;padding:12px;margin-bottom:10px}
-.risk-circle{width:56px;height:56px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;border:2px solid}
-.risk-score{font-size:1.2rem;font-weight:600;line-height:1;font-family:'IBM Plex Mono',monospace}
-.risk-label-sm{font-size:0.6rem;text-transform:uppercase;letter-spacing:0.08em;font-family:'IBM Plex Mono',monospace}
-.finding-row{padding:8px 0;border-bottom:1px solid var(--border);display:flex;gap:8px;align-items:flex-start}
+.scan-results-body{padding:0 18px 16px}
+.risk-header{display:flex;align-items:center;gap:16px;background:var(--surface2);border-radius:10px;padding:16px;margin-bottom:14px}
+.risk-circle{width:64px;height:64px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;border:2px solid}
+.risk-score-num{font-size:1.4rem;font-weight:700;line-height:1}
+.risk-score-label{font-size:0.65rem;text-transform:uppercase;letter-spacing:0.08em;margin-top:1px}
+.finding-row{padding:12px 0;border-bottom:1px solid var(--border);display:flex;gap:10px;align-items:flex-start}
 .finding-row:last-child{border-bottom:none}
-.finding-text{font-size:0.95rem;color:var(--text);font-weight:500}
-.finding-desc{font-size:0.75rem;color:var(--muted);margin-top:2px;line-height:1.5}
-.rec-num{width:20px;height:20px;border-radius:50%;background:rgba(26,111,212,0.2);color:var(--accent2);font-size:0.7rem;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;font-family:'IBM Plex Mono',monospace}
+.finding-title{font-size:0.95rem;font-weight:600;color:var(--text);margin-bottom:3px}
+.finding-desc{font-size:0.85rem;color:var(--muted);line-height:1.5}
+.rec-num{width:24px;height:24px;border-radius:50%;background:rgba(79,70,229,0.2);color:#818cf8;font-size:0.8rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.section-label{font-size:0.75rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin:14px 0 8px}
 
 /* TRAINING */
-.training-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
-.topic-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1rem;cursor:pointer;transition:all 0.15s}
-.topic-card:hover{border-color:var(--accent);background:rgba(26,111,212,0.05)}
-.topic-icon{font-size:1.2rem;margin-bottom:6px}
-.topic-title{font-size:1rem;font-weight:500;color:var(--text);margin-bottom:6px}
-.topic-desc{font-size:0.75rem;color:var(--muted)}
-.lesson-content{background:var(--surface2);border-radius:6px;padding:16px;font-size:0.95rem;color:var(--text);line-height:1.75;white-space:pre-wrap;max-height:260px;overflow-y:auto;margin-bottom:10px;font-family:'IBM Plex Mono',monospace}
-.quiz-option{padding:10px 14px;border-radius:6px;border:1px solid var(--border2);font-size:0.95rem;cursor:pointer;margin-bottom:6px;color:var(--muted);background:var(--surface2);transition:all 0.15s}
-.quiz-option:hover{border-color:var(--border2);color:var(--text)}
-.quiz-option.selected{border-color:var(--accent);background:rgba(26,111,212,0.1);color:var(--accent2)}
-.quiz-option.correct{border-color:var(--green);background:rgba(34,197,94,0.1);color:#86efac}
-.quiz-option.wrong{border-color:var(--red);background:rgba(239,68,68,0.1);color:#fca5a5}
-.result-box{text-align:center;padding:2rem;background:var(--surface);border:1px solid var(--border);border-radius:8px}
-.result-score{font-size:3rem;font-weight:600;line-height:1;margin-bottom:8px;font-family:'IBM Plex Mono',monospace}
-.action-row{display:flex;gap:8px;margin-top:10px}
-.btn-sm{padding:7px 14px;border-radius:6px;font-size:0.8rem;font-weight:500;cursor:pointer;font-family:inherit;border:1px solid var(--border2);background:var(--surface2);color:var(--text);transition:all 0.15s}
-.btn-sm:hover{background:var(--surface);border-color:var(--border2)}
-.btn-sm.primary{background:var(--accent);color:#e0f0ff;border-color:var(--accent)}
-.btn-sm.primary:hover{background:#1560b8}
-.btn-sm:disabled{opacity:0.4;cursor:not-allowed}
-.loading{text-align:center;padding:2rem;color:var(--muted);font-size:0.82rem}
-.spin{display:inline-block;animation:spin 1s linear infinite}
+.topics-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.topic-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.25rem;cursor:pointer;transition:all 0.15s}
+.topic-card:hover{border-color:var(--accent);background:rgba(79,70,229,0.05)}
+.topic-module{font-size:0.72rem;font-weight:700;color:#818cf8;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px}
+.topic-title{font-size:0.95rem;font-weight:600;color:var(--text);margin-bottom:4px}
+.topic-sub{font-size:0.8rem;color:var(--muted)}
+.lesson-box{background:var(--surface2);border-radius:10px;padding:18px;font-size:0.95rem;color:var(--text);line-height:1.75;white-space:pre-wrap;max-height:300px;overflow-y:auto;margin-bottom:14px;border:1px solid var(--border)}
+.quiz-q{font-size:1rem;font-weight:600;color:var(--text);margin-bottom:10px}
+.quiz-opt{padding:11px 14px;border-radius:8px;border:1px solid var(--border);font-size:0.9rem;cursor:pointer;margin-bottom:8px;color:var(--muted);background:var(--surface2);transition:all 0.15s}
+.quiz-opt:hover{border-color:var(--border);color:var(--text)}
+.quiz-opt.selected{border-color:var(--accent);background:rgba(79,70,229,0.1);color:#a5b4fc}
+.quiz-opt.correct{border-color:var(--green);background:rgba(34,197,94,0.1);color:#86efac}
+.quiz-opt.wrong{border-color:var(--red);background:rgba(239,68,68,0.1);color:#fca5a5}
+.result-box{text-align:center;padding:2.5rem;background:var(--surface);border:1px solid var(--border);border-radius:12px}
+.result-score{font-size:3.5rem;font-weight:700;line-height:1;margin-bottom:10px}
+.action-row{display:flex;gap:10px;margin-top:14px}
+.btn-secondary{padding:10px 20px;border-radius:8px;font-size:0.9rem;font-weight:600;cursor:pointer;font-family:inherit;border:1px solid var(--border);background:var(--surface2);color:var(--text);transition:all 0.15s}
+.btn-secondary:hover{background:var(--surface);border-color:var(--muted)}
+.btn-accent{padding:10px 20px;border-radius:8px;font-size:0.9rem;font-weight:600;cursor:pointer;font-family:inherit;background:var(--accent);color:#fff;border:none;transition:background 0.2s}
+.btn-accent:hover{background:var(--accent-hover)}
+.btn-accent:disabled{opacity:0.4;cursor:not-allowed}
+.loading{text-align:center;padding:2.5rem;color:var(--muted);font-size:0.9rem}
+.spin{display:inline-block;animation:spin 1s linear infinite;font-size:1.2rem}
 @keyframes spin{to{transform:rotate(360deg)}}
-.section-sub{font-size:0.78rem;color:var(--muted);margin-bottom:1rem}
 </style>
-<script>
-// Show auth screen if no token OR if coming from landing page signup
-var hasToken = localStorage.getItem('cs_token');
-var isSignup = window.location.search.includes('signup') || window.location.search.includes('plan');
-if(!hasToken || isSignup){
-  document.addEventListener('DOMContentLoaded',function(){
-    document.getElementById('auth-screen').style.display='flex';
-    document.getElementById('app-screen').style.display='none';
-  });
-}
-</script>
 </head>
 <body>
 
 <!-- AUTH -->
-<div id="auth-screen" style="display:none">
-  <div class="auth-box">
-    <div class="auth-logo">
-      <div class="auth-logo-icon">
+<div class="auth-page" id="auth-page">
+  <div class="auth-card">
+    <div class="auth-brand">
+      <div class="auth-brand-icon">
         <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
       </div>
-      <span class="auth-logo-name">CyberShield</span>
+      <span class="auth-brand-name">CyberShield</span>
     </div>
     <div id="auth-error" class="auth-error"></div>
-    <div id="login-panel">
-      <div class="auth-title">Sign in</div>
-      <div class="auth-sub">Access your security dashboard</div>
-      <div class="field"><label>Email</label><input type="email" id="l-email" placeholder="you@company.com" /></div>
-      <div class="field"><label>Password</label><input type="password" id="l-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()" /></div>
-      <button class="btn btn-primary" id="login-btn" onclick="doLogin()">Sign in</button>
-      <div class="auth-switch">No account? <a onclick="showReg()">Create one free</a></div>
+
+    <div id="login-form">
+      <div class="auth-title">Welcome back</div>
+      <div class="auth-sub">Sign in to your security dashboard</div>
+      <label class="form-label">Email</label>
+      <input class="form-input" type="email" id="l-email" placeholder="you@company.com"/>
+      <label class="form-label">Password</label>
+      <input class="form-input" type="password" id="l-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/>
+      <button class="btn-primary" id="login-btn" onclick="doLogin()">Sign in</button>
+      <div class="auth-switch">Don't have an account? <a onclick="showReg()">Start free trial</a></div>
     </div>
-    <div id="reg-panel" style="display:none">
-      <div class="auth-title">Create account</div>
-      <div class="auth-sub">14-day free trial, no credit card needed</div>
-      <div class="field"><label>Company name</label><input type="text" id="r-company" placeholder="Acme Corp" /></div>
-      <div class="field"><label>Your name</label><input type="text" id="r-name" placeholder="Jane Smith" /></div>
-      <div class="field"><label>Email</label><input type="email" id="r-email" placeholder="jane@acme.com" /></div>
-      <div class="field"><label>Password</label><input type="password" id="r-pass" placeholder="Min 8 characters" /></div>
-      <button class="btn btn-primary" id="reg-btn" onclick="doRegister()">Create account</button>
-      <div class="auth-switch">Have an account? <a onclick="showLogin()">Sign in</a></div>
+
+    <div id="register-form" style="display:none">
+      <div class="auth-title">Start your free trial</div>
+      <div class="auth-sub">14 days free — no credit card required to start</div>
+      <label class="form-label">Company name</label>
+      <input class="form-input" type="text" id="r-company" placeholder="Acme Corp"/>
+      <label class="form-label">Your name</label>
+      <input class="form-input" type="text" id="r-name" placeholder="Jane Smith"/>
+      <label class="form-label">Email</label>
+      <input class="form-input" type="email" id="r-email" placeholder="jane@acme.com"/>
+      <label class="form-label">Password</label>
+      <input class="form-input" type="password" id="r-pass" placeholder="Min 8 characters"/>
+      <button class="btn-primary" id="reg-btn" onclick="doRegister()">Create account & start trial</button>
+      <div class="auth-switch">Already have an account? <a onclick="showLogin()">Sign in</a></div>
     </div>
   </div>
 </div>
 
 <!-- APP -->
-<div id="app-screen" style="display:none">
+<div class="app" id="app">
   <div class="topbar">
-    <div class="topbar-logo">
-      <div class="topbar-logo-icon">
-        <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-      </div>
-      CyberShield
+    <div class="topbar-left">
+      <div class="topbar-icon"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+      <span class="topbar-name">CyberShield</span>
     </div>
     <div class="topbar-right">
-      <span class="topbar-user"><span class="status-dot"></span><span id="user-email-display"></span></span>
-      <button class="topbar-logout" onclick="doLogout()">Sign out</button>
+      <div class="topbar-dot"></div>
+      <span class="topbar-email" id="user-email"></span>
+      <button class="btn-signout" onclick="doLogout()">Sign out</button>
     </div>
   </div>
+
   <div class="app-body">
     <div class="sidebar">
       <div class="nav-section">Platform</div>
-      <button class="nav-item active" onclick="showPage('dashboard',this)">
+      <button class="nav-btn active" onclick="showPage('dashboard',this)">
         <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
         Dashboard
       </button>
-      <button class="nav-item" onclick="showPage('breach',this)">
+      <button class="nav-btn" onclick="showPage('breach',this)">
         <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
         Breach monitor
       </button>
-      <button class="nav-item" onclick="showPage('scanner',this)">
+      <button class="nav-btn" onclick="showPage('scanner',this)">
         <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
         Scanner
       </button>
-      <button class="nav-item" onclick="showPage('training',this)">
+      <button class="nav-btn" onclick="showPage('training',this)">
         <svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
         Training
       </button>
     </div>
-    <div class="main">
 
+    <div class="main">
       <!-- DASHBOARD -->
       <div id="page-dashboard" class="page active">
-        <div class="page-header">
-          <div class="page-title">Security overview</div>
-          <div class="page-sub" id="dash-company">Loading...</div>
-        </div>
+        <div class="page-title">Security overview</div>
+        <div class="page-sub" id="dash-sub">Loading your data...</div>
         <div class="stats-grid">
-          <div class="stat-card"><div class="stat-label">Trainings</div><div class="stat-value" id="s-train">—</div></div>
-          <div class="stat-card"><div class="stat-label">Breaches found</div><div class="stat-value red" id="s-breach">—</div></div>
-          <div class="stat-card"><div class="stat-label">Scans done</div><div class="stat-value" id="s-scans">—</div></div>
-          <div class="stat-card"><div class="stat-label">Active threats</div><div class="stat-value red">6</div></div>
+          <div class="stat"><div class="stat-label">Trainings completed</div><div class="stat-value" id="s-train">—</div></div>
+          <div class="stat"><div class="stat-label">Breaches detected</div><div class="stat-value red" id="s-breach">—</div></div>
+          <div class="stat"><div class="stat-label">Scans performed</div><div class="stat-value" id="s-scans">—</div></div>
+          <div class="stat"><div class="stat-label">Active threats</div><div class="stat-value red">6</div></div>
         </div>
         <div class="card">
-          <div class="card-head"><span class="card-head-title">Live threat feed</span><span class="card-head-meta">CyberWire Daily</span></div>
-          <div class="threat-row"><div><div class="threat-name">Chrome 22 critical vulnerabilities patched</div><div class="threat-ep">Ep 2562 · May 29</div></div><span class="badge badge-critical">Critical</span></div>
-          <div class="threat-row"><div><div class="threat-name">Microsoft OAuth authentication abuse</div><div class="threat-ep">Ep 2559 · May 26</div></div><span class="badge badge-critical">Critical</span></div>
-          <div class="threat-row"><div><div class="threat-name">macOS crypto developer malware campaign</div><div class="threat-ep">Ep 2561 · May 28</div></div><span class="badge badge-high">High</span></div>
-          <div class="threat-row"><div><div class="threat-name">AI-powered phishing attacks at scale</div><div class="threat-ep">Ep 2562 · May 29</div></div><span class="badge badge-high">High</span></div>
-          <div class="threat-row"><div><div class="threat-name">Ubiquiti UniFi critical security flaws</div><div class="threat-ep">Ep 2558 · May 22</div></div><span class="badge badge-medium">Medium</span></div>
+          <div class="card-head"><span class="card-head-title">Live threat intelligence</span><span class="card-head-meta">Source: CyberWire Daily</span></div>
+          <div class="threat-row"><div><div class="threat-name">Chrome 22 critical vulnerabilities patched</div><div class="threat-ep">Episode 2562 · May 29, 2026</div></div><span class="badge badge-critical">Critical</span></div>
+          <div class="threat-row"><div><div class="threat-name">Microsoft OAuth authentication abuse campaign</div><div class="threat-ep">Episode 2559 · May 26, 2026</div></div><span class="badge badge-critical">Critical</span></div>
+          <div class="threat-row"><div><div class="threat-name">macOS crypto developer malware targeting firms</div><div class="threat-ep">Episode 2561 · May 28, 2026</div></div><span class="badge badge-high">High</span></div>
+          <div class="threat-row"><div><div class="threat-name">AI-powered phishing attacks at unprecedented scale</div><div class="threat-ep">Episode 2562 · May 29, 2026</div></div><span class="badge badge-high">High</span></div>
+          <div class="threat-row"><div><div class="threat-name">Ubiquiti UniFi critical security vulnerabilities</div><div class="threat-ep">Episode 2558 · May 22, 2026</div></div><span class="badge badge-medium">Medium</span></div>
         </div>
       </div>
 
       <!-- BREACH -->
       <div id="page-breach" class="page">
-        <div class="page-header">
-          <div class="page-title">Breach monitor</div>
-          <div class="page-sub">Check if your company emails appear in known data breaches</div>
-        </div>
+        <div class="page-title">Breach monitor</div>
+        <div class="page-sub">Check if your company emails appear in known data breaches</div>
         <div class="card">
-          <div class="card-head"><span class="card-head-title">Check an email</span></div>
-          <div class="breach-form">
-            <input type="email" id="breach-email" placeholder="employee@company.com" onkeydown="if(event.key==='Enter')runBreachCheck()" />
-            <button class="breach-btn" id="breach-btn" onclick="runBreachCheck()">Check now</button>
+          <div class="card-head"><span class="card-head-title">Check an email address</span></div>
+          <div class="input-row">
+            <input class="breach-input" type="email" id="breach-email" placeholder="employee@company.com" onkeydown="if(event.key==='Enter')runBreach()"/>
+            <button class="btn-check" id="breach-btn" onclick="runBreach()">Check now</button>
           </div>
-          <div class="breach-results" id="breach-results"></div>
+          <div class="breach-body" id="breach-results"></div>
         </div>
         <div class="card" id="breach-history-card" style="display:none">
           <div class="card-head"><span class="card-head-title">Recent checks</span></div>
-          <div class="breach-history" id="breach-history"></div>
+          <div id="breach-history"></div>
         </div>
       </div>
 
       <!-- SCANNER -->
       <div id="page-scanner" class="page">
-        <div class="page-header">
-          <div class="page-title">Vulnerability scanner</div>
-          <div class="page-sub">Scan any website for security misconfigurations</div>
-        </div>
+        <div class="page-title">Vulnerability scanner</div>
+        <div class="page-sub">Real security checks — SSL, DNS, headers, cookies. 100% accurate, no AI guessing.</div>
         <div class="card">
-          <div class="card-head"><span class="card-head-title">Scan a URL</span></div>
-          <div class="scan-form">
-            <input type="text" id="scan-url" placeholder="https://yourcompany.com" onkeydown="if(event.key==='Enter')runScan()" />
-            <button class="breach-btn" id="scan-btn" onclick="runScan()">Scan</button>
+          <div class="card-head"><span class="card-head-title">Scan a website</span></div>
+          <div class="input-row">
+            <input class="breach-input" type="text" id="scan-url" placeholder="https://yourcompany.com" onkeydown="if(event.key==='Enter')runScan()"/>
+            <button class="btn-check" id="scan-btn" onclick="runScan()">Scan</button>
           </div>
-          <div class="scan-results" id="scan-results"></div>
+          <div class="scan-results-body" id="scan-results"></div>
         </div>
       </div>
 
       <!-- TRAINING -->
       <div id="page-training" class="page">
-        <div class="page-header">
-          <div class="page-title">AI security training</div>
-          <div class="page-sub">Weekly lessons from live threat intelligence</div>
-        </div>
+        <div class="page-title">AI security training</div>
+        <div class="page-sub">Weekly lessons from live threat intelligence. Complete a lesson and quiz to track your progress.</div>
         <div id="training-home">
-          <p class="section-sub">Select a topic to generate a lesson powered by your live backend</p>
-          <div class="training-grid" id="topics-grid"></div>
+          <div class="topics-grid" id="topics-grid"></div>
         </div>
         <div id="training-lesson" style="display:none">
           <div class="loading" id="lesson-loading"><span class="spin">⟳</span> Generating lesson...</div>
           <div id="lesson-content" style="display:none">
-            <div style="font-size:0.7rem;color:var(--accent2);text-transform:uppercase;letter-spacing:0.1em;font-family:'IBM Plex Mono',monospace;margin-bottom:8px" id="lesson-topic-label"></div>
-            <div class="lesson-content" id="lesson-text"></div>
+            <div style="font-size:0.75rem;font-weight:700;color:#818cf8;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:10px" id="lesson-label"></div>
+            <div class="lesson-box" id="lesson-text"></div>
             <div class="action-row">
-              <button class="btn-sm primary" onclick="startQuiz()">Take quiz</button>
-              <button class="btn-sm" onclick="resetTraining()">Back</button>
+              <button class="btn-accent" onclick="startQuiz()">Take quiz</button>
+              <button class="btn-secondary" onclick="resetTraining()">Back to topics</button>
             </div>
           </div>
         </div>
         <div id="training-quiz" style="display:none">
-          <div class="loading" id="quiz-loading"><span class="spin">⟳</span> Generating quiz...</div>
+          <div class="loading" id="quiz-loading"><span class="spin">⟳</span> Generating quiz questions...</div>
           <div id="quiz-content" style="display:none"></div>
         </div>
         <div id="training-result" style="display:none">
           <div class="result-box">
             <div class="result-score" id="result-score"></div>
-            <div style="font-size:0.9rem;font-weight:500;color:#fff;margin-bottom:4px" id="result-label"></div>
-            <div style="font-size:0.8rem;color:var(--muted);margin-bottom:1.5rem" id="result-msg"></div>
-            <button class="btn-sm primary" onclick="resetTraining()">Train again</button>
+            <div style="font-size:1rem;font-weight:600;color:var(--text);margin-bottom:6px" id="result-label"></div>
+            <div style="font-size:0.9rem;color:var(--muted);margin-bottom:1.5rem" id="result-msg"></div>
+            <button class="btn-accent" onclick="resetTraining()">Train on another topic</button>
           </div>
         </div>
       </div>
-
     </div>
   </div>
 </div>
 
 <script>
 const API = 'https://cybershield-backend-production-492b.up.railway.app';
-let token = localStorage.getItem('cs_token') || null;
+let token = null;
 let currentQuiz = null;
 let selectedAnswers = {};
 let breachHistory = [];
 let currentTopic = '';
 let idleTimer = null;
-const IDLE_TIMEOUT = 30 * 60 * 1000;
-
-function resetIdleTimer() {
-  clearTimeout(idleTimer);
-  idleTimer = setTimeout(() => { doLogout(); }, IDLE_TIMEOUT);
-}
-['click','keypress','mousemove'].forEach(e => document.addEventListener(e, resetIdleTimer));
 
 async function api(path, opts={}) {
-  const headers = {'Content-Type':'application/json'};
-  if (token) headers['Authorization'] = 'Bearer ' + token;
-  const r = await fetch(API + path, {...opts, headers});
-  return r.json();
+  const h = {'Content-Type':'application/json'};
+  if (token) h['Authorization'] = 'Bearer ' + token;
+  try {
+    const r = await fetch(API + path, {...opts, headers: h});
+    return r.json();
+  } catch(e) { return {error: 'Network error'}; }
 }
 
 function showError(msg) {
   const el = document.getElementById('auth-error');
-  el.textContent = msg;
-  el.style.display = 'block';
+  el.textContent = msg; el.style.display = 'block';
 }
 
 function showLogin() {
-  document.getElementById('login-panel').style.display = 'block';
-  document.getElementById('reg-panel').style.display = 'none';
+  document.getElementById('login-form').style.display = 'block';
+  document.getElementById('register-form').style.display = 'none';
   document.getElementById('auth-error').style.display = 'none';
-}
-
-// Auto show register if coming from landing page
-if (document.referrer.includes('getcybershield-io.netlify.app') || new URLSearchParams(window.location.search).get('signup') === 'true') {
-  showReg();
 }
 
 function showReg() {
-  document.getElementById('login-panel').style.display = 'none';
-  document.getElementById('reg-panel').style.display = 'block';
+  document.getElementById('login-form').style.display = 'none';
+  document.getElementById('register-form').style.display = 'block';
   document.getElementById('auth-error').style.display = 'none';
 }
+
+function startIdleTimer() {
+  clearTimeout(idleTimer);
+  idleTimer = setTimeout(doLogout, 30 * 60 * 1000);
+}
+['click','keypress','mousemove'].forEach(e => document.addEventListener(e, startIdleTimer));
 
 async function doLogin() {
   const email = document.getElementById('l-email').value;
   const password = document.getElementById('l-pass').value;
-  if (!email || !password) return showError('Enter email and password.');
+  if (!email || !password) return showError('Enter your email and password.');
   const btn = document.getElementById('login-btn');
   btn.textContent = 'Signing in...'; btn.disabled = true;
   const data = await api('/auth/login', {method:'POST', body: JSON.stringify({email, password})});
@@ -399,12 +376,13 @@ async function doRegister() {
   const fullName = document.getElementById('r-name').value;
   const email = document.getElementById('r-email').value;
   const password = document.getElementById('r-pass').value;
-  if (!companyName || !fullName || !email || !password) return showError('All fields required.');
+  if (!companyName || !fullName || !email || !password) return showError('All fields are required.');
+  if (password.length < 8) return showError('Password must be at least 8 characters.');
   const btn = document.getElementById('reg-btn');
-  btn.textContent = 'Creating...'; btn.disabled = true;
+  btn.textContent = 'Creating account...'; btn.disabled = true;
   const plan = new URLSearchParams(window.location.search).get('plan') || 'starter';
   const data = await api('/auth/register', {method:'POST', body: JSON.stringify({companyName, fullName, email, password, plan})});
-  btn.textContent = 'Create account'; btn.disabled = false;
+  btn.textContent = 'Create account & start trial'; btn.disabled = false;
   if (data.error) return showError(data.error);
   token = data.accessToken;
   localStorage.setItem('cs_token', token);
@@ -415,21 +393,11 @@ async function doRegister() {
   }
 }
 
-function resetIdleTimer() {
-  clearTimeout(idleTimer);
-  idleTimer = setTimeout(() => {
-    doLogout();
-    alert('You have been logged out due to inactivity.');
-  }, IDLE_TIMEOUT);
-}
-
-['click','keypress','mousemove','scroll'].forEach(e => document.addEventListener(e, resetIdleTimer));
-
 function enterApp(data) {
-  document.getElementById('auth-screen').style.display = 'none';
-  document.getElementById('app-screen').style.display = 'flex';
-  document.getElementById('user-email-display').textContent = data.user?.email || '';
-  resetIdleTimer();
+  document.getElementById('auth-page').style.display = 'none';
+  document.getElementById('app').style.display = 'flex';
+  if (data.user) document.getElementById('user-email').textContent = data.user.email || '';
+  startIdleTimer();
   loadDashboard();
   loadTopics();
 }
@@ -438,11 +406,16 @@ function doLogout() {
   token = null;
   localStorage.removeItem('cs_token');
   clearTimeout(idleTimer);
-  localStorage.removeItem('cs_token');
-  clearTimeout(idleTimer);
-  document.getElementById('app-screen').style.display = 'none';
-  document.getElementById('auth-screen').style.display = 'flex';
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('auth-page').style.display = 'flex';
   showLogin();
+}
+
+function showPage(name, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  el.classList.add('active');
 }
 
 async function loadDashboard() {
@@ -451,29 +424,20 @@ async function loadDashboard() {
     document.getElementById('s-train').textContent = data.stats.trainings?.total || 0;
     document.getElementById('s-breach').textContent = data.stats.breachChecks || 0;
     document.getElementById('s-scans').textContent = data.stats.scans || 0;
-    document.getElementById('dash-company').textContent = (data.company?.name || 'Your company') + ' · ' + (data.company?.plan || 'starter') + ' plan';
+    document.getElementById('dash-sub').textContent = (data.company?.name || 'Your company') + ' · ' + (data.company?.plan || 'starter') + ' plan';
   }
-}
-
-function showPage(name, el) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.getElementById('page-' + name).classList.add('active');
-  el.classList.add('active');
 }
 
 async function loadTopics() {
   const data = await api('/training/topics');
+  if (!data.topics) return;
   const grid = document.getElementById('topics-grid');
-  const icons = ['01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20'];
-  if (data.topics) {
-    grid.innerHTML = data.topics.map((t,i) => `
-      <div class="topic-card" onclick="generateLesson('${t}')">
-        <div style="font-size:10px;font-weight:600;color:var(--accent2);font-family:'IBM Plex Mono',monospace;margin-bottom:8px">MODULE ${icons[i]}</div>
-        <div class="topic-title">${t}</div>
-        <div class="topic-desc">5-min lesson + quiz</div>
-      </div>`).join('');
-  }
+  grid.innerHTML = data.topics.map((t, i) => `
+    <div class="topic-card" onclick="generateLesson('${t.replace(/'/g,"\\'")}')">
+      <div class="topic-module">Module ${String(i+1).padStart(2,'0')}</div>
+      <div class="topic-title">${t}</div>
+      <div class="topic-sub">5-min lesson + quiz</div>
+    </div>`).join('');
 }
 
 async function generateLesson(topic) {
@@ -485,7 +449,7 @@ async function generateLesson(topic) {
   const data = await api('/training/lesson', {method:'POST', body: JSON.stringify({topic})});
   document.getElementById('lesson-loading').style.display = 'none';
   document.getElementById('lesson-content').style.display = 'block';
-  document.getElementById('lesson-topic-label').textContent = topic;
+  document.getElementById('lesson-label').textContent = topic;
   document.getElementById('lesson-text').textContent = data.lesson || data.error || 'Failed to load lesson.';
 }
 
@@ -495,7 +459,7 @@ async function startQuiz() {
   document.getElementById('quiz-loading').style.display = 'block';
   document.getElementById('quiz-content').style.display = 'none';
   selectedAnswers = {};
-  const seed = Math.floor(Math.random() * 1000);
+  const seed = Math.floor(Math.random() * 10000);
   const data = await api('/training/quiz', {method:'POST', body: JSON.stringify({topic: currentTopic, seed})});
   currentQuiz = data.quiz;
   document.getElementById('quiz-loading').style.display = 'none';
@@ -504,20 +468,22 @@ async function startQuiz() {
 }
 
 function renderQuiz() {
-  let html = `<div style="font-size:0.72rem;color:var(--muted);margin-bottom:12px;font-family:'IBM Plex Mono',monospace">Quiz: ${currentTopic}</div>`;
-  currentQuiz.questions.forEach((q,qi) => {
-    html += `<div style="margin-bottom:14px"><div style="font-size:0.82rem;color:#fff;font-weight:500;margin-bottom:6px">${qi+1}. ${q.q}</div>`;
-    q.options.forEach((opt,oi) => { html += `<div class="quiz-option" id="opt-${qi}-${oi}" onclick="selectAnswer(${qi},${oi})">${opt}</div>`; });
+  let html = '';
+  currentQuiz.questions.forEach((q, qi) => {
+    html += `<div style="margin-bottom:1.5rem"><div class="quiz-q">${qi+1}. ${q.q}</div>`;
+    q.options.forEach((opt, oi) => {
+      html += `<div class="quiz-opt" id="opt-${qi}-${oi}" onclick="selectAnswer(${qi},${oi})">${opt}</div>`;
+    });
     html += '</div>';
   });
-  html += `<button class="btn-sm primary" id="quiz-submit" onclick="submitQuiz()" disabled>Submit answers</button>`;
+  html += `<button class="btn-accent" id="quiz-submit" onclick="submitQuiz()" disabled>Submit answers</button>`;
   document.getElementById('quiz-content').innerHTML = html;
 }
 
 function selectAnswer(qi, oi) {
   currentQuiz.questions[qi].options.forEach((_,i) => {
     const el = document.getElementById(`opt-${qi}-${i}`);
-    if (el) el.className = 'quiz-option' + (i===oi?' selected':'');
+    if (el) el.className = 'quiz-opt' + (i===oi?' selected':'');
   });
   selectedAnswers[qi] = oi;
   const btn = document.getElementById('quiz-submit');
@@ -531,8 +497,8 @@ async function submitQuiz() {
     q.options.forEach((_,i) => {
       const el = document.getElementById(`opt-${qi}-${i}`);
       if (!el) return;
-      if (i===q.correct) el.className='quiz-option correct';
-      else if (i===chosen) el.className='quiz-option wrong';
+      if (i===q.correct) el.className='quiz-opt correct';
+      else if (i===chosen) el.className='quiz-opt wrong';
     });
     if (chosen===q.correct) correct++;
   });
@@ -546,7 +512,7 @@ async function submitQuiz() {
     scoreEl.textContent = score + '%';
     scoreEl.style.color = passed ? 'var(--green)' : 'var(--red)';
     document.getElementById('result-label').textContent = passed ? 'Training complete!' : 'Review recommended';
-    document.getElementById('result-msg').textContent = passed ? 'Score recorded in your dashboard.' : 'Consider reviewing the lesson material.';
+    document.getElementById('result-msg').textContent = passed ? 'Your score has been recorded in your dashboard.' : 'Consider reviewing the lesson before retaking.';
     loadDashboard();
   }, 800);
 }
@@ -558,7 +524,7 @@ function resetTraining() {
   document.getElementById('training-result').style.display = 'none';
 }
 
-async function runBreachCheck() {
+async function runBreach() {
   const email = document.getElementById('breach-email').value.trim();
   if (!email) return;
   const btn = document.getElementById('breach-btn');
@@ -566,22 +532,25 @@ async function runBreachCheck() {
   document.getElementById('breach-results').innerHTML = '';
   const data = await api('/breach/check', {method:'POST', body: JSON.stringify({email})});
   btn.textContent = 'Check now'; btn.disabled = false;
-  if (data.error) { document.getElementById('breach-results').innerHTML = `<div class="breach-found-banner">${data.error}</div>`; return; }
+  if (data.error) {
+    document.getElementById('breach-results').innerHTML = `<div class="alert-red">${data.error}</div>`;
+    return;
+  }
   breachHistory.unshift({email, count: data.breachCount, date: new Date().toLocaleDateString()});
   let html = '';
   if (data.breachCount === 0) {
-    html = `<div class="breach-clean">✓ ${email} not found in any known data breaches.</div>`;
+    html = `<div class="alert-green">✓ No breaches found for ${email}. This email has not appeared in any known data breaches.</div>`;
   } else {
-    html = `<div class="breach-found-banner">⚠ Found in ${data.breachCount} breach${data.breachCount>1?'es':''}. Change this password immediately.</div>`;
+    html = `<div class="alert-red">⚠ Found in ${data.breachCount} breach${data.breachCount>1?'es':''}. Change this password immediately on all accounts.</div>`;
     (data.breaches||[]).forEach(b => {
-      html += `<div class="breach-item"><div class="breach-item-name">${b.name}</div><div class="breach-item-data">Exposed: ${(b.dataClasses||[]).slice(0,4).join(', ')} · ${b.breachDate}</div></div>`;
+      html += `<div class="breach-item"><div class="breach-item-name">${b.name}</div><div class="breach-item-data">Data exposed: ${(b.dataClasses||[]).join(', ')} · Breach date: ${b.breachDate}</div></div>`;
     });
   }
   document.getElementById('breach-results').innerHTML = html;
   if (breachHistory.length > 0) {
     document.getElementById('breach-history-card').style.display = 'block';
     document.getElementById('breach-history').innerHTML = breachHistory.slice(0,5).map(h =>
-      `<div class="history-row"><span style="color:var(--text)">${h.email}</span><span style="color:${h.count>0?'var(--red)':'var(--green)'}">${h.count>0?h.count+' breach'+(h.count>1?'es':''):'Clean'}</span></div>`
+      `<div class="history-row"><span>${h.email}</span><span style="color:${h.count>0?'var(--red)':'var(--green)'};font-weight:600">${h.count>0?h.count+' breach'+(h.count>1?'es':''):'Clean'}</span></div>`
     ).join('');
   }
   loadDashboard();
@@ -592,67 +561,57 @@ async function runScan() {
   if (!url) return;
   const btn = document.getElementById('scan-btn');
   btn.textContent = 'Scanning...'; btn.disabled = true;
-  document.getElementById('scan-results').innerHTML = '<div class="loading"><span class="spin">⟳</span> Scanning via your backend...</div>';
+  document.getElementById('scan-results').innerHTML = '<div class="loading"><span class="spin">⟳</span> Running security checks...</div>';
   const data = await api('/scanner/scan', {method:'POST', body: JSON.stringify({url})});
   btn.textContent = 'Scan'; btn.disabled = false;
-  if (data.error) { document.getElementById('scan-results').innerHTML = `<div class="breach-found-banner">${data.error}</div>`; return; }
-  const colors = {critical:'var(--red)',high:'var(--yellow)',medium:'var(--accent2)',low:'var(--green)'};
+  if (data.error) {
+    document.getElementById('scan-results').innerHTML = `<div class="alert-red">${data.error}</div>`;
+    return;
+  }
+  const colors = {critical:'var(--red)',high:'var(--yellow)',medium:'#818cf8',low:'var(--green)'};
   const rc = colors[data.riskLevel] || colors.medium;
   let html = `<div class="risk-header">
     <div class="risk-circle" style="border-color:${rc}">
-      <div class="risk-score" style="color:${rc}">${data.riskScore}</div>
-      <div class="risk-label-sm" style="color:${rc}">Risk</div>
+      <div class="risk-score-num" style="color:${rc}">${data.riskScore}</div>
+      <div class="risk-score-label" style="color:${rc}">/ 100</div>
     </div>
     <div>
-      <div style="font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;font-family:'IBM Plex Mono',monospace;margin-bottom:3px">Risk level</div>
-      <div style="font-size:1rem;font-weight:600;color:${rc};text-transform:uppercase;font-family:'IBM Plex Mono',monospace">${data.riskLevel}</div>
-      <div style="font-size:0.75rem;color:var(--muted)">${url}</div>
+      <div style="font-size:0.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px">Risk level</div>
+      <div style="font-size:1.2rem;font-weight:700;color:${rc};text-transform:capitalize">${data.riskLevel}</div>
+      <div style="font-size:0.85rem;color:var(--muted);margin-top:2px">${url}</div>
     </div>
-  </div>`;
-  html += `<div style="font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;font-family:'IBM Plex Mono',monospace;margin-bottom:8px">Findings</div>`;
+  </div>
+  <div class="section-label">Findings (${(data.findings||[]).length})</div>`;
   (data.findings||[]).forEach(f => {
-    html += `<div class="finding-row"><span class="badge badge-${f.severity}" style="flex-shrink:0;margin-top:2px">${f.severity}</span><div><div class="finding-text">${f.issue}</div><div class="finding-desc">${f.description}</div></div></div>`;
+    html += `<div class="finding-row"><span class="badge badge-${f.severity}" style="flex-shrink:0;margin-top:3px">${f.severity}</span><div><div class="finding-title">${f.issue}</div><div class="finding-desc">${f.description}</div></div></div>`;
   });
-  html += `<div style="font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;font-family:'IBM Plex Mono',monospace;margin:12px 0 8px">Remediation</div>`;
+  html += `<div class="section-label">Remediation steps</div>`;
   (data.recommendations||[]).forEach(r => {
-    html += `<div class="finding-row"><div class="rec-num">${r.priority}</div><div><div class="finding-text">${r.action}</div><div class="finding-desc">${r.detail}</div></div></div>`;
+    html += `<div class="finding-row"><div class="rec-num">${r.priority}</div><div><div class="finding-title">${r.action}</div><div class="finding-desc">${r.detail}</div></div></div>`;
   });
   document.getElementById('scan-results').innerHTML = html;
   loadDashboard();
 }
 
-// Auto-restore session on page load
-if (token) {
-  api('/auth/me').then(data => {
-    if (data && data.user) {
-      currentUser = data.user;
-      document.getElementById('auth-screen').style.display = 'none';
-      document.getElementById('app-screen').style.display = 'flex';
-      document.getElementById('user-email-display').textContent = data.user.email || '';
-      resetIdleTimer();
-      loadDashboard();
-      loadTopics();
-    } else if (data && data.error && data.error.includes('expired')) {
-      localStorage.removeItem('cs_token');
-      token = null;
-    } else {
-      // Network error - keep token and restore session optimistically
-      document.getElementById('auth-screen').style.display = 'none';
-      document.getElementById('app-screen').style.display = 'flex';
-      resetIdleTimer();
-      loadDashboard();
-      loadTopics();
-    }
-  }).catch(() => {
-    // Network error - keep token, restore session
-    document.getElementById('auth-screen').style.display = 'none';
-    document.getElementById('app-screen').style.display = 'flex';
-    resetIdleTimer();
-    loadDashboard();
-    loadTopics();
-  });
+// Check for signup param - always show register if coming from landing page
+const params = new URLSearchParams(window.location.search);
+if (params.get('signup') === 'true' || params.get('plan')) {
+  showReg();
+} else {
+  // Try to restore session from saved token
+  const savedToken = localStorage.getItem('cs_token');
+  if (savedToken) {
+    token = savedToken;
+    api('/auth/me').then(data => {
+      if (data && data.user) {
+        enterApp(data);
+      } else {
+        localStorage.removeItem('cs_token');
+        token = null;
+      }
+    });
+  }
 }
-checkApiHealth();
 </script>
 </body>
 </html>
