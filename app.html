@@ -1172,7 +1172,32 @@ async function runBreach() {
   setTimeout(() => { const s = document.getElementById('step3'); if(s) s.style.opacity='1'; }, 1200);
   const data = await api('/breach/check', {method:'POST', body: JSON.stringify({email})});
   btn.textContent = 'Check now'; btn.disabled = false;
-  if (data.error) { document.getElementById('breach-results').innerHTML = `<div class="alert-red">${data.error}</div>`; return; }
+  if (data.error) {
+    const isLimit = data.error.toLowerCase().includes('limit') || data.error.toLowerCase().includes('upgrade');
+    if (isLimit) {
+      document.getElementById('breach-results').innerHTML = `
+        <div style="background:#fff3eb;border:1.5px solid #ffd4b0;border-radius:12px;padding:1.75rem;display:flex;align-items:flex-start;gap:16px;margin-top:8px">
+          <div style="width:44px;height:44px;background:#FF6B00;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          </div>
+          <div style="flex:1">
+            <div style="font-family:'Hanken Grotesk',sans-serif;font-size:1rem;font-weight:800;color:#0a0a0a;margin-bottom:4px">Upgrade required</div>
+            <div style="font-size:0.875rem;color:#666;line-height:1.6;margin-bottom:1.25rem">${data.error} Upgrade to Business for bulk breach checking, unlimited scans, and more.</div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap">
+              <a href="index.html#pricing" style="display:inline-flex;align-items:center;gap:8px;background:#FF6B00;color:#fff;padding:10px 22px;border-radius:8px;font-size:0.875rem;font-weight:700;text-decoration:none;font-family:'Hanken Grotesk',sans-serif">
+                View upgrade options →
+              </a>
+              <a href="https://buy.stripe.com/cNiaEY5DL8Dx2n1dN04ZG01" target="_blank" style="display:inline-flex;align-items:center;gap:8px;background:#0a0a0a;color:#fff;padding:10px 22px;border-radius:8px;font-size:0.875rem;font-weight:700;text-decoration:none;font-family:'Hanken Grotesk',sans-serif">
+                Upgrade now — $199/mo
+              </a>
+            </div>
+          </div>
+        </div>`;
+    } else {
+      document.getElementById('breach-results').innerHTML = `<div class="alert-red">${data.error}</div>`;
+    }
+    return;
+  }
   breachHistory.unshift({email, count: data.breachCount, date: new Date().toLocaleDateString()});
   let html = '';
   if (data.breachCount === 0) {
@@ -1237,7 +1262,33 @@ async function runScan() {
   if (bar) bar.style.width = '100%';
   if (pctEl) pctEl.textContent = '100%';
   btn.textContent = 'Scan'; btn.disabled = false;
-  if (data.error) { document.getElementById('scan-results').innerHTML = `<div class="alert-red">${data.error}</div>`; return; }
+  if (data.error) {
+    const isLimit = data.error.toLowerCase().includes('limit') || data.error.toLowerCase().includes('upgrade');
+    if (isLimit) {
+      document.getElementById('scan-results').innerHTML = `
+        <div style="background:#fff3eb;border:1.5px solid #ffd4b0;border-radius:12px;padding:1.75rem;display:flex;align-items:flex-start;gap:16px;margin-top:8px">
+          <div style="width:44px;height:44px;background:#FF6B00;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          </div>
+          <div style="flex:1">
+            <div style="font-family:'Hanken Grotesk',sans-serif;font-size:1rem;font-weight:800;color:#0a0a0a;margin-bottom:4px">Monthly scan limit reached (5/5)</div>
+            <div style="font-size:0.875rem;color:#666;line-height:1.6;margin-bottom:1.25rem">You've used all 5 scans included in your Starter plan. Upgrade to Business for unlimited scans, plus bulk breach checking, Slack alerts, and monthly PDF reports.</div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap">
+              <a href="index.html#pricing" style="display:inline-flex;align-items:center;gap:8px;background:#FF6B00;color:#fff;padding:10px 22px;border-radius:8px;font-size:0.875rem;font-weight:700;text-decoration:none;font-family:'Hanken Grotesk',sans-serif;transition:background 0.2s" onmouseover="this.style.background='#e05a00'" onmouseout="this.style.background='#FF6B00'">
+                View upgrade options
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </a>
+              <a href="https://buy.stripe.com/cNiaEY5DL8Dx2n1dN04ZG01" target="_blank" style="display:inline-flex;align-items:center;gap:8px;background:#0a0a0a;color:#fff;padding:10px 22px;border-radius:8px;font-size:0.875rem;font-weight:700;text-decoration:none;font-family:'Hanken Grotesk',sans-serif;transition:background 0.2s" onmouseover="this.style.background='#1a1a1a'" onmouseout="this.style.background='#0a0a0a'">
+                Upgrade now — $199/mo
+              </a>
+            </div>
+          </div>
+        </div>`;
+    } else {
+      document.getElementById('scan-results').innerHTML = `<div class="alert-red">${data.error}</div>`;
+    }
+    return;
+  }
   const colors = {critical:'var(--red)',high:'var(--amber)',medium:'var(--c)',low:'var(--green)'};
   const rc = colors[data.riskLevel] || colors.medium;
   let html = `<div class="risk-header">
