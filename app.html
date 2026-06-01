@@ -345,6 +345,51 @@ html,body{height:100%;background:var(--bg);color:var(--t1);font-family:'Hanken G
           <div class="stat-box" style="border-left:3px solid #FF6B00"><div class="stat-box-label">Scans performed</div><div class="stat-box-value" id="s-scans">—</div></div>
           <div class="stat-box" style="border-left:3px solid #f87171"><div class="stat-box-label">Active threats</div><div class="stat-box-value red">6</div></div>
         </div>
+        <!-- Two column row: security score + quick actions -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:1.5rem">
+          <!-- Security score -->
+          <div style="background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:1.5rem;box-shadow:0 1px 4px rgba(0,0,0,0.04)">
+            <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#888;margin-bottom:1.25rem;font-family:'Hanken Grotesk',sans-serif">Security score</div>
+            <div style="display:flex;align-items:center;gap:1.5rem">
+              <svg width="100" height="100" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="40" fill="none" stroke="#f0f0f0" stroke-width="10"/>
+                <circle cx="50" cy="50" r="40" fill="none" stroke="#FF6B00" stroke-width="10" stroke-dasharray="188 251" stroke-dashoffset="63" stroke-linecap="round" transform="rotate(-90 50 50)"/>
+                <text x="50" y="46" text-anchor="middle" font-family="Hanken Grotesk,sans-serif" font-size="18" font-weight="900" fill="#0a0a0a">75</text>
+                <text x="50" y="60" text-anchor="middle" font-family="Hanken Grotesk,sans-serif" font-size="9" fill="#888">/ 100</text>
+              </svg>
+              <div>
+                <div style="font-size:1.1rem;font-weight:800;color:#FF6B00;margin-bottom:4px;font-family:'Hanken Grotesk',sans-serif">Good</div>
+                <div style="font-size:0.8rem;color:#666;line-height:1.6">3 issues need<br>your attention</div>
+                <div style="margin-top:10px;font-size:0.75rem;font-weight:600;color:#FF6B00;cursor:pointer" onclick="showPage('scanner',document.querySelectorAll('.nav-item')[2])">View details →</div>
+              </div>
+            </div>
+          </div>
+          <!-- Quick actions -->
+          <div style="background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:1.5rem;box-shadow:0 1px 4px rgba(0,0,0,0.04)">
+            <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#888;margin-bottom:1.25rem;font-family:'Hanken Grotesk',sans-serif">Quick actions</div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <div onclick="showPage('breach',document.querySelectorAll('.nav-item')[1])" style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:#f7f7f7;border-radius:8px;cursor:pointer;transition:all 0.2s;border:1px solid transparent" onmouseover="this.style.borderColor='#FF6B00';this.style.background='#fff3eb'" onmouseout="this.style.borderColor='transparent';this.style.background='#f7f7f7'">
+                <div style="width:34px;height:34px;background:rgba(248,113,113,0.1);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f87171" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                </div>
+                <div><div style="font-size:0.875rem;font-weight:700;color:#0a0a0a;font-family:'Hanken Grotesk',sans-serif">Check for breaches</div><div style="font-size:0.75rem;color:#888">Scan company emails now</div></div>
+              </div>
+              <div onclick="showPage('scanner',document.querySelectorAll('.nav-item')[2])" style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:#f7f7f7;border-radius:8px;cursor:pointer;transition:all 0.2s;border:1px solid transparent" onmouseover="this.style.borderColor='#FF6B00';this.style.background='#fff3eb'" onmouseout="this.style.borderColor='transparent';this.style.background='#f7f7f7'">
+                <div style="width:34px;height:34px;background:rgba(255,107,0,0.1);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF6B00" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                </div>
+                <div><div style="font-size:0.875rem;font-weight:700;color:#0a0a0a;font-family:'Hanken Grotesk',sans-serif">Run vulnerability scan</div><div style="font-size:0.75rem;color:#888">Check website security</div></div>
+              </div>
+              <div onclick="showPage('training',document.querySelectorAll('.nav-item')[3])" style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:#f7f7f7;border-radius:8px;cursor:pointer;transition:all 0.2s;border:1px solid transparent" onmouseover="this.style.borderColor='#FF6B00';this.style.background='#fff3eb'" onmouseout="this.style.borderColor='transparent';this.style.background='#f7f7f7'">
+                <div style="width:34px;height:34px;background:rgba(255,107,0,0.1);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF6B00" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                </div>
+                <div><div style="font-size:0.875rem;font-weight:700;color:#0a0a0a;font-family:'Hanken Grotesk',sans-serif">Start a training module</div><div style="font-size:0.75rem;color:#888">20 modules available</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Threat feed -->
         <div class="card">
           <div class="card-head"><span class="card-head-title">Live threat intelligence</span><span class="card-head-meta">Source: CyberWire Daily</span></div>
           <div class="threat-row"><span class="t-indicator t-critical"></span><div style="flex:1"><div class="t-name">Chrome 22 critical vulnerabilities patched</div><div class="t-meta">Episode 2562 · May 29, 2026</div></div><span class="badge b-critical">Critical</span></div>
@@ -377,6 +422,46 @@ html,body{height:100%;background:var(--bg);color:var(--t1);font-family:'Hanken G
           </div>
           <div class="result-body" id="breach-results"></div>
         </div>
+        <!-- How it works -->
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:1.5rem">
+          <div style="background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:1.5rem;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,0.04)">
+            <div style="width:52px;height:52px;background:#fff3eb;border:1.5px solid #ffd4b0;border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FF6B00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            </div>
+            <div style="font-size:0.9rem;font-weight:800;color:#0a0a0a;margin-bottom:6px;font-family:'Hanken Grotesk',sans-serif">Enter email</div>
+            <div style="font-size:0.8rem;color:#888;line-height:1.6">Type any company email address you want to check</div>
+          </div>
+          <div style="background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:1.5rem;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,0.04)">
+            <div style="width:52px;height:52px;background:#fff3eb;border:1.5px solid #ffd4b0;border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FF6B00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            </div>
+            <div style="font-size:0.9rem;font-weight:800;color:#0a0a0a;margin-bottom:6px;font-family:'Hanken Grotesk',sans-serif">We scan 12B+ records</div>
+            <div style="font-size:0.8rem;color:#888;line-height:1.6">Instantly checked against the HaveIBeenPwned database</div>
+          </div>
+          <div style="background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:1.5rem;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,0.04)">
+            <div style="width:52px;height:52px;background:#fff3eb;border:1.5px solid #ffd4b0;border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FF6B00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+            </div>
+            <div style="font-size:0.9rem;font-weight:800;color:#0a0a0a;margin-bottom:6px;font-family:'Hanken Grotesk',sans-serif">Get instant results</div>
+            <div style="font-size:0.8rem;color:#888;line-height:1.6">See exactly which breaches exposed this email and what data was stolen</div>
+          </div>
+        </div>
+        <!-- Types of data checked -->
+        <div style="background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:1.5rem;margin-bottom:1.5rem;box-shadow:0 1px 4px rgba(0,0,0,0.04)">
+          <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#888;margin-bottom:1rem;font-family:'Hanken Grotesk',sans-serif">Data types we detect in breaches</div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px">
+            <span style="background:#fff3eb;border:1px solid #ffd4b0;color:#FF6B00;font-size:0.78rem;font-weight:600;padding:5px 12px;border-radius:100px">Passwords</span>
+            <span style="background:#fff3eb;border:1px solid #ffd4b0;color:#FF6B00;font-size:0.78rem;font-weight:600;padding:5px 12px;border-radius:100px">Email addresses</span>
+            <span style="background:#fff3eb;border:1px solid #ffd4b0;color:#FF6B00;font-size:0.78rem;font-weight:600;padding:5px 12px;border-radius:100px">Phone numbers</span>
+            <span style="background:#fff3eb;border:1px solid #ffd4b0;color:#FF6B00;font-size:0.78rem;font-weight:600;padding:5px 12px;border-radius:100px">Credit card data</span>
+            <span style="background:#fff3eb;border:1px solid #ffd4b0;color:#FF6B00;font-size:0.78rem;font-weight:600;padding:5px 12px;border-radius:100px">Physical addresses</span>
+            <span style="background:#fff3eb;border:1px solid #ffd4b0;color:#FF6B00;font-size:0.78rem;font-weight:600;padding:5px 12px;border-radius:100px">Social security numbers</span>
+            <span style="background:#fff3eb;border:1px solid #ffd4b0;color:#FF6B00;font-size:0.78rem;font-weight:600;padding:5px 12px;border-radius:100px">Usernames</span>
+            <span style="background:#fff3eb;border:1px solid #ffd4b0;color:#FF6B00;font-size:0.78rem;font-weight:600;padding:5px 12px;border-radius:100px">IP addresses</span>
+            <span style="background:#fff3eb;border:1px solid #ffd4b0;color:#FF6B00;font-size:0.78rem;font-weight:600;padding:5px 12px;border-radius:100px">Security questions</span>
+            <span style="background:#f7f7f7;border:1px solid #e5e5e5;color:#888;font-size:0.78rem;font-weight:600;padding:5px 12px;border-radius:100px">+ more</span>
+          </div>
+        </div>
         <div class="card" id="breach-history-card" style="display:none">
           <div class="card-head"><span class="card-head-title">Recent checks</span></div>
           <div id="breach-history"></div>
@@ -404,6 +489,58 @@ html,body{height:100%;background:var(--bg);color:var(--t1);font-family:'Hanken G
             <button class="btn-action" id="scan-btn" onclick="runScan()">Scan</button>
           </div>
           <div class="scan-results-wrap" id="scan-results"></div>
+        </div>
+        <!-- What we check -->
+        <div style="background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:1.5rem;margin-bottom:1.5rem;box-shadow:0 1px 4px rgba(0,0,0,0.04)">
+          <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#888;margin-bottom:1.25rem;font-family:'Hanken Grotesk',sans-serif">What we scan for</div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+            <div style="display:flex;align-items:flex-start;gap:12px;padding:14px;background:#f7f7f7;border-radius:10px;border:1px solid #e5e5e5">
+              <div style="width:38px;height:38px;background:#fff3eb;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF6B00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              </div>
+              <div><div style="font-size:0.85rem;font-weight:700;color:#0a0a0a;margin-bottom:2px;font-family:'Hanken Grotesk',sans-serif">SSL Certificate</div><div style="font-size:0.78rem;color:#888;line-height:1.5">Validity, expiry, configuration</div></div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:12px;padding:14px;background:#f7f7f7;border-radius:10px;border:1px solid #e5e5e5">
+              <div style="width:38px;height:38px;background:#fff3eb;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF6B00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              </div>
+              <div><div style="font-size:0.85rem;font-weight:700;color:#0a0a0a;margin-bottom:2px;font-family:'Hanken Grotesk',sans-serif">Security Headers</div><div style="font-size:0.78rem;color:#888;line-height:1.5">HSTS, CSP, X-Frame-Options</div></div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:12px;padding:14px;background:#f7f7f7;border-radius:10px;border:1px solid #e5e5e5">
+              <div style="width:38px;height:38px;background:#fff3eb;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF6B00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+              </div>
+              <div><div style="font-size:0.85rem;font-weight:700;color:#0a0a0a;margin-bottom:2px;font-family:'Hanken Grotesk',sans-serif">DNS Security</div><div style="font-size:0.78rem;color:#888;line-height:1.5">SPF, DMARC email protection</div></div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:12px;padding:14px;background:#f7f7f7;border-radius:10px;border:1px solid #e5e5e5">
+              <div style="width:38px;height:38px;background:#fff3eb;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF6B00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M12 6v6l4 2"/></svg>
+              </div>
+              <div><div style="font-size:0.85rem;font-weight:700;color:#0a0a0a;margin-bottom:2px;font-family:'Hanken Grotesk',sans-serif">Cookie Flags</div><div style="font-size:0.78rem;color:#888;line-height:1.5">Secure, HttpOnly, SameSite</div></div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:12px;padding:14px;background:#f7f7f7;border-radius:10px;border:1px solid #e5e5e5">
+              <div style="width:38px;height:38px;background:#fff3eb;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF6B00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              </div>
+              <div><div style="font-size:0.85rem;font-weight:700;color:#0a0a0a;margin-bottom:2px;font-family:'Hanken Grotesk',sans-serif">Risk Score</div><div style="font-size:0.78rem;color:#888;line-height:1.5">0-100 overall security rating</div></div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:12px;padding:14px;background:#f7f7f7;border-radius:10px;border:1px solid #e5e5e5">
+              <div style="width:38px;height:38px;background:#fff3eb;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF6B00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              </div>
+              <div><div style="font-size:0.85rem;font-weight:700;color:#0a0a0a;margin-bottom:2px;font-family:'Hanken Grotesk',sans-serif">Fix Recommendations</div><div style="font-size:0.78rem;color:#888;line-height:1.5">Plain-English remediation steps</div></div>
+            </div>
+          </div>
+        </div>
+        <!-- Pro tip -->
+        <div style="background:linear-gradient(135deg,#fff3eb 0%,#fff 100%);border:1.5px solid #ffd4b0;border-radius:12px;padding:1.5rem;display:flex;align-items:flex-start;gap:14px">
+          <div style="width:40px;height:40px;background:#FF6B00;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          </div>
+          <div>
+            <div style="font-size:0.9rem;font-weight:800;color:#0a0a0a;margin-bottom:4px;font-family:'Hanken Grotesk',sans-serif">Pro tip: Scan before your next client meeting</div>
+            <div style="font-size:0.85rem;color:#666;line-height:1.6">Many clients and insurance providers now require proof of website security. Run a scan and share the report to demonstrate due diligence.</div>
+          </div>
         </div>
       </div>
 
