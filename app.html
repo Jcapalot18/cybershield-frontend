@@ -157,17 +157,21 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 <script>
 // Run before page renders to prevent any flash
 (function(){
-  var t = sessionStorage.getItem('cs_token');
+  var t = localStorage.getItem('cs_token');
   var p = new URLSearchParams(window.location.search);
   var isSignup = p.get('signup') || p.get('plan');
-  if(t && !isSignup){
-    // Has token and not signup - will try to restore session
-    // Keep everything hidden until we verify
+  if(isSignup) {
+    // Always show auth form when coming from landing page
+    document.addEventListener('DOMContentLoaded', function(){
+      document.getElementById('auth-page').style.display = 'flex';
+    });
+  } else if(t){
+    // Has token - restore session
     document.addEventListener('DOMContentLoaded', function(){
       document.getElementById('app').style.display = 'flex';
     });
   } else {
-    // No token or signup flow - show auth
+    // No token - show auth
     document.addEventListener('DOMContentLoaded', function(){
       document.getElementById('auth-page').style.display = 'flex';
     });
@@ -377,6 +381,11 @@ function startIdleTimer() {
 }
 ['click','keypress','mousemove'].forEach(e => document.addEventListener(e, startIdleTimer));
 
+// Clear token when tab/browser closes
+window.addEventListener('beforeunload', function() {
+  localStorage.removeItem('cs_token');
+});
+
 async function doLogin() {
   const email = document.getElementById('l-email').value;
   const password = document.getElementById('l-pass').value;
@@ -387,7 +396,7 @@ async function doLogin() {
   btn.textContent = 'Sign in'; btn.disabled = false;
   if (data.error) return showError(data.error);
   token = data.accessToken;
-  sessionStorage.setItem('cs_token', token);
+  localStorage.setItem('cs_token', token);
   enterApp(data);
 }
 
@@ -405,7 +414,7 @@ async function doRegister() {
   btn.textContent = 'Create account & start trial'; btn.disabled = false;
   if (data.error) return showError(data.error);
   token = data.accessToken;
-  sessionStorage.setItem('cs_token', token);
+  localStorage.setItem('cs_token', token);
   if (data.checkoutUrl) {
     window.location.href = data.checkoutUrl;
   } else {
@@ -424,7 +433,7 @@ function enterApp(data) {
 
 function doLogout() {
   token = null;
-  sessionStorage.removeItem('cs_token');
+  localStorage.removeItem('cs_token');
   clearTimeout(idleTimer);
   document.getElementById('app').style.display = 'none';
   document.getElementById('auth-page').style.display = 'flex';
@@ -619,7 +628,7 @@ if (params.get('signup') === 'true' || params.get('plan')) {
   showReg();
 } else {
   // Try to restore session from saved token
-  const savedToken = sessionStorage.getItem('cs_token');
+  const savedToken = localStorage.getItem('cs_token');
   if (savedToken) {
     token = savedToken;
     api('/auth/me').then(data => {
@@ -627,7 +636,7 @@ if (params.get('signup') === 'true' || params.get('plan')) {
         enterApp(data);
       } else if (data && data.error && (data.error.includes('Invalid') || data.error.includes('expired') || data.error.includes('token'))) {
         // Only clear token on explicit auth failures
-        sessionStorage.removeItem('cs_token');
+        localStorage.removeItem('cs_token');
         token = null;
         document.getElementById('auth-page').style.display = 'flex';
       } else {
