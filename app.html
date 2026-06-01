@@ -257,7 +257,7 @@ input.field-input::placeholder{color:rgba(255,255,255,0.2)}
         <svg class="nav-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
         Team
       </div>
-      <div class="nav-item" onclick="openBillingPortal()">
+      <div class="nav-item" onclick="openUpgradeModal()">
         <svg class="nav-icon" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
         Billing
       </div>
@@ -549,6 +549,13 @@ input.field-input::placeholder{color:rgba(255,255,255,0.2)}
         </div>
       </div>
     </div>
+    <div style="margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid rgba(255,255,255,0.07)">
+      <div style="font-size:0.78rem;color:rgba(255,255,255,0.3);margin-bottom:0.75rem">Already subscribed?</div>
+      <button onclick="openBillingPortal();closeUpgradeModal();" style="background:none;border:1px solid rgba(255,255,255,0.1);border-radius:4px;padding:9px 16px;color:rgba(255,255,255,0.4);font-size:0.78rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;width:100%" onmouseover="this.style.color='#fff';this.style.borderColor='rgba(255,255,255,0.3)'" onmouseout="this.style.color='rgba(255,255,255,0.4)';this.style.borderColor='rgba(255,255,255,0.1)'">
+        Manage or cancel subscription →
+      </button>
+      <div style="font-size:0.68rem;color:rgba(255,255,255,0.2);margin-top:0.5rem;text-align:center">Opens Stripe billing portal · Cancel anytime</div>
+    </div>
   </div>
 </div>
 
@@ -700,10 +707,23 @@ async function runBreach(){
     } else if(d.breaches && d.breaches.length>0){
       results.innerHTML = `
         <div class="result-row"><span class="result-key" style="color:#f87171">⚠ ${d.breaches.length} breach${d.breaches.length>1?'es':''} found</span></div>
-        ${d.breaches.map(b=>`<div class="result-row"><span class="result-key">${b.Name}</span><span class="result-val warn">${b.BreachDate}</span></div>`).join('')}
+        ${d.breaches.map(b=>{
+          // HIBP returns PascalCase (Name, BreachDate) — handle both casings defensively
+          const name = b.Name || b.name || b.title || 'Unknown breach';
+          const date = b.BreachDate || b.breachDate || b.date || '—';
+          const domain = b.Domain || b.domain || '';
+          return `<div class="result-row">
+            <div><span class="result-key">${name}</span>${domain?`<div style="font-size:0.68rem;color:var(--muted);margin-top:2px">${domain}</div>`:''}</div>
+            <span class="result-val warn">${date}</span>
+          </div>`;
+        }).join('')}
       `;
-      // Add to history
-      addBreachHistory(email,'⚠ '+d.breaches.length+' breach'+( d.breaches.length>1?'es':''),'warn');
+      addBreachHistory(email,'⚠ '+d.breaches.length+' breach'+(d.breaches.length>1?'es':''),'warn');
+    } else if(d.pwned === false || (d.breaches && d.breaches.length===0)){
+      results.innerHTML = `<div class="result-row"><span class="result-key" style="color:var(--success)">✓ No breaches found</span><span class="result-val pass">Secure</span></div>`;
+      addBreachHistory(email,'✓ Secure','pass');
+    } else if(d.error){
+      results.innerHTML = `<div style="color:var(--danger);font-size:0.78rem;padding:0.5rem">${d.error}</div>`;
     } else {
       results.innerHTML = `<div class="result-row"><span class="result-key" style="color:var(--success)">✓ No breaches found</span><span class="result-val pass">Secure</span></div>`;
       addBreachHistory(email,'✓ Secure','pass');
@@ -730,44 +750,85 @@ async function runScan(){
   const results = document.getElementById('scan-results');
   const limitArea = document.getElementById('scan-limit-area');
   btn.textContent='Scanning...'; btn.disabled=true;
-  steps.style.display='block'; limitArea.innerHTML='';
-  results.innerHTML='';
+  steps.style.display='block'; limitArea.innerHTML=''; results.innerHTML='';
+  // Reset steps
+  ['step-ssl','step-headers','step-dns','step-cookies'].forEach(id=>{
+    const el=document.getElementById(id);
+    el.classList.remove('active','done');
+    el.querySelector('.scan-step-icon').textContent=el.id.replace('step-','').slice(0,1).toUpperCase();
+  });
   const stepIds=['step-ssl','step-headers','step-dns','step-cookies'];
-  let progress=0;
   function advanceStep(i){
-    if(i>0) { document.getElementById(stepIds[i-1]).classList.remove('active'); document.getElementById(stepIds[i-1]).classList.add('done'); document.getElementById(stepIds[i-1]).querySelector('.scan-step-icon').textContent='✓'; }
-    if(i<stepIds.length){ document.getElementById(stepIds[i]).classList.add('active'); }
-    progress = ((i+1)/stepIds.length)*100;
-    document.getElementById('scan-progress').style.width=progress+'%';
+    if(i>0){const prev=document.getElementById(stepIds[i-1]);prev.classList.remove('active');prev.classList.add('done');prev.querySelector('.scan-step-icon').textContent='✓';}
+    if(i<stepIds.length){document.getElementById(stepIds[i]).classList.add('active');}
+    document.getElementById('scan-progress').style.width=(((i+1)/stepIds.length)*100)+'%';
   }
   advanceStep(0);
-  const timer = setInterval(()=>{ const next=stepIds.findIndex(s=>document.getElementById(s).classList.contains('active')); if(next<stepIds.length-1) advanceStep(next+1); },700);
+  const timer = setInterval(()=>{
+    const next=stepIds.findIndex(s=>document.getElementById(s).classList.contains('active'));
+    if(next>=0&&next<stepIds.length-1) advanceStep(next+1);
+  },700);
   try{
     const r = await fetch(`${API}/scanner/scan`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+authToken},body:JSON.stringify({url})});
     const d = await r.json();
     clearInterval(timer);
-    stepIds.forEach((sid,i)=>{ advanceStep(i+1); });
+    stepIds.forEach((_,i)=>advanceStep(i+1));
     document.getElementById('scan-progress').style.width='100%';
-    if(r.status===402||d.limitReached){
+
+    // Detect limit reached — backend returns {error:'...', code:'SCAN_LIMIT_REACHED'} with 402
+    const isLimit = r.status===402 || d.code==='SCAN_LIMIT_REACHED' || d.limitReached ||
+      (d.error && d.error.toLowerCase().includes('limit'));
+    if(isLimit){
+      steps.style.display='none';
       limitArea.innerHTML=`<div class="limit-box"><div class="limit-box-icon">⚠</div><div class="limit-box-text"><strong>Monthly scan limit reached.</strong> Starter plan includes 5 scans/month. Upgrade to Business for unlimited scans.<div class="limit-box-upgrade" onclick="openUpgradeModal()">Upgrade now →</div></div></div>`;
+      results.innerHTML='';
       btn.textContent='Run vulnerability scan'; btn.disabled=false;
       return;
     }
-    const checks = d.results || d;
-    const renderVal = (v)=>{
-      if(v===true||v==='pass'||v==='ok'||v==='valid'||v==='configured') return 'pass';
-      if(v===false||v==='fail'||v==='missing'||v==='invalid'||v==='error') return 'fail';
+
+    // Generic error
+    if(d.error && !isLimit){
+      results.innerHTML=`<div style="color:var(--danger);font-size:0.78rem;padding:0.5rem">${d.error}</div>`;
+      btn.textContent='Run vulnerability scan'; btn.disabled=false;
+      return;
+    }
+
+    // Parse results — backend may return {results:{...}} or flat object
+    const raw = d.results || d;
+    // Filter out meta keys that aren't scan results
+    const skipKeys = new Set(['error','code','message','url','scannedAt','scanId','id']);
+    const labels = {
+      ssl:'SSL Certificate', hsts:'HSTS Header', csp:'Content Security Policy',
+      xframe:'X-Frame-Options', xContentType:'X-Content-Type-Options',
+      xss:'XSS Protection', spf:'SPF Record', dmarc:'DMARC Policy',
+      cookies:'Secure Cookies', redirectsHttps:'HTTPS Redirect',
+      securityHeaders:'Security Headers', sslValid:'SSL Valid',
+      sslExpiry:'SSL Expiry', hstsEnabled:'HSTS Enabled',
+      cspPresent:'CSP Present', xFrameOptions:'X-Frame-Options'
+    };
+    const renderClass = (v)=>{
+      if(v===true||v==='pass'||v==='ok'||v==='valid'||v==='configured'||v==='present'||v==='enabled') return 'pass';
+      if(v===false||v==='fail'||v==='missing'||v==='invalid'||v==='error'||v==='absent'||v==='disabled') return 'fail';
       return 'warn';
     };
-    const labels = {'ssl':'SSL Certificate','hsts':'HSTS Header','csp':'Content Security Policy','xframe':'X-Frame-Options','xss':'XSS Protection','spf':'SPF Record','dmarc':'DMARC Policy','cookies':'Secure Cookies'};
-    results.innerHTML = Object.entries(checks).map(([k,v])=>`
-      <div class="result-row">
-        <span class="result-key">${labels[k]||k}</span>
-        <span class="result-val ${renderVal(v)}">${typeof v==='boolean'?(v?'✓ Pass':'✗ Fail'):v}</span>
-      </div>`).join('');
+    const renderText = (v)=>{
+      if(v===true) return '✓ Pass';
+      if(v===false) return '✗ Fail';
+      return String(v);
+    };
+    const entries = Object.entries(raw).filter(([k])=>!skipKeys.has(k));
+    if(entries.length===0){
+      results.innerHTML='<div style="color:var(--muted);font-size:0.78rem;text-align:center;padding:1.5rem 0">No results returned. Check the URL and try again.</div>';
+    } else {
+      results.innerHTML = entries.map(([k,v])=>`
+        <div class="result-row">
+          <span class="result-key">${labels[k]||k.replace(/([A-Z])/g,' $1').trim()}</span>
+          <span class="result-val ${renderClass(v)}">${renderText(v)}</span>
+        </div>`).join('');
+    }
   }catch(e){
     clearInterval(timer);
-    results.innerHTML='<div style="color:var(--danger);font-size:0.78rem">Scan failed. Please check the URL and try again.</div>';
+    results.innerHTML='<div style="color:var(--danger);font-size:0.78rem">Scan failed. Check the URL includes https:// and try again.</div>';
   }
   btn.textContent='Run vulnerability scan'; btn.disabled=false;
 }
@@ -819,8 +880,17 @@ async function openBillingPortal(){
   try{
     const r=await fetch(`${API}/billing/portal`,{method:'POST',headers:{'Authorization':'Bearer '+authToken}});
     const d=await r.json();
-    if(d.url) window.open(d.url);
-  }catch(e){}
+    if(d.url){
+      window.open(d.url);
+    } else if(d.error && d.error.includes('No billing account')){
+      // Trial user — no Stripe customer yet, send them to upgrade
+      openUpgradeModal();
+    } else {
+      alert(d.error || 'Could not open billing portal. Please try again.');
+    }
+  }catch(e){
+    alert('Connection error. Please try again.');
+  }
 }
 
 // ── Logout ───────────────────────────────────────────────
