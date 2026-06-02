@@ -640,7 +640,8 @@ a{text-decoration:none;color:inherit}
           <div style="font-size:4rem;font-weight:900;letter-spacing:-0.05em;margin-bottom:0.5rem" id="tm-result-score"></div>
           <div style="font-size:1.1rem;font-weight:700;color:var(--text);margin-bottom:0.5rem" id="tm-result-label"></div>
           <div style="font-size:0.8rem;color:var(--muted);margin-bottom:1.5rem;line-height:1.65" id="tm-result-msg"></div>
-          <div style="display:flex;gap:0.75rem;justify-content:center">
+          <div style="display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap">
+            <button onclick="startTraining(currentTopic)" style="background:rgba(255,255,255,0.05);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:10px 20px;font-size:0.8rem;font-weight:600;cursor:pointer;font-family:'Hanken Grotesk',sans-serif">Retry quiz</button>
             <button onclick="closeTrainingModal()" style="background:var(--orange);color:#fff;border:none;border-radius:8px;padding:10px 24px;font-size:0.8rem;font-weight:700;cursor:pointer;font-family:'Hanken Grotesk',sans-serif">Done</button>
           </div>
         </div>
