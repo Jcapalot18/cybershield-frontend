@@ -347,6 +347,7 @@ a{text-decoration:none;color:inherit}
     </a>
   </div>
   <nav class="s-nav">
+    <div class="s-item active" onclick="showPage('dashboard',this)">
       <svg class="s-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
       Dashboard
     </div>
@@ -404,6 +405,8 @@ a{text-decoration:none;color:inherit}
     <div class="tb-right">
       <button class="tb-btn" onclick="openUpgradeModal()">Upgrade plan</button>
       <button class="tb-cta" onclick="showPage('scanner',document.querySelectorAll('.s-item')[3])">▶ Run scan</button>
+    </div>
+  </div>
 
   <div class="content">
 
