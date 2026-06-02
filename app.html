@@ -347,7 +347,6 @@ a{text-decoration:none;color:inherit}
     </a>
   </div>
   <nav class="s-nav">
-    <div class="s-item active" onclick="showPage('dashboard',this)">
       <svg class="s-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
       Dashboard
     </div>
@@ -405,8 +404,6 @@ a{text-decoration:none;color:inherit}
     <div class="tb-right">
       <button class="tb-btn" onclick="openUpgradeModal()">Upgrade plan</button>
       <button class="tb-cta" onclick="showPage('scanner',document.querySelectorAll('.s-item')[3])">▶ Run scan</button>
-    </div>
-  </div>
 
   <div class="content">
 
@@ -808,16 +805,43 @@ function showPage(name,navEl){
 // ── Dashboard ──────────────────────────────────────────────────
 async function loadDashboard(){
   try{
-    const r=await fetch(`${API}/dashboard`,{headers:{'Authorization':'Bearer '+authToken}});
-    if(!r.ok)return;
-    const d=await r.json();
-    const s=d.stats||{};
-    const score=s.securityScore||50;
-    const trainings=s.trainingsCompleted||0;
-    const breaches=s.breachesFound||0;
-    const scans=s.scansThisMonth||0;
-    const seats=companyData.seats||10;
-    const plan=companyData.plan||'starter';
+    // Try /dashboard/stats first (original endpoint), fallback to /dashboard
+    let r = await fetch(`${API}/dashboard/stats`,{headers:{'Authorization':'Bearer '+authToken}});
+    let d = await r.json();
+    
+    // Normalize response — handle both formats
+    let stats = {};
+    if(d.stats){
+      // /dashboard/stats format: {stats:{trainings:{total}, breachChecks, scans}}
+      stats.securityScore = null; // calculate below
+      stats.trainingsCompleted = Number(d.stats.trainings?.total||d.stats.trainings||0);
+      stats.breachesFound = Number(d.stats.breachChecks||0);
+      stats.scansThisMonth = Number(d.stats.scans||0);
+      stats.emailsMonitored = Number(d.stats.emailsMonitored||0);
+    } else if(d.securityScore !== undefined || d.trainingsCompleted !== undefined){
+      // /dashboard format
+      stats = d;
+    } else {
+      // Try /dashboard as fallback
+      r = await fetch(`${API}/dashboard`,{headers:{'Authorization':'Bearer '+authToken}});
+      d = await r.json();
+      stats = d.stats || d;
+      stats.trainingsCompleted = stats.trainingsCompleted || Number(stats.trainings?.total||0);
+      stats.breachesFound = stats.breachesFound || Number(stats.breachChecks||0);
+      stats.scansThisMonth = stats.scansThisMonth || Number(stats.scans||0);
+    }
+
+    const trainings = stats.trainingsCompleted||0;
+    const breaches  = stats.breachesFound||0;
+    const scans     = stats.scansThisMonth||0;
+    const seats     = companyData.seats||10;
+    const plan      = companyData.plan||'starter';
+
+    // Calculate score
+    const trainPts  = Math.min(trainings*4,20);
+    const scanPts   = scans>0?(scans>=3?20:15):-10;
+    const breachPts = -Math.min(breaches*3,25);
+    const score     = Math.max(10,Math.min(100,Math.round(50+trainPts+scanPts+breachPts)));
 
     document.getElementById('dash-score').textContent=score;
     document.getElementById('dash-trainings').textContent=trainings;
@@ -847,22 +871,23 @@ async function loadDashboard(){
     },300);
 
     // Coverage
-    document.getElementById('cov-em').textContent=(s.emailsMonitored||0)+'';
-    document.getElementById('cb-em').style.width=Math.min(((s.emailsMonitored||0)/seats)*100,100)+'%';
+    document.getElementById('cov-em').textContent=(stats.emailsMonitored||0)+'';
+    document.getElementById('cb-em').style.width=Math.min(((stats.emailsMonitored||0)/seats)*100,100)+'%';
     document.getElementById('cov-tr').textContent=trainings+'';
     document.getElementById('cb-tr').style.width=tp+'%';
     document.getElementById('cov-sc').textContent=scans+'';
     document.getElementById('cb-sc').style.width=(scanLimit==='∞'?100:Math.min((scans/5)*100,100))+'%';
 
     // Activity
-    if(d.recentActivity&&d.recentActivity.length){
-      document.getElementById('dash-activity').innerHTML=d.recentActivity.slice(0,4).map(a=>`
+    const activity = d.recentActivity||d.stats?.recentActivity||[];
+    if(activity.length){
+      document.getElementById('dash-activity').innerHTML=activity.slice(0,4).map(a=>`
         <div class="act-item">
           <div class="act-dot" style="background:${a.type==='breach'?'var(--red)':a.type==='scan'?'var(--orange)':'var(--green)'}"></div>
           <div><div class="act-text">${a.description||a.message||a.type}</div><div class="act-time">${a.createdAt?new Date(a.createdAt).toLocaleString():''}</div></div>
         </div>`).join('');
     }
-  }catch(e){}
+  }catch(e){ console.error('Dashboard load error:',e); }
 }
 
 function setBar(barId,pctId,pct){
@@ -898,22 +923,38 @@ async function startTraining(topic){
   try{
     const r=await fetch(`${API}/training/lesson`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+authToken},body:JSON.stringify({topic})});
     const d=await r.json();
-    if(d.lesson){
-      const l=d.lesson;
-      content.innerHTML=`
-        <div class="eyebrow" style="margin-bottom:0.75rem">AI Training · ${topic}</div>
-        <div style="font-size:1.1rem;font-weight:800;color:var(--text);margin-bottom:1rem;letter-spacing:-0.02em">${l.title||'Security Training'}</div>
-        <div style="font-size:0.8rem;color:rgba(255,255,255,0.65);line-height:1.85;white-space:pre-wrap;max-height:260px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;padding:1.1rem;background:rgba(255,255,255,0.02);margin-bottom:1.25rem">${l.content||l}</div>
-        ${d.quiz?`
-        <div style="border-top:1px solid var(--border);padding-top:1.1rem">
-          <div class="eyebrow" style="margin-bottom:0.75rem">Quick Quiz</div>
-          <div style="font-size:0.875rem;color:var(--text);margin-bottom:1rem;font-weight:500">${d.quiz.question}</div>
-          <div>${d.quiz.options.map((opt,i)=>`<button class="quiz-btn" onclick="selectAnswer(this,${i===d.quiz.correctIndex})">${opt}</button>`).join('')}</div>
-        </div>`:''}
-      `;
+    
+    // Handle both response formats
+    const lessonRaw = d.lesson?.content || d.lesson || d.content || d.error || 'Failed to load lesson.';
+    const lessonTitle = d.lesson?.title || d.title || topic;
+    
+    // Convert markdown to readable HTML
+    function mdToHtml(md){
+      if(typeof md !== 'string') md = JSON.stringify(md);
+      return md.split('\n').map(line=>{
+        if(line.startsWith('## ')) return `<h3 style="font-size:0.95rem;font-weight:800;color:var(--text);margin:1rem 0 0.4rem">${line.slice(3)}</h3>`;
+        if(line.startsWith('# ')) return `<h2 style="font-size:1.05rem;font-weight:800;color:var(--text);margin:1rem 0 0.5rem">${line.slice(2)}</h2>`;
+        if(line.startsWith('- ')||line.startsWith('• ')) return `<div style="display:flex;gap:8px;margin-bottom:4px"><span style="color:var(--orange);flex-shrink:0">▸</span><span style="font-size:0.78rem;color:rgba(255,255,255,0.65)">${line.slice(2)}</span></div>`;
+        if(line.trim()==='') return '<div style="height:8px"></div>';
+        return `<p style="font-size:0.78rem;color:rgba(255,255,255,0.65);line-height:1.7;margin-bottom:6px">${line}</p>`;
+      }).join('');
     }
+
+    content.innerHTML=`
+      <div class="eyebrow" style="margin-bottom:0.75rem">AI Training · ${topic}</div>
+      <div style="font-size:1.1rem;font-weight:800;color:var(--text);margin-bottom:1rem;letter-spacing:-0.02em">${lessonTitle}</div>
+      <div style="max-height:280px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;padding:1rem;background:rgba(255,255,255,0.02);margin-bottom:1.25rem">
+        ${mdToHtml(lessonRaw)}
+      </div>
+      ${d.quiz?`
+      <div style="border-top:1px solid var(--border);padding-top:1rem">
+        <div class="eyebrow" style="margin-bottom:0.75rem">Quick Quiz</div>
+        <div style="font-size:0.875rem;color:var(--text);margin-bottom:1rem;font-weight:500">${d.quiz.question}</div>
+        <div>${d.quiz.options.map((opt,i)=>`<button class="quiz-btn" onclick="selectAnswer(this,${i===d.quiz.correctIndex})">${opt}</button>`).join('')}</div>
+      </div>`:''}
+    `;
   }catch(e){
-    content.innerHTML='<div style="color:var(--red);font-size:0.82rem">Failed to load. Please try again.</div>';
+    content.innerHTML=`<div style="color:var(--red);font-size:0.82rem;text-align:center;padding:1rem">Failed to generate lesson. Please try again.</div>`;
   }
 }
 function selectAnswer(btn,correct){
@@ -1196,10 +1237,18 @@ async function loadSubStatus(){
   }catch(e){}
 }
 async function doUpgrade(plan){
+  const bmsg = document.getElementById('billing-msg');
+  if(bmsg) bmsg.innerHTML = '<div style="margin-top:0.75rem;font-size:0.72rem;color:var(--muted)">Redirecting to Stripe checkout...</div>';
   try{
     const r=await fetch(`${API}/billing/upgrade`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+authToken},body:JSON.stringify({plan})});
-    const d=await r.json();if(d.url)window.location.href=d.url;
-  }catch(e){}
+    const d=await r.json();
+    if(d.url){ window.location.href=d.url; }
+    else {
+      if(bmsg) bmsg.innerHTML=`<div style="margin-top:0.75rem;padding:8px 12px;background:var(--red-dim);border:1px solid rgba(239,68,68,0.2);border-radius:6px;font-size:0.72rem;color:var(--red)">⚠ ${d.error||'Could not start checkout. Please try again.'}</div>`;
+    }
+  }catch(e){
+    if(bmsg) bmsg.innerHTML=`<div style="margin-top:0.75rem;font-size:0.72rem;color:var(--red)">Connection error. Please try again.</div>`;
+  }
 }
 async function openBillingPortal(){
   const btn=document.getElementById('portal-btn');
