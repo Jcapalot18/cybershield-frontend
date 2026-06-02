@@ -876,10 +876,10 @@ async function doUpgrade(plan){
       <div style="background:rgba(6,182,212,0.06);border:1px solid rgba(6,182,212,0.15);border-radius:10px;padding:1.1rem;margin-bottom:1rem">
         <div style="font-size:0.75rem;font-weight:700;color:#06B6D4;margin-bottom:0.75rem">What to include in your report</div>
         <div style="display:flex;flex-direction:column;gap:6px">
-          ${['Description of the vulnerability','Steps to reproduce the issue','What data or systems could be affected','Your contact email for follow-up'].map(item=>`
-          <div style="display:flex;align-items:center;gap:8px;font-size:0.72rem;color:rgba(255,255,255,0.6)">
-            <span style="color:#06B6D4;font-weight:700;flex-shrink:0">✓</span>${item}
-          </div>`).join('')}
+          <div style="display:flex;align-items:center;gap:8px;font-size:0.72rem;color:rgba(255,255,255,0.6)"><span style="color:#06B6D4;font-weight:700;flex-shrink:0">✓</span>Description of the vulnerability</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:0.72rem;color:rgba(255,255,255,0.6)"><span style="color:#06B6D4;font-weight:700;flex-shrink:0">✓</span>Steps to reproduce the issue</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:0.72rem;color:rgba(255,255,255,0.6)"><span style="color:#06B6D4;font-weight:700;flex-shrink:0">✓</span>What data or systems could be affected</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:0.72rem;color:rgba(255,255,255,0.6)"><span style="color:#06B6D4;font-weight:700;flex-shrink:0">✓</span>Your contact email for follow-up</div>
         </div>
       </div>
 
