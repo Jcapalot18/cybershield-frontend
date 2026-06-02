@@ -736,9 +736,11 @@ function showMsg(id, type, text){
 </div>
 
 <script>
-function openUpgradeModal(){
-  document.getElementById('upgrade-modal').style.display='flex';
-}
+function openGettingStarted(){ const m=document.getElementById('gs-modal'); m.style.display='flex'; m.style.alignItems='center'; m.style.justifyContent='center'; }
+function closeGS(){ document.getElementById('gs-modal').style.display='none'; }
+function openSecurityModal(){ const m=document.getElementById('sec-modal'); m.style.display='flex'; m.style.alignItems='center'; m.style.justifyContent='center'; }
+function closeSec(){ document.getElementById('sec-modal').style.display='none'; }
+function openUpgradeModal(){ document.getElementById('upgrade-modal').style.display='flex'; }
 async function doUpgrade(plan){
   const msg = document.getElementById('upgrade-msg');
   msg.innerHTML = '<div style="font-size:0.72rem;color:var(--muted);text-align:center;padding:0.5rem">Redirecting to Stripe checkout...</div>';
@@ -920,8 +922,6 @@ async function doUpgrade(plan){
 </div>
 
 <script>
-function openSecurityModal(){ document.getElementById('sec-modal').style.display='flex'; }
-function closeSec(){ document.getElementById('sec-modal').style.display='none'; }
 function submitSecReport(){
   const type = document.getElementById('sec-type').value;
   const desc = document.getElementById('sec-desc').value.trim();
@@ -932,14 +932,6 @@ function submitSecReport(){
   window.open(url,'_blank');
   closeSec();
 }
-</script>
-function openGettingStarted(){
-  const m = document.getElementById('gs-modal');
-  m.style.display='flex';
-  m.style.alignItems='center';
-  m.style.justifyContent='center';
-}
-function closeGS(){ document.getElementById('gs-modal').style.display='none'; }
 function openBillingEmail(e){
   e.preventDefault();
   const email = sessionStorage.getItem('cs_email')||'';
