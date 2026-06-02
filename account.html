@@ -353,7 +353,7 @@ textarea.f-input{resize:none;height:120px;font-family:'Hanken Grotesk',sans-seri
             </div>
             <div class="card-footer" style="justify-content:space-between">
               <button class="btn-danger" onclick="openPortal()">Manage / Cancel subscription</button>
-              <button class="btn-primary" onclick="window.location='app.html'">Upgrade plan →</button>
+              <button class="btn-primary" onclick="openUpgradeModal()">Upgrade plan →</button>
             </div>
           </div>
 
@@ -691,6 +691,44 @@ function showMsg(id, type, text){
   el.className = 'msg show ' + type;
   el.textContent = text;
   setTimeout(()=>{ el.className='msg'; }, 5000);
+}
+</script>
+<!-- UPGRADE MODAL -->
+<div id="upgrade-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:200;align-items:center;justify-content:center;backdrop-filter:blur(8px)">
+  <div style="background:var(--bg3);border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:2rem;max-width:440px;width:92%;position:relative;max-height:90vh;overflow-y:auto">
+    <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--orange),transparent);border-radius:16px 16px 0 0"></div>
+    <button onclick="document.getElementById('upgrade-modal').style.display='none'" style="position:absolute;top:1rem;right:1rem;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:6px;color:var(--muted);cursor:pointer;font-size:1rem;padding:4px 9px;font-family:'Hanken Grotesk',sans-serif">×</button>
+    <div style="font-size:1.1rem;font-weight:800;color:var(--text);margin-bottom:4px;letter-spacing:-0.02em">Upgrade your plan</div>
+    <div style="font-size:0.78rem;color:var(--muted);margin-bottom:1.5rem">Choose the plan that fits your business</div>
+    <div style="display:flex;flex-direction:column;gap:0.625rem">
+      <div onclick="doUpgrade('starter')" style="display:flex;align-items:center;justify-content:space-between;padding:0.875rem 1rem;border:1px solid var(--border);border-radius:10px;cursor:pointer;transition:all 0.15s;background:rgba(255,255,255,0.02)" onmouseover="this.style.borderColor='rgba(255,107,0,0.4)';this.style.background='rgba(255,107,0,0.08)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='rgba(255,255,255,0.02)'">
+        <div><div style="font-size:0.875rem;font-weight:700;color:var(--text)">Starter</div><div style="font-size:0.68rem;color:var(--muted);margin-top:2px">$49/month · 10 seats · 5 scans/month</div></div>
+      </div>
+      <div onclick="doUpgrade('business')" style="display:flex;align-items:center;justify-content:space-between;padding:0.875rem 1rem;border:1px solid var(--border);border-radius:10px;cursor:pointer;transition:all 0.15s;background:rgba(255,255,255,0.02)" onmouseover="this.style.borderColor='rgba(255,107,0,0.4)';this.style.background='rgba(255,107,0,0.08)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='rgba(255,255,255,0.02)'">
+        <div><div style="font-size:0.875rem;font-weight:700;color:var(--text)">Business</div><div style="font-size:0.68rem;color:var(--muted);margin-top:2px">$199/month · 50 seats · Unlimited scans</div></div>
+        <div style="font-size:0.58rem;font-weight:800;padding:2px 9px;background:var(--orange);color:#fff;border-radius:4px;text-transform:uppercase;letter-spacing:0.08em">Popular</div>
+      </div>
+      <div onclick="doUpgrade('enterprise')" style="display:flex;align-items:center;justify-content:space-between;padding:0.875rem 1rem;border:1px solid var(--border);border-radius:10px;cursor:pointer;transition:all 0.15s;background:rgba(255,255,255,0.02)" onmouseover="this.style.borderColor='rgba(255,107,0,0.4)';this.style.background='rgba(255,107,0,0.08)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='rgba(255,255,255,0.02)'">
+        <div><div style="font-size:0.875rem;font-weight:700;color:var(--text)">Enterprise</div><div style="font-size:0.68rem;color:var(--muted);margin-top:2px">$599/month · Unlimited seats · Everything</div></div>
+      </div>
+    </div>
+    <div id="upgrade-msg" style="margin-top:0.75rem"></div>
+  </div>
+</div>
+
+<script>
+function openUpgradeModal(){
+  document.getElementById('upgrade-modal').style.display='flex';
+}
+async function doUpgrade(plan){
+  const msg = document.getElementById('upgrade-msg');
+  msg.innerHTML = '<div style="font-size:0.72rem;color:var(--muted);text-align:center;padding:0.5rem">Redirecting to Stripe checkout...</div>';
+  try{
+    const r = await fetch(`${API}/billing/upgrade`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+authToken},body:JSON.stringify({plan})});
+    const d = await r.json();
+    if(d.url){ window.location.href=d.url; }
+    else{ msg.innerHTML=`<div style="font-size:0.72rem;color:var(--red);text-align:center;padding:0.5rem">⚠ ${d.error||'Could not start checkout. Try again.'}</div>`; }
+  }catch(e){ msg.innerHTML='<div style="font-size:0.72rem;color:var(--red);text-align:center;padding:0.5rem">Connection error. Please try again.</div>'; }
 }
 </script>
 </body>
