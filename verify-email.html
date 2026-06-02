@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>CyberShield — Verify Email</title>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#080b12;color:#fff;font-family:'Hanken Grotesk',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem}
+.box{background:#0d1220;border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:3rem 2.5rem;max-width:440px;width:100%;text-align:center;position:relative}
+.box::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#FF6B00,transparent);border-radius:16px 16px 0 0}
+.logo{display:flex;align-items:center;justify-content:center;gap:8px;font-weight:800;font-size:1.1rem;margin-bottom:2.5rem;text-decoration:none;color:#fff}
+.logo span{color:#FF6B00}
+.logo svg{width:26px;height:26px}
+.icon-wrap{width:72px;height:72px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem;font-size:2rem}
+.icon-wrap.pending{background:rgba(255,107,0,0.1);border:2px solid rgba(255,107,0,0.25)}
+.icon-wrap.success{background:rgba(16,185,129,0.1);border:2px solid rgba(16,185,129,0.25)}
+.icon-wrap.error{background:rgba(239,68,68,0.1);border:2px solid rgba(239,68,68,0.25)}
+h1{font-size:1.4rem;font-weight:800;margin-bottom:0.75rem;letter-spacing:-0.02em}
+p{font-size:0.875rem;color:rgba(255,255,255,0.5);line-height:1.7;margin-bottom:1.5rem}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:#FF6B00;color:#fff;border:none;border-radius:8px;padding:13px 28px;font-size:0.875rem;font-weight:700;cursor:pointer;font-family:'Hanken Grotesk',sans-serif;transition:all 0.2s;text-decoration:none;box-shadow:0 4px 16px rgba(255,107,0,0.3)}
+.btn:hover{background:#ff8c00;transform:translateY(-1px)}
+.spinner{width:32px;height:32px;border:3px solid rgba(255,107,0,0.2);border-top-color:#FF6B00;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 1.5rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="box">
+  <a href="index.html" class="logo">
+    <svg viewBox="0 0 30 36" fill="none"><path d="M15 1L29 6.5V21C29 30 22 35.5 15 37.5C8 35.5 1 30 1 21V6.5L15 1Z" fill="rgba(255,107,0,0.08)" stroke="#FF6B00" stroke-width="1.5"/><path d="M15 11L20 14L15 17L10 14Z" fill="rgba(255,107,0,0.2)" stroke="#FF6B00" stroke-width="1.25" stroke-linejoin="round"/><path d="M10 14L15 17V23L10 20Z" stroke="#FF6B00" stroke-width="1.25" stroke-linejoin="round"/><path d="M20 14L15 17V23L20 20Z" fill="rgba(255,107,0,0.1)" stroke="#FF6B00" stroke-width="1.25" stroke-linejoin="round"/></svg>
+    Cyber<span>Shield</span>
+  </a>
+  <div id="content">
+    <div class="spinner"></div>
+    <h1>Verifying your email...</h1>
+    <p>Please wait while we verify your email address.</p>
+  </div>
+</div>
+<script>
+const API = 'https://cybershield-backend-production-492b.up.railway.app';
+const params = new URLSearchParams(window.location.search);
+const token = params.get('token');
+const email = params.get('email');
+
+async function verify() {
+  const content = document.getElementById('content');
+  if (!token || !email) {
+    content.innerHTML = `<div class="icon-wrap error">✗</div><h1>Invalid link</h1><p>This verification link is invalid or missing parameters.</p><a href="auth.html" class="btn">Back to sign in</a>`;
+    return;
+  }
+  try {
+    const r = await fetch(`${API}/auth/verify-email`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ token, email }) });
+    const d = await r.json();
+    if (r.ok) {
+      content.innerHTML = `<div class="icon-wrap success">✓</div><h1>Email verified!</h1><p>Your email address has been verified. Your account is fully set up.</p><a href="app.html" class="btn">Open dashboard →</a>`;
+      // Update session storage
+      const user = JSON.parse(sessionStorage.getItem('cs_user') || '{}');
+      user.emailVerified = true;
+      sessionStorage.setItem('cs_user', JSON.stringify(user));
+    } else {
+      content.innerHTML = `<div class="icon-wrap error">✗</div><h1>Verification failed</h1><p>${d.error || 'This link may have expired or already been used.'}</p><a href="app.html" class="btn">Go to dashboard</a>`;
+    }
+  } catch(e) {
+    content.innerHTML = `<div class="icon-wrap error">✗</div><h1>Connection error</h1><p>Please try again or contact support@cybershield.io</p><a href="app.html" class="btn">Go to dashboard</a>`;
+  }
+}
+verify();
+</script>
+</body>
+</html>

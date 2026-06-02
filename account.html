@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>CyberShield — Account Settings</title>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#080b12;--bg2:#0d1220;--bg3:#111827;--orange:#FF6B00;--orange2:#ff8c00;--orange-dim:rgba(255,107,0,0.08);--orange-border:rgba(255,107,0,0.25);--border:rgba(255,255,255,0.07);--text:#fff;--muted:rgba(255,255,255,0.5);--dim:rgba(255,255,255,0.2);--green:#10B981;--red:#EF4444;--sw:230px;--th:64px}
+html,body{height:100%;overflow:hidden}
+body{background:var(--bg);color:var(--text);font-family:'Hanken Grotesk',sans-serif;font-size:14px;line-height:1.5}
+a{text-decoration:none;color:inherit}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--orange);border-radius:2px}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.5)}}
+
+.app{display:flex;height:100vh;overflow:hidden}
+
+/* SIDEBAR */
+.sidebar{width:var(--sw);flex-shrink:0;background:var(--bg);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:30;position:relative}
+.sidebar::after{content:'';position:absolute;top:0;right:0;bottom:0;width:1px;background:linear-gradient(to bottom,transparent,var(--orange-border),transparent);pointer-events:none}
+.s-brand{padding:0 1.5rem;height:var(--th);display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border)}
+.s-brand a{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1rem;color:var(--text)}
+.s-brand svg{width:26px;height:26px;flex-shrink:0}
+.s-brand .acc{color:var(--orange)}
+.s-nav{flex:1;padding:1rem 0.75rem;overflow-y:auto;display:flex;flex-direction:column;gap:1px}
+.s-section{font-size:0.6rem;font-weight:800;text-transform:uppercase;letter-spacing:0.15em;color:var(--dim);padding:1rem 0.75rem 0.35rem;margin-top:0.5rem}
+.s-item{display:flex;align-items:center;gap:10px;padding:9px 0.875rem;border-radius:8px;cursor:pointer;transition:all 0.15s;color:var(--muted);font-size:0.8rem;font-weight:500;border:1px solid transparent}
+.s-item:hover{color:rgba(255,255,255,0.8);background:rgba(255,255,255,0.03);border-color:rgba(255,255,255,0.04)}
+.s-item.active{color:var(--text);background:var(--orange-dim);border-color:var(--orange-border);position:relative}
+.s-item.active::before{content:'';position:absolute;left:-1px;top:50%;transform:translateY(-50%);width:3px;height:16px;background:var(--orange);border-radius:0 3px 3px 0;box-shadow:0 0 10px var(--orange)}
+.s-icon{width:15px;height:15px;flex-shrink:0;stroke:currentColor;fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+.s-footer{padding:1rem 0.75rem;border-top:1px solid var(--border)}
+.s-plan{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:var(--orange-dim);border:1px solid var(--orange-border);border-radius:8px;margin-bottom:0.75rem;cursor:pointer}
+.s-plan:hover{background:rgba(255,107,0,0.12)}
+.s-plan-name{font-size:0.65rem;font-weight:800;color:var(--orange);text-transform:uppercase;letter-spacing:0.12em}
+.s-user{display:flex;align-items:center;gap:8px}
+.s-av{width:30px;height:30px;border-radius:50%;background:var(--orange-dim);border:1px solid var(--orange-border);display:flex;align-items:center;justify-content:center;font-size:0.62rem;font-weight:800;color:var(--orange);flex-shrink:0}
+.s-uname{font-size:0.78rem;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0}
+.s-urole{font-size:0.65rem;color:var(--muted)}
+
+/* MAIN */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{height:var(--th);background:rgba(8,11,18,0.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 1.75rem;gap:1rem;flex-shrink:0;position:relative}
+.topbar::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--orange-border),transparent)}
+.tb-title{font-size:0.875rem;font-weight:800;color:var(--text);letter-spacing:-0.02em}
+.tb-divider{width:1px;height:20px;background:var(--border)}
+.tb-status{display:flex;align-items:center;gap:6px;font-size:0.7rem;color:var(--muted)}
+.sdot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s ease-in-out infinite;box-shadow:0 0 6px var(--green)}
+.tb-right{margin-left:auto;display:flex;align-items:center;gap:0.75rem}
+.tb-back{background:transparent;border:1px solid var(--border);border-radius:6px;padding:8px 16px;color:var(--muted);font-size:0.78rem;font-weight:600;cursor:pointer;font-family:'Hanken Grotesk',sans-serif;transition:all 0.2s;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.tb-back:hover{color:var(--text);border-color:rgba(255,255,255,0.2)}
+
+/* CONTENT */
+.content{flex:1;overflow-y:auto;background:var(--bg)}
+.page{display:none;padding:1.5rem 1.75rem;max-width:800px;animation:fadeUp 0.25s ease}
+.page.active{display:block}
+
+/* ACCOUNT NAV TABS */
+.acc-tabs{display:flex;gap:4px;padding:0 0 1.5rem;border-bottom:1px solid var(--border);margin-bottom:1.5rem;flex-wrap:wrap}
+.acc-tab{padding:8px 16px;border-radius:6px;font-size:0.8rem;font-weight:600;cursor:pointer;color:var(--muted);transition:all 0.15s;border:1px solid transparent}
+.acc-tab:hover{color:var(--text);background:rgba(255,255,255,0.03)}
+.acc-tab.active{color:var(--text);background:var(--orange-dim);border-color:var(--orange-border)}
+
+/* CARDS */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:1rem;position:relative}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.06),transparent);pointer-events:none}
+.card-hd{padding:1.1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.card-title{font-size:0.82rem;font-weight:700;color:var(--text)}
+.card-sub{font-size:0.68rem;color:var(--muted);margin-top:2px}
+.card-body{padding:1.25rem}
+.card-footer{padding:0.875rem 1.25rem;border-top:1px solid var(--border);background:rgba(255,255,255,0.01);display:flex;align-items:center;justify-content:flex-end;gap:0.75rem}
+
+/* FORM */
+.f-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
+.f-group{display:flex;flex-direction:column;gap:4px;margin-bottom:1rem}
+.f-group:last-child{margin-bottom:0}
+.f-label{font-size:0.65rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em}
+.f-input{background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text);font-size:0.875rem;font-family:'Hanken Grotesk',sans-serif;outline:none;transition:all 0.2s;width:100%}
+.f-input:focus{border-color:var(--orange);background:rgba(255,107,0,0.03);box-shadow:0 0 0 3px rgba(255,107,0,0.08)}
+.f-input::placeholder{color:rgba(255,255,255,0.2)}
+.f-input:disabled{opacity:0.5;cursor:not-allowed}
+.f-hint{font-size:0.65rem;color:var(--muted);margin-top:3px}
+
+/* BUTTONS */
+.btn-primary{background:var(--orange);color:#fff;border:none;border-radius:8px;padding:10px 22px;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:'Hanken Grotesk',sans-serif;transition:all 0.2s;box-shadow:0 4px 16px rgba(255,107,0,0.25)}
+.btn-primary:hover{background:var(--orange2);transform:translateY(-1px)}
+.btn-primary:disabled{opacity:0.5;cursor:default;transform:none}
+.btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border);border-radius:8px;padding:10px 22px;font-size:0.82rem;font-weight:600;cursor:pointer;font-family:'Hanken Grotesk',sans-serif;transition:all 0.2s}
+.btn-ghost:hover{color:var(--text);border-color:rgba(255,255,255,0.2)}
+.btn-danger{background:rgba(239,68,68,0.1);color:var(--red);border:1px solid rgba(239,68,68,0.2);border-radius:8px;padding:10px 22px;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:'Hanken Grotesk',sans-serif;transition:all 0.2s}
+.btn-danger:hover{background:rgba(239,68,68,0.2)}
+
+/* STATUS MESSAGES */
+.msg{font-size:0.78rem;padding:10px 14px;border-radius:6px;margin-bottom:1rem;display:none}
+.msg.show{display:block}
+.msg.success{background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2);color:#34d399}
+.msg.error{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);color:#f87171}
+.msg.info{background:var(--orange-dim);border:1px solid var(--orange-border);color:var(--orange)}
+
+/* AVATAR */
+.avatar-section{display:flex;align-items:center;gap:1.5rem;padding:1.25rem;border-bottom:1px solid var(--border)}
+.avatar-big{width:64px;height:64px;border-radius:50%;background:var(--orange-dim);border:2px solid var(--orange-border);display:flex;align-items:center;justify-content:center;font-size:1.25rem;font-weight:800;color:var(--orange);flex-shrink:0}
+.avatar-info h3{font-size:1rem;font-weight:800;color:var(--text);letter-spacing:-0.02em}
+.avatar-info p{font-size:0.78rem;color:var(--muted);margin-top:2px}
+
+/* PLAN CARD */
+.plan-box{display:flex;align-items:center;justify-content:space-between;padding:1.25rem;background:linear-gradient(135deg,rgba(255,107,0,0.06),var(--bg2));border-radius:10px;border:1px solid var(--orange-border);margin-bottom:1rem}
+.plan-name{font-size:1.1rem;font-weight:800;color:var(--orange);letter-spacing:-0.02em}
+.plan-price{font-size:0.78rem;color:var(--muted);margin-top:2px}
+.plan-features{display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:0.75rem}
+.plan-tag{font-size:0.65rem;font-weight:700;color:var(--orange);background:var(--orange-dim);border:1px solid var(--orange-border);padding:2px 10px;border-radius:4px}
+
+/* STAT ROW */
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1rem}
+.stat-box{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1rem 1.1rem;text-align:center}
+.stat-num{font-size:1.75rem;font-weight:900;letter-spacing:-0.04em;color:var(--text)}
+.stat-lbl{font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-top:3px}
+
+/* VERIFY BANNER */
+.verify-banner{display:flex;align-items:center;gap:0.875rem;padding:0.875rem 1.25rem;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);border-radius:8px;margin-bottom:1rem}
+.verify-banner svg{flex-shrink:0;width:18px;height:18px;stroke:#F59E0B;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.verify-banner-text{font-size:0.78rem;color:var(--muted)}
+.verify-banner-text strong{color:var(--text)}
+.verify-banner button{margin-left:auto;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.2);border-radius:6px;padding:6px 14px;color:#F59E0B;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:'Hanken Grotesk',sans-serif;transition:all 0.15s;flex-shrink:0;white-space:nowrap}
+.verify-banner button:hover{background:rgba(245,158,11,0.2)}
+
+/* DIVIDER */
+.divider{border:none;border-top:1px solid var(--border);margin:1.25rem 0}
+
+/* SUPPORT */
+.support-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;margin-bottom:1rem}
+.support-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1.5rem;display:flex;flex-direction:column;gap:0.875rem;transition:all 0.2s;cursor:default}
+.support-card:hover{border-color:var(--orange-border);transform:translateY(-1px)}
+.support-ico{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.support-ico svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.support-title{font-size:0.875rem;font-weight:700;color:var(--text)}
+.support-desc{font-size:0.75rem;color:var(--muted);line-height:1.6}
+.support-link{font-size:0.78rem;font-weight:700;color:var(--orange);transition:opacity 0.15s}
+.support-link:hover{opacity:0.7}
+
+/* TEXTAREA */
+textarea.f-input{resize:none;height:120px;font-family:'Hanken Grotesk',sans-serif;line-height:1.6}
+
+@media(max-width:768px){
+  .sidebar{display:none}
+  .f-row{grid-template-columns:1fr}
+  .stat-row,.support-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="s-brand">
+      <a href="app.html">
+        <svg viewBox="0 0 30 36" fill="none"><path d="M15 1L29 6.5V21C29 30 22 35.5 15 37.5C8 35.5 1 30 1 21V6.5L15 1Z" fill="rgba(255,107,0,0.08)" stroke="#FF6B00" stroke-width="1.5"/><path d="M15 11L20 14L15 17L10 14Z" fill="rgba(255,107,0,0.2)" stroke="#FF6B00" stroke-width="1.25" stroke-linejoin="round"/><path d="M10 14L15 17V23L10 20Z" stroke="#FF6B00" stroke-width="1.25" stroke-linejoin="round"/><path d="M20 14L15 17V23L20 20Z" fill="rgba(255,107,0,0.1)" stroke="#FF6B00" stroke-width="1.25" stroke-linejoin="round"/></svg>
+        Cyber<span class="acc">Shield</span>
+      </a>
+    </div>
+    <nav class="s-nav">
+      <a href="app.html" class="s-item"><svg class="s-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Dashboard</a>
+      <div class="s-section">Security Tools</div>
+      <a href="app.html#training" class="s-item"><svg class="s-icon" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>AI Training</a>
+      <a href="app.html#breach" class="s-item"><svg class="s-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>Breach Monitor</a>
+      <a href="app.html#scanner" class="s-item"><svg class="s-icon" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>Vulnerability Scanner</a>
+      <div class="s-section">Account</div>
+      <div class="s-item active"><svg class="s-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Account Settings</div>
+    </nav>
+    <div class="s-footer">
+      <div class="s-plan" onclick="window.location='app.html'">
+        <div class="s-plan-name" id="plan-badge">STARTER</div>
+        <div style="font-size:0.65rem;color:var(--orange);opacity:0.7">Upgrade →</div>
+      </div>
+      <div class="s-user">
+        <div class="s-av" id="sidebar-avatar">CS</div>
+        <div style="flex:1;min-width:0">
+          <div class="s-uname" id="sidebar-name">Loading...</div>
+          <div class="s-urole" id="sidebar-role">Owner</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <div class="tb-title">Account Settings</div>
+      <div class="tb-divider"></div>
+      <div class="tb-status"><div class="sdot"></div>All systems operational</div>
+      <div class="tb-right">
+        <a href="app.html" class="tb-back">← Back to dashboard</a>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="page active" style="padding:1.5rem 1.75rem;max-width:800px">
+
+        <!-- TABS -->
+        <div class="acc-tabs">
+          <div class="acc-tab active" onclick="switchTab('profile',this)">Profile</div>
+          <div class="acc-tab" onclick="switchTab('security',this)">Security</div>
+          <div class="acc-tab" onclick="switchTab('company',this)">Company</div>
+          <div class="acc-tab" onclick="switchTab('billing',this)">Billing</div>
+          <div class="acc-tab" onclick="switchTab('support',this)">Support</div>
+        </div>
+
+        <!-- ── PROFILE TAB ── -->
+        <div id="tab-profile">
+          <!-- Verify banner -->
+          <div class="verify-banner" id="verify-banner" style="display:none">
+            <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <div class="verify-banner-text"><strong>Verify your email</strong> to secure your account and receive security alerts.</div>
+            <button onclick="resendVerification()" id="verify-btn">Send verification email</button>
+          </div>
+
+          <div class="card">
+            <div class="avatar-section">
+              <div class="avatar-big" id="avatar-big">CS</div>
+              <div class="avatar-info">
+                <h3 id="profile-display-name">Loading...</h3>
+                <p id="profile-display-email">—</p>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="msg" id="profile-msg"></div>
+              <div class="f-row">
+                <div class="f-group"><label class="f-label">Full name</label><input class="f-input" type="text" id="profile-name" placeholder="Jane Smith"/></div>
+                <div class="f-group"><label class="f-label">Job title</label><input class="f-input" type="text" id="profile-job" placeholder="IT Manager"/></div>
+              </div>
+              <div class="f-row">
+                <div class="f-group"><label class="f-label">Email</label><input class="f-input" type="email" id="profile-email" disabled/><div class="f-hint">Email cannot be changed. Contact support if needed.</div></div>
+                <div class="f-group"><label class="f-label">Phone (optional)</label><input class="f-input" type="tel" id="profile-phone" placeholder="+1 (555) 000-0000"/></div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <button class="btn-ghost" onclick="loadProfile()">Cancel</button>
+              <button class="btn-primary" id="save-profile-btn" onclick="saveProfile()">Save changes</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-hd"><div><div class="card-title">Security score</div><div class="card-sub">Your account's current protection level</div></div></div>
+            <div class="card-body">
+              <div class="stat-row">
+                <div class="stat-box"><div class="stat-num" id="acc-score">—</div><div class="stat-lbl">Score / 100</div></div>
+                <div class="stat-box"><div class="stat-num" id="acc-trainings">—</div><div class="stat-lbl">Trainings</div></div>
+                <div class="stat-box"><div class="stat-num" id="acc-scans">—</div><div class="stat-lbl">Scans</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── SECURITY TAB ── -->
+        <div id="tab-security" style="display:none">
+          <div class="card">
+            <div class="card-hd"><div><div class="card-title">Change password</div><div class="card-sub">Use a strong password with uppercase, numbers, and symbols</div></div></div>
+            <div class="card-body">
+              <div class="msg" id="password-msg"></div>
+              <div class="f-group"><label class="f-label">Current password</label><input class="f-input" type="password" id="cur-password" placeholder="Your current password" autocomplete="current-password"/></div>
+              <div class="f-group"><label class="f-label">New password</label><input class="f-input" type="password" id="new-password" placeholder="Min. 8 characters" autocomplete="new-password"/></div>
+              <div class="f-group"><label class="f-label">Confirm new password</label><input class="f-input" type="password" id="conf-password" placeholder="Repeat new password" autocomplete="new-password"/></div>
+            </div>
+            <div class="card-footer"><button class="btn-primary" id="change-pwd-btn" onclick="changePassword()">Update password</button></div>
+          </div>
+
+          <div class="card">
+            <div class="card-hd"><div><div class="card-title">Active sessions</div><div class="card-sub">Signed-in devices using your account</div></div></div>
+            <div class="card-body">
+              <div style="display:flex;align-items:center;gap:1rem;padding:0.875rem 0;border-bottom:1px solid var(--border)">
+                <div style="width:40px;height:40px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                </div>
+                <div style="flex:1">
+                  <div style="font-size:0.82rem;font-weight:600;color:var(--text)">Current session</div>
+                  <div style="font-size:0.68rem;color:var(--muted);margin-top:2px" id="session-info">Loading...</div>
+                </div>
+                <div style="font-size:0.68rem;font-weight:700;color:var(--green);background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2);padding:2px 10px;border-radius:4px">Active now</div>
+              </div>
+            </div>
+            <div class="card-footer"><button class="btn-danger" onclick="signOutAll()">Sign out all devices</button></div>
+          </div>
+
+          <div class="card" style="border-color:rgba(239,68,68,0.2)">
+            <div class="card-hd"><div><div class="card-title" style="color:var(--red)">Danger zone</div><div class="card-sub">Irreversible account actions</div></div></div>
+            <div class="card-body">
+              <p style="font-size:0.82rem;color:var(--muted);line-height:1.65;margin-bottom:1rem">Deleting your account will permanently remove all your data, team members, and scan history. This cannot be undone.</p>
+              <button class="btn-danger" onclick="confirmDeleteAccount()">Delete my account</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── COMPANY TAB ── -->
+        <div id="tab-company" style="display:none">
+          <div class="card">
+            <div class="card-hd"><div><div class="card-title">Company information</div><div class="card-sub">Used in reports and email communications</div></div></div>
+            <div class="card-body">
+              <div class="msg" id="company-msg"></div>
+              <div class="f-row">
+                <div class="f-group"><label class="f-label">Company name</label><input class="f-input" type="text" id="co-name" placeholder="Acme Law Firm"/></div>
+                <div class="f-group"><label class="f-label">Industry</label>
+                  <select class="f-input" id="co-industry">
+                    <option value="">Select industry</option>
+                    <option value="law">Law Firm</option>
+                    <option value="medical">Medical / Dental</option>
+                    <option value="accounting">Accounting / CPA</option>
+                    <option value="realestate">Real Estate</option>
+                    <option value="tech">Technology</option>
+                    <option value="finance">Finance</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+              </div>
+              <div class="f-row">
+                <div class="f-group"><label class="f-label">Website</label><input class="f-input" type="url" id="co-website" placeholder="https://yourcompany.com"/></div>
+                <div class="f-group"><label class="f-label">Company size</label>
+                  <select class="f-input" id="co-size">
+                    <option value="">Select size</option>
+                    <option value="1-5">1–5 employees</option>
+                    <option value="6-10">6–10 employees</option>
+                    <option value="11-25">11–25 employees</option>
+                    <option value="26-50">26–50 employees</option>
+                    <option value="51+">51+ employees</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <button class="btn-ghost" onclick="loadCompany()">Cancel</button>
+              <button class="btn-primary" id="save-co-btn" onclick="saveCompany()">Save changes</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── BILLING TAB ── -->
+        <div id="tab-billing" style="display:none">
+          <div class="card">
+            <div class="card-body">
+              <div class="plan-box">
+                <div>
+                  <div class="plan-name" id="billing-plan">Starter</div>
+                  <div class="plan-price" id="billing-price">$49/month</div>
+                </div>
+                <div style="text-align:right">
+                  <div style="font-size:0.68rem;font-weight:700;margin-bottom:4px" id="billing-status"></div>
+                  <div style="font-size:0.65rem;color:var(--muted)" id="billing-next"></div>
+                </div>
+              </div>
+              <div class="plan-features" id="billing-features"></div>
+            </div>
+            <div class="card-footer" style="justify-content:space-between">
+              <button class="btn-danger" onclick="openPortal()">Manage / Cancel subscription</button>
+              <button class="btn-primary" onclick="window.location='app.html'">Upgrade plan →</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-hd"><div class="card-title">Plan comparison</div></div>
+            <div class="card-body" style="padding:0">
+              <table style="width:100%;border-collapse:collapse">
+                <thead><tr style="border-bottom:1px solid var(--border)">
+                  <th style="padding:10px 16px;text-align:left;font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted)">Feature</th>
+                  <th style="padding:10px 16px;text-align:center;font-size:0.68rem;font-weight:700;color:var(--muted)">Starter</th>
+                  <th style="padding:10px 16px;text-align:center;font-size:0.68rem;font-weight:700;color:var(--orange)">Business</th>
+                  <th style="padding:10px 16px;text-align:center;font-size:0.68rem;font-weight:700;color:var(--muted)">Enterprise</th>
+                </tr></thead>
+                <tbody>
+                  ${[['Seats','10','50','Unlimited'],['Scans/month','5','Unlimited','Unlimited'],['Breach monitoring','✓','✓','✓'],['AI training','✓','✓','✓'],['PDF reports','—','✓','✓'],['Slack alerts','—','✓','✓'],['White-label','—','—','✓'],['Priority support','—','—','✓'],['Price','$49/mo','$199/mo','$599/mo']].map(([f,...vals],i)=>`
+                  <tr style="${i%2===0?'background:rgba(255,255,255,0.01)':''}">
+                    <td style="padding:9px 16px;font-size:0.78rem;color:var(--muted)">${f}</td>
+                    ${vals.map(v=>`<td style="padding:9px 16px;text-align:center;font-size:0.78rem;font-weight:600;color:${v==='✓'?'var(--green)':v==='—'?'var(--dim)':'var(--text)'}">${v}</td>`).join('')}
+                  </tr>`).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── SUPPORT TAB ── -->
+        <div id="tab-support" style="display:none">
+          <div class="support-grid">
+            <div class="support-card">
+              <div class="support-ico" style="background:var(--orange-dim);border:1px solid var(--orange-border)"><svg style="stroke:var(--orange)" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+              <div class="support-title">Email support</div>
+              <div class="support-desc">Get help from our team. We respond within 24 hours on business days.</div>
+              <a href="mailto:support@cybershield.io" class="support-link">support@cybershield.io →</a>
+            </div>
+            <div class="support-card">
+              <div class="support-ico" style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.15)"><svg style="stroke:var(--green)" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+              <div class="support-title">Documentation</div>
+              <div class="support-desc">Browse guides, FAQs, and how-tos for every CyberShield feature.</div>
+              <a href="mailto:support@cybershield.io?subject=Documentation request" class="support-link" style="color:var(--green)">Browse docs →</a>
+            </div>
+            <div class="support-card">
+              <div class="support-ico" style="background:rgba(6,182,212,0.08);border:1px solid rgba(6,182,212,0.15)"><svg style="stroke:#06B6D4" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+              <div class="support-title">Security concerns</div>
+              <div class="support-desc">Report a vulnerability or security issue with CyberShield.</div>
+              <a href="mailto:security@cybershield.io" class="support-link" style="color:#06B6D4">security@cybershield.io →</a>
+            </div>
+            <div class="support-card">
+              <div class="support-ico" style="background:var(--orange-dim);border:1px solid var(--orange-border)"><svg style="stroke:var(--orange)" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
+              <div class="support-title">Billing questions</div>
+              <div class="support-desc">Questions about invoices, charges, or subscription changes.</div>
+              <a href="mailto:billing@cybershield.io" class="support-link">billing@cybershield.io →</a>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-hd"><div><div class="card-title">Send a message</div><div class="card-sub">Describe your issue and we'll get back to you</div></div></div>
+            <div class="card-body">
+              <div class="msg" id="support-msg"></div>
+              <div class="f-group"><label class="f-label">Subject</label>
+                <select class="f-input" id="support-subject">
+                  <option value="">Select a topic</option>
+                  <option value="billing">Billing / Payment</option>
+                  <option value="technical">Technical issue</option>
+                  <option value="account">Account / Access</option>
+                  <option value="feature">Feature request</option>
+                  <option value="security">Security concern</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+              <div class="f-group"><label class="f-label">Message</label><textarea class="f-input" id="support-message" placeholder="Describe your issue in detail..."></textarea></div>
+            </div>
+            <div class="card-footer"><button class="btn-primary" id="support-btn" onclick="sendSupportMessage()">Send message</button></div>
+          </div>
+
+          <div class="card">
+            <div class="card-hd"><div class="card-title">Company information</div></div>
+            <div class="card-body">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.875rem;font-size:0.8rem">
+                <div><span style="color:var(--muted)">Support hours</span><br/><strong>Mon–Fri, 9am–6pm ET</strong></div>
+                <div><span style="color:var(--muted)">Response time</span><br/><strong>Within 24 business hours</strong></div>
+                <div><span style="color:var(--muted)">General</span><br/><a href="mailto:support@cybershield.io" style="color:var(--orange)">support@cybershield.io</a></div>
+                <div><span style="color:var(--muted)">Billing</span><br/><a href="mailto:billing@cybershield.io" style="color:var(--orange)">billing@cybershield.io</a></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = 'https://cybershield-backend-production-492b.up.railway.app';
+let authToken = null, userData = null, companyData = null;
+
+(function(){
+  authToken = sessionStorage.getItem('cs_token');
+  if(!authToken){ window.location.href='auth.html'; return; }
+  userData = JSON.parse(sessionStorage.getItem('cs_user')||'{}');
+  companyData = JSON.parse(sessionStorage.getItem('cs_company')||'{}');
+  initAccount();
+  // Check for tab param
+  const tab = new URLSearchParams(window.location.search).get('tab');
+  if(tab) switchTab(tab, document.querySelector(`.acc-tab:nth-child(${['profile','security','company','billing','support'].indexOf(tab)+1})`));
+})();
+
+function initAccount(){
+  const email = sessionStorage.getItem('cs_email')||'';
+  const name = userData.fullName||email.split('@')[0]||'User';
+  document.getElementById('sidebar-name').textContent = name;
+  document.getElementById('sidebar-role').textContent = (userData.role||'member').charAt(0).toUpperCase()+(userData.role||'member').slice(1);
+  const initials = name.slice(0,2).toUpperCase();
+  document.getElementById('sidebar-avatar').textContent = initials;
+  document.getElementById('avatar-big').textContent = initials;
+  document.getElementById('plan-badge').textContent = (companyData.plan||'starter').toUpperCase();
+  loadProfile(); loadCompany(); loadBillingInfo(); loadStats();
+  if(!userData.emailVerified){ document.getElementById('verify-banner').style.display='flex'; }
+  document.getElementById('session-info').textContent = `${navigator.userAgent.includes('Chrome')?'Chrome':navigator.userAgent.includes('Firefox')?'Firefox':'Browser'} · ${new Date().toLocaleDateString()}`;
+}
+
+function switchTab(name, el){
+  document.querySelectorAll('.acc-tab').forEach(t=>t.classList.remove('active'));
+  ['profile','security','company','billing','support'].forEach(t=>{ const el=document.getElementById('tab-'+t); if(el)el.style.display='none'; });
+  const tab = document.getElementById('tab-'+name);
+  if(tab) tab.style.display='block';
+  if(el) el.classList.add('active');
+  else {
+    const tabs = document.querySelectorAll('.acc-tab');
+    const idx = ['profile','security','company','billing','support'].indexOf(name);
+    if(tabs[idx]) tabs[idx].classList.add('active');
+  }
+}
+
+function loadProfile(){
+  const email = sessionStorage.getItem('cs_email')||'';
+  document.getElementById('profile-name').value = userData.fullName||'';
+  document.getElementById('profile-email').value = email;
+  document.getElementById('profile-job').value = userData.jobTitle||'';
+  document.getElementById('profile-phone').value = userData.phone||'';
+  document.getElementById('profile-display-name').textContent = userData.fullName||email.split('@')[0];
+  document.getElementById('profile-display-email').textContent = email;
+}
+
+async function saveProfile(){
+  const btn = document.getElementById('save-profile-btn');
+  const msg = document.getElementById('profile-msg');
+  const fullName = document.getElementById('profile-name').value.trim();
+  const jobTitle = document.getElementById('profile-job').value.trim();
+  const phone = document.getElementById('profile-phone').value.trim();
+  if(!fullName){ showMsg('profile-msg','error','Name is required.'); return; }
+  btn.textContent='Saving...'; btn.disabled=true;
+  try{
+    const r = await fetch(`${API}/auth/profile`, { method:'PUT', headers:{'Content-Type':'application/json','Authorization':'Bearer '+authToken}, body: JSON.stringify({fullName,jobTitle,phone}) });
+    const d = await r.json();
+    if(r.ok){
+      userData.fullName=fullName; userData.jobTitle=jobTitle; userData.phone=phone;
+      sessionStorage.setItem('cs_user',JSON.stringify(userData));
+      document.getElementById('profile-display-name').textContent=fullName;
+      document.getElementById('sidebar-name').textContent=fullName;
+      document.getElementById('sidebar-avatar').textContent=fullName.slice(0,2).toUpperCase();
+      document.getElementById('avatar-big').textContent=fullName.slice(0,2).toUpperCase();
+      showMsg('profile-msg','success','Profile updated successfully.');
+    } else { showMsg('profile-msg','error',d.error||'Failed to save.'); }
+  }catch(e){ showMsg('profile-msg','error','Connection error.'); }
+  btn.textContent='Save changes'; btn.disabled=false;
+}
+
+function loadCompany(){
+  document.getElementById('co-name').value = companyData.name||'';
+  document.getElementById('co-website').value = companyData.website||'';
+  document.getElementById('co-industry').value = companyData.industry||'';
+  document.getElementById('co-size').value = companyData.size||'';
+}
+
+async function saveCompany(){
+  const btn = document.getElementById('save-co-btn');
+  const name = document.getElementById('co-name').value.trim();
+  const website = document.getElementById('co-website').value.trim();
+  const industry = document.getElementById('co-industry').value;
+  const size = document.getElementById('co-size').value;
+  if(!name){ showMsg('company-msg','error','Company name is required.'); return; }
+  btn.textContent='Saving...'; btn.disabled=true;
+  try{
+    const r = await fetch(`${API}/auth/company`, { method:'PUT', headers:{'Content-Type':'application/json','Authorization':'Bearer '+authToken}, body: JSON.stringify({name,website,industry,size}) });
+    const d = await r.json();
+    if(r.ok){
+      companyData = {...companyData,...d.company};
+      sessionStorage.setItem('cs_company',JSON.stringify(companyData));
+      showMsg('company-msg','success','Company details saved.');
+    } else { showMsg('company-msg','error',d.error||'Failed to save.'); }
+  }catch(e){ showMsg('company-msg','error','Connection error.'); }
+  btn.textContent='Save changes'; btn.disabled=false;
+}
+
+async function changePassword(){
+  const cur = document.getElementById('cur-password').value;
+  const nw  = document.getElementById('new-password').value;
+  const cnf = document.getElementById('conf-password').value;
+  const btn = document.getElementById('change-pwd-btn');
+  if(!cur||!nw||!cnf){ showMsg('password-msg','error','All fields are required.'); return; }
+  if(nw.length<8){ showMsg('password-msg','error','New password must be at least 8 characters.'); return; }
+  if(nw!==cnf){ showMsg('password-msg','error','Passwords do not match.'); return; }
+  btn.textContent='Updating...'; btn.disabled=true;
+  try{
+    const r = await fetch(`${API}/auth/change-password`, { method:'PUT', headers:{'Content-Type':'application/json','Authorization':'Bearer '+authToken}, body: JSON.stringify({currentPassword:cur,newPassword:nw}) });
+    const d = await r.json();
+    if(r.ok){
+      showMsg('password-msg','success','Password changed successfully.');
+      document.getElementById('cur-password').value='';
+      document.getElementById('new-password').value='';
+      document.getElementById('conf-password').value='';
+    } else { showMsg('password-msg','error',d.error||'Failed.'); }
+  }catch(e){ showMsg('password-msg','error','Connection error.'); }
+  btn.textContent='Update password'; btn.disabled=false;
+}
+
+async function resendVerification(){
+  const btn = document.getElementById('verify-btn');
+  btn.textContent='Sending...'; btn.disabled=true;
+  try{
+    const r = await fetch(`${API}/auth/resend-verification`, { method:'POST', headers:{'Authorization':'Bearer '+authToken} });
+    const d = await r.json();
+    if(r.ok){ btn.textContent='Email sent ✓'; btn.style.color='var(--green)'; }
+    else { btn.textContent='Try again'; btn.disabled=false; }
+  }catch(e){ btn.textContent='Try again'; btn.disabled=false; }
+}
+
+async function loadBillingInfo(){
+  try{
+    const r = await fetch(`${API}/billing/subscription`, { headers:{'Authorization':'Bearer '+authToken} });
+    const d = await r.json();
+    const plan = (companyData.plan||'starter');
+    document.getElementById('billing-plan').textContent = plan.charAt(0).toUpperCase()+plan.slice(1);
+    document.getElementById('billing-price').textContent = `$${plan==='business'?'199':plan==='enterprise'?'599':'49'}/month`;
+    const statusEl = document.getElementById('billing-status');
+    const statusColors = {trialing:'color:var(--yellow)',active:'color:var(--green)',past_due:'color:var(--red)',canceled:'color:var(--muted)'};
+    const statusLabels = {trialing:'Free trial active',active:'Active',past_due:'Payment past due',canceled:'Canceled'};
+    if(d.status){ statusEl.style.cssText=statusColors[d.status]||''; statusEl.textContent=statusLabels[d.status]||d.status; }
+    if(d.currentPeriodEnd){ document.getElementById('billing-next').textContent='Renews '+new Date(d.currentPeriodEnd).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}); }
+    if(d.status==='trialing'&&d.trialEndsAt){ const days=Math.max(0,Math.ceil((new Date(d.trialEndsAt)-Date.now())/(1000*60*60*24))); document.getElementById('billing-next').textContent=`Trial ends in ${days} days`; }
+    const features = { starter:['10 seats','5 scans/month','Breach monitoring','AI training'], business:['50 seats','Unlimited scans','Breach monitoring','AI training','PDF reports','Slack alerts'], enterprise:['Unlimited seats','Everything in Business','Custom integrations','Dedicated support'] };
+    document.getElementById('billing-features').innerHTML = (features[plan]||features.starter).map(f=>`<span class="plan-tag">${f}</span>`).join('');
+  }catch(e){}
+}
+
+async function loadStats(){
+  try{
+    const r = await fetch(`${API}/dashboard`, { headers:{'Authorization':'Bearer '+authToken} });
+    if(!r.ok) return;
+    const d = await r.json();
+    const s = d.stats||{};
+    document.getElementById('acc-score').textContent = s.securityScore||'—';
+    document.getElementById('acc-trainings').textContent = s.trainingsCompleted||'0';
+    document.getElementById('acc-scans').textContent = s.scansThisMonth||'0';
+    document.getElementById('acc-score').style.color = s.securityScore>=80?'var(--green)':s.securityScore>=65?'var(--yellow)':s.securityScore>=45?'var(--orange)':'var(--red)';
+  }catch(e){}
+}
+
+async function openPortal(){
+  try{
+    const r = await fetch(`${API}/billing/portal`, { method:'POST', headers:{'Authorization':'Bearer '+authToken} });
+    const d = await r.json();
+    if(d.url) window.open(d.url,'_blank');
+    else alert(d.error||'Could not open billing portal. Email billing@cybershield.io');
+  }catch(e){ alert('Connection error.'); }
+}
+
+async function sendSupportMessage(){
+  const subject = document.getElementById('support-subject').value;
+  const message = document.getElementById('support-message').value.trim();
+  const btn = document.getElementById('support-btn');
+  if(!subject||!message){ showMsg('support-msg','error','Please select a topic and write a message.'); return; }
+  btn.textContent='Sending...'; btn.disabled=true;
+  // Open mailto as fallback — no dedicated endpoint needed
+  const email = sessionStorage.getItem('cs_email')||'';
+  const to = subject==='billing'?'billing@cybershield.io':subject==='security'?'security@cybershield.io':'support@cybershield.io';
+  window.location.href = `mailto:${to}?subject=${encodeURIComponent(`[${subject.charAt(0).toUpperCase()+subject.slice(1)}] CyberShield Support — ${email}`)}&body=${encodeURIComponent(message)}`;
+  showMsg('support-msg','success','Your email client will open. If it doesn\'t, email us at support@cybershield.io');
+  btn.textContent='Send message'; btn.disabled=false;
+}
+
+function signOutAll(){ sessionStorage.clear(); window.location.href='auth.html'; }
+
+function confirmDeleteAccount(){
+  const confirmed = confirm('Are you sure you want to delete your account? This will permanently delete all your data, team members, and cannot be undone.');
+  if(confirmed){ alert('Please email support@cybershield.io with "Delete my account" in the subject line for manual deletion.'); }
+}
+
+function showMsg(id, type, text){
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.className = 'msg show ' + type;
+  el.textContent = text;
+  setTimeout(()=>{ el.className='msg'; }, 5000);
+}
+</script>
+</body>
+</html>

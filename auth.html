@@ -368,8 +368,16 @@ document.addEventListener('keydown',function(e){
 });
 
 // ── Forgot password placeholder ──────────────────────────────
-function showForgot(){
-  showMsg('signin-msg','error','Password reset coming soon. Email support@cybershield.io for help.');
+async function showForgot(){
+  const email = document.getElementById('login-email').value.trim();
+  if(!email){ showMsg('signin-msg','error','Enter your email address first, then click "Forgot password".'); return; }
+  document.getElementById('tab-signin').textContent = 'Sending...';
+  try{
+    const r = await fetch(`${API}/auth/forgot-password`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email})});
+    const d = await r.json();
+    showMsg('signin-msg','success',d.message||'If an account exists, a reset link has been sent.');
+  }catch(e){ showMsg('signin-msg','error','Connection error. Please try again.'); }
+  document.getElementById('tab-signin').textContent = 'Sign in';
 }
 
 // ── Redirect if already logged in ───────────────────────────

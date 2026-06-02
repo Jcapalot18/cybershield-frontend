@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>CyberShield — Security Policy</title>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#080b12;color:#fff;font-family:'Hanken Grotesk',sans-serif;line-height:1.7}
+.nav{padding:0 3rem;height:64px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.07);background:rgba(8,11,18,0.95);position:sticky;top:0;z-index:10}
+.logo{display:flex;align-items:center;gap:8px;font-weight:800;font-size:1rem;color:#fff;text-decoration:none}.logo span{color:#FF6B00}.logo svg{width:24px;height:24px}
+.back-link{font-size:0.82rem;color:rgba(255,255,255,0.45);text-decoration:none}.back-link:hover{color:#fff}
+.wrap{max-width:780px;margin:0 auto;padding:4rem 2rem 6rem}
+.eyebrow{font-size:0.65rem;font-weight:800;text-transform:uppercase;letter-spacing:0.15em;color:#FF6B00;margin-bottom:0.75rem}
+h1{font-size:2.5rem;font-weight:900;letter-spacing:-0.03em;margin-bottom:0.5rem}
+.updated{font-size:0.82rem;color:rgba(255,255,255,0.4);margin-bottom:3rem;padding-bottom:3rem;border-bottom:1px solid rgba(255,255,255,0.07)}
+h2{font-size:1.1rem;font-weight:800;color:#fff;margin:2rem 0 0.75rem}
+p,li{font-size:0.9rem;color:rgba(255,255,255,0.6);line-height:1.8;margin-bottom:0.875rem}
+ul{padding-left:1.5rem;margin-bottom:0.875rem}
+li{margin-bottom:0.35rem}
+a{color:#FF6B00;text-decoration:none}
+.security-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1.5rem 0}
+.sec-card{background:#0d1220;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:1.25rem}
+.sec-card h3{font-size:0.875rem;font-weight:700;color:#fff;margin-bottom:0.5rem}
+.sec-card p{font-size:0.78rem;color:rgba(255,255,255,0.5);margin:0;line-height:1.6}
+.sec-ico{font-size:1.5rem;margin-bottom:0.75rem}
+.report-box{background:linear-gradient(135deg,rgba(255,107,0,0.06),#0d1220);border:1px solid rgba(255,107,0,0.2);border-radius:12px;padding:1.5rem 2rem;margin-top:2rem}
+footer{border-top:1px solid rgba(255,255,255,0.07);padding:2rem 3rem;display:flex;align-items:center;justify-content:space-between;font-size:0.78rem;color:rgba(255,255,255,0.3)}
+footer a{color:rgba(255,255,255,0.4);text-decoration:none}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="index.html" class="logo"><svg viewBox="0 0 30 36" fill="none"><path d="M15 1L29 6.5V21C29 30 22 35.5 15 37.5C8 35.5 1 30 1 21V6.5L15 1Z" fill="rgba(255,107,0,0.08)" stroke="#FF6B00" stroke-width="1.5"/><path d="M15 11L20 14L15 17L10 14Z" fill="rgba(255,107,0,0.2)" stroke="#FF6B00" stroke-width="1.25" stroke-linejoin="round"/><path d="M10 14L15 17V23L10 20Z" stroke="#FF6B00" stroke-width="1.25" stroke-linejoin="round"/><path d="M20 14L15 17V23L10 20Z" fill="rgba(255,107,0,0.1)" stroke="#FF6B00" stroke-width="1.25" stroke-linejoin="round"/></svg>Cyber<span>Shield</span></a>
+  <a href="index.html" class="back-link">← Back to home</a>
+</nav>
+<div class="wrap">
+  <div class="eyebrow">Trust & Safety</div>
+  <h1>Security Policy</h1>
+  <div class="updated">Last updated: June 1, 2026</div>
+
+  <p>As a cybersecurity company, we hold ourselves to the highest security standards. This page describes how we protect your data and what to do if you discover a security issue.</p>
+
+  <div class="security-grid">
+    <div class="sec-card"><div class="sec-ico">🔐</div><h3>Encryption at rest</h3><p>All data stored in Supabase is encrypted at rest using AES-256.</p></div>
+    <div class="sec-card"><div class="sec-ico">🔒</div><h3>Encryption in transit</h3><p>All API calls and web traffic use TLS 1.3. HTTP is redirected to HTTPS.</p></div>
+    <div class="sec-card"><div class="sec-ico">🔑</div><h3>Password security</h3><p>Passwords are hashed using bcrypt with 12 salt rounds. We never store plaintext passwords.</p></div>
+    <div class="sec-card"><div class="sec-ico">🛡️</div><h3>Authentication</h3><p>JWT tokens with short expiry. Role-based access controls (RBAC) for all resources.</p></div>
+    <div class="sec-card"><div class="sec-ico">⚡</div><h3>Rate limiting</h3><p>Auth endpoints are rate-limited to prevent brute force attacks.</p></div>
+    <div class="sec-card"><div class="sec-ico">🏗️</div><h3>Infrastructure</h3><p>Hosted on Railway (backend) and Vercel (frontend) with automatic security patches.</p></div>
+  </div>
+
+  <h2>Responsible Disclosure</h2>
+  <p>We take security vulnerabilities seriously. If you discover a security issue in CyberShield, please report it responsibly:</p>
+  <ul>
+    <li>Email <a href="mailto:security@cybershield.io">security@cybershield.io</a></li>
+    <li>Include a detailed description of the vulnerability</li>
+    <li>Include steps to reproduce if possible</li>
+    <li>Do not exploit the vulnerability or access customer data</li>
+    <li>Give us reasonable time to fix the issue before public disclosure</li>
+  </ul>
+  <p>We will acknowledge receipt within 24 hours and aim to resolve critical issues within 72 hours.</p>
+
+  <h2>What We Do With Reports</h2>
+  <ul>
+    <li>Acknowledge your report promptly</li>
+    <li>Investigate and assess the severity</li>
+    <li>Fix the issue and notify affected users if needed</li>
+    <li>Credit your discovery (with your permission)</li>
+  </ul>
+
+  <div class="report-box">
+    <h3 style="font-size:0.875rem;font-weight:700;color:#fff;margin-bottom:0.5rem">Report a security issue</h3>
+    <p style="font-size:0.82rem;color:rgba(255,255,255,0.5);margin:0">Email: <a href="mailto:security@cybershield.io">security@cybershield.io</a></p>
+  </div>
+</div>
+<footer>
+  <span>© 2026 CyberShield. All rights reserved.</span>
+  <div style="display:flex;gap:2rem"><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="security.html">Security</a></div>
+</footer>
+</body>
+</html>

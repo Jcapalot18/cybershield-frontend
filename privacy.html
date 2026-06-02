@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>CyberShield — Privacy Policy</title>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#080b12;color:#fff;font-family:'Hanken Grotesk',sans-serif;line-height:1.7}
+.nav{padding:0 3rem;height:64px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.07);background:rgba(8,11,18,0.95);position:sticky;top:0;z-index:10}
+.logo{display:flex;align-items:center;gap:8px;font-weight:800;font-size:1rem;color:#fff;text-decoration:none}
+.logo span{color:#FF6B00}
+.logo svg{width:24px;height:24px}
+.back-link{font-size:0.82rem;color:rgba(255,255,255,0.45);text-decoration:none;transition:color 0.2s}
+.back-link:hover{color:#fff}
+.wrap{max-width:780px;margin:0 auto;padding:4rem 2rem 6rem}
+.eyebrow{font-size:0.65rem;font-weight:800;text-transform:uppercase;letter-spacing:0.15em;color:#FF6B00;margin-bottom:0.75rem}
+h1{font-size:2.5rem;font-weight:900;letter-spacing:-0.03em;margin-bottom:0.5rem}
+.updated{font-size:0.82rem;color:rgba(255,255,255,0.4);margin-bottom:3rem;padding-bottom:3rem;border-bottom:1px solid rgba(255,255,255,0.07)}
+h2{font-size:1.1rem;font-weight:800;color:#fff;margin:2rem 0 0.75rem;letter-spacing:-0.01em}
+p,li{font-size:0.9rem;color:rgba(255,255,255,0.6);line-height:1.8;margin-bottom:0.875rem}
+ul,ol{padding-left:1.5rem;margin-bottom:0.875rem}
+li{margin-bottom:0.35rem}
+a{color:#FF6B00;text-decoration:none}
+a:hover{text-decoration:underline}
+.contact-box{background:#0d1220;border:1px solid rgba(255,107,0,0.2);border-radius:12px;padding:1.5rem 2rem;margin-top:2rem}
+.contact-box h3{font-size:0.875rem;font-weight:700;color:#fff;margin-bottom:0.75rem}
+footer{border-top:1px solid rgba(255,255,255,0.07);padding:2rem 3rem;display:flex;align-items:center;justify-content:space-between;font-size:0.78rem;color:rgba(255,255,255,0.3)}
+footer a{color:rgba(255,255,255,0.4);text-decoration:none}
+footer a:hover{color:rgba(255,255,255,0.7)}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="index.html" class="logo">
+    <svg viewBox="0 0 30 36" fill="none"><path d="M15 1L29 6.5V21C29 30 22 35.5 15 37.5C8 35.5 1 30 1 21V6.5L15 1Z" fill="rgba(255,107,0,0.08)" stroke="#FF6B00" stroke-width="1.5"/><path d="M15 11L20 14L15 17L10 14Z" fill="rgba(255,107,0,0.2)" stroke="#FF6B00" stroke-width="1.25" stroke-linejoin="round"/><path d="M10 14L15 17V23L10 20Z" stroke="#FF6B00" stroke-width="1.25" stroke-linejoin="round"/><path d="M20 14L15 17V23L20 20Z" fill="rgba(255,107,0,0.1)" stroke="#FF6B00" stroke-width="1.25" stroke-linejoin="round"/></svg>
+    Cyber<span>Shield</span>
+  </a>
+  <a href="index.html" class="back-link">← Back to home</a>
+</nav>
+<div class="wrap">
+  <div class="eyebrow">Legal</div>
+  <h1>Privacy Policy</h1>
+  <div class="updated">Last updated: June 1, 2026 · Effective: June 1, 2026</div>
+
+  <p>CyberShield ("we," "our," or "us") provides AI-powered cybersecurity services for small businesses. This Privacy Policy explains how we collect, use, and protect your information when you use our platform.</p>
+
+  <h2>1. Information We Collect</h2>
+  <p><strong>Account information:</strong> Name, email address, company name, job title, and password (hashed and never stored in plaintext).</p>
+  <p><strong>Usage data:</strong> Security scans run, breach checks performed, training completions, and security scores. This data powers your security dashboard.</p>
+  <p><strong>Payment information:</strong> Processed entirely by Stripe. We never store credit card numbers or full payment details.</p>
+  <p><strong>Technical data:</strong> IP addresses, browser type, and device information collected automatically for security and performance monitoring.</p>
+
+  <h2>2. How We Use Your Information</h2>
+  <ul>
+    <li>Provide and improve our cybersecurity services</li>
+    <li>Send security alerts, breach notifications, and weekly reports</li>
+    <li>Process payments and manage your subscription</li>
+    <li>Send transactional emails (password reset, email verification)</li>
+    <li>Comply with legal obligations</li>
+  </ul>
+  <p>We do <strong>not</strong> sell your data to third parties. We do not use your data for advertising.</p>
+
+  <h2>3. Data Sharing</h2>
+  <p>We share your data only with service providers necessary to operate CyberShield:</p>
+  <ul>
+    <li><strong>Stripe</strong> — payment processing</li>
+    <li><strong>Supabase</strong> — database and authentication infrastructure</li>
+    <li><strong>Resend</strong> — transactional email delivery</li>
+    <li><strong>HaveIBeenPwned</strong> — breach checking (email addresses only, no personal data stored by HIBP)</li>
+    <li><strong>Anthropic</strong> — AI training content generation (no personal data included in prompts)</li>
+  </ul>
+
+  <h2>4. Data Security</h2>
+  <p>We take security seriously. Measures include:</p>
+  <ul>
+    <li>All passwords hashed using bcrypt with salt rounds</li>
+    <li>All data transmitted over HTTPS/TLS</li>
+    <li>JWT tokens for authentication, not cookies</li>
+    <li>Role-based access controls</li>
+    <li>Regular security testing of our own platform</li>
+  </ul>
+
+  <h2>5. Data Retention</h2>
+  <p>We retain your data for as long as your account is active. When you delete your account, we remove your personal data within 30 days. Anonymized usage statistics may be retained indefinitely.</p>
+
+  <h2>6. Your Rights</h2>
+  <ul>
+    <li><strong>Access:</strong> Request a copy of your data</li>
+    <li><strong>Correction:</strong> Update your profile in Account Settings</li>
+    <li><strong>Deletion:</strong> Request account deletion via support</li>
+    <li><strong>Portability:</strong> Export your scan history and security data</li>
+  </ul>
+
+  <h2>7. Cookies</h2>
+  <p>CyberShield uses sessionStorage (not cookies) for authentication. We do not use tracking cookies or advertising pixels.</p>
+
+  <h2>8. Children's Privacy</h2>
+  <p>CyberShield is a business product and is not intended for individuals under 18. We do not knowingly collect data from minors.</p>
+
+  <h2>9. Changes to This Policy</h2>
+  <p>We'll notify you by email if we make material changes to this policy. Continued use after changes constitutes acceptance.</p>
+
+  <div class="contact-box">
+    <h3>Questions about your privacy?</h3>
+    <p>Contact us at <a href="mailto:support@cybershield.io">support@cybershield.io</a></p>
+  </div>
+</div>
+<footer>
+  <span>© 2026 CyberShield. All rights reserved.</span>
+  <div style="display:flex;gap:2rem"><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="security.html">Security</a></div>
+</footer>
+</body>
+</html>
