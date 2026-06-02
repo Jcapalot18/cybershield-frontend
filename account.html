@@ -624,7 +624,19 @@ async function loadStats(){
     document.getElementById('acc-trainings').textContent = trainings;
     document.getElementById('acc-scans').textContent = scans;
     const color = score>=80?'var(--green)':score>=65?'var(--yellow)':score>=45?'var(--orange)':'var(--red)';
+    const label = score>=80?'Excellent':score>=65?'Good':score>=45?'Fair':'At Risk';
     document.getElementById('acc-score').style.color = color;
+    // Add label under score
+    const scoreBox = document.getElementById('acc-score').closest('.stat-box');
+    let labelEl = document.getElementById('acc-score-label');
+    if(!labelEl){
+      labelEl = document.createElement('div');
+      labelEl.id = 'acc-score-label';
+      labelEl.style.cssText = 'font-size:0.62rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;margin-top:4px';
+      scoreBox.appendChild(labelEl);
+    }
+    labelEl.style.color = color;
+    labelEl.textContent = label;
   }catch(e){}
 }
 
