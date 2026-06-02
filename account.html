@@ -751,7 +751,7 @@ async function doUpgrade(plan){
 }
 </script>
 <!-- Getting Started Modal -->
-<div id="gs-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:300;align-items:center;justify-content:center;backdrop-filter:blur(10px)" onclick="if(event.target===this)closeGS()">
+<div id="gs-modal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:9999;align-items:flex-start;justify-content:center;padding:2rem;overflow-y:auto" onclick="if(event.target===this)closeGS()">
   <div style="background:var(--bg3);border:1px solid rgba(255,255,255,0.1);border-radius:16px;max-width:580px;width:92%;max-height:88vh;overflow-y:auto;position:relative">
     <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--green),transparent);border-radius:16px 16px 0 0"></div>
     <button onclick="closeGS()" style="position:absolute;top:1rem;right:1rem;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:6px;color:var(--muted);cursor:pointer;font-size:1rem;padding:4px 9px;font-family:'Hanken Grotesk',sans-serif;transition:all 0.15s" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--muted)'">×</button>
@@ -933,7 +933,12 @@ function submitSecReport(){
   closeSec();
 }
 </script>
-function openGettingStarted(){ document.getElementById('gs-modal').style.display='flex'; }
+function openGettingStarted(){
+  const m = document.getElementById('gs-modal');
+  m.style.display='flex';
+  m.style.alignItems='center';
+  m.style.justifyContent='center';
+}
 function closeGS(){ document.getElementById('gs-modal').style.display='none'; }
 function openBillingEmail(e){
   e.preventDefault();
