@@ -611,8 +611,13 @@ async function openPortal(){
     const r = await fetch(`${API}/billing/portal`, { method:'POST', headers:{'Authorization':'Bearer '+authToken} });
     const d = await r.json();
     if(d.url) window.open(d.url,'_blank');
-    else alert(d.error||'Could not open billing portal. Email billing@cybershield.io');
-  }catch(e){ alert('Connection error.'); }
+    else {
+      const msg = d.error?.includes('No billing') || d.error?.includes('checkout')
+        ? 'You\'re on a free trial — complete checkout first to access the billing portal.'
+        : d.error || 'Could not open portal. Email billing@cybershield.io';
+      alert(msg);
+    }
+  }catch(e){ alert('Connection error. Please try again.'); }
 }
 
 async function sendSupportMessage(){
