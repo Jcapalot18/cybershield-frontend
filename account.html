@@ -359,20 +359,14 @@ textarea.f-input{resize:none;height:120px;font-family:'Hanken Grotesk',sans-seri
           <div class="card">
             <div class="card-hd"><div class="card-title">Plan comparison</div></div>
             <div class="card-body" style="padding:0">
-              <table style="width:100%;border-collapse:collapse">
+              <table style="width:100%;border-collapse:collapse" id="plan-compare-table">
                 <thead><tr style="border-bottom:1px solid var(--border)">
                   <th style="padding:10px 16px;text-align:left;font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted)">Feature</th>
                   <th style="padding:10px 16px;text-align:center;font-size:0.68rem;font-weight:700;color:var(--muted)">Starter</th>
                   <th style="padding:10px 16px;text-align:center;font-size:0.68rem;font-weight:700;color:var(--orange)">Business</th>
                   <th style="padding:10px 16px;text-align:center;font-size:0.68rem;font-weight:700;color:var(--muted)">Enterprise</th>
                 </tr></thead>
-                <tbody>
-                  ${[['Seats','10','50','Unlimited'],['Scans/month','5','Unlimited','Unlimited'],['Breach monitoring','✓','✓','✓'],['AI training','✓','✓','✓'],['PDF reports','—','✓','✓'],['Slack alerts','—','✓','✓'],['White-label','—','—','✓'],['Priority support','—','—','✓'],['Price','$49/mo','$199/mo','$599/mo']].map(([f,...vals],i)=>`
-                  <tr style="${i%2===0?'background:rgba(255,255,255,0.01)':''}">
-                    <td style="padding:9px 16px;font-size:0.78rem;color:var(--muted)">${f}</td>
-                    ${vals.map(v=>`<td style="padding:9px 16px;text-align:center;font-size:0.78rem;font-weight:600;color:${v==='✓'?'var(--green)':v==='—'?'var(--dim)':'var(--text)'}">${v}</td>`).join('')}
-                  </tr>`).join('')}
-                </tbody>
+                <tbody id="plan-compare-tbody"></tbody>
               </table>
             </div>
           </div>
@@ -469,7 +463,7 @@ function initAccount(){
   document.getElementById('sidebar-avatar').textContent = initials;
   document.getElementById('avatar-big').textContent = initials;
   document.getElementById('plan-badge').textContent = (companyData.plan||'starter').toUpperCase();
-  loadProfile(); loadCompany(); loadBillingInfo(); loadStats();
+  loadProfile(); loadCompany(); loadBillingInfo(); loadStats(); buildPlanTable();
   if(!userData.emailVerified){ document.getElementById('verify-banner').style.display='flex'; }
   document.getElementById('session-info').textContent = `${navigator.userAgent.includes('Chrome')?'Chrome':navigator.userAgent.includes('Firefox')?'Firefox':'Browser'} · ${new Date().toLocaleDateString()}`;
 }
@@ -640,6 +634,31 @@ function signOutAll(){ sessionStorage.clear(); window.location.href='auth.html';
 function confirmDeleteAccount(){
   const confirmed = confirm('Are you sure you want to delete your account? This will permanently delete all your data, team members, and cannot be undone.');
   if(confirmed){ alert('Please email support@cybershield.io with "Delete my account" in the subject line for manual deletion.'); }
+}
+
+function buildPlanTable(){
+  const rows = [
+    ['Seats','10','50','Unlimited'],
+    ['Scans/month','5','Unlimited','Unlimited'],
+    ['Breach monitoring','✓','✓','✓'],
+    ['AI training','✓','✓','✓'],
+    ['PDF reports','—','✓','✓'],
+    ['Slack alerts','—','✓','✓'],
+    ['White-label','—','—','✓'],
+    ['Priority support','—','—','✓'],
+    ['Price','$49/mo','$199/mo','$599/mo']
+  ];
+  const tbody = document.getElementById('plan-compare-tbody');
+  if(!tbody) return;
+  tbody.innerHTML = rows.map((row, i) => {
+    const [feature, ...vals] = row;
+    const bg = i % 2 === 0 ? 'background:rgba(255,255,255,0.01)' : '';
+    const cells = vals.map(v => {
+      const color = v === '✓' ? 'var(--green)' : v === '—' ? 'var(--dim)' : 'var(--text)';
+      return `<td style="padding:9px 16px;text-align:center;font-size:0.78rem;font-weight:600;color:${color}">${v}</td>`;
+    }).join('');
+    return `<tr style="${bg}"><td style="padding:9px 16px;font-size:0.78rem;color:var(--muted)">${feature}</td>${cells}</tr>`;
+  }).join('');
 }
 
 function showMsg(id, type, text){
