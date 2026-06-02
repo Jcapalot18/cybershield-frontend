@@ -1235,34 +1235,76 @@ async function runScan(){
 
     const raw=d.results||d;
     const skip=new Set(['error','code','message','url','scannedAt','scanId','id','domain']);
-    const labels={ssl:'SSL Certificate',hsts:'HSTS Header',csp:'Content Security Policy',xframe:'X-Frame-Options',xContentType:'X-Content-Type',xss:'XSS Protection',spf:'SPF Record',dmarc:'DMARC Policy',cookies:'Secure Cookies',redirectsHttps:'HTTPS Redirect',sslValid:'SSL Valid',sslExpiry:'SSL Expiry',hstsEnabled:'HSTS Enabled',cspPresent:'CSP Present',xFrameOptions:'X-Frame-Options'};
-    const rc=(v)=>{if(v===true||['pass','ok','valid','configured','present','enabled'].includes(String(v).toLowerCase()))return 'pass';if(v===false||['fail','missing','invalid','error','absent','disabled'].includes(String(v).toLowerCase()))return 'fail';return 'warn';};
-    const rt=(v)=>{if(v===true)return '✓ PASS';if(v===false)return '✗ FAIL';return String(v).toUpperCase();};
-    const entries=Object.entries(raw).filter(([k])=>!skip.has(k));
 
     document.getElementById('scan-result-url').textContent=url.replace(/https?:\/\//,'').replace(/\/$/,'');
-    lastScanResults=entries;lastScanUrl=url;
+    lastScanResults=null; lastScanUrl=url;
 
-    if(entries.length===0){
-      results.innerHTML='<div style="color:var(--muted);font-size:0.78rem;text-align:center;padding:1.5rem">No results. Check the URL and try again.</div>';
-    }else{
-      const pass=entries.filter(([,v])=>rc(v)==='pass').length;
-      const fail=entries.filter(([,v])=>rc(v)==='fail').length;
-      const warn=entries.length-pass-fail;
+    // Handle new backend format with findings array
+    if(raw.findings && Array.isArray(raw.findings)){
+      const findings = raw.findings;
+      const pass = findings.filter(f=>f.status==='pass'||f.passed===true).length;
+      const fail = findings.filter(f=>f.status==='fail'||f.passed===false).length;
+      const warn = findings.length - pass - fail;
+      const riskScore = raw.riskScore||raw.risk_score||'—';
+      const riskLevel = raw.riskLevel||raw.risk_level||'—';
+
+      // Store for PDF
+      lastScanResults = findings.map(f=>([f.name||f.check||f.label, f.status||f.result||(f.passed?'pass':'warn')]));
+
       results.innerHTML=`
         <div class="scan-summary">
           <div class="scan-sum"><div class="scan-sum-val" style="color:var(--green)">${pass}</div><div class="scan-sum-lbl">Passed</div></div>
           <div class="scan-sum"><div class="scan-sum-val" style="color:var(--red)">${fail}</div><div class="scan-sum-lbl">Failed</div></div>
           <div class="scan-sum"><div class="scan-sum-val" style="color:var(--yellow)">${warn}</div><div class="scan-sum-lbl">Warnings</div></div>
         </div>
+        ${riskScore!=='—'?`<div style="display:flex;gap:1rem;padding:0.5rem 1.25rem;border-bottom:1px solid var(--border2)">
+          <div style="font-size:0.75rem;color:var(--muted)">Risk Score: <strong style="color:${riskLevel==='HIGH'?'var(--red)':riskLevel==='MEDIUM'?'var(--yellow)':'var(--green)'}">${riskScore}</strong></div>
+          <div style="font-size:0.75rem;color:var(--muted)">Risk Level: <strong style="color:${riskLevel==='HIGH'?'var(--red)':riskLevel==='MEDIUM'?'var(--yellow)':'var(--green)'}">${riskLevel}</strong></div>
+        </div>`:''}
         <div class="results-wrap">
-          ${entries.map(([k,v])=>`
-          <div class="r-row">
-            <span class="r-key">${labels[k]||k.replace(/([A-Z])/g,' $1').trim().toUpperCase()}</span>
-            <span class="r-val ${rc(v)}">${rt(v)}</span>
-          </div>`).join('')}
+          ${findings.map(f=>{
+            const status = f.status||f.result||(f.passed===true?'pass':f.passed===false?'fail':'warn');
+            const cls = ['pass','ok','passed'].includes(String(status).toLowerCase())?'pass':['fail','failed','error'].includes(String(status).toLowerCase())?'fail':'warn';
+            const label = f.name||f.check||f.label||f.key||'Check';
+            const val = f.value||f.details||f.message||(cls==='pass'?'✓ PASS':cls==='fail'?'✗ FAIL':'⚠ WARN');
+            return `<div class="r-row"><span class="r-key">${label}</span><span class="r-val ${cls}">${typeof val==='object'?JSON.stringify(val):String(val).toUpperCase()}</span></div>`;
+          }).join('')}
+          ${raw.recommendations&&Array.isArray(raw.recommendations)&&raw.recommendations.length?`
+          <div style="margin-top:0.75rem;padding-top:0.75rem;border-top:1px solid var(--border2)">
+            <div style="font-size:0.65rem;font-weight:800;color:var(--orange);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.5rem">Recommendations</div>
+            ${raw.recommendations.map(r=>`<div style="font-size:0.75rem;color:var(--muted);padding:4px 0;display:flex;gap:6px"><span style="color:var(--orange)">→</span>${typeof r==='object'?(r.message||r.text||r.recommendation||JSON.stringify(r)):r}</div>`).join('')}
+          </div>`:''}
         </div>`;
       pdfBtn.style.display='inline-flex';
+    } else {
+      // Legacy format — simple key/value pairs
+      const labels={ssl:'SSL Certificate',hsts:'HSTS Header',csp:'Content Security Policy',xframe:'X-Frame-Options',xContentType:'X-Content-Type',xss:'XSS Protection',spf:'SPF Record',dmarc:'DMARC Policy',cookies:'Secure Cookies',redirectsHttps:'HTTPS Redirect',sslValid:'SSL Valid',sslExpiry:'SSL Expiry',hstsEnabled:'HSTS Enabled',cspPresent:'CSP Present',xFrameOptions:'X-Frame-Options',isHttps:'HTTPS',sslDaysLeft:'SSL Days Left',httpStatus:'HTTP Status'};
+      const rc=(v)=>{if(v===true||['pass','ok','valid','configured','present','enabled'].includes(String(v).toLowerCase()))return 'pass';if(v===false||['fail','missing','invalid','error','absent','disabled'].includes(String(v).toLowerCase()))return 'fail';return 'warn';};
+      const rt=(v)=>{if(v===true)return '✓ PASS';if(v===false)return '✗ FAIL';return String(v).toUpperCase();};
+      const entries=Object.entries(raw).filter(([k])=>!skip.has(k));
+      lastScanResults=entries; lastScanUrl=url;
+
+      if(entries.length===0){
+        results.innerHTML='<div style="color:var(--muted);font-size:0.78rem;text-align:center;padding:1.5rem">No results. Check the URL and try again.</div>';
+      }else{
+        const pass=entries.filter(([,v])=>rc(v)==='pass').length;
+        const fail=entries.filter(([,v])=>rc(v)==='fail').length;
+        const warn=entries.length-pass-fail;
+        results.innerHTML=`
+          <div class="scan-summary">
+            <div class="scan-sum"><div class="scan-sum-val" style="color:var(--green)">${pass}</div><div class="scan-sum-lbl">Passed</div></div>
+            <div class="scan-sum"><div class="scan-sum-val" style="color:var(--red)">${fail}</div><div class="scan-sum-lbl">Failed</div></div>
+            <div class="scan-sum"><div class="scan-sum-val" style="color:var(--yellow)">${warn}</div><div class="scan-sum-lbl">Warnings</div></div>
+          </div>
+          <div class="results-wrap">
+            ${entries.map(([k,v])=>`
+            <div class="r-row">
+              <span class="r-key">${labels[k]||k.replace(/([A-Z])/g,' $1').trim().toUpperCase()}</span>
+              <span class="r-val ${rc(v)}">${rt(v)}</span>
+            </div>`).join('')}
+          </div>`;
+        pdfBtn.style.display='inline-flex';
+      }
     }
   }catch(e){
     clearInterval(timer);
@@ -1272,8 +1314,22 @@ async function runScan(){
 }
 
 // ── PDF Export ─────────────────────────────────────────────────
+function getClass(v){
+  if(v===true||['pass','ok','valid','configured','present','enabled','passed'].includes(String(v).toLowerCase())) return 'pass';
+  if(v===false||['fail','failed','missing','invalid','error','absent','disabled'].includes(String(v).toLowerCase())) return 'fail';
+  return 'warn';
+}
+
 function downloadScanPDF(){
   if(!lastScanResults||!lastScanResults.length){alert('No scan results to export.');return;}
+  
+  // Normalize results to [[label, value]] format
+  let rows = [];
+  if(Array.isArray(lastScanResults) && lastScanResults[0] && Array.isArray(lastScanResults[0])){
+    rows = lastScanResults; // already [[label, value]]
+  } else if(Array.isArray(lastScanResults) && lastScanResults[0] && typeof lastScanResults[0]==='object'){
+    rows = lastScanResults.map(f=>([f.name||f.check||f.label||'Check', f.status||f.result||(f.passed===true?'pass':f.passed===false?'fail':'warn')]));
+  }
   const{jsPDF}=window.jspdf;
   const doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
   const W=210,M=20,lh=7,cw=W-M*2;
@@ -1300,9 +1356,10 @@ function downloadScanPDF(){
   y+=20;
 
   // Summary boxes
-  const pass=lastScanResults.filter(([,v])=>rc(v)==='pass').length;
-  const fail=lastScanResults.filter(([,v])=>rc(v)==='fail').length;
-  const warn=lastScanResults.length-pass-fail;
+  const rc2=(v)=>{if(v===true||['pass','ok','valid','configured','present','enabled','passed'].includes(String(v).toLowerCase()))return 'pass';if(v===false||['fail','failed','missing','invalid','error','absent','disabled'].includes(String(v).toLowerCase()))return 'fail';return 'warn';};
+  const pass=rows.filter(([,v])=>rc2(v)==='pass').length;
+  const fail=rows.filter(([,v])=>rc2(v)==='fail').length;
+  const warn=rows.length-pass-fail;
   const bw=(cw-8)/3;
   [[pass,[16,185,129],[0,40,20],'PASSED'],[fail,[239,68,68],[50,10,15],'FAILED'],[warn,[245,158,11],[40,35,0],'WARNINGS']].forEach(([val,sc,bg,lbl],i)=>{
     const bx=M+i*(bw+4);
@@ -1322,21 +1379,22 @@ function downloadScanPDF(){
   doc.setTextColor(100,120,160);doc.setFont('helvetica','bold');doc.setFontSize(6);doc.text('CHECK',M+3,y+4);doc.text('STATUS',W-M-3,y+4,{align:'right'});
   y+=8;
 
-  lastScanResults.forEach(([k,v],i)=>{
+  rows.forEach(([k,v],i)=>{
     if(y>270){doc.addPage();doc.setFillColor(8,11,18);doc.rect(0,0,210,297,'F');y=20;}
-    const cls=rc(v);
+    const cls=rc2(v);
     doc.setFillColor(i%2===0?10:14,i%2===0?14:19,i%2===0?22:30);doc.rect(M,y-1,cw,lh,'F');
     if(cls==='pass')doc.setFillColor(16,100,60);else if(cls==='fail')doc.setFillColor(200,50,60);else doc.setFillColor(180,130,0);
     doc.rect(M,y-1,2,lh,'F');
-    doc.setTextColor(180,190,210);doc.setFont('helvetica','normal');doc.setFontSize(8);doc.text(labels[k]||k.replace(/([A-Z])/g,' $1').trim(),M+5,y+4);
-    const st=v===true?'✓ PASS':v===false?'✗ FAIL':String(v).toUpperCase();
+    const label = labels[k]||String(k).replace(/([A-Z])/g,' $1').trim();
+    doc.setTextColor(180,190,210);doc.setFont('helvetica','normal');doc.setFontSize(8);doc.text(label,M+5,y+4);
+    const st=v===true?'✓ PASS':v===false?'✗ FAIL':['pass','passed','ok'].includes(String(v).toLowerCase())?'✓ PASS':['fail','failed','error'].includes(String(v).toLowerCase())?'✗ FAIL':String(v).toUpperCase();
     if(cls==='pass')doc.setTextColor(16,185,129);else if(cls==='fail')doc.setTextColor(239,68,68);else doc.setTextColor(245,158,11);
     doc.setFont('helvetica','bold');doc.text(st,W-M-3,y+4,{align:'right'});
     y+=lh;
   });
 
   // Recommendations
-  const failures=lastScanResults.filter(([,v])=>rc(v)==='fail');
+  const failures=rows.filter(([,v])=>rc2(v)==='fail');
   if(failures.length>0&&y<240){
     y+=6;
     doc.setTextColor(255,107,0);doc.setFont('helvetica','bold');doc.setFontSize(7.5);doc.text('/ RECOMMENDED FIXES',M,y);
@@ -1354,7 +1412,7 @@ function downloadScanPDF(){
   // Footer
   doc.setFillColor(13,18,32);doc.rect(0,283,210,14,'F');
   doc.setTextColor(60,80,110);doc.setFont('helvetica','normal');doc.setFontSize(6.5);
-  doc.text('Generated by CyberShield Security Platform · cybershield.io · Confidential',W/2,290,{align:'center'});
+  doc.text('Generated by CyberShield Security Platform · cybrshieldtech.com · Confidential',W/2,290,{align:'center'});
   doc.text(`Report ID: CS-${Date.now()} · ${new Date().toISOString()}`,W/2,294,{align:'center'});
 
   doc.save(`cybershield-scan-${lastScanUrl.replace(/https?:\/\//,'').replace(/[^a-z0-9]/gi,'-').slice(0,25)}-${new Date().toISOString().split('T')[0]}.pdf`);
