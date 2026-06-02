@@ -81,6 +81,7 @@ a{text-decoration:none;color:inherit}
 .f-input:focus{border-color:var(--orange);background:rgba(255,107,0,0.03);box-shadow:0 0 0 3px rgba(255,107,0,0.08)}
 .f-input::placeholder{color:rgba(255,255,255,0.2)}
 .f-input:disabled{opacity:0.5;cursor:not-allowed}
+.f-input option{background:var(--bg3);color:var(--text)}
 .f-hint{font-size:0.65rem;color:var(--muted);margin-top:3px}
 
 /* BUTTONS */
@@ -595,14 +596,32 @@ async function loadBillingInfo(){
 
 async function loadStats(){
   try{
-    const r = await fetch(`${API}/dashboard`, { headers:{'Authorization':'Bearer '+authToken} });
-    if(!r.ok) return;
-    const d = await r.json();
-    const s = d.stats||{};
-    document.getElementById('acc-score').textContent = s.securityScore||'—';
-    document.getElementById('acc-trainings').textContent = s.trainingsCompleted||'0';
-    document.getElementById('acc-scans').textContent = s.scansThisMonth||'0';
-    document.getElementById('acc-score').style.color = s.securityScore>=80?'var(--green)':s.securityScore>=65?'var(--yellow)':s.securityScore>=45?'var(--orange)':'var(--red)';
+    // Try /dashboard/stats first, fallback to /dashboard
+    let r = await fetch(`${API}/dashboard/stats`, { headers:{'Authorization':'Bearer '+authToken} });
+    let d = await r.json();
+
+    let trainings = 0, scans = 0;
+    if(d.stats){
+      trainings = Number(d.stats.trainings?.total||d.stats.trainings||0);
+      scans     = Number(d.stats.scans||0);
+    } else {
+      r = await fetch(`${API}/dashboard`, { headers:{'Authorization':'Bearer '+authToken} });
+      d = await r.json();
+      const s = d.stats||d;
+      trainings = Number(s.trainingsCompleted||s.trainings?.total||0);
+      scans     = Number(s.scansThisMonth||s.scans||0);
+    }
+
+    // Calculate score same way as dashboard
+    const trainPts  = Math.min(trainings*4,20);
+    const scanPts   = scans>0?(scans>=3?20:15):-10;
+    const score     = Math.max(10,Math.min(100,Math.round(50+trainPts+scanPts)));
+
+    document.getElementById('acc-score').textContent = score;
+    document.getElementById('acc-trainings').textContent = trainings;
+    document.getElementById('acc-scans').textContent = scans;
+    const color = score>=80?'var(--green)':score>=65?'var(--yellow)':score>=45?'var(--orange)':'var(--red)';
+    document.getElementById('acc-score').style.color = color;
   }catch(e){}
 }
 
