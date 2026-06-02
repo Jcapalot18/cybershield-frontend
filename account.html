@@ -388,11 +388,11 @@ textarea.f-input{resize:none;height:120px;font-family:'Hanken Grotesk',sans-seri
               <div class="support-desc">New to CyberShield? Learn how to get the most out of your account in 3 steps.</div>
               <span class="support-link" style="color:var(--green)">View guide →</span>
             </div>
-            <div class="support-card">
+            <div class="support-card" style="cursor:pointer" onclick="openSecurityModal()">
               <div class="support-ico" style="background:rgba(6,182,212,0.08);border:1px solid rgba(6,182,212,0.15)"><svg style="stroke:#06B6D4" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
               <div class="support-title">Security concerns</div>
               <div class="support-desc">Report a vulnerability or security issue with CyberShield.</div>
-              <a href="https://mail.google.com/mail/?view=cm&to=security@cybershield.io&su=Security%20Vulnerability%20Report&body=Hi%20CyberShield%20security%20team%2C%0A%0AI%20want%20to%20report%20a%20security%20issue%3A%0A%0AVulnerability%20description%3A%0A%0ASteps%20to%20reproduce%3A%0A%0A" target="_blank" rel="noopener" class="support-link" style="color:#06B6D4">security@cybershield.io →</a>
+              <span class="support-link" style="color:#06B6D4">Report an issue →</span>
             </div>
             <div class="support-card">
               <div class="support-ico" style="background:var(--orange-dim);border:1px solid var(--orange-border)"><svg style="stroke:var(--orange)" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
@@ -861,9 +861,78 @@ async function doUpgrade(plan){
   </div>
 </div>
 
+<!-- Security Concerns Modal -->
+<div id="sec-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:300;align-items:center;justify-content:center;backdrop-filter:blur(10px)" onclick="if(event.target===this)closeSec()">
+  <div style="background:var(--bg3);border:1px solid rgba(6,182,212,0.2);border-radius:16px;max-width:520px;width:92%;max-height:88vh;overflow-y:auto;position:relative">
+    <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#06B6D4,transparent);border-radius:16px 16px 0 0"></div>
+    <button onclick="closeSec()" style="position:absolute;top:1rem;right:1rem;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:6px;color:var(--muted);cursor:pointer;font-size:1rem;padding:4px 9px;font-family:'Hanken Grotesk',sans-serif" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--muted)'">×</button>
+
+    <div style="padding:2rem">
+      <div style="font-size:0.62rem;font-weight:800;text-transform:uppercase;letter-spacing:0.15em;color:#06B6D4;margin-bottom:0.5rem">■ Security</div>
+      <div style="font-size:1.3rem;font-weight:900;color:var(--text);letter-spacing:-0.02em;margin-bottom:0.375rem">Report a security issue</div>
+      <div style="font-size:0.8rem;color:var(--muted);margin-bottom:1.5rem;line-height:1.6">Found a vulnerability in CyberShield? We take all security reports seriously and respond within 24 hours.</div>
+
+      <!-- What to report -->
+      <div style="background:rgba(6,182,212,0.06);border:1px solid rgba(6,182,212,0.15);border-radius:10px;padding:1.1rem;margin-bottom:1rem">
+        <div style="font-size:0.75rem;font-weight:700;color:#06B6D4;margin-bottom:0.75rem">What to include in your report</div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          ${['Description of the vulnerability','Steps to reproduce the issue','What data or systems could be affected','Your contact email for follow-up'].map(item=>`
+          <div style="display:flex;align-items:center;gap:8px;font-size:0.72rem;color:rgba(255,255,255,0.6)">
+            <span style="color:#06B6D4;font-weight:700;flex-shrink:0">✓</span>${item}
+          </div>`).join('')}
+        </div>
+      </div>
+
+      <!-- Responsible disclosure -->
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1.1rem;margin-bottom:1.25rem">
+        <div style="font-size:0.75rem;font-weight:700;color:var(--text);margin-bottom:0.5rem">Our responsible disclosure policy</div>
+        <div style="font-size:0.72rem;color:var(--muted);line-height:1.7">We ask that you give us reasonable time to investigate and fix the issue before any public disclosure. We will acknowledge your report within 24 hours and keep you updated. We will not take legal action against researchers acting in good faith.</div>
+      </div>
+
+      <!-- Report form -->
+      <div style="display:flex;flex-direction:column;gap:0.75rem;margin-bottom:1.25rem">
+        <div>
+          <label style="font-size:0.62rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;display:block;margin-bottom:4px">Vulnerability type</label>
+          <select id="sec-type" class="f-input" style="background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text);font-size:0.85rem;width:100%;font-family:'Hanken Grotesk',sans-serif;outline:none">
+            <option value="">Select type</option>
+            <option value="XSS">Cross-Site Scripting (XSS)</option>
+            <option value="SQLi">SQL Injection</option>
+            <option value="Auth bypass">Authentication bypass</option>
+            <option value="Data exposure">Sensitive data exposure</option>
+            <option value="CSRF">CSRF vulnerability</option>
+            <option value="Broken access control">Broken access control</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:0.62rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;display:block;margin-bottom:4px">Description</label>
+          <textarea id="sec-desc" placeholder="Describe the vulnerability and steps to reproduce..." style="background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text);font-size:0.8rem;width:100%;font-family:'Hanken Grotesk',sans-serif;outline:none;resize:none;height:100px;line-height:1.6"></textarea>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:0.75rem">
+        <button onclick="closeSec()" style="flex:1;background:transparent;color:var(--muted);border:1px solid var(--border);border-radius:8px;padding:10px;font-size:0.8rem;font-weight:600;cursor:pointer;font-family:'Hanken Grotesk',sans-serif">Cancel</button>
+        <button onclick="submitSecReport()" style="flex:2;background:#06B6D4;color:#fff;border:none;border-radius:8px;padding:10px;font-size:0.8rem;font-weight:700;cursor:pointer;font-family:'Hanken Grotesk',sans-serif">Send security report →</button>
+      </div>
+      <div style="text-align:center;margin-top:0.75rem;font-size:0.68rem;color:var(--muted)">Or email directly: <a href="https://mail.google.com/mail/?view=cm&to=security@cybershield.io" target="_blank" style="color:#06B6D4">security@cybershield.io</a></div>
+    </div>
+  </div>
+</div>
+
 <script>
-function openGettingStarted(){ document.getElementById('gs-modal').style.display='flex'; }
-function closeGS(){ document.getElementById('gs-modal').style.display='none'; }
+function openSecurityModal(){ document.getElementById('sec-modal').style.display='flex'; }
+function closeSec(){ document.getElementById('sec-modal').style.display='none'; }
+function submitSecReport(){
+  const type = document.getElementById('sec-type').value;
+  const desc = document.getElementById('sec-desc').value.trim();
+  if(!type||!desc){ alert('Please select a type and describe the issue.'); return; }
+  const email = sessionStorage.getItem('cs_email')||'';
+  const body = `Security Report from: ${email}\n\nType: ${type}\n\nDescription:\n${desc}`;
+  const url = `https://mail.google.com/mail/?view=cm&to=security@cybershield.io&su=${encodeURIComponent(`[Security Report] ${type} - CyberShield`)}&body=${encodeURIComponent(body)}`;
+  window.open(url,'_blank');
+  closeSec();
+}
+</script>
 function openBillingEmail(e){
   e.preventDefault();
   const email = sessionStorage.getItem('cs_email')||'';
