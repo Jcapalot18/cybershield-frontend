@@ -600,11 +600,50 @@ a{text-decoration:none;color:inherit}
       </div>
       <div style="display:flex;align-items:center;gap:5px;flex-shrink:0"><div class="sdot"></div><span style="font-size:0.62rem;color:var(--muted)">Updated daily</span></div>
     </div>
-    <!-- Training modal -->
+    <!-- Training modal — lesson → quiz → result -->
     <div class="modal-ov" id="training-modal">
-      <div class="t-modal">
+      <div class="t-modal" style="max-width:640px">
         <button class="m-close" onclick="closeTrainingModal()">×</button>
-        <div id="training-modal-content" style="min-height:180px"></div>
+
+        <!-- Loading lesson -->
+        <div id="tm-loading-lesson" style="text-align:center;padding:3rem 1rem">
+          <div style="width:36px;height:36px;border:2.5px solid var(--orange);border-top-color:transparent;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 1rem"></div>
+          <div style="font-size:0.8rem;color:var(--muted)">Generating AI lesson from CyberWire Daily...</div>
+        </div>
+
+        <!-- Loading quiz -->
+        <div id="tm-loading-quiz" style="display:none;text-align:center;padding:3rem 1rem">
+          <div style="width:36px;height:36px;border:2.5px solid var(--orange);border-top-color:transparent;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 1rem"></div>
+          <div style="font-size:0.8rem;color:var(--muted)">Generating quiz questions...</div>
+        </div>
+
+        <!-- Lesson screen -->
+        <div id="tm-lesson" style="display:none">
+          <div style="font-size:0.6rem;font-weight:800;text-transform:uppercase;letter-spacing:0.15em;color:var(--orange);margin-bottom:0.5rem;display:flex;align-items:center;gap:6px"><span>■</span>AI TRAINING</div>
+          <div style="font-size:1.15rem;font-weight:800;color:var(--text);margin-bottom:1rem;letter-spacing:-0.02em" id="tm-lesson-title"></div>
+          <div id="tm-lesson-body" style="max-height:320px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;padding:1rem;background:rgba(255,255,255,0.02);margin-bottom:1.25rem;line-height:1.7"></div>
+          <div style="display:flex;gap:0.75rem;justify-content:flex-end">
+            <button onclick="closeTrainingModal()" class="btn-ghost" style="background:transparent;color:var(--muted);border:1px solid var(--border);border-radius:8px;padding:10px 20px;font-size:0.8rem;font-weight:600;cursor:pointer;font-family:'Hanken Grotesk',sans-serif">Close</button>
+            <button onclick="startQuiz()" style="background:var(--orange);color:#fff;border:none;border-radius:8px;padding:10px 24px;font-size:0.8rem;font-weight:700;cursor:pointer;font-family:'Hanken Grotesk',sans-serif;box-shadow:0 4px 16px rgba(255,107,0,0.25)">Take quiz →</button>
+          </div>
+        </div>
+
+        <!-- Quiz screen -->
+        <div id="tm-quiz" style="display:none">
+          <div style="font-size:0.6rem;font-weight:800;text-transform:uppercase;letter-spacing:0.15em;color:var(--orange);margin-bottom:0.5rem;display:flex;align-items:center;gap:6px"><span>■</span>KNOWLEDGE CHECK</div>
+          <div style="font-size:1.1rem;font-weight:800;color:var(--text);margin-bottom:1.25rem;letter-spacing:-0.02em">Test your knowledge</div>
+          <div id="tm-quiz-body" style="max-height:360px;overflow-y:auto;margin-bottom:1rem"></div>
+        </div>
+
+        <!-- Result screen -->
+        <div id="tm-result" style="display:none;text-align:center;padding:1.5rem 0">
+          <div style="font-size:4rem;font-weight:900;letter-spacing:-0.05em;margin-bottom:0.5rem" id="tm-result-score"></div>
+          <div style="font-size:1.1rem;font-weight:700;color:var(--text);margin-bottom:0.5rem" id="tm-result-label"></div>
+          <div style="font-size:0.8rem;color:var(--muted);margin-bottom:1.5rem;line-height:1.65" id="tm-result-msg"></div>
+          <div style="display:flex;gap:0.75rem;justify-content:center">
+            <button onclick="closeTrainingModal()" style="background:var(--orange);color:#fff;border:none;border-radius:8px;padding:10px 24px;font-size:0.8rem;font-weight:700;cursor:pointer;font-family:'Hanken Grotesk',sans-serif">Done</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -916,90 +955,147 @@ async function loadThreats(){
 }
 
 // ── Training ───────────────────────────────────────────────────
-// ── Training — fetch valid topics then start
+// ── Training — full lesson → quiz → result flow ───────────────
 let validTopics = [];
+let currentTopic = '';
+let currentQuiz = null;
+let selectedAnswers = {};
+
 async function loadValidTopics(){
   try{
     const r = await fetch(`${API}/training/topics`,{headers:{'Authorization':'Bearer '+authToken}});
     const d = await r.json();
-    validTopics = d.topics || [];
-    // Update the start buttons with real topic names
-    const btns = document.querySelectorAll('.t-start');
-    const topicMap = ['phish','password','ransom'];
-    btns.forEach((btn, i) => {
-      const match = validTopics.find(t => t.toLowerCase().includes(topicMap[i])) || validTopics[i];
-      if(match) btn.setAttribute('data-topic', match);
-    });
-  }catch(e){ console.log('Could not load topics, using defaults'); }
+    validTopics = d.topics||[];
+  }catch(e){}
 }
 
-async function startTraining(topicOrBtn){
-  // Get topic — either passed directly or from data-topic attr
-  let topic = typeof topicOrBtn === 'string' ? topicOrBtn : topicOrBtn.getAttribute('data-topic');
-  
-  // If we have valid topics loaded, try to match
-  if(validTopics.length > 0 && topic){
-    const lower = topic.toLowerCase();
-    const match = validTopics.find(t => t.toLowerCase().includes(lower.split(' ')[0]));
+async function startTraining(keyword){
+  // Match keyword to a real topic from backend
+  let topic = keyword;
+  if(validTopics.length > 0){
+    const match = validTopics.find(t=>t.toLowerCase().includes(keyword.toLowerCase()));
     if(match) topic = match;
-  } else if(!topic){
-    topic = 'Phishing';
   }
-  const modal=document.getElementById('training-modal');
-  const content=document.getElementById('training-modal-content');
-  modal.classList.add('show');
-  content.innerHTML=`<div style="text-align:center;padding:2.5rem 0">
-    <div style="width:32px;height:32px;border:2px solid var(--orange);border-top-color:transparent;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 1rem"></div>
-    <div style="font-size:0.78rem;color:var(--muted)">Generating AI lesson from CyberWire Daily...</div>
-  </div>`;
-  try{
-    const r=await fetch(`${API}/training/lesson`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+authToken},body:JSON.stringify({topic})});
-    const d=await r.json();
-    
-    // Handle both response formats
-    const lessonRaw = d.lesson?.content || d.lesson || d.content || d.error || 'Failed to load lesson.';
-    const lessonTitle = d.lesson?.title || d.title || topic;
-    
-    // Convert markdown to readable HTML
-    function mdToHtml(md){
-      if(typeof md !== 'string') md = JSON.stringify(md);
-      return md.split('\n').map(line=>{
-        if(line.startsWith('## ')) return `<h3 style="font-size:0.95rem;font-weight:800;color:var(--text);margin:1rem 0 0.4rem">${line.slice(3)}</h3>`;
-        if(line.startsWith('# ')) return `<h2 style="font-size:1.05rem;font-weight:800;color:var(--text);margin:1rem 0 0.5rem">${line.slice(2)}</h2>`;
-        if(line.startsWith('- ')||line.startsWith('• ')) return `<div style="display:flex;gap:8px;margin-bottom:4px"><span style="color:var(--orange);flex-shrink:0">▸</span><span style="font-size:0.78rem;color:rgba(255,255,255,0.65)">${line.slice(2)}</span></div>`;
-        if(line.trim()==='') return '<div style="height:8px"></div>';
-        return `<p style="font-size:0.78rem;color:rgba(255,255,255,0.65);line-height:1.7;margin-bottom:6px">${line}</p>`;
-      }).join('');
-    }
+  currentTopic = topic;
+  selectedAnswers = {};
 
-    content.innerHTML=`
-      <div class="eyebrow" style="margin-bottom:0.75rem">AI Training · ${topic}</div>
-      <div style="font-size:1.1rem;font-weight:800;color:var(--text);margin-bottom:1rem;letter-spacing:-0.02em">${lessonTitle}</div>
-      <div style="max-height:280px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;padding:1rem;background:rgba(255,255,255,0.02);margin-bottom:1.25rem">
-        ${mdToHtml(lessonRaw)}
-      </div>
-      ${d.quiz?`
-      <div style="border-top:1px solid var(--border);padding-top:1rem">
-        <div class="eyebrow" style="margin-bottom:0.75rem">Quick Quiz</div>
-        <div style="font-size:0.875rem;color:var(--text);margin-bottom:1rem;font-weight:500">${d.quiz.question}</div>
-        <div>${d.quiz.options.map((opt,i)=>`<button class="quiz-btn" onclick="selectAnswer(this,${i===d.quiz.correctIndex})">${opt}</button>`).join('')}</div>
-      </div>`:''}
-    `;
+  const modal = document.getElementById('training-modal');
+  modal.classList.add('show');
+  showTrainingScreen('loading-lesson');
+
+  try{
+    const r = await fetch(`${API}/training/lesson`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+authToken},body:JSON.stringify({topic})});
+    const d = await r.json();
+
+    const lessonRaw = d.lesson?.content || d.lesson || d.content || '';
+    const lessonTitle = d.lesson?.title || d.title || topic;
+
+    if(!lessonRaw || lessonRaw.includes('Invalid')){
+      // Fallback: generate lesson ourselves via AI
+      document.getElementById('tm-lesson-title').textContent = topic;
+      document.getElementById('tm-lesson-body').innerHTML = '<p style="color:var(--muted)">Could not load lesson. Please try again.</p>';
+    } else {
+      document.getElementById('tm-lesson-title').textContent = lessonTitle;
+      document.getElementById('tm-lesson-body').innerHTML = mdToHtml(lessonRaw);
+    }
+    showTrainingScreen('lesson');
   }catch(e){
-    content.innerHTML=`<div style="color:var(--red);font-size:0.82rem;text-align:center;padding:1rem">Failed to generate lesson. Please try again.</div>`;
+    document.getElementById('tm-lesson-body').innerHTML = '<p style="color:var(--red)">Failed to load. Please try again.</p>';
+    showTrainingScreen('lesson');
   }
 }
-function selectAnswer(btn,correct){
-  btn.parentElement.querySelectorAll('.quiz-btn').forEach(b=>b.disabled=true);
-  btn.classList.add(correct?'correct':'wrong');
-  btn.textContent+=(correct?' ✓':' ✗');
-  if(correct)recordTraining();
+
+async function startQuiz(){
+  showTrainingScreen('loading-quiz');
+  selectedAnswers = {};
+  currentQuiz = null;
+  try{
+    const r = await fetch(`${API}/training/quiz`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+authToken},body:JSON.stringify({topic:currentTopic,seed:Math.floor(Math.random()*9999)})});
+    const d = await r.json();
+    currentQuiz = d.quiz;
+    renderQuiz();
+    showTrainingScreen('quiz');
+  }catch(e){
+    showTrainingScreen('lesson');
+  }
 }
-async function recordTraining(){
-  try{await fetch(`${API}/training/complete`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+authToken},body:JSON.stringify({topic:'training'})});}catch(e){}
-  const el=document.getElementById('ts-done');if(el)el.textContent=parseInt(el.textContent||0)+1;
+
+function renderQuiz(){
+  if(!currentQuiz||!currentQuiz.questions) return;
+  const el = document.getElementById('tm-quiz-body');
+  el.innerHTML = currentQuiz.questions.map((q,qi)=>`
+    <div style="margin-bottom:1.5rem">
+      <div style="font-size:0.82rem;font-weight:600;color:var(--text);margin-bottom:0.625rem;line-height:1.5">${qi+1}. ${q.q}</div>
+      ${q.options.map((opt,oi)=>`
+        <div id="opt-${qi}-${oi}" onclick="pickAnswer(${qi},${oi})" style="padding:9px 14px;border:1px solid var(--border);border-radius:6px;font-size:0.78rem;color:var(--muted);cursor:pointer;margin-bottom:5px;transition:all 0.15s"
+          onmouseover="if(!this.classList.contains('locked'))this.style.borderColor='var(--orange-border)'"
+          onmouseout="if(!this.classList.contains('locked'))this.style.borderColor='var(--border)'">${opt}</div>
+      `).join('')}
+    </div>`).join('');
+  el.innerHTML += `<button id="quiz-submit-btn" onclick="submitQuiz()" disabled style="background:var(--orange);color:#fff;border:none;border-radius:8px;padding:10px 24px;font-size:0.8rem;font-weight:700;cursor:pointer;font-family:'Hanken Grotesk',sans-serif;opacity:0.5;transition:all 0.2s">Submit answers</button>`;
 }
-function closeTrainingModal(){document.getElementById('training-modal').classList.remove('show');}
+
+function pickAnswer(qi,oi){
+  const total = currentQuiz.questions.length;
+  // Clear other selections for this question
+  currentQuiz.questions[qi].options.forEach((_,i)=>{
+    const el = document.getElementById(`opt-${qi}-${i}`);
+    if(el){ el.style.background=''; el.style.borderColor='var(--border)'; el.style.color='var(--muted)'; }
+  });
+  selectedAnswers[qi] = oi;
+  const sel = document.getElementById(`opt-${qi}-${oi}`);
+  if(sel){ sel.style.background='var(--orange-dim)'; sel.style.borderColor='var(--orange-border)'; sel.style.color='var(--text)'; }
+  const btn = document.getElementById('quiz-submit-btn');
+  if(btn){ const ready = Object.keys(selectedAnswers).length >= total; btn.disabled=!ready; btn.style.opacity=ready?'1':'0.5'; }
+}
+
+async function submitQuiz(){
+  let correct = 0;
+  currentQuiz.questions.forEach((q,qi)=>{
+    const chosen = selectedAnswers[qi];
+    q.options.forEach((_,i)=>{
+      const el = document.getElementById(`opt-${qi}-${i}`);
+      if(!el) return;
+      el.classList.add('locked');
+      el.style.cursor='default';
+      if(i===q.correct){ el.style.background='rgba(16,185,129,0.1)'; el.style.borderColor='rgba(16,185,129,0.3)'; el.style.color='var(--green)'; }
+      else if(i===chosen){ el.style.background='rgba(239,68,68,0.1)'; el.style.borderColor='rgba(239,68,68,0.2)'; el.style.color='var(--red)'; }
+    });
+    if(chosen===q.correct) correct++;
+  });
+  const score = Math.round((correct/currentQuiz.questions.length)*100);
+  try{ await fetch(`${API}/training/complete`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+authToken},body:JSON.stringify({topic:currentTopic,score})}); }catch(e){}
+  setTimeout(()=>{
+    const passed = score>=67;
+    document.getElementById('tm-result-score').textContent = score+'%';
+    document.getElementById('tm-result-score').style.color = passed?'var(--green)':'var(--red)';
+    document.getElementById('tm-result-label').textContent = passed?'Training complete! 🎉':'Review recommended';
+    document.getElementById('tm-result-msg').textContent = passed?`${correct}/${currentQuiz.questions.length} correct — your score is saved to your security dashboard.`:`${correct}/${currentQuiz.questions.length} correct — consider reviewing the lesson and retaking.`;
+    showTrainingScreen('result');
+    const el=document.getElementById('ts-done'); if(el)el.textContent=parseInt(el.textContent||0)+1;
+  },600);
+}
+
+function showTrainingScreen(name){
+  ['loading-lesson','loading-quiz','lesson','quiz','result'].forEach(s=>{
+    const el=document.getElementById('tm-'+s); if(el)el.style.display='none';
+  });
+  const target=document.getElementById('tm-'+name);
+  if(target)target.style.display='block';
+}
+
+function mdToHtml(md){
+  if(typeof md!=='string') md=JSON.stringify(md);
+  return md.split('\n').map(line=>{
+    if(line.startsWith('## '))return`<h3 style="font-size:0.9rem;font-weight:800;color:var(--text);margin:1rem 0 0.4rem">${line.slice(3)}</h3>`;
+    if(line.startsWith('# '))return`<h2 style="font-size:1rem;font-weight:800;color:var(--text);margin:1rem 0 0.5rem">${line.slice(2)}</h2>`;
+    if(line.startsWith('- ')||line.startsWith('• '))return`<div style="display:flex;gap:8px;margin-bottom:5px"><span style="color:var(--orange);flex-shrink:0;margin-top:2px">▸</span><span style="font-size:0.78rem;color:rgba(255,255,255,0.65);line-height:1.6">${line.slice(2)}</span></div>`;
+    if(line.trim()==='')return'<div style="height:6px"></div>';
+    return`<p style="font-size:0.78rem;color:rgba(255,255,255,0.65);line-height:1.7;margin-bottom:6px">${line}</p>`;
+  }).join('');
+}
+
+
 
 // ── Breach ─────────────────────────────────────────────────────
 async function runBreach(){
