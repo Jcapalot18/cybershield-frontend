@@ -675,9 +675,26 @@ async function sendSupportMessage(){
 
 function signOutAll(){ sessionStorage.clear(); window.location.href='auth.html'; }
 
-function confirmDeleteAccount(){
-  const confirmed = confirm('Are you sure you want to delete your account? This will permanently delete all your data, team members, and cannot be undone.');
-  if(confirmed){ alert('Please email support@cybrshieldtech.com with "Delete my account" in the subject line for manual deletion.'); }
+async function confirmDeleteAccount(){
+  const first = confirm('Are you sure you want to delete your account?\n\nThis will permanently delete:\n• All your scan history\n• All team members\n• All your data\n\nThis cannot be undone.');
+  if(!first) return;
+  
+  const second = confirm('Last warning — this is permanent and cannot be reversed.\n\nClick OK to permanently delete your account.');
+  if(!second) return;
+
+  try{
+    const r = await fetch(`${API}/auth/delete-account`, { method:'DELETE', headers:{'Authorization':'Bearer '+authToken} });
+    const d = await r.json();
+    if(r.ok){
+      alert('Your account has been deleted. You will now be signed out.');
+      sessionStorage.clear();
+      window.location.href = 'index.html';
+    } else {
+      alert(d.error||'Failed to delete account. Please contact support@cybrshieldtech.com');
+    }
+  }catch(e){
+    alert('Connection error. Please try again or contact support@cybrshieldtech.com');
+  }
 }
 
 function buildPlanTable(){
