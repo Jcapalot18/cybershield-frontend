@@ -380,25 +380,25 @@ textarea.f-input{resize:none;height:120px;font-family:'Hanken Grotesk',sans-seri
               <div class="support-ico" style="background:var(--orange-dim);border:1px solid var(--orange-border)"><svg style="stroke:var(--orange)" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
               <div class="support-title">Email support</div>
               <div class="support-desc">Get help from our team. We respond within 24 hours on business days.</div>
-              <a href="https://mail.google.com/mail/?view=cm&to=support@cybershield.io" target="_blank" rel="noopener" class="support-link">support@cybershield.io →</a>
+              <a href="https://mail.google.com/mail/?view=cm&to=support@cybershield.io&su=CyberShield%20Support%20Request&body=Hi%20CyberShield%20team%2C%0A%0AI%20need%20help%20with%3A%0A%0A" target="_blank" rel="noopener" class="support-link">support@cybershield.io →</a>
             </div>
-            <div class="support-card">
+            <div class="support-card" style="cursor:pointer" onclick="openGettingStarted()">
               <div class="support-ico" style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.15)"><svg style="stroke:var(--green)" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
-              <div class="support-title">Documentation</div>
-              <div class="support-desc">Browse guides, FAQs, and how-tos for every CyberShield feature.</div>
-              <a href="https://mail.google.com/mail/?view=cm&to=support@cybershield.io&su=Documentation%20Request" target="_blank" rel="noopener" class="support-link" style="color:var(--green)">Request a guide →</a>
+              <div class="support-title">Getting Started</div>
+              <div class="support-desc">New to CyberShield? Learn how to get the most out of your account in 3 steps.</div>
+              <span class="support-link" style="color:var(--green)">View guide →</span>
             </div>
             <div class="support-card">
               <div class="support-ico" style="background:rgba(6,182,212,0.08);border:1px solid rgba(6,182,212,0.15)"><svg style="stroke:#06B6D4" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
               <div class="support-title">Security concerns</div>
               <div class="support-desc">Report a vulnerability or security issue with CyberShield.</div>
-              <a href="https://mail.google.com/mail/?view=cm&to=security@cybershield.io" target="_blank" rel="noopener" class="support-link" style="color:#06B6D4">security@cybershield.io →</a>
+              <a href="https://mail.google.com/mail/?view=cm&to=security@cybershield.io&su=Security%20Vulnerability%20Report&body=Hi%20CyberShield%20security%20team%2C%0A%0AI%20want%20to%20report%20a%20security%20issue%3A%0A%0AVulnerability%20description%3A%0A%0ASteps%20to%20reproduce%3A%0A%0A" target="_blank" rel="noopener" class="support-link" style="color:#06B6D4">security@cybershield.io →</a>
             </div>
             <div class="support-card">
               <div class="support-ico" style="background:var(--orange-dim);border:1px solid var(--orange-border)"><svg style="stroke:var(--orange)" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
               <div class="support-title">Billing questions</div>
               <div class="support-desc">Questions about invoices, charges, or subscription changes.</div>
-              <a href="https://mail.google.com/mail/?view=cm&to=billing@cybershield.io" target="_blank" rel="noopener" class="support-link">billing@cybershield.io →</a>
+              <a id="billing-email-link" href="#" onclick="openBillingEmail(event)" class="support-link">billing@cybershield.io →</a>
             </div>
           </div>
 
@@ -748,6 +748,127 @@ async function doUpgrade(plan){
     if(d.url){ window.location.href=d.url; }
     else{ msg.innerHTML=`<div style="font-size:0.72rem;color:var(--red);text-align:center;padding:0.5rem">⚠ ${d.error||'Could not start checkout. Try again.'}</div>`; }
   }catch(e){ msg.innerHTML='<div style="font-size:0.72rem;color:var(--red);text-align:center;padding:0.5rem">Connection error. Please try again.</div>'; }
+}
+</script>
+<!-- Getting Started Modal -->
+<div id="gs-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:300;align-items:center;justify-content:center;backdrop-filter:blur(10px)" onclick="if(event.target===this)closeGS()">
+  <div style="background:var(--bg3);border:1px solid rgba(255,255,255,0.1);border-radius:16px;max-width:580px;width:92%;max-height:88vh;overflow-y:auto;position:relative">
+    <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--green),transparent);border-radius:16px 16px 0 0"></div>
+    <button onclick="closeGS()" style="position:absolute;top:1rem;right:1rem;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:6px;color:var(--muted);cursor:pointer;font-size:1rem;padding:4px 9px;font-family:'Hanken Grotesk',sans-serif;transition:all 0.15s" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--muted)'">×</button>
+
+    <!-- Header -->
+    <div style="padding:2rem 2rem 0">
+      <div style="font-size:0.62rem;font-weight:800;text-transform:uppercase;letter-spacing:0.15em;color:var(--green);margin-bottom:0.5rem">■ Getting Started</div>
+      <div style="font-size:1.4rem;font-weight:900;color:var(--text);letter-spacing:-0.02em;margin-bottom:0.375rem">Get protected in 3 steps</div>
+      <div style="font-size:0.82rem;color:var(--muted);margin-bottom:1.5rem">Everything you need to start protecting your business today.</div>
+    </div>
+
+    <!-- Steps -->
+    <div style="padding:0 2rem 2rem;display:flex;flex-direction:column;gap:1rem">
+
+      <!-- Step 1 -->
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden">
+        <div style="background:linear-gradient(135deg,rgba(255,107,0,0.08),transparent);padding:1.25rem;display:flex;gap:1rem;align-items:flex-start">
+          <div style="width:36px;height:36px;background:var(--orange);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:900;color:#fff;flex-shrink:0">1</div>
+          <div style="flex:1">
+            <div style="font-size:0.875rem;font-weight:800;color:var(--text);margin-bottom:4px">Run your first vulnerability scan</div>
+            <div style="font-size:0.75rem;color:var(--muted);line-height:1.65;margin-bottom:0.875rem">Check your website for security issues in under 60 seconds. CyberShield checks SSL certificates, security headers, DNS configuration, cookie security and more.</div>
+            <div style="display:flex;flex-direction:column;gap:5px">
+              <div style="display:flex;align-items:center;gap:8px;font-size:0.72rem;color:rgba(255,255,255,0.55)"><span style="color:var(--orange);font-weight:700">→</span> Go to <strong style="color:var(--text)">Dashboard → Vulnerability Scanner</strong></div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:0.72rem;color:rgba(255,255,255,0.55)"><span style="color:var(--orange);font-weight:700">→</span> Enter your website URL (e.g. https://yourfirm.com)</div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:0.72rem;color:rgba(255,255,255,0.55)"><span style="color:var(--orange);font-weight:700">→</span> Click <strong style="color:var(--text)">"Run vulnerability scan"</strong> and download the PDF report</div>
+            </div>
+          </div>
+        </div>
+        <div style="border-top:1px solid var(--border);padding:0.75rem 1.25rem;display:flex;align-items:center;justify-content:space-between">
+          <div style="font-size:0.65rem;color:var(--muted)">Takes about 30 seconds · Starter plan: 5 scans/month</div>
+          <a href="app.html" style="font-size:0.72rem;font-weight:700;color:var(--orange);text-decoration:none">Run scan →</a>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden">
+        <div style="background:linear-gradient(135deg,rgba(239,68,68,0.06),transparent);padding:1.25rem;display:flex;gap:1rem;align-items:flex-start">
+          <div style="width:36px;height:36px;background:var(--red);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:900;color:#fff;flex-shrink:0">2</div>
+          <div style="flex:1">
+            <div style="font-size:0.875rem;font-weight:800;color:var(--text);margin-bottom:4px">Check your team emails for breaches</div>
+            <div style="font-size:0.75rem;color:var(--muted);line-height:1.65;margin-bottom:0.875rem">Find out if any employee email has appeared in a data breach. We check against HaveIBeenPwned's database of 12 billion+ leaked credentials across 800+ breaches.</div>
+            <div style="display:flex;flex-direction:column;gap:5px">
+              <div style="display:flex;align-items:center;gap:8px;font-size:0.72rem;color:rgba(255,255,255,0.55)"><span style="color:var(--red);font-weight:700">→</span> Go to <strong style="color:var(--text)">Dashboard → Breach Monitor</strong></div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:0.72rem;color:rgba(255,255,255,0.55)"><span style="color:var(--red);font-weight:700">→</span> Enter each employee's work email address</div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:0.72rem;color:rgba(255,255,255,0.55)"><span style="color:var(--red);font-weight:700">→</span> If breached — immediately change that password everywhere</div>
+            </div>
+          </div>
+        </div>
+        <div style="border-top:1px solid var(--border);padding:0.75rem 1.25rem;display:flex;align-items:center;justify-content:space-between">
+          <div style="font-size:0.65rem;color:var(--muted)">Instant results · Check all team emails regularly</div>
+          <a href="app.html" style="font-size:0.72rem;font-weight:700;color:var(--red);text-decoration:none">Check now →</a>
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden">
+        <div style="background:linear-gradient(135deg,rgba(16,185,129,0.06),transparent);padding:1.25rem;display:flex;gap:1rem;align-items:flex-start">
+          <div style="width:36px;height:36px;background:var(--green);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:900;color:#fff;flex-shrink:0">3</div>
+          <div style="flex:1">
+            <div style="font-size:0.875rem;font-weight:800;color:var(--text);margin-bottom:4px">Complete your first AI training module</div>
+            <div style="font-size:0.75rem;color:var(--muted);line-height:1.65;margin-bottom:0.875rem">5 minutes a week keeps your team ahead of attackers. Each module is generated from this week's live CyberWire Daily threat feed — covering exactly what attackers are doing right now.</div>
+            <div style="display:flex;flex-direction:column;gap:5px">
+              <div style="display:flex;align-items:center;gap:8px;font-size:0.72rem;color:rgba(255,255,255,0.55)"><span style="color:var(--green);font-weight:700">→</span> Go to <strong style="color:var(--text)">Dashboard → AI Training</strong></div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:0.72rem;color:rgba(255,255,255,0.55)"><span style="color:var(--green);font-weight:700">→</span> Pick any module — Phishing, Passwords, or Ransomware</div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:0.72rem;color:rgba(255,255,255,0.55)"><span style="color:var(--green);font-weight:700">→</span> Read the lesson and pass the quiz to earn your score boost</div>
+            </div>
+          </div>
+        </div>
+        <div style="border-top:1px solid var(--border);padding:0.75rem 1.25rem;display:flex;align-items:center;justify-content:space-between">
+          <div style="font-size:0.65rem;color:var(--muted)">5 min per module · New content weekly</div>
+          <a href="app.html" style="font-size:0.72rem;font-weight:700;color:var(--green);text-decoration:none">Start training →</a>
+        </div>
+      </div>
+
+      <!-- FAQ -->
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1.25rem">
+        <div style="font-size:0.78rem;font-weight:800;color:var(--text);margin-bottom:1rem">Frequently asked questions</div>
+        <div style="display:flex;flex-direction:column;gap:0.875rem">
+          <div>
+            <div style="font-size:0.75rem;font-weight:700;color:var(--text);margin-bottom:3px">How is my security score calculated?</div>
+            <div style="font-size:0.72rem;color:var(--muted);line-height:1.6">Your score starts at 50 and goes up or down based on trainings completed (+4 pts each), scans run (+15–20 pts), and breaches found (−3 pts each). Max is 100.</div>
+          </div>
+          <div style="border-top:1px solid var(--border);padding-top:0.875rem">
+            <div style="font-size:0.75rem;font-weight:700;color:var(--text);margin-bottom:3px">When does my trial end?</div>
+            <div style="font-size:0.72rem;color:var(--muted);line-height:1.6">Your 14-day trial ends automatically. Go to the Billing tab to see your exact end date. You can cancel anytime before then with no charge.</div>
+          </div>
+          <div style="border-top:1px solid var(--border);padding-top:0.875rem">
+            <div style="font-size:0.75rem;font-weight:700;color:var(--text);margin-bottom:3px">How do I add my team?</div>
+            <div style="font-size:0.72rem;color:var(--muted);line-height:1.6">Go to Dashboard → Team. Enter their name and email. They'll get a temporary password to sign in and run their own training and breach checks.</div>
+          </div>
+          <div style="border-top:1px solid var(--border);padding-top:0.875rem">
+            <div style="font-size:0.75rem;font-weight:700;color:var(--text);margin-bottom:3px">Is my data private?</div>
+            <div style="font-size:0.72rem;color:var(--muted);line-height:1.6">Yes. We never sell your data. Email addresses sent to breach checking are only used to query HaveIBeenPwned — nothing is stored on their end. See our <a href="privacy.html" style="color:var(--orange)">Privacy Policy</a>.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <div style="background:linear-gradient(135deg,rgba(255,107,0,0.08),var(--bg2));border:1px solid var(--orange-border);border-radius:12px;padding:1.25rem;display:flex;align-items:center;justify-content:space-between;gap:1rem">
+        <div>
+          <div style="font-size:0.82rem;font-weight:700;color:var(--text);margin-bottom:3px">Still have questions?</div>
+          <div style="font-size:0.72rem;color:var(--muted)">We respond within 24 hours on business days.</div>
+        </div>
+        <a href="https://mail.google.com/mail/?view=cm&to=support@cybershield.io&su=Getting%20Started%20Question&body=Hi%20CyberShield%20team%2C%0A%0A" target="_blank" rel="noopener" style="background:var(--orange);color:#fff;border:none;border-radius:8px;padding:9px 18px;font-size:0.78rem;font-weight:700;cursor:pointer;text-decoration:none;white-space:nowrap;box-shadow:0 4px 16px rgba(255,107,0,0.25)">Email support →</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function openGettingStarted(){ document.getElementById('gs-modal').style.display='flex'; }
+function closeGS(){ document.getElementById('gs-modal').style.display='none'; }
+function openBillingEmail(e){
+  e.preventDefault();
+  const email = sessionStorage.getItem('cs_email')||'';
+  const url = `https://mail.google.com/mail/?view=cm&to=billing@cybershield.io&su=Billing%20Question&body=Hi%20CyberShield%20billing%20team%2C%0A%0AI%20have%20a%20question%20about%20my%20billing.%0A%0AAccount%20email%3A%20${encodeURIComponent(email)}%0A%0AQuestion%3A%0A`;
+  window.open(url,'_blank');
 }
 </script>
 </body>
