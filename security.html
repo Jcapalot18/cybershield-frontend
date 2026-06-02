@@ -20,10 +20,12 @@ ul{padding-left:1.5rem;margin-bottom:0.875rem}
 li{margin-bottom:0.35rem}
 a{color:#FF6B00;text-decoration:none}
 .security-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1.5rem 0}
-.sec-card{background:#0d1220;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:1.25rem}
-.sec-card h3{font-size:0.875rem;font-weight:700;color:#fff;margin-bottom:0.5rem}
-.sec-card p{font-size:0.78rem;color:rgba(255,255,255,0.5);margin:0;line-height:1.6}
-.sec-ico{font-size:1.5rem;margin-bottom:0.75rem}
+.sec-card{background:#0d1220;border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:1.5rem;transition:border-color 0.2s;display:flex;flex-direction:column;gap:0.875rem}
+.sec-card:hover{border-color:rgba(255,107,0,0.3)}
+.sec-card h3{font-size:0.95rem;font-weight:700;color:#fff;margin-bottom:4px;letter-spacing:-0.01em}
+.sec-card p{font-size:0.8rem;color:rgba(255,255,255,0.5);margin:0;line-height:1.7}
+.sec-ico{width:46px;height:46px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sec-ico svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
 .report-box{background:linear-gradient(135deg,rgba(255,107,0,0.06),#0d1220);border:1px solid rgba(255,107,0,0.2);border-radius:12px;padding:1.5rem 2rem;margin-top:2rem}
 footer{border-top:1px solid rgba(255,255,255,0.07);padding:2rem 3rem;display:flex;align-items:center;justify-content:space-between;font-size:0.78rem;color:rgba(255,255,255,0.3)}
 footer a{color:rgba(255,255,255,0.4);text-decoration:none}
@@ -42,18 +44,48 @@ footer a{color:rgba(255,255,255,0.4);text-decoration:none}
   <p>As a cybersecurity company, we hold ourselves to the highest security standards. This page describes how we protect your data and what to do if you discover a security issue.</p>
 
   <div class="security-grid">
-    <div class="sec-card"><div class="sec-ico">🔐</div><h3>Encryption at rest</h3><p>All data stored in Supabase is encrypted at rest using AES-256.</p></div>
-    <div class="sec-card"><div class="sec-ico">🔒</div><h3>Encryption in transit</h3><p>All API calls and web traffic use TLS 1.3. HTTP is redirected to HTTPS.</p></div>
-    <div class="sec-card"><div class="sec-ico">🔑</div><h3>Password security</h3><p>Passwords are hashed using bcrypt with 12 salt rounds. We never store plaintext passwords.</p></div>
-    <div class="sec-card"><div class="sec-ico">🛡️</div><h3>Authentication</h3><p>JWT tokens with short expiry. Role-based access controls (RBAC) for all resources.</p></div>
-    <div class="sec-card"><div class="sec-ico">⚡</div><h3>Rate limiting</h3><p>Auth endpoints are rate-limited to prevent brute force attacks.</p></div>
-    <div class="sec-card"><div class="sec-ico">🏗️</div><h3>Infrastructure</h3><p>Hosted on Railway (backend) and Vercel (frontend) with automatic security patches.</p></div>
+    <div class="sec-card">
+      <div class="sec-ico" style="background:rgba(255,107,0,0.1);color:#FF6B00">
+        <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      </div>
+      <div><h3>Encryption at rest</h3><p>All data stored in Supabase is encrypted at rest using AES-256 encryption. Your data is protected even if the database is compromised.</p></div>
+    </div>
+    <div class="sec-card">
+      <div class="sec-ico" style="background:rgba(6,182,212,0.1);color:#06B6D4">
+        <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+      </div>
+      <div><h3>Encryption in transit</h3><p>All API calls and web traffic use TLS 1.3. HTTP is permanently redirected to HTTPS. No data travels unencrypted.</p></div>
+    </div>
+    <div class="sec-card">
+      <div class="sec-ico" style="background:rgba(16,185,129,0.1);color:#10B981">
+        <svg viewBox="0 0 24 24"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+      </div>
+      <div><h3>Password security</h3><p>All passwords are hashed using bcrypt with 12 salt rounds before storage. We never store or transmit plaintext passwords.</p></div>
+    </div>
+    <div class="sec-card">
+      <div class="sec-ico" style="background:rgba(139,92,246,0.1);color:#8B5CF6">
+        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      </div>
+      <div><h3>Authentication</h3><p>JWT tokens with short expiry windows. Role-based access controls (RBAC) ensure users only access their own data.</p></div>
+    </div>
+    <div class="sec-card">
+      <div class="sec-ico" style="background:rgba(245,158,11,0.1);color:#F59E0B">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      </div>
+      <div><h3>Rate limiting</h3><p>All authentication endpoints are rate-limited to prevent brute force and credential stuffing attacks.</p></div>
+    </div>
+    <div class="sec-card">
+      <div class="sec-ico" style="background:rgba(239,68,68,0.1);color:#EF4444">
+        <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+      </div>
+      <div><h3>Infrastructure</h3><p>Hosted on Railway and Vercel with automatic security patches, DDoS protection, and 99.9% uptime SLA.</p></div>
+    </div>
   </div>
 
   <h2>Responsible Disclosure</h2>
   <p>We take security vulnerabilities seriously. If you discover a security issue in CyberShield, please report it responsibly:</p>
   <ul>
-    <li>Email <a href="mailto:security@cybershield.io">security@cybershield.io</a></li>
+    <li>Email <a href="mailto:security@cybrshieldtech.com">security@cybrshieldtech.com</a></li>
     <li>Include a detailed description of the vulnerability</li>
     <li>Include steps to reproduce if possible</li>
     <li>Do not exploit the vulnerability or access customer data</li>
@@ -71,7 +103,7 @@ footer a{color:rgba(255,255,255,0.4);text-decoration:none}
 
   <div class="report-box">
     <h3 style="font-size:0.875rem;font-weight:700;color:#fff;margin-bottom:0.5rem">Report a security issue</h3>
-    <p style="font-size:0.82rem;color:rgba(255,255,255,0.5);margin:0">Email: <a href="mailto:security@cybershield.io">security@cybershield.io</a></p>
+    <p style="font-size:0.82rem;color:rgba(255,255,255,0.5);margin:0">Email: <a href="mailto:security@cybrshieldtech.com">security@cybrshieldtech.com</a></p>
   </div>
 </div>
 <footer>
