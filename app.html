@@ -1250,8 +1250,13 @@ async function runScan(){
       const riskScore = raw.riskScore||raw.risk_score||'—';
       const riskLevel = raw.riskLevel||raw.risk_level||'—';
 
-      // Store for PDF
-      lastScanResults = findings.map(f=>([f.name||f.check||f.label, f.status||f.result||(f.passed?'pass':'warn')]));
+      // Store for PDF with correct field names
+      lastScanResults = findings.map(f=>{
+        const label = f.issue||f.name||f.check||f.label||'Check';
+        const severity = (f.severity||'warn').toLowerCase();
+        const status = ['critical','high','fail','error'].includes(severity)?'fail':severity==='pass'?'pass':'warn';
+        return [label, status];
+      });
 
       results.innerHTML=`
         <div class="scan-summary">
@@ -1265,24 +1270,38 @@ async function runScan(){
         </div>`:''}
         <div class="results-wrap">
           ${findings.map(f=>{
-            const status = f.status||f.result||(f.passed===true?'pass':f.passed===false?'fail':'warn');
-            const cls = ['pass','ok','passed'].includes(String(status).toLowerCase())?'pass':['fail','failed','error'].includes(String(status).toLowerCase())?'fail':'warn';
-            const label = f.name||f.check||f.label||f.key||f.title||f.type||'Check';
-            const val = f.value!==undefined&&f.value!==null?String(f.value):f.details||f.message||(cls==='pass'?'✓ PASS':cls==='fail'?'✗ FAIL':'⚠ WARN');
-            const displayVal = typeof val==='object'?(val.message||val.text||JSON.stringify(val)):String(val);
-            return `<div class="r-row"><span class="r-key">${label}</span><span class="r-val ${cls}">${displayVal.length>60?displayVal.slice(0,60)+'…':displayVal}</span></div>`;
+            const label = f.issue||f.name||f.check||f.label||'Check';
+            const severity = (f.severity||'warn').toLowerCase();
+            const cls = severity==='pass'?'pass':['critical','high','fail','error'].includes(severity)?'fail':severity==='low'?'warn':'warn';
+            const statusText = cls==='pass'?'✓ PASS':severity==='critical'?'✗ CRITICAL':severity==='high'?'✗ HIGH':severity==='medium'?'⚠ MEDIUM':'⚠ LOW';
+            const desc = f.description||'';
+            return `<div class="r-row" style="flex-direction:column;align-items:flex-start;gap:3px">
+              <div style="display:flex;align-items:center;justify-content:space-between;width:100%">
+                <span class="r-key">${label}</span>
+                <span class="r-val ${cls}">${statusText}</span>
+              </div>
+              ${desc?`<div style="font-size:0.68rem;color:var(--muted);line-height:1.5">${desc}</div>`:''}
+            </div>`;
           }).join('')}
-          ${raw.recommendations&&Array.isArray(raw.recommendations)&&raw.recommendations.length?`
+            ${raw.recommendations&&Array.isArray(raw.recommendations)&&raw.recommendations.length?`
           <div style="margin-top:0.75rem;padding-top:0.75rem;border-top:1px solid var(--border2)">
-            <div style="font-size:0.65rem;font-weight:800;color:var(--orange);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.5rem">Recommendations</div>
-            ${raw.recommendations.map(r=>{
-              const text = typeof r==='object'?(r.action||r.message||r.text||r.recommendation||r.detail||JSON.stringify(r)):r;
-              return `<div style="font-size:0.75rem;color:var(--muted);padding:4px 0;display:flex;gap:6px;line-height:1.5"><span style="color:var(--orange);flex-shrink:0">→</span>${text}</div>`;
+            <div style="font-size:0.65rem;font-weight:800;color:var(--orange);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.625rem">Recommended Fixes</div>
+            ${raw.recommendations.sort((a,b)=>(a.priority||99)-(b.priority||99)).map(r=>{
+              const action = typeof r==='object'?(r.action||r.message||r.text||r.recommendation||''):r;
+              const detail = typeof r==='object'?(r.detail||r.details||''):'';
+              const effort = typeof r==='object'&&r.effort?r.effort:'';
+              return `<div style="background:rgba(255,107,0,0.04);border:1px solid rgba(255,107,0,0.12);border-radius:6px;padding:8px 12px;margin-bottom:5px">
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+                  <div style="font-size:0.75rem;font-weight:600;color:var(--text)">${action}</div>
+                  ${effort?`<span style="font-size:0.6rem;font-weight:700;color:var(--orange);background:var(--orange-dim);border:1px solid var(--orange-border);padding:1px 7px;border-radius:3px;white-space:nowrap;text-transform:uppercase">${effort}</span>`:''}
+                </div>
+                ${detail?`<div style="font-size:0.7rem;color:var(--muted);margin-top:3px;line-height:1.5;font-family:monospace">${detail}</div>`:''}
+              </div>`;
             }).join('')}
           </div>`:''}
         </div>`;
+      window._lastRawRecommendations = raw.recommendations||[];
       pdfBtn.style.display='inline-flex';
-    } else {
       // Legacy format — simple key/value pairs
       const labels={ssl:'SSL Certificate',hsts:'HSTS Header',csp:'Content Security Policy',xframe:'X-Frame-Options',xContentType:'X-Content-Type',xss:'XSS Protection',spf:'SPF Record',dmarc:'DMARC Policy',cookies:'Secure Cookies',redirectsHttps:'HTTPS Redirect',sslValid:'SSL Valid',sslExpiry:'SSL Expiry',hstsEnabled:'HSTS Enabled',cspPresent:'CSP Present',xFrameOptions:'X-Frame-Options',isHttps:'HTTPS',sslDaysLeft:'SSL Days Left',httpStatus:'HTTP Status'};
       const rc=(v)=>{if(v===true||['pass','ok','valid','configured','present','enabled'].includes(String(v).toLowerCase()))return 'pass';if(v===false||['fail','missing','invalid','error','absent','disabled'].includes(String(v).toLowerCase()))return 'fail';return 'warn';};
@@ -1388,15 +1407,20 @@ function downloadScanPDF(){
   rows.forEach(([k,v],i)=>{
     if(y>270){doc.addPage();doc.setFillColor(8,11,18);doc.rect(0,0,210,297,'F');y=20;}
     const cls=rc2(v);
-    doc.setFillColor(i%2===0?10:14,i%2===0?14:19,i%2===0?22:30);doc.rect(M,y-1,cw,lh,'F');
+    doc.setFillColor(i%2===0?10:14,i%2===0?14:19,i%2===0?22:30);doc.rect(M,y-1,cw,lh+1,'F');
     if(cls==='pass')doc.setFillColor(16,100,60);else if(cls==='fail')doc.setFillColor(200,50,60);else doc.setFillColor(180,130,0);
-    doc.rect(M,y-1,2,lh,'F');
-    const label = labels[k]||String(k).replace(/([A-Z])/g,' $1').trim();
-    doc.setTextColor(180,190,210);doc.setFont('helvetica','normal');doc.setFontSize(8);doc.text(label,M+5,y+4);
-    const st=v===true?'✓ PASS':v===false?'✗ FAIL':['pass','passed','ok'].includes(String(v).toLowerCase())?'✓ PASS':['fail','failed','error'].includes(String(v).toLowerCase())?'✗ FAIL':String(v).toUpperCase();
+    doc.rect(M,y-1,2,lh+1,'F');
+    // Clean up the label
+    const cleanLabel = String(k).replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
+    doc.setTextColor(200,200,215);doc.setFont('helvetica','normal');doc.setFontSize(8.5);
+    doc.text(cleanLabel,M+5,y+5);
+    // Status text
+    const vStr = String(v);
+    const st = ['pass','ok','passed',true].includes(v)||['pass','ok','passed'].includes(vStr.toLowerCase())?'✓ PASS':
+                ['fail','failed','error',false].includes(v)||['fail','failed','error'].includes(vStr.toLowerCase())?'✗ FAIL':'⚠ WARN';
     if(cls==='pass')doc.setTextColor(16,185,129);else if(cls==='fail')doc.setTextColor(239,68,68);else doc.setTextColor(245,158,11);
-    doc.setFont('helvetica','bold');doc.text(st,W-M-3,y+4,{align:'right'});
-    y+=lh;
+    doc.setFont('helvetica','bold');doc.text(st,W-M-3,y+5,{align:'right'});
+    y+=lh+2;
   });
 
   // Recommendations
@@ -1408,11 +1432,27 @@ function downloadScanPDF(){
     const recs={ssl:'Renew your SSL certificate immediately — expired certificates trigger browser warnings and loss of trust.',hsts:'Add Strict-Transport-Security header to enforce HTTPS connections across your site.',csp:'Implement Content-Security-Policy header to prevent XSS and code injection attacks.',xframe:'Add X-Frame-Options: DENY to prevent clickjacking attacks.',spf:'Configure SPF DNS record to prevent email spoofing from your domain.',dmarc:'Set up DMARC policy (p=reject) to protect against email fraud.',cookies:'Set Secure and HttpOnly flags on all session cookies.',redirectsHttps:'Configure 301 permanent redirects from HTTP to HTTPS.'};
     failures.slice(0,5).forEach(([k])=>{
       if(y>272)return;
-      doc.setFillColor(35,15,5);doc.setDrawColor(80,35,0);doc.roundedRect(M,y-1,cw,9,1,1,'FD');
-      doc.setTextColor(255,120,60);doc.setFont('helvetica','bold');doc.setFontSize(6.5);doc.text('→',M+2,y+5);
-      doc.setTextColor(200,180,165);doc.setFont('helvetica','normal');doc.text(recs[k]||`Review and fix the ${k} configuration.`,M+7,y+5,{maxWidth:cw-10});
-      y+=12;
+      doc.setFillColor(35,15,5);doc.setDrawColor(80,35,0);doc.roundedRect(M,y-1,cw,10,1,1,'FD');
+      doc.setTextColor(255,120,60);doc.setFont('helvetica','bold');doc.setFontSize(6.5);doc.text('→',M+2,y+6);
+      doc.setTextColor(200,180,165);doc.setFont('helvetica','normal');doc.text(String(k),M+7,y+6,{maxWidth:cw-10});
+      y+=13;
     });
+
+    // Also add recommendations from raw data if available
+    if(window._lastRawRecommendations&&window._lastRawRecommendations.length){
+      y+=4;
+      doc.setTextColor(255,107,0);doc.setFont('helvetica','bold');doc.setFontSize(7.5);doc.text('/ IMPLEMENTATION DETAILS',M,y);
+      doc.line(M+54,y-1,W-M,y-1);y+=6;
+      window._lastRawRecommendations.slice(0,4).forEach(r=>{
+        if(y>275)return;
+        const action = r.action||r.message||String(r);
+        const detail = r.detail||'';
+        doc.setFillColor(20,12,5);doc.setDrawColor(60,30,0);doc.roundedRect(M,y-1,cw,detail?14:9,1,1,'FD');
+        doc.setTextColor(255,150,80);doc.setFont('helvetica','bold');doc.setFontSize(7);doc.text(action,M+3,y+5,{maxWidth:cw-6});
+        if(detail){doc.setTextColor(170,150,130);doc.setFont('helvetica','normal');doc.setFontSize(6.5);doc.text(detail,M+3,y+11,{maxWidth:cw-6});}
+        y+=detail?17:12;
+      });
+    }
   }
 
   // Footer
