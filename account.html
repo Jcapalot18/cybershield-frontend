@@ -933,6 +933,8 @@ function submitSecReport(){
   closeSec();
 }
 </script>
+function openGettingStarted(){ document.getElementById('gs-modal').style.display='flex'; }
+function closeGS(){ document.getElementById('gs-modal').style.display='none'; }
 function openBillingEmail(e){
   e.preventDefault();
   const email = sessionStorage.getItem('cs_email')||'';
