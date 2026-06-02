@@ -3,357 +3,329 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>CyberShield — Security Operations Center</title>
+<title>CyberShield — Security Operations</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#0e0e14;
-  --bg2:#13131b;
-  --bg3:#181820;
-  --bg4:#1e1e28;
-  --sidebar:#0a0a10;
-  --card:#13131b;
-  --card2:#181820;
+  --bg:#080b12;
+  --bg2:#0d1220;
+  --bg3:#111827;
+  --bg4:#141d2e;
+  --orange:#FF6B00;
+  --orange2:#ff8c00;
+  --orange-dim:rgba(255,107,0,0.08);
+  --orange-border:rgba(255,107,0,0.25);
   --border:rgba(255,255,255,0.07);
   --border2:rgba(255,255,255,0.04);
-  --border3:rgba(255,255,255,0.02);
-  --orange:#FF4D00;
-  --orange2:#FF6D3A;
-  --orange3:rgba(255,77,0,0.1);
-  --orange4:rgba(255,77,0,0.2);
-  --purple:#8B5CF6;
-  --purple2:rgba(139,92,246,0.12);
-  --pink:#EC4899;
-  --pink2:rgba(236,72,153,0.1);
-  --cyan:#06B6D4;
-  --cyan2:rgba(6,182,212,0.1);
+  --text:#ffffff;
+  --muted:rgba(255,255,255,0.5);
+  --dim:rgba(255,255,255,0.2);
   --green:#10B981;
-  --green2:rgba(16,185,129,0.1);
+  --green-dim:rgba(16,185,129,0.08);
   --red:#EF4444;
-  --red2:rgba(239,68,68,0.1);
+  --red-dim:rgba(239,68,68,0.08);
   --yellow:#F59E0B;
-  --yellow2:rgba(245,158,11,0.1);
-  --text:#E8E8F0;
-  --text2:#B0B0C8;
-  --muted:rgba(176,176,200,0.5);
-  --dim:rgba(176,176,200,0.25);
-  --sw:200px;
-  --th:48px;
-  --font:'Inter',sans-serif;
-  --mono:'JetBrains Mono',monospace;
+  --cyan:#06B6D4;
+  --sw:230px;
+  --th:64px;
 }
 html,body{height:100%;overflow:hidden}
-body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:13px;line-height:1.5}
+body{background:var(--bg);color:var(--text);font-family:'Hanken Grotesk',sans-serif;font-size:14px;line-height:1.5}
 a{text-decoration:none;color:inherit}
-button{font-family:var(--font)}
-::-webkit-scrollbar{width:3px;height:3px}
-::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.08);border-radius:2px}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--orange);border-radius:2px}
 
-/* ── KEYFRAMES ── */
-@keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.8)}}
-@keyframes fadeSlide{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+/* ── ANIMATIONS ── */
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.5)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 @keyframes spin{to{transform:rotate(360deg)}}
-@keyframes scanH{0%{left:-100%}100%{left:200%}}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
-@keyframes countUp{from{opacity:0}to{opacity:1}}
+@keyframes lineGrow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+@keyframes glowPulse{0%,100%{box-shadow:0 0 20px rgba(255,107,0,0.15)}50%{box-shadow:0 0 40px rgba(255,107,0,0.3),0 0 60px rgba(255,107,0,0.1)}}
+@keyframes scanline{0%{top:-2px}100%{top:100%}}
 
 /* ── LAYOUT ── */
 .app{display:flex;height:100vh;overflow:hidden}
 
 /* ── SIDEBAR ── */
-.sidebar{width:var(--sw);flex-shrink:0;background:var(--sidebar);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:30}
-.s-top{padding:0 12px;height:var(--th);display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border)}
-.s-logo{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.85rem;color:var(--text);letter-spacing:-.01em}
-.s-logo svg{width:22px;height:22px;flex-shrink:0}
-.s-logo .acc{color:var(--orange)}
-.s-nav{flex:1;overflow-y:auto;padding:8px 0}
-.s-sec{font-size:.58rem;font-weight:600;text-transform:uppercase;letter-spacing:.12em;color:var(--dim);padding:12px 12px 4px}
-.s-item{display:flex;align-items:center;gap:8px;padding:7px 12px;cursor:pointer;transition:all .12s;color:var(--muted);font-size:.75rem;font-weight:500;position:relative;margin:1px 4px;border-radius:4px;border:1px solid transparent}
-.s-item:hover{color:var(--text2);background:rgba(255,255,255,.03)}
-.s-item.active{color:var(--text);background:rgba(255,77,0,.08);border-color:rgba(255,77,0,.15)}
-.s-item.active::before{content:'';position:absolute;left:-4px;top:50%;transform:translateY(-50%);width:3px;height:14px;background:var(--orange);border-radius:0 2px 2px 0;box-shadow:0 0 6px var(--orange)}
-.s-ico{width:14px;height:14px;flex-shrink:0;stroke:currentColor;fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
-.s-foot{border-top:1px solid var(--border);padding:8px}
-.s-plan-bar{display:flex;align-items:center;justify-content:space-between;padding:6px 8px;background:var(--orange3);border:1px solid var(--orange4);border-radius:4px;margin-bottom:6px;cursor:pointer}
-.s-plan-bar:hover{background:var(--orange4)}
-.s-plan-name{font-size:.6rem;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:.1em;font-family:var(--mono)}
-.s-plan-up{font-size:.6rem;color:var(--orange);opacity:.7}
-.s-user{display:flex;align-items:center;gap:7px}
-.s-av{width:26px;height:26px;border-radius:50%;background:var(--orange3);border:1px solid var(--orange4);display:flex;align-items:center;justify-content:center;font-size:.58rem;font-weight:700;color:var(--orange);flex-shrink:0;font-family:var(--mono)}
-.s-uname{font-size:.72rem;font-weight:500;color:var(--text2);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.s-urole{font-size:.6rem;color:var(--muted)}
-.s-logout{background:none;border:none;cursor:pointer;color:var(--muted);padding:2px;display:flex;align-items:center;transition:color .12s}
+.sidebar{width:var(--sw);flex-shrink:0;background:var(--bg);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:30;position:relative}
+.sidebar::after{content:'';position:absolute;top:0;right:0;bottom:0;width:1px;background:linear-gradient(to bottom,transparent 0%,var(--orange-border) 30%,var(--orange-border) 70%,transparent 100%);pointer-events:none}
+.s-brand{padding:0 1.5rem;height:var(--th);display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border)}
+.s-brand a{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1rem;letter-spacing:-0.02em;color:var(--text)}
+.s-brand svg{width:26px;height:26px;flex-shrink:0}
+.s-brand .acc{color:var(--orange)}
+.s-nav{flex:1;padding:1rem 0.75rem;overflow-y:auto;display:flex;flex-direction:column;gap:1px}
+.s-section{font-size:0.6rem;font-weight:800;text-transform:uppercase;letter-spacing:0.15em;color:var(--dim);padding:1rem 0.75rem 0.35rem;margin-top:0.5rem}
+.s-item{display:flex;align-items:center;gap:10px;padding:9px 0.875rem;border-radius:8px;cursor:pointer;transition:all 0.15s;color:var(--muted);font-size:0.8rem;font-weight:500;position:relative;border:1px solid transparent}
+.s-item:hover{color:rgba(255,255,255,0.8);background:rgba(255,255,255,0.03);border-color:var(--border2)}
+.s-item.active{color:var(--text);background:var(--orange-dim);border-color:var(--orange-border)}
+.s-item.active::before{content:'';position:absolute;left:-1px;top:50%;transform:translateY(-50%);width:3px;height:16px;background:var(--orange);border-radius:0 3px 3px 0;box-shadow:0 0 10px var(--orange)}
+.s-icon{width:15px;height:15px;flex-shrink:0;stroke:currentColor;fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+.s-footer{padding:1rem 0.75rem;border-top:1px solid var(--border)}
+.s-plan{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:var(--orange-dim);border:1px solid var(--orange-border);border-radius:8px;margin-bottom:0.75rem;cursor:pointer;transition:all 0.2s}
+.s-plan:hover{background:rgba(255,107,0,0.12);animation:glowPulse 2s ease-in-out infinite}
+.s-plan-name{font-size:0.65rem;font-weight:800;color:var(--orange);text-transform:uppercase;letter-spacing:0.12em}
+.s-plan-up{font-size:0.65rem;color:var(--orange);opacity:0.7}
+.s-user{display:flex;align-items:center;gap:8px}
+.s-av{width:30px;height:30px;border-radius:50%;background:var(--orange-dim);border:1px solid var(--orange-border);display:flex;align-items:center;justify-content:center;font-size:0.62rem;font-weight:800;color:var(--orange);flex-shrink:0}
+.s-uname{font-size:0.78rem;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0}
+.s-urole{font-size:0.65rem;color:var(--muted)}
+.s-logout{background:none;border:none;cursor:pointer;color:var(--muted);padding:4px;display:flex;align-items:center;transition:color 0.15s}
 .s-logout:hover{color:var(--red)}
 
 /* ── MAIN ── */
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
 
 /* ── TOPBAR ── */
-.topbar{height:var(--th);background:var(--sidebar);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 16px;gap:12px;flex-shrink:0}
-.tb-title{font-size:.8rem;font-weight:600;color:var(--text);letter-spacing:-.01em;min-width:120px}
+.topbar{height:var(--th);background:rgba(8,11,18,0.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 1.75rem;gap:1rem;flex-shrink:0;position:relative;z-index:10}
+.topbar::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--orange-border),transparent)}
+.tb-title{font-size:0.875rem;font-weight:800;color:var(--text);letter-spacing:-0.02em}
 .tb-divider{width:1px;height:20px;background:var(--border)}
-.tb-status{display:flex;align-items:center;gap:5px;font-size:.65rem;color:var(--muted);font-family:var(--mono)}
-.sdot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:pulse-dot 2s ease-in-out infinite;box-shadow:0 0 4px var(--green)}
-.tb-right{margin-left:auto;display:flex;align-items:center;gap:6px}
-.tb-pill{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:4px;padding:5px 10px;color:var(--muted);font-size:.68rem;font-weight:500;cursor:pointer;transition:all .12s}
-.tb-pill:hover{color:var(--text);border-color:rgba(255,255,255,.15)}
-.tb-cta{background:linear-gradient(135deg,var(--orange),var(--orange2));color:#fff;border:none;border-radius:4px;padding:5px 14px;font-size:.68rem;font-weight:600;cursor:pointer;transition:all .15s;box-shadow:0 2px 8px rgba(255,77,0,.25)}
-.tb-cta:hover{opacity:.9;box-shadow:0 4px 16px rgba(255,77,0,.35)}
+.tb-status{display:flex;align-items:center;gap:6px;font-size:0.7rem;color:var(--muted)}
+.sdot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s ease-in-out infinite;box-shadow:0 0 6px var(--green)}
+.tb-right{margin-left:auto;display:flex;align-items:center;gap:0.75rem}
+.tb-btn{background:transparent;border:1px solid var(--border);border-radius:6px;padding:8px 16px;color:var(--muted);font-size:0.78rem;font-weight:600;cursor:pointer;font-family:'Hanken Grotesk',sans-serif;transition:all 0.2s}
+.tb-btn:hover{color:var(--text);border-color:rgba(255,255,255,0.2)}
+.tb-cta{background:var(--orange);color:#fff;border:none;border-radius:6px;padding:9px 20px;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:'Hanken Grotesk',sans-serif;transition:all 0.2s;box-shadow:0 4px 16px rgba(255,107,0,0.3)}
+.tb-cta:hover{background:var(--orange2);transform:translateY(-1px);box-shadow:0 8px 24px rgba(255,107,0,0.4)}
 
 /* ── CONTENT ── */
-.content{flex:1;overflow-y:auto;background:var(--bg)}
-.page{display:none;animation:fadeSlide .2s ease;padding:14px}
+.content{flex:1;overflow-y:auto;background:var(--bg);position:relative}
+.page{display:none;padding:1.5rem 1.75rem;animation:fadeUp 0.25s ease}
 .page.active{display:block}
 
-/* ── PANEL SYSTEM ── */
-.panel{background:var(--card);border:1px solid var(--border);border-radius:6px;overflow:hidden}
-.panel-hd{padding:8px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:8px}
-.panel-hd-l{display:flex;align-items:center;gap:7px}
-.p-ico{width:24px;height:24px;border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.p-ico svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.p-title{font-size:.72rem;font-weight:600;color:var(--text);letter-spacing:-.005em}
-.p-sub{font-size:.6rem;color:var(--muted);font-family:var(--mono)}
-.p-act{font-size:.62rem;color:var(--orange);font-weight:500;cursor:pointer;transition:opacity .12s}
-.p-act:hover{opacity:.7}
+/* ── CARDS ── */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden;position:relative}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.06),transparent);pointer-events:none}
+.card-hd{padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.card-hd-l{display:flex;align-items:center;gap:10px}
+.card-ico{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.card-ico svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.card-title{font-size:0.78rem;font-weight:700;color:var(--text);letter-spacing:-0.01em}
+.card-sub{font-size:0.65rem;color:var(--muted);margin-top:1px}
+.card-act{font-size:0.7rem;color:var(--orange);font-weight:600;cursor:pointer;transition:opacity 0.15s;white-space:nowrap}
+.card-act:hover{opacity:0.7}
 
-/* ── GRID ── */
-.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:10px}
-.g2{display:grid;grid-template-columns:1fr 1.6fr;gap:10px;margin-bottom:10px}
-.g2e{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
-.g3{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:10px;margin-bottom:10px}
-.g3e{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:10px}
+/* ── GRIDS ── */
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1rem}
+.g2{display:grid;grid-template-columns:1fr 1.55fr;gap:1rem;margin-bottom:1rem}
+.g3{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:1rem;margin-bottom:1rem}
+.g2e{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
+.g3e{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1rem}
 
-/* ── KPI CARDS ── */
-.kpi{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:12px 14px;position:relative;overflow:hidden;transition:border-color .15s}
-.kpi:hover{border-color:rgba(255,255,255,.12)}
-.kpi::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;border-radius:6px 6px 0 0}
-.kpi.kg::after{background:linear-gradient(90deg,var(--green),rgba(16,185,129,.2),transparent)}
-.kpi.ko::after{background:linear-gradient(90deg,var(--orange),rgba(255,77,0,.2),transparent)}
-.kpi.kr::after{background:linear-gradient(90deg,var(--red),rgba(239,68,68,.2),transparent)}
-.kpi.ky::after{background:linear-gradient(90deg,var(--yellow),rgba(245,158,11,.2),transparent)}
-.kpi.kp::after{background:linear-gradient(90deg,var(--purple),rgba(139,92,246,.2),transparent)}
-.kpi.kc::after{background:linear-gradient(90deg,var(--cyan),rgba(6,182,212,.2),transparent)}
-.kpi-label{font-size:.58rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:8px;font-family:var(--mono);display:flex;align-items:center;gap:4px}
-.kpi-val{font-size:2rem;font-weight:700;letter-spacing:-.05em;line-height:1;font-family:var(--mono);margin-bottom:3px}
+/* ── KPI ── */
+.kpi{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1.25rem;position:relative;overflow:hidden;transition:all 0.2s}
+.kpi:hover{border-color:rgba(255,255,255,0.12);transform:translateY(-1px)}
+.kpi::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;border-radius:12px 12px 0 0}
+.kpi.kg::after{background:linear-gradient(90deg,var(--green),rgba(16,185,129,0.2),transparent)}
+.kpi.ko::after{background:linear-gradient(90deg,var(--orange),rgba(255,107,0,0.2),transparent)}
+.kpi.kr::after{background:linear-gradient(90deg,var(--red),rgba(239,68,68,0.2),transparent)}
+.kpi.ky::after{background:linear-gradient(90deg,var(--yellow),rgba(245,158,11,0.2),transparent)}
+.kpi-eyebrow{font-size:0.6rem;font-weight:800;text-transform:uppercase;letter-spacing:0.12em;color:var(--muted);margin-bottom:0.75rem;display:flex;align-items:center;gap:5px}
+.kpi-eyebrow svg{width:10px;height:10px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.kpi-val{font-size:2.5rem;font-weight:900;letter-spacing:-0.05em;line-height:1;margin-bottom:4px}
 .kpi-val.vg{color:var(--green)}
 .kpi-val.vo{color:var(--orange)}
 .kpi-val.vr{color:var(--red)}
 .kpi-val.vy{color:var(--yellow)}
-.kpi-val.vp{color:var(--purple)}
-.kpi-val.vc{color:var(--cyan)}
-.kpi-sub{font-size:.6rem;color:var(--muted);font-family:var(--mono)}
-.kpi-ghost{position:absolute;right:-4px;bottom:-8px;opacity:.04;pointer-events:none;font-size:3.5rem;font-weight:900;font-family:var(--mono);line-height:1}
+.kpi-foot{font-size:0.65rem;color:var(--muted)}
 
 /* ── SCORE RING ── */
-.score-section{padding:14px;display:flex;align-items:center;gap:16px}
-.ring-outer{position:relative;flex-shrink:0}
+.score-wrap{padding:1.25rem;display:flex;align-items:center;gap:1.5rem}
+.ring-pos{position:relative;flex-shrink:0}
 .ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.ring-num{font-size:1.5rem;font-weight:700;font-family:var(--mono);letter-spacing:-.05em;line-height:1;color:var(--text)}
-.ring-lbl{font-size:.5rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-top:2px;font-family:var(--mono)}
-.score-bars{flex:1;display:flex;flex-direction:column;gap:8px}
-.sbar{display:flex;flex-direction:column;gap:2px}
-.sbar-top{display:flex;justify-content:space-between}
-.sbar-label{font-size:.58rem;color:var(--muted);font-family:var(--mono)}
-.sbar-val{font-size:.58rem;font-weight:600;color:var(--text2);font-family:var(--mono)}
-.sbar-track{height:2px;background:rgba(255,255,255,.05);border-radius:1px;overflow:hidden}
-.sbar-fill{height:100%;border-radius:1px;transition:width 1.2s cubic-bezier(.4,0,.2,1)}
-.qa-strip{display:flex;gap:4px;margin-top:4px;flex-wrap:wrap}
-.qa{font-size:.58rem;font-weight:600;color:var(--orange);cursor:pointer;background:var(--orange3);border:1px solid var(--orange4);border-radius:3px;padding:2px 7px;transition:all .12s;font-family:var(--mono)}
-.qa:hover{background:var(--orange4)}
+.ring-num{font-size:1.6rem;font-weight:900;letter-spacing:-0.05em;line-height:1;color:var(--text)}
+.ring-lbl{font-size:0.52rem;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;margin-top:2px}
+.score-info{flex:1;display:flex;flex-direction:column;gap:0.75rem}
+.sbar{display:flex;flex-direction:column;gap:3px}
+.sbar-top{display:flex;justify-content:space-between;align-items:center}
+.sbar-label{font-size:0.62rem;color:var(--muted)}
+.sbar-pct{font-size:0.62rem;font-weight:700;color:var(--text)}
+.sbar-track{height:3px;background:rgba(255,255,255,0.05);border-radius:2px;overflow:hidden}
+.sbar-fill{height:100%;border-radius:2px;transition:width 1.3s cubic-bezier(0.4,0,0.2,1)}
+.qa-row{display:flex;gap:5px;flex-wrap:wrap;margin-top:0.25rem}
+.qa{font-size:0.62rem;font-weight:700;color:var(--orange);cursor:pointer;background:var(--orange-dim);border:1px solid var(--orange-border);border-radius:4px;padding:3px 9px;transition:all 0.15s}
+.qa:hover{background:rgba(255,107,0,0.15)}
 
 /* ── THREAT FEED ── */
-.threat-feed{display:flex;flex-direction:column}
-.tf-item{display:flex;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid var(--border3);cursor:pointer;transition:background .1s;text-decoration:none;color:inherit;position:relative}
+.tf-list{display:flex;flex-direction:column}
+.tf-item{display:flex;align-items:center;gap:0.875rem;padding:0.875rem 1.25rem;border-bottom:1px solid var(--border2);cursor:pointer;transition:all 0.15s;text-decoration:none;color:inherit;position:relative}
 .tf-item:last-child{border-bottom:none}
-.tf-item:hover{background:rgba(255,255,255,.02)}
-.tf-item::before{content:'';position:absolute;left:0;top:0;bottom:0;width:0;background:var(--orange);transition:width .15s}
-.tf-item:hover::before{width:2px}
-.tf-item:hover{padding-left:16px}
-.tf-sev{width:3px;height:28px;border-radius:2px;flex-shrink:0}
-.tf-title{font-size:.72rem;font-weight:500;color:rgba(232,232,240,.85);line-height:1.3;flex:1;min-width:0}
-.tf-src{font-size:.58rem;color:var(--muted);font-family:var(--mono);margin-top:1px;white-space:nowrap}
-.badge{font-size:.52rem;font-weight:700;padding:2px 6px;border-radius:3px;white-space:nowrap;text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono);flex-shrink:0}
-.bc{background:rgba(239,68,68,.1);color:var(--red);border:1px solid rgba(239,68,68,.2)}
-.bh{background:rgba(245,158,11,.08);color:var(--yellow);border:1px solid rgba(245,158,11,.15)}
-.bm{background:var(--orange3);color:var(--orange);border:1px solid var(--orange4)}
+.tf-item:hover{background:rgba(255,255,255,0.02)}
+.tf-item::before{content:'';position:absolute;left:0;top:0;bottom:0;width:0;background:var(--orange);transition:width 0.2s}
+.tf-item:hover::before{width:3px}
+.tf-item:hover{padding-left:1.6rem}
+.tf-sev{width:3px;height:30px;border-radius:2px;flex-shrink:0}
+.tf-title{font-size:0.78rem;font-weight:600;color:rgba(255,255,255,0.85);line-height:1.35;flex:1;min-width:0}
+.tf-src{font-size:0.62rem;color:var(--muted);margin-top:2px}
+.badge{font-size:0.55rem;font-weight:800;padding:2px 8px;border-radius:4px;white-space:nowrap;text-transform:uppercase;letter-spacing:0.08em;flex-shrink:0}
+.bc{background:rgba(239,68,68,0.1);color:var(--red);border:1px solid rgba(239,68,68,0.2)}
+.bh{background:rgba(245,158,11,0.08);color:var(--yellow);border:1px solid rgba(245,158,11,0.2)}
+.bm{background:var(--orange-dim);color:var(--orange);border:1px solid var(--orange-border)}
 
-/* ── MINI MAP ── */
-.map-panel{position:relative;overflow:hidden;background:var(--bg2)}
-.map-canvas{width:100%;height:160px;position:relative;overflow:hidden}
-.map-svg{width:100%;height:100%;opacity:.18}
-.map-dot{position:absolute;width:6px;height:6px;border-radius:50%;cursor:pointer;transition:transform .2s}
-.map-dot::after{content:'';position:absolute;inset:-3px;border-radius:50%;border:1px solid currentColor;animation:pulse-dot 2s ease-in-out infinite;opacity:.4}
-.map-stats{display:flex;gap:0;border-top:1px solid var(--border)}
-.map-stat{flex:1;padding:8px 12px;border-right:1px solid var(--border)}
-.map-stat:last-child{border-right:none}
-.map-stat-val{font-size:.85rem;font-weight:700;font-family:var(--mono);color:var(--text)}
-.map-stat-lbl{font-size:.58rem;color:var(--muted);font-family:var(--mono);margin-top:1px}
+/* ── COVERAGE ── */
+.cov-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border)}
+.cov-cell{background:var(--bg2);padding:1rem 1.25rem}
+.cov-lbl{font-size:0.6rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:4px}
+.cov-val{font-size:1rem;font-weight:800;color:var(--text)}
+.cov-bar{height:2px;background:rgba(255,255,255,0.05);border-radius:1px;overflow:hidden;margin-top:5px}
+.cov-fill{height:100%;border-radius:1px;transition:width 1.2s cubic-bezier(0.4,0,0.2,1)}
 
 /* ── ACTIVITY ── */
-.act-item{display:flex;align-items:flex-start;gap:8px;padding:7px 12px;border-bottom:1px solid var(--border3)}
+.act-item{display:flex;align-items:flex-start;gap:0.875rem;padding:0.875rem 1.25rem;border-bottom:1px solid var(--border2)}
 .act-item:last-child{border-bottom:none}
-.act-d{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:5px}
-.act-text{font-size:.7rem;color:rgba(232,232,240,.65);line-height:1.4}
-.act-time{font-size:.58rem;color:var(--muted);font-family:var(--mono);margin-top:1px}
+.act-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.act-text{font-size:0.75rem;color:rgba(255,255,255,0.65);line-height:1.5}
+.act-time{font-size:0.62rem;color:var(--muted);margin-top:2px}
 
 /* ── ACTION LIST ── */
-.action-row{display:flex;align-items:center;gap:8px;padding:7px 12px;border-bottom:1px solid var(--border3);cursor:pointer;transition:background .1s}
-.action-row:last-child{border-bottom:none}
-.action-row:hover{background:rgba(255,255,255,.02)}
-.action-ico{width:24px;height:24px;border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.action-ico svg{width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.action-name{font-size:.7rem;font-weight:500;color:var(--text)}
-.action-sub{font-size:.58rem;color:var(--muted);font-family:var(--mono)}
-.action-arrow{margin-left:auto;color:var(--muted)}
-.action-arrow svg{width:10px;height:10px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.action-item{display:flex;align-items:center;gap:0.875rem;padding:0.875rem 1.25rem;border-bottom:1px solid var(--border2);cursor:pointer;transition:background 0.15s}
+.action-item:last-child{border-bottom:none}
+.action-item:hover{background:rgba(255,255,255,0.02)}
+.action-ico{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.action-ico svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.action-name{font-size:0.78rem;font-weight:600;color:var(--text)}
+.action-sub{font-size:0.65rem;color:var(--muted)}
 
-/* ── COVERAGE GRID ── */
-.cov-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border3)}
-.cov-cell{background:var(--card);padding:10px 12px}
-.cov-lbl{font-size:.58rem;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.08em}
-.cov-val{font-size:.9rem;font-weight:700;font-family:var(--mono);color:var(--text);margin-top:2px}
-.cov-bar{height:2px;background:rgba(255,255,255,.05);border-radius:1px;overflow:hidden;margin-top:5px}
-.cov-fill{height:100%;border-radius:1px;transition:width 1.2s cubic-bezier(.4,0,.2,1)}
+/* ── TRAINING ── */
+.t-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1rem}
+.t-stat{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1.1rem 1.25rem;display:flex;align-items:center;gap:1rem;position:relative;overflow:hidden}
+.t-stat::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;border-radius:12px 12px 0 0}
+.t-stat:nth-child(1)::after{background:linear-gradient(90deg,var(--orange),transparent)}
+.t-stat:nth-child(2)::after{background:linear-gradient(90deg,var(--green),transparent)}
+.t-stat:nth-child(3)::after{background:linear-gradient(90deg,var(--yellow),transparent)}
+.t-stat-ico{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.t-stat-ico svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.t-stat-val{font-size:1.75rem;font-weight:900;color:var(--text);letter-spacing:-0.04em;line-height:1}
+.t-stat-lbl{font-size:0.65rem;color:var(--muted);margin-top:2px}
+.t-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1rem}
+.t-mod{background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:all 0.25s;cursor:default}
+.t-mod:hover{border-color:var(--orange-border);transform:translateY(-2px);box-shadow:0 16px 48px rgba(0,0,0,0.5)}
+.t-mod-img{height:140px;position:relative;overflow:hidden}
+.t-mod-img img{width:100%;height:100%;object-fit:cover;filter:brightness(0.4) saturate(0.8);transition:filter 0.4s}
+.t-mod:hover .t-mod-img img{filter:brightness(0.55) saturate(1)}
+.t-mod-ov{position:absolute;inset:0;background:linear-gradient(to bottom,transparent 20%,var(--bg2) 100%)}
+.t-week{position:absolute;top:10px;left:10px;background:var(--orange);color:#fff;font-size:0.55rem;font-weight:800;padding:3px 10px;border-radius:4px;text-transform:uppercase;letter-spacing:0.1em;box-shadow:0 2px 8px rgba(255,107,0,0.4)}
+.t-body{padding:1rem 1.25rem}
+.t-title{font-size:0.875rem;font-weight:700;color:var(--text);margin-bottom:4px;letter-spacing:-0.01em}
+.t-desc{font-size:0.72rem;color:var(--muted);line-height:1.6;margin-bottom:0.875rem}
+.t-prog{height:2px;background:rgba(255,255,255,0.05);border-radius:1px;overflow:hidden;margin-bottom:5px}
+.t-prog-fill{height:100%;background:linear-gradient(90deg,var(--orange),var(--orange2));border-radius:1px;transition:width 1s cubic-bezier(0.4,0,0.2,1)}
+.t-meta{display:flex;justify-content:space-between;font-size:0.62rem;color:var(--muted)}
+.t-start{display:inline-flex;align-items:center;gap:5px;font-size:0.75rem;font-weight:700;color:var(--orange);cursor:pointer;margin-top:0.625rem;transition:gap 0.15s}
+.t-start:hover{gap:8px}
+.intel-banner{background:linear-gradient(135deg,rgba(255,107,0,0.07),var(--bg2));border:1px solid var(--orange-border);border-radius:12px;padding:1.1rem 1.5rem;display:flex;align-items:center;gap:1rem}
+.intel-banner-ico{width:38px;height:38px;background:var(--orange-dim);border:1px solid var(--orange-border);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.intel-banner-ico svg{width:17px;height:17px;stroke:var(--orange);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 
-/* ── TRAINING CARDS ── */
-.t-stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:10px}
-.t-stat-card{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:10px 12px;display:flex;align-items:center;gap:10px;position:relative;overflow:hidden}
-.t-stat-card::after{content:'';position:absolute;top:0;left:0;right:0;height:1px}
-.t-stat-card:nth-child(1)::after{background:linear-gradient(90deg,var(--orange),transparent)}
-.t-stat-card:nth-child(2)::after{background:linear-gradient(90deg,var(--green),transparent)}
-.t-stat-card:nth-child(3)::after{background:linear-gradient(90deg,var(--yellow),transparent)}
-.t-stat-ico{width:32px;height:32px;border-radius:5px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.t-stat-ico svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.t-stat-val{font-size:1.5rem;font-weight:700;font-family:var(--mono);color:var(--text);letter-spacing:-.04em;line-height:1}
-.t-stat-lbl{font-size:.58rem;color:var(--muted);font-family:var(--mono);margin-top:1px}
-
-.t-modules{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:10px}
-.t-mod{background:var(--card);border:1px solid var(--border);border-radius:6px;overflow:hidden;transition:all .18s}
-.t-mod:hover{border-color:rgba(255,77,0,.25);transform:translateY(-1px);box-shadow:0 6px 24px rgba(0,0,0,.3)}
-.t-mod-img{height:120px;position:relative;overflow:hidden}
-.t-mod-img img{width:100%;height:100%;object-fit:cover;filter:brightness(.35) saturate(.7);transition:filter .3s}
-.t-mod:hover .t-mod-img img{filter:brightness(.5) saturate(.9)}
-.t-mod-ov{position:absolute;inset:0;background:linear-gradient(to bottom,transparent 20%,var(--card) 100%)}
-.t-week-badge{position:absolute;top:8px;left:8px;background:var(--orange);color:#fff;font-size:.52rem;font-weight:700;padding:2px 7px;border-radius:3px;text-transform:uppercase;letter-spacing:.08em;font-family:var(--mono)}
-.t-mod-body{padding:10px 12px}
-.t-mod-title{font-size:.78rem;font-weight:600;color:var(--text);margin-bottom:3px;letter-spacing:-.01em}
-.t-mod-desc{font-size:.65rem;color:var(--muted);line-height:1.55;margin-bottom:8px}
-.t-prog-track{height:2px;background:rgba(255,255,255,.05);border-radius:1px;overflow:hidden;margin-bottom:4px}
-.t-prog-fill{height:100%;background:linear-gradient(90deg,var(--orange),var(--orange2));border-radius:1px;transition:width 1s cubic-bezier(.4,0,.2,1)}
-.t-meta-row{display:flex;justify-content:space-between;font-size:.58rem;color:var(--muted);font-family:var(--mono)}
-.t-start-btn{display:inline-flex;align-items:center;gap:4px;font-size:.65rem;font-weight:600;color:var(--orange);cursor:pointer;margin-top:6px;letter-spacing:.01em;transition:gap .12s}
-.t-start-btn:hover{gap:7px}
-
-/* ── BREACH ── */
-.breach-header-strip{background:linear-gradient(135deg,rgba(239,68,68,.06),var(--card));border:1px solid rgba(239,68,68,.12);border-radius:6px;padding:10px 14px;display:flex;align-items:center;gap:10px;margin-bottom:10px}
-.bhs-ico{width:36px;height:36px;background:var(--red2);border:1px solid rgba(239,68,68,.2);border-radius:5px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.bhs-ico svg{width:16px;height:16px;stroke:var(--red);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+/* ── BREACH BANNER ── */
+.breach-banner{background:linear-gradient(135deg,rgba(239,68,68,0.06),var(--bg2));border:1px solid rgba(239,68,68,0.15);border-radius:12px;padding:1.1rem 1.5rem;display:flex;align-items:flex-start;gap:1rem;margin-bottom:1rem}
+.breach-banner-ico{width:40px;height:40px;background:var(--red-dim);border:1px solid rgba(239,68,68,0.2);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.breach-banner-ico svg{width:18px;height:18px;stroke:var(--red);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 
 /* ── FORMS ── */
-.tool-form{padding:10px 12px}
-.f-grp{display:flex;flex-direction:column;gap:3px;margin-bottom:8px}
-.f-lbl{font-size:.58rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-family:var(--mono)}
-.f-inp{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:4px;padding:7px 10px;color:var(--text);font-size:.76rem;font-family:var(--font);outline:none;transition:all .12s;width:100%}
-.f-inp:focus{border-color:var(--orange);background:rgba(255,77,0,.03);box-shadow:0 0 0 2px rgba(255,77,0,.08)}
-.f-inp::placeholder{color:rgba(176,176,200,.25)}
-.run-btn{background:linear-gradient(135deg,var(--orange),var(--orange2));color:#fff;border:none;border-radius:4px;padding:8px 16px;font-size:.72rem;font-weight:600;cursor:pointer;font-family:var(--font);transition:all .18s;display:flex;align-items:center;gap:6px;justify-content:center;width:100%;box-shadow:0 3px 12px rgba(255,77,0,.2)}
-.run-btn:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(255,77,0,.3)}
-.run-btn:disabled{opacity:.5;cursor:default;transform:none;box-shadow:none}
+.tool-form{padding:1.1rem 1.25rem}
+.f-group{display:flex;flex-direction:column;gap:4px;margin-bottom:0.875rem}
+.f-label{font-size:0.62rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em}
+.f-input{background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text);font-size:0.85rem;font-family:'Hanken Grotesk',sans-serif;outline:none;transition:all 0.2s;width:100%}
+.f-input:focus{border-color:var(--orange);background:rgba(255,107,0,0.03);box-shadow:0 0 0 3px rgba(255,107,0,0.08)}
+.f-input::placeholder{color:rgba(255,255,255,0.2)}
+.run-btn{background:var(--orange);color:#fff;border:none;border-radius:8px;padding:11px 20px;font-size:0.8rem;font-weight:700;cursor:pointer;font-family:'Hanken Grotesk',sans-serif;transition:all 0.2s;display:flex;align-items:center;gap:7px;justify-content:center;width:100%;box-shadow:0 4px 16px rgba(255,107,0,0.25)}
+.run-btn:hover{background:var(--orange2);transform:translateY(-1px);box-shadow:0 8px 24px rgba(255,107,0,0.35)}
+.run-btn:disabled{opacity:0.5;cursor:default;transform:none;box-shadow:none}
 
 /* ── RESULTS ── */
-.results-wrap{padding:8px 12px;display:flex;flex-direction:column;gap:3px}
-.r-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 8px;background:rgba(255,255,255,.02);border-radius:4px;border:1px solid var(--border3);transition:border-color .12s}
+.results-wrap{padding:0.875rem 1.25rem;display:flex;flex-direction:column;gap:0.4rem}
+.r-row{display:flex;align-items:flex-start;justify-content:space-between;gap:0.875rem;padding:0.75rem 1rem;background:rgba(255,255,255,0.02);border-radius:8px;border:1px solid var(--border2);transition:border-color 0.15s}
 .r-row:hover{border-color:var(--border)}
-.r-key{font-size:.68rem;font-weight:500;color:var(--muted);font-family:var(--mono)}
-.r-val{font-size:.68rem;font-weight:600;text-align:right;font-family:var(--mono)}
+.r-key{font-size:0.75rem;font-weight:600;color:var(--muted)}
+.r-val{font-size:0.75rem;font-weight:700;color:var(--text);text-align:right}
 .r-val.pass{color:var(--green)}
 .r-val.fail{color:var(--red)}
 .r-val.warn{color:var(--yellow)}
-.r-val.info{color:var(--cyan)}
 
 /* ── SCAN STEPS ── */
-.scan-steps{padding:8px 12px;display:flex;flex-direction:column;gap:5px}
-.step{display:flex;align-items:center;gap:8px;font-size:.68rem;color:var(--muted);font-family:var(--mono);transition:color .15s}
-.step.done{color:rgba(232,232,240,.7)}
+.scan-steps{padding:0.875rem 1.25rem;display:flex;flex-direction:column;gap:0.5rem}
+.step{display:flex;align-items:center;gap:10px;font-size:0.75rem;color:var(--muted);transition:color 0.2s}
+.step.done{color:rgba(255,255,255,0.7)}
 .step.active{color:var(--text)}
-.step-ico{width:16px;height:16px;border-radius:50%;border:1.5px solid currentColor;display:flex;align-items:center;justify-content:center;font-size:.48rem;font-weight:700;flex-shrink:0;transition:all .2s}
-.step.done .step-ico{background:var(--green);border-color:var(--green);color:#000;box-shadow:0 0 6px rgba(16,185,129,.4)}
-.step.active .step-ico{border-color:var(--orange);color:var(--orange);animation:spin .8s linear infinite}
-.prog-line{height:2px;background:rgba(255,255,255,.05);overflow:hidden;margin:0 12px 8px}
-.prog-fill{height:100%;background:linear-gradient(90deg,var(--orange),var(--orange2));transition:width .4s;box-shadow:0 0 4px rgba(255,77,0,.4)}
+.step-ico{width:18px;height:18px;border-radius:50%;border:1.5px solid currentColor;display:flex;align-items:center;justify-content:center;font-size:0.5rem;font-weight:800;flex-shrink:0;transition:all 0.2s}
+.step.done .step-ico{background:var(--green);border-color:var(--green);color:#000;box-shadow:0 0 8px rgba(16,185,129,0.4)}
+.step.active .step-ico{border-color:var(--orange);color:var(--orange);animation:spin 0.8s linear infinite}
+.prog-bar{height:2px;background:rgba(255,255,255,0.05);overflow:hidden;margin:0 1.25rem 0.875rem}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--orange),var(--orange2));transition:width 0.4s;box-shadow:0 0 6px rgba(255,107,0,0.4)}
 
-/* ── SCAN RESULTS ── */
-.scan-summary-row{display:flex;gap:6px;padding:8px 12px 4px}
-.scan-sum{flex:1;background:rgba(255,255,255,.02);border:1px solid var(--border3);border-radius:4px;padding:6px 8px;text-align:center}
-.scan-sum-val{font-size:1.1rem;font-weight:700;font-family:var(--mono);letter-spacing:-.03em}
-.scan-sum-lbl{font-size:.55rem;color:var(--muted);font-family:var(--mono);margin-top:1px}
+/* ── SCAN SUMMARY ── */
+.scan-summary{display:flex;gap:0.625rem;padding:0.875rem 1.25rem 0}
+.scan-sum{flex:1;background:rgba(255,255,255,0.02);border:1px solid var(--border2);border-radius:8px;padding:0.625rem 0.875rem;text-align:center}
+.scan-sum-val{font-size:1.25rem;font-weight:900;letter-spacing:-0.04em}
+.scan-sum-lbl{font-size:0.58rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-top:2px}
 
 /* ── LIMIT BOX ── */
-.limit-box{margin:8px 12px;background:rgba(255,77,0,.05);border:1px solid var(--orange4);border-radius:4px;padding:8px 10px;display:flex;align-items:flex-start;gap:6px}
-.limit-txt{font-size:.65rem;color:var(--muted);line-height:1.55;font-family:var(--mono)}
+.limit-box{margin:0.875rem 1.25rem;background:rgba(255,107,0,0.05);border:1px solid var(--orange-border);border-radius:8px;padding:0.875rem;display:flex;align-items:flex-start;gap:0.75rem}
+.limit-txt{font-size:0.75rem;color:var(--muted);line-height:1.65}
 .limit-txt strong{color:var(--text)}
-.limit-upgrade{margin-top:3px;display:inline-flex;align-items:center;gap:3px;font-size:.62rem;font-weight:600;color:var(--orange);cursor:pointer}
+.up-link{margin-top:4px;display:inline-flex;align-items:center;gap:4px;font-size:0.72rem;font-weight:700;color:var(--orange);cursor:pointer}
 
 /* ── CHECKS GRID ── */
-.checks-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:10px 12px}
-.check-chip{background:rgba(255,255,255,.02);border:1px solid var(--border3);border-radius:3px;padding:5px 8px;font-size:.6rem;color:var(--muted);display:flex;align-items:center;gap:4px;font-family:var(--mono);transition:all .12s}
-.check-chip:hover{border-color:var(--orange4);color:var(--text2);background:var(--orange3)}
-.check-chip svg{width:9px;height:9px;stroke:var(--orange);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.checks-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0.5rem;padding:1rem 1.25rem}
+.check-chip{background:rgba(255,255,255,0.02);border:1px solid var(--border2);border-radius:6px;padding:0.5rem 0.75rem;font-size:0.65rem;color:var(--muted);display:flex;align-items:center;gap:5px;transition:all 0.15s}
+.check-chip:hover{border-color:var(--orange-border);color:var(--text);background:var(--orange-dim)}
+.check-chip svg{width:10px;height:10px;stroke:var(--orange);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
 
 /* ── PDF BUTTON ── */
-.pdf-btn{display:inline-flex;align-items:center;gap:5px;background:rgba(6,182,212,.08);border:1px solid rgba(6,182,212,.2);border-radius:3px;padding:4px 10px;color:var(--cyan);font-size:.62rem;font-weight:600;cursor:pointer;font-family:var(--font);transition:all .12s}
-.pdf-btn:hover{background:rgba(6,182,212,.15);border-color:rgba(6,182,212,.35)}
-.pdf-btn svg{width:10px;height:10px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.pdf-btn{display:inline-flex;align-items:center;gap:6px;background:rgba(6,182,212,0.08);border:1px solid rgba(6,182,212,0.2);border-radius:6px;padding:6px 12px;color:var(--cyan);font-size:0.68rem;font-weight:700;cursor:pointer;font-family:'Hanken Grotesk',sans-serif;transition:all 0.15s}
+.pdf-btn:hover{background:rgba(6,182,212,0.15);border-color:rgba(6,182,212,0.4);box-shadow:0 0 16px rgba(6,182,212,0.15)}
+.pdf-btn svg{width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 
 /* ── TEAM TABLE ── */
 .team-tbl{width:100%;border-collapse:collapse}
-.team-tbl th{font-size:.57rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);padding:6px 12px;text-align:left;border-bottom:1px solid var(--border);font-family:var(--mono);background:rgba(255,255,255,.02)}
-.team-tbl td{padding:8px 12px;border-bottom:1px solid var(--border3);font-size:.7rem;vertical-align:middle}
-.team-tbl tr:hover td{background:rgba(255,255,255,.015)}
+.team-tbl th{font-size:0.62rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);padding:0.75rem 1.25rem;text-align:left;border-bottom:1px solid var(--border);background:rgba(255,255,255,0.02)}
+.team-tbl td{padding:0.875rem 1.25rem;border-bottom:1px solid var(--border2);font-size:0.78rem;vertical-align:middle}
+.team-tbl tr:hover td{background:rgba(255,255,255,0.015)}
 .team-tbl tr:last-child td{border-bottom:none}
-.t-av{width:24px;height:24px;border-radius:50%;background:var(--orange3);border:1px solid var(--orange4);display:flex;align-items:center;justify-content:center;font-size:.55rem;font-weight:700;color:var(--orange);font-family:var(--mono)}
-.status-chip{font-size:.54rem;font-weight:600;padding:2px 6px;border-radius:3px;text-transform:uppercase;letter-spacing:.05em;font-family:var(--mono)}
-.status-chip.on{background:var(--green2);color:var(--green);border:1px solid rgba(16,185,129,.2)}
-.status-chip.off{background:rgba(255,255,255,.03);color:var(--muted);border:1px solid var(--border)}
-.add-member-row{padding:8px 12px;display:grid;grid-template-columns:1fr 1fr auto;gap:6px;align-items:end;border-top:1px solid var(--border);background:rgba(255,255,255,.01)}
+.t-av{width:26px;height:26px;border-radius:50%;background:var(--orange-dim);border:1px solid var(--orange-border);display:flex;align-items:center;justify-content:center;font-size:0.6rem;font-weight:800;color:var(--orange)}
+.status-chip{font-size:0.6rem;font-weight:700;padding:2px 8px;border-radius:4px;text-transform:uppercase;letter-spacing:0.06em}
+.status-chip.on{background:rgba(16,185,129,0.1);color:var(--green);border:1px solid rgba(16,185,129,0.2)}
+.status-chip.off{background:rgba(255,255,255,0.03);color:var(--muted);border:1px solid var(--border)}
+.add-row{padding:0.875rem 1.25rem;display:grid;grid-template-columns:1fr 1fr auto;gap:0.75rem;align-items:end;border-top:1px solid var(--border);background:rgba(255,255,255,0.01)}
 
 /* ── MODAL ── */
-.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:200;display:none;align-items:center;justify-content:center;backdrop-filter:blur(8px)}
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:200;display:none;align-items:center;justify-content:center;backdrop-filter:blur(8px)}
 .modal-ov.show{display:flex}
-.modal{background:var(--bg3);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:20px;max-width:420px;width:92%;position:relative;max-height:90vh;overflow-y:auto}
-.modal::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--orange),transparent);border-radius:8px 8px 0 0}
-.modal-title{font-size:1rem;font-weight:700;color:var(--text);margin-bottom:3px;letter-spacing:-.015em}
-.modal-sub{font-size:.68rem;color:var(--muted);margin-bottom:14px;font-family:var(--mono)}
-.m-plans{display:flex;flex-direction:column;gap:5px}
-.m-plan{display:flex;align-items:center;justify-content:space-between;padding:9px 10px;border:1px solid var(--border);border-radius:5px;cursor:pointer;transition:all .12s;background:rgba(255,255,255,.02)}
-.m-plan:hover{border-color:var(--orange4);background:var(--orange3)}
-.m-plan-name{font-size:.76rem;font-weight:600;color:var(--text)}
-.m-plan-price{font-size:.6rem;color:var(--muted);margin-top:1px;font-family:var(--mono)}
-.m-badge{font-size:.52rem;font-weight:700;padding:2px 7px;background:var(--orange);color:#fff;border-radius:3px;text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono)}
-.m-close{position:absolute;top:10px;right:10px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:3px;color:var(--muted);cursor:pointer;font-size:.9rem;line-height:1;font-family:var(--font);transition:all .12s;padding:3px 7px}
-.m-close:hover{color:var(--text);border-color:rgba(255,255,255,.15)}
+.modal{background:var(--bg3);border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:2rem;max-width:440px;width:92%;position:relative;max-height:90vh;overflow-y:auto}
+.modal::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--orange),transparent);border-radius:16px 16px 0 0}
+.modal-title{font-size:1.1rem;font-weight:800;color:var(--text);margin-bottom:4px;letter-spacing:-0.02em}
+.modal-sub{font-size:0.78rem;color:var(--muted);margin-bottom:1.5rem;line-height:1.6}
+.m-plans{display:flex;flex-direction:column;gap:0.625rem}
+.m-plan{display:flex;align-items:center;justify-content:space-between;padding:0.875rem 1rem;border:1px solid var(--border);border-radius:10px;cursor:pointer;transition:all 0.15s;background:rgba(255,255,255,0.02)}
+.m-plan:hover{border-color:var(--orange-border);background:var(--orange-dim);transform:translateX(2px)}
+.m-plan-name{font-size:0.85rem;font-weight:700;color:var(--text)}
+.m-plan-price{font-size:0.68rem;color:var(--muted);margin-top:2px}
+.m-badge{font-size:0.58rem;font-weight:800;padding:2px 9px;background:var(--orange);color:#fff;border-radius:4px;text-transform:uppercase;letter-spacing:0.08em;box-shadow:0 2px 8px rgba(255,107,0,0.3)}
+.m-close{position:absolute;top:1rem;right:1rem;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:6px;color:var(--muted);cursor:pointer;font-size:1rem;line-height:1;font-family:'Hanken Grotesk',sans-serif;transition:all 0.15s;padding:4px 9px}
+.m-close:hover{color:var(--text);border-color:rgba(255,255,255,0.2)}
 
 /* ── TRAINING MODAL ── */
-.t-modal-box{background:var(--bg3);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:20px;max-width:560px;width:92%;position:relative;max-height:88vh;overflow-y:auto}
-.t-modal-box::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--orange),transparent);border-radius:8px 8px 0 0}
-.quiz-btn{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:4px;padding:7px 10px;color:rgba(232,232,240,.65);font-size:.72rem;cursor:pointer;text-align:left;font-family:var(--font);transition:all .12s;width:100%;display:block;margin-bottom:4px}
-.quiz-btn:hover{border-color:var(--orange4);background:var(--orange3);color:var(--text)}
+.t-modal{background:var(--bg3);border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:2rem;max-width:580px;width:92%;position:relative;max-height:88vh;overflow-y:auto}
+.t-modal::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--orange),transparent);border-radius:16px 16px 0 0}
+.quiz-btn{background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px;padding:9px 14px;color:rgba(255,255,255,0.65);font-size:0.8rem;cursor:pointer;text-align:left;font-family:'Hanken Grotesk',sans-serif;transition:all 0.15s;width:100%;display:block;margin-bottom:6px}
+.quiz-btn:hover{border-color:var(--orange-border);background:var(--orange-dim);color:var(--text)}
 .quiz-btn:disabled{cursor:default}
-.quiz-btn.correct{border-color:rgba(16,185,129,.4);background:var(--green2);color:var(--green)}
-.quiz-btn.wrong{border-color:rgba(239,68,68,.3);background:var(--red2);color:var(--red)}
+.quiz-btn.correct{border-color:rgba(16,185,129,0.4);background:rgba(16,185,129,0.08);color:var(--green)}
+.quiz-btn.wrong{border-color:rgba(239,68,68,0.3);background:rgba(239,68,68,0.08);color:var(--red)}
 
-/* ── SCROLLABLE CONTENT ── */
-.scrollable{overflow-y:auto;max-height:240px}
+/* ── SECTION EYEBROW (matches landing) ── */
+.eyebrow{font-size:0.62rem;font-weight:800;text-transform:uppercase;letter-spacing:0.15em;color:var(--orange);display:flex;align-items:center;gap:6px;margin-bottom:0.5rem}
+.eyebrow::before{content:'■';font-size:0.4rem}
 
 @media(max-width:768px){
   .sidebar{display:none}
   .g4{grid-template-columns:1fr 1fr}
-  .g2,.g2e,.g3,.g3e,.t-modules,.t-stats-row{grid-template-columns:1fr}
+  .g2,.g2e,.g3,.g3e,.t-grid,.t-stats{grid-template-columns:1fr}
   .checks-grid{grid-template-columns:1fr 1fr}
 }
 </style>
@@ -361,51 +333,51 @@ button{font-family:var(--font)}
 <body>
 <div class="app" id="app">
 
-<!-- ═══ SIDEBAR ═══ -->
+<!-- ═══════ SIDEBAR ═══════ -->
 <aside class="sidebar">
-  <div class="s-top">
-    <div class="s-logo">
+  <div class="s-brand">
+    <a href="index.html">
       <svg viewBox="0 0 30 36" fill="none">
-        <path d="M15 1L29 6.5V21C29 30 22 35.5 15 37.5C8 35.5 1 30 1 21V6.5L15 1Z" fill="rgba(255,77,0,0.08)" stroke="#FF4D00" stroke-width="1.5"/>
-        <path d="M15 11L20 14L15 17L10 14Z" fill="rgba(255,77,0,0.2)" stroke="#FF4D00" stroke-width="1.25" stroke-linejoin="round"/>
-        <path d="M10 14L15 17V23L10 20Z" stroke="#FF4D00" stroke-width="1.25" stroke-linejoin="round"/>
-        <path d="M20 14L15 17V23L20 20Z" fill="rgba(255,77,0,0.1)" stroke="#FF4D00" stroke-width="1.25" stroke-linejoin="round"/>
+        <path d="M15 1L29 6.5V21C29 30 22 35.5 15 37.5C8 35.5 1 30 1 21V6.5L15 1Z" fill="rgba(255,107,0,0.08)" stroke="#FF6B00" stroke-width="1.5"/>
+        <path d="M15 11L20 14L15 17L10 14Z" fill="rgba(255,107,0,0.2)" stroke="#FF6B00" stroke-width="1.25" stroke-linejoin="round"/>
+        <path d="M10 14L15 17V23L10 20Z" stroke="#FF6B00" stroke-width="1.25" stroke-linejoin="round"/>
+        <path d="M20 14L15 17V23L20 20Z" fill="rgba(255,107,0,0.1)" stroke="#FF6B00" stroke-width="1.25" stroke-linejoin="round"/>
       </svg>
       Cyber<span class="acc">Shield</span>
-    </div>
+    </a>
   </div>
   <nav class="s-nav">
     <div class="s-item active" onclick="showPage('dashboard',this)">
-      <svg class="s-ico" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      <svg class="s-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
       Dashboard
     </div>
-    <div class="s-sec">Security Tools</div>
+    <div class="s-section">Security Tools</div>
     <div class="s-item" onclick="showPage('training',this)">
-      <svg class="s-ico" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+      <svg class="s-icon" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
       AI Training
     </div>
     <div class="s-item" onclick="showPage('breach',this)">
-      <svg class="s-ico" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <svg class="s-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
       Breach Monitor
     </div>
     <div class="s-item" onclick="showPage('scanner',this)">
-      <svg class="s-ico" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
-      Vuln. Scanner
+      <svg class="s-icon" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+      Vulnerability Scanner
     </div>
-    <div class="s-sec">Account</div>
+    <div class="s-section">Account</div>
     <div class="s-item" onclick="showPage('team',this)">
-      <svg class="s-ico" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      <svg class="s-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
       Team
     </div>
     <div class="s-item" onclick="openUpgradeModal()">
-      <svg class="s-ico" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+      <svg class="s-icon" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
       Billing
     </div>
   </nav>
-  <div class="s-foot">
-    <div class="s-plan-bar" onclick="openUpgradeModal()">
-      <span class="s-plan-name" id="plan-badge">STARTER</span>
-      <span class="s-plan-up">Upgrade →</span>
+  <div class="s-footer">
+    <div class="s-plan" onclick="openUpgradeModal()">
+      <div class="s-plan-name" id="plan-badge">STARTER</div>
+      <div class="s-plan-up">Upgrade →</div>
     </div>
     <div class="s-user">
       <div class="s-av" id="sidebar-avatar">CS</div>
@@ -414,96 +386,91 @@ button{font-family:var(--font)}
         <div class="s-urole" id="sidebar-role">Owner</div>
       </div>
       <button class="s-logout" onclick="doLogout()" title="Sign out">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
       </button>
     </div>
   </div>
 </aside>
 
-<!-- ═══ MAIN ═══ -->
+<!-- ═══════ MAIN ═══════ -->
 <div class="main">
   <div class="topbar">
     <div class="tb-title" id="topbar-title">Dashboard</div>
     <div class="tb-divider"></div>
     <div class="tb-status"><div class="sdot"></div>All systems operational</div>
     <div class="tb-right">
-      <button class="tb-pill" onclick="openUpgradeModal()">Upgrade plan</button>
+      <button class="tb-btn" onclick="openUpgradeModal()">Upgrade plan</button>
       <button class="tb-cta" onclick="showPage('scanner',document.querySelectorAll('.s-item')[3])">▶ Run scan</button>
     </div>
   </div>
 
   <div class="content">
 
-  <!-- ══════ DASHBOARD ══════ -->
+  <!-- ══════════ DASHBOARD ══════════ -->
   <div class="page active" id="page-dashboard">
-    <!-- KPI Row -->
     <div class="g4">
       <div class="kpi kg">
-        <div class="kpi-label">Security Score</div>
+        <div class="kpi-eyebrow"><svg viewBox="0 0 24 24" stroke="var(--green)"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Security Score</div>
         <div class="kpi-val vg" id="dash-score">—</div>
-        <div class="kpi-sub" id="dash-score-lbl">Calculating...</div>
-        <div class="kpi-ghost" id="kg-ghost">—</div>
+        <div class="kpi-foot" id="dash-score-lbl">Calculating...</div>
       </div>
       <div class="kpi ko">
-        <div class="kpi-label">Trainings Done</div>
+        <div class="kpi-eyebrow"><svg viewBox="0 0 24 24" stroke="var(--orange)"><path d="M12 2L2 7l10 5 10-5-10-5z"/></svg>Trainings Done</div>
         <div class="kpi-val vo" id="dash-trainings">—</div>
-        <div class="kpi-sub">Modules completed</div>
-        <div class="kpi-ghost">AI</div>
+        <div class="kpi-foot">Modules completed</div>
       </div>
       <div class="kpi kr">
-        <div class="kpi-label">Breaches Found</div>
+        <div class="kpi-eyebrow"><svg viewBox="0 0 24 24" stroke="var(--red)"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>Breaches Found</div>
         <div class="kpi-val vr" id="dash-breaches">—</div>
-        <div class="kpi-sub">Against HIBP DB</div>
-        <div class="kpi-ghost">!</div>
+        <div class="kpi-foot">Emails checked vs HIBP</div>
       </div>
       <div class="kpi ky">
-        <div class="kpi-label">Scans This Month</div>
+        <div class="kpi-eyebrow"><svg viewBox="0 0 24 24" stroke="var(--yellow)"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Scans This Month</div>
         <div class="kpi-val vy" id="dash-scans">—</div>
-        <div class="kpi-sub" id="scans-sub">Vulnerability scans</div>
-        <div class="kpi-ghost">↗</div>
+        <div class="kpi-foot" id="scans-foot">Vulnerability scans</div>
       </div>
     </div>
 
-    <!-- Row 2: Score + Threats -->
     <div class="g2">
-      <div class="panel">
-        <div class="panel-hd">
-          <div class="panel-hd-l">
-            <div class="p-ico" style="background:var(--green2);border:1px solid rgba(16,185,129,.15)"><svg viewBox="0 0 24 24" stroke="var(--green)"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
-            <div><div class="p-title">Security Posture</div><div class="p-sub">Real-time protection score</div></div>
+      <!-- Score card -->
+      <div class="card">
+        <div class="card-hd">
+          <div class="card-hd-l">
+            <div class="card-ico" style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.15)"><svg viewBox="0 0 24 24" stroke="var(--green)"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+            <div><div class="card-title">Security Posture</div><div class="card-sub">Across all protection layers</div></div>
           </div>
-          <span class="p-act" onclick="showPage('training',document.querySelectorAll('.s-item')[1])">Improve →</span>
+          <span class="card-act" onclick="showPage('training',document.querySelectorAll('.s-item')[1])">Improve →</span>
         </div>
-        <div class="score-section">
-          <div class="ring-outer">
-            <svg width="100" height="100" viewBox="0 0 100 100">
-              <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="8"/>
-              <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,0.02)" stroke-width="8" stroke-dasharray="3 5"/>
-              <circle id="score-circle" cx="50" cy="50" r="42" fill="none" stroke="var(--green)" stroke-width="8"
-                stroke-linecap="round" stroke-dasharray="263.89" stroke-dashoffset="263.89"
-                transform="rotate(-90 50 50)" style="transition:stroke-dashoffset 1.4s cubic-bezier(.4,0,.2,1),stroke .5s;filter:drop-shadow(0 0 5px currentColor)"/>
+        <div class="score-wrap">
+          <div class="ring-pos">
+            <svg width="110" height="110" viewBox="0 0 110 110">
+              <circle cx="55" cy="55" r="46" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="9"/>
+              <circle cx="55" cy="55" r="46" fill="none" stroke="rgba(255,255,255,0.02)" stroke-width="9" stroke-dasharray="3 6"/>
+              <circle id="score-circle" cx="55" cy="55" r="46" fill="none" stroke="var(--green)" stroke-width="9"
+                stroke-linecap="round" stroke-dasharray="289.03" stroke-dashoffset="289.03"
+                transform="rotate(-90 55 55)" style="transition:stroke-dashoffset 1.4s cubic-bezier(0.4,0,0.2,1),stroke 0.5s;filter:drop-shadow(0 0 6px currentColor)"/>
             </svg>
             <div class="ring-center">
               <div class="ring-num" id="score-num">—</div>
               <div class="ring-lbl" id="score-lbl" style="color:var(--green)">—</div>
             </div>
           </div>
-          <div class="score-bars">
+          <div class="score-info">
             <div class="sbar">
-              <div class="sbar-top"><span class="sbar-label">Training</span><span class="sbar-val" id="bt-v">0%</span></div>
+              <div class="sbar-top"><span class="sbar-label">Training</span><span class="sbar-pct" id="bt-p">0%</span></div>
               <div class="sbar-track"><div class="sbar-fill" id="bar-t" style="width:0%;background:linear-gradient(90deg,var(--orange),var(--orange2))"></div></div>
             </div>
             <div class="sbar">
-              <div class="sbar-top"><span class="sbar-label">Scan coverage</span><span class="sbar-val" id="bs-v">0%</span></div>
-              <div class="sbar-track"><div class="sbar-fill" id="bar-s" style="width:0%;background:linear-gradient(90deg,var(--green),rgba(16,185,129,.5))"></div></div>
+              <div class="sbar-top"><span class="sbar-label">Scan coverage</span><span class="sbar-pct" id="bs-p">0%</span></div>
+              <div class="sbar-track"><div class="sbar-fill" id="bar-s" style="width:0%;background:linear-gradient(90deg,var(--green),rgba(16,185,129,0.5))"></div></div>
             </div>
             <div class="sbar">
-              <div class="sbar-top"><span class="sbar-label">Breach monitoring</span><span class="sbar-val" id="bb-v">0%</span></div>
-              <div class="sbar-track"><div class="sbar-fill" id="bar-b" style="width:0%;background:linear-gradient(90deg,var(--cyan),rgba(6,182,212,.5))"></div></div>
+              <div class="sbar-top"><span class="sbar-label">Breach monitoring</span><span class="sbar-pct" id="bb-p">0%</span></div>
+              <div class="sbar-track"><div class="sbar-fill" id="bar-b" style="width:0%;background:linear-gradient(90deg,var(--cyan),rgba(6,182,212,0.5))"></div></div>
             </div>
             <div>
-              <div style="font-size:.55rem;color:var(--dim);margin-bottom:4px;font-family:var(--mono)">Quick actions</div>
-              <div class="qa-strip">
+              <div style="font-size:0.58rem;color:var(--dim);margin-bottom:5px">Quick actions</div>
+              <div class="qa-row">
                 <span class="qa" onclick="showPage('training',document.querySelectorAll('.s-item')[1])">+ Training</span>
                 <span class="qa" onclick="showPage('breach',document.querySelectorAll('.s-item')[2])">+ Breach</span>
                 <span class="qa" onclick="showPage('scanner',document.querySelectorAll('.s-item')[3])">+ Scan</span>
@@ -513,223 +480,194 @@ button{font-family:var(--font)}
         </div>
       </div>
 
-      <div class="panel">
-        <div class="panel-hd">
-          <div class="panel-hd-l">
-            <div class="p-ico" style="background:var(--red2);border:1px solid rgba(239,68,68,.15)"><svg viewBox="0 0 24 24" stroke="var(--red)"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
-            <div><div class="p-title">Live Threat Intelligence</div><div class="p-sub">CyberWire Daily · real-time</div></div>
+      <!-- Live Threats -->
+      <div class="card">
+        <div class="card-hd">
+          <div class="card-hd-l">
+            <div class="card-ico" style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.15)"><svg viewBox="0 0 24 24" stroke="var(--red)"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+            <div><div class="card-title">Live Threat Intelligence</div><div class="card-sub">CyberWire Daily · updated daily</div></div>
           </div>
-          <div style="display:flex;align-items:center;gap:4px"><div class="sdot"></div><span style="font-size:.55rem;color:var(--muted);font-family:var(--mono)">LIVE</span></div>
+          <div style="display:flex;align-items:center;gap:5px"><div class="sdot"></div><span style="font-size:0.62rem;color:var(--muted)">LIVE</span></div>
         </div>
-        <div class="threat-feed" id="dash-threats">
+        <div class="tf-list" id="dash-threats">
           <div class="tf-item"><div style="flex:1"><div class="tf-title" style="color:var(--muted)">Loading threat intelligence...</div></div></div>
         </div>
       </div>
     </div>
 
-    <!-- Row 3: Map + Activity + Actions + Coverage -->
-    <div style="display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:10px;margin-bottom:10px">
-
-      <!-- World map panel -->
-      <div class="panel">
-        <div class="panel-hd">
-          <div class="p-title">Global Threat Activity</div>
-          <span style="font-size:.55rem;color:var(--muted);font-family:var(--mono)">Last 24h</span>
-        </div>
-        <div class="map-panel">
-          <div class="map-canvas" id="map-canvas">
-            <svg class="map-svg" viewBox="0 0 1000 500" xmlns="http://www.w3.org/2000/svg">
-              <path d="M150,200 Q200,180 250,190 Q300,200 320,220 Q340,240 330,260 Q320,280 290,275 Q260,270 240,250 Q220,230 200,225 Q180,220 150,200Z" fill="rgba(255,77,0,0.3)" stroke="rgba(255,77,0,0.5)" stroke-width="1"/>
-              <path d="M330,130 Q380,120 430,135 Q480,150 500,170 Q520,190 510,210 Q500,230 470,235 Q440,240 410,225 Q380,210 360,195 Q340,180 330,130Z" fill="rgba(255,77,0,0.15)" stroke="rgba(255,77,0,0.3)" stroke-width="1"/>
-              <path d="M490,160 Q540,150 590,165 Q640,180 660,200 Q680,220 670,245 Q660,270 630,275 Q600,280 570,265 Q540,250 515,235 Q490,220 490,160Z" fill="rgba(255,77,0,0.2)" stroke="rgba(255,77,0,0.4)" stroke-width="1"/>
-              <path d="M560,80 Q600,70 640,85 Q680,100 700,120 Q720,140 710,160 Q700,180 670,185 Q640,190 615,175 Q590,160 570,145 Q550,130 560,80Z" fill="rgba(139,92,246,0.2)" stroke="rgba(139,92,246,0.4)" stroke-width="1"/>
-              <path d="M700,180 Q750,170 800,185 Q850,200 870,225 Q890,250 875,275 Q860,300 830,305 Q800,310 770,295 Q740,280 720,260 Q700,240 700,180Z" fill="rgba(255,77,0,0.25)" stroke="rgba(255,77,0,0.5)" stroke-width="1"/>
-              <path d="M820,100 Q860,90 890,105 Q920,120 930,140 Q940,160 925,175 Q910,190 885,188 Q860,186 845,170 Q830,154 820,100Z" fill="rgba(6,182,212,0.15)" stroke="rgba(6,182,212,0.3)" stroke-width="1"/>
-              <path d="M580,280 Q620,265 660,280 Q700,295 715,320 Q730,345 715,365 Q700,385 670,388 Q640,391 615,375 Q590,359 578,340 Q566,321 580,280Z" fill="rgba(255,77,0,0.2)" stroke="rgba(255,77,0,0.4)" stroke-width="1"/>
-            </svg>
-            <div id="map-dots"></div>
-          </div>
-          <div class="map-stats">
-            <div class="map-stat"><div class="map-stat-val" id="map-active">—</div><div class="map-stat-lbl">Active threats</div></div>
-            <div class="map-stat"><div class="map-stat-val" id="map-countries">—</div><div class="map-stat-lbl">Origin countries</div></div>
-            <div class="map-stat"><div class="map-stat-val" id="map-blocked">—</div><div class="map-stat-lbl">Severity level</div></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Activity + Actions stacked -->
-      <div style="display:flex;flex-direction:column;gap:10px">
-        <div class="panel" style="flex:1">
-          <div class="panel-hd"><div class="p-title">Recent Activity</div></div>
-          <div id="dash-activity">
-            <div class="act-item"><div class="act-d" style="background:var(--muted)"></div><div><div class="act-text" style="color:var(--muted)">No activity yet.</div><div class="act-time">Run a scan or training</div></div></div>
-          </div>
-        </div>
-        <div class="panel" style="flex:1">
-          <div class="panel-hd"><div class="p-title">Recommended Actions</div></div>
-          <div class="action-row" onclick="showPage('training',document.querySelectorAll('.s-item')[1])">
-            <div class="action-ico" style="background:var(--orange3);border:1px solid var(--orange4)"><svg viewBox="0 0 24 24" stroke="var(--orange)"><path d="M12 2L2 7l10 5 10-5-10-5z"/></svg></div>
-            <div style="flex:1"><div class="action-name">AI Training</div><div class="action-sub">+20pts security score</div></div>
-            <div class="action-arrow"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
-          </div>
-          <div class="action-row" onclick="showPage('breach',document.querySelectorAll('.s-item')[2])">
-            <div class="action-ico" style="background:var(--red2);border:1px solid rgba(239,68,68,.15)"><svg viewBox="0 0 24 24" stroke="var(--red)"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></div>
-            <div style="flex:1"><div class="action-name">Check for Breaches</div><div class="action-sub">12B+ credentials DB</div></div>
-            <div class="action-arrow"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
-          </div>
-          <div class="action-row" onclick="showPage('scanner',document.querySelectorAll('.s-item')[3])">
-            <div class="action-ico" style="background:var(--green2);border:1px solid rgba(16,185,129,.15)"><svg viewBox="0 0 24 24" stroke="var(--green)"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
-            <div style="flex:1"><div class="action-name">Vulnerability Scan</div><div class="action-sub">SSL, headers, DNS, cookies</div></div>
-            <div class="action-arrow"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
-          </div>
-        </div>
-      </div>
-
+    <div class="g3">
       <!-- Coverage -->
-      <div class="panel">
-        <div class="panel-hd">
-          <div class="p-title">Protection Coverage</div>
-          <span class="p-act" onclick="showPage('team',document.querySelectorAll('.s-item')[4])">Team →</span>
+      <div class="card">
+        <div class="card-hd">
+          <div class="card-title">Protection Coverage</div>
+          <span class="card-act" onclick="showPage('team',document.querySelectorAll('.s-item')[4])">Manage team →</span>
         </div>
         <div class="cov-grid">
           <div class="cov-cell"><div class="cov-lbl">Emails monitored</div><div class="cov-val" id="cov-em">—</div><div class="cov-bar"><div class="cov-fill" id="cb-em" style="width:0%;background:var(--orange)"></div></div></div>
           <div class="cov-cell"><div class="cov-lbl">Modules trained</div><div class="cov-val" id="cov-tr">—</div><div class="cov-bar"><div class="cov-fill" id="cb-tr" style="width:0%;background:var(--green)"></div></div></div>
           <div class="cov-cell"><div class="cov-lbl">Scans this month</div><div class="cov-val" id="cov-sc">—</div><div class="cov-bar"><div class="cov-fill" id="cb-sc" style="width:0%;background:var(--yellow)"></div></div></div>
-          <div class="cov-cell"><div class="cov-lbl">Active plan</div><div class="cov-val" id="cov-pl" style="color:var(--orange)">—</div><div style="margin-top:4px"><span onclick="openUpgradeModal()" style="font-size:.58rem;color:var(--orange);cursor:pointer;font-family:var(--mono)">UPGRADE →</span></div></div>
+          <div class="cov-cell"><div class="cov-lbl">Active plan</div><div class="cov-val" id="cov-pl" style="color:var(--orange)">—</div><div style="margin-top:4px"><span onclick="openUpgradeModal()" style="font-size:0.62rem;color:var(--orange);cursor:pointer;font-weight:700">UPGRADE →</span></div></div>
+        </div>
+      </div>
+
+      <!-- Activity -->
+      <div class="card">
+        <div class="card-hd"><div class="card-title">Recent Activity</div></div>
+        <div id="dash-activity">
+          <div class="act-item"><div class="act-dot" style="background:var(--muted)"></div><div><div class="act-text" style="color:var(--muted)">No activity yet.</div><div class="act-time">Run a scan or training</div></div></div>
+        </div>
+      </div>
+
+      <!-- Recommended Actions -->
+      <div class="card">
+        <div class="card-hd"><div class="card-title">Recommended Actions</div></div>
+        <div class="action-item" onclick="showPage('training',document.querySelectorAll('.s-item')[1])">
+          <div class="action-ico" style="background:var(--orange-dim);border:1px solid var(--orange-border)"><svg viewBox="0 0 24 24" stroke="var(--orange)"><path d="M12 2L2 7l10 5 10-5-10-5z"/></svg></div>
+          <div style="flex:1"><div class="action-name">Complete AI training</div><div class="action-sub">+20 pts to security score</div></div>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+        <div class="action-item" onclick="showPage('breach',document.querySelectorAll('.s-item')[2])">
+          <div class="action-ico" style="background:var(--red-dim);border:1px solid rgba(239,68,68,0.15)"><svg viewBox="0 0 24 24" stroke="var(--red)"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></div>
+          <div style="flex:1"><div class="action-name">Check team emails</div><div class="action-sub">12B+ credentials database</div></div>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+        <div class="action-item" onclick="showPage('scanner',document.querySelectorAll('.s-item')[3])">
+          <div class="action-ico" style="background:var(--green-dim);border:1px solid rgba(16,185,129,0.15)"><svg viewBox="0 0 24 24" stroke="var(--green)"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+          <div style="flex:1"><div class="action-name">Vulnerability scan</div><div class="action-sub">SSL, headers, DNS, cookies</div></div>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ══════ TRAINING ══════ -->
+  <!-- ══════════ TRAINING ══════════ -->
   <div class="page" id="page-training">
-    <div class="t-stats-row">
-      <div class="t-stat-card">
-        <div class="t-stat-ico" style="background:var(--orange3);border:1px solid var(--orange4)"><svg viewBox="0 0 24 24" stroke="var(--orange)"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
+    <div class="t-stats">
+      <div class="t-stat">
+        <div class="t-stat-ico" style="background:var(--orange-dim);border:1px solid var(--orange-border)"><svg viewBox="0 0 24 24" stroke="var(--orange)"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
         <div><div class="t-stat-val" id="ts-done">0</div><div class="t-stat-lbl">Modules completed</div></div>
       </div>
-      <div class="t-stat-card">
-        <div class="t-stat-ico" style="background:var(--green2);border:1px solid rgba(16,185,129,.15)"><svg viewBox="0 0 24 24" stroke="var(--green)"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <div class="t-stat">
+        <div class="t-stat-ico" style="background:var(--green-dim);border:1px solid rgba(16,185,129,0.15)"><svg viewBox="0 0 24 24" stroke="var(--green)"><polyline points="20 6 9 17 4 12"/></svg></div>
         <div><div class="t-stat-val" style="color:var(--green)">5 min</div><div class="t-stat-lbl">Per module · weekly</div></div>
       </div>
-      <div class="t-stat-card">
-        <div class="t-stat-ico" style="background:var(--yellow2);border:1px solid rgba(245,158,11,.15)"><svg viewBox="0 0 24 24" stroke="var(--yellow)"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+      <div class="t-stat">
+        <div class="t-stat-ico" style="background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.15)"><svg viewBox="0 0 24 24" stroke="var(--yellow)"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
         <div><div class="t-stat-val" style="color:var(--yellow)">Live</div><div class="t-stat-lbl">AI from CyberWire Daily</div></div>
       </div>
     </div>
-    <div class="t-modules">
+    <div class="t-grid">
       <div class="t-mod">
-        <div class="t-mod-img"><img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=600&q=70&fit=crop" alt="Phishing"/><div class="t-mod-ov"></div><div class="t-week-badge">WEEK 1</div></div>
-        <div class="t-mod-body">
-          <div class="t-mod-title">Phishing & Social Engineering</div>
-          <div class="t-mod-desc">Live threat data from CyberWire Daily. Learn exactly what attackers are doing right now — not last year's examples.</div>
-          <div class="t-prog-track"><div class="t-prog-fill" style="width:0%"></div></div>
-          <div class="t-meta-row"><span>0% complete</span><span>5 min</span></div>
-          <div class="t-start-btn" onclick="startTraining('phishing')">Start module →</div>
+        <div class="t-mod-img"><img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=600&q=70&fit=crop" alt="Phishing"/><div class="t-mod-ov"></div><div class="t-week">WEEK 1</div></div>
+        <div class="t-body">
+          <div class="t-title">Phishing & Social Engineering</div>
+          <div class="t-desc">Live threat data from CyberWire Daily. Learn exactly what attackers are doing right now — not last year's examples.</div>
+          <div class="t-prog"><div class="t-prog-fill" style="width:0%"></div></div>
+          <div class="t-meta"><span>0% complete</span><span>5 min</span></div>
+          <div class="t-start" onclick="startTraining('phishing')">Start module →</div>
         </div>
       </div>
       <div class="t-mod">
-        <div class="t-mod-img"><img src="https://images.unsplash.com/photo-1563986768609-322da13575f3?w=600&q=70&fit=crop" alt="Passwords"/><div class="t-mod-ov"></div><div class="t-week-badge">WEEK 2</div></div>
-        <div class="t-mod-body">
-          <div class="t-mod-title">Password Security & MFA</div>
-          <div class="t-mod-desc">Best practices for creating strong passwords and enforcing multi-factor authentication across all your business accounts.</div>
-          <div class="t-prog-track"><div class="t-prog-fill" style="width:0%"></div></div>
-          <div class="t-meta-row"><span>0% complete</span><span>5 min</span></div>
-          <div class="t-start-btn" onclick="startTraining('passwords')">Start module →</div>
+        <div class="t-mod-img"><img src="https://images.unsplash.com/photo-1563986768609-322da13575f3?w=600&q=70&fit=crop" alt="Passwords"/><div class="t-mod-ov"></div><div class="t-week">WEEK 2</div></div>
+        <div class="t-body">
+          <div class="t-title">Password Security & MFA</div>
+          <div class="t-desc">Best practices for strong passwords and multi-factor authentication across all your business accounts and tools.</div>
+          <div class="t-prog"><div class="t-prog-fill" style="width:0%"></div></div>
+          <div class="t-meta"><span>0% complete</span><span>5 min</span></div>
+          <div class="t-start" onclick="startTraining('passwords')">Start module →</div>
         </div>
       </div>
       <div class="t-mod">
-        <div class="t-mod-img"><img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=600&q=70&fit=crop" alt="Ransomware"/><div class="t-mod-ov"></div><div class="t-week-badge">WEEK 3</div></div>
-        <div class="t-mod-body">
-          <div class="t-mod-title">Ransomware Defense</div>
-          <div class="t-mod-desc">Understand how ransomware spreads through businesses and the exact protection steps to secure your files and operations.</div>
-          <div class="t-prog-track"><div class="t-prog-fill" style="width:0%"></div></div>
-          <div class="t-meta-row"><span>0% complete</span><span>5 min</span></div>
-          <div class="t-start-btn" onclick="startTraining('ransomware')">Start module →</div>
+        <div class="t-mod-img"><img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=600&q=70&fit=crop" alt="Ransomware"/><div class="t-mod-ov"></div><div class="t-week">WEEK 3</div></div>
+        <div class="t-body">
+          <div class="t-title">Ransomware Defense</div>
+          <div class="t-desc">How ransomware spreads through businesses and the exact steps to protect your files, backups, and operations.</div>
+          <div class="t-prog"><div class="t-prog-fill" style="width:0%"></div></div>
+          <div class="t-meta"><span>0% complete</span><span>5 min</span></div>
+          <div class="t-start" onclick="startTraining('ransomware')">Start module →</div>
         </div>
       </div>
     </div>
-    <div class="panel" style="background:linear-gradient(135deg,rgba(255,77,0,.06),var(--card));border-color:var(--orange4)">
-      <div class="panel-hd">
-        <div class="panel-hd-l">
-          <div class="p-ico" style="background:var(--orange3);border:1px solid var(--orange4)"><svg viewBox="0 0 24 24" stroke="var(--orange)"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
-          <div><div class="p-title">Powered by live threat intelligence</div><div class="p-sub">Every module generated fresh from CyberWire Daily — current threats, not last year's examples</div></div>
-        </div>
-        <div style="display:flex;align-items:center;gap:4px"><div class="sdot"></div><span style="font-size:.55rem;color:var(--muted);font-family:var(--mono)">UPDATED DAILY</span></div>
+    <div class="intel-banner">
+      <div class="intel-banner-ico"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+      <div style="flex:1">
+        <div style="font-size:0.825rem;font-weight:700;color:var(--text);margin-bottom:3px">Powered by live threat intelligence</div>
+        <div style="font-size:0.72rem;color:var(--muted);line-height:1.6">Every module is generated fresh from CyberWire Daily — the same threats your team faces this week.</div>
       </div>
+      <div style="display:flex;align-items:center;gap:5px;flex-shrink:0"><div class="sdot"></div><span style="font-size:0.62rem;color:var(--muted)">Updated daily</span></div>
     </div>
     <!-- Training modal -->
     <div class="modal-ov" id="training-modal">
-      <div class="t-modal-box">
+      <div class="t-modal">
         <button class="m-close" onclick="closeTrainingModal()">×</button>
         <div id="training-modal-content" style="min-height:180px"></div>
       </div>
     </div>
   </div>
 
-  <!-- ══════ BREACH ══════ -->
+  <!-- ══════════ BREACH ══════════ -->
   <div class="page" id="page-breach">
-    <div class="breach-header-strip">
-      <div class="bhs-ico"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></div>
+    <div class="breach-banner">
+      <div class="breach-banner-ico"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></div>
       <div>
-        <div style="font-size:.78rem;font-weight:600;color:var(--text);margin-bottom:2px">Breach Monitor</div>
-        <div style="font-size:.65rem;color:var(--muted);font-family:var(--mono)">Check any email against HaveIBeenPwned's database of 12+ billion breached credentials across 800+ known data breaches. Instant detection.</div>
+        <div style="font-size:0.875rem;font-weight:700;color:var(--text);margin-bottom:3px">Breach Monitor</div>
+        <div style="font-size:0.75rem;color:var(--muted);line-height:1.65">Check any email against HaveIBeenPwned's database of 12+ billion breached credentials across 800+ known data breaches. Instant detection.</div>
       </div>
     </div>
     <div class="g2e">
-      <div class="panel">
-        <div class="panel-hd">
-          <div class="panel-hd-l">
-            <div class="p-ico" style="background:var(--red2);border:1px solid rgba(239,68,68,.15)"><svg viewBox="0 0 24 24" stroke="var(--red)"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></div>
-            <div><div class="p-title">Check Email for Breaches</div><div class="p-sub">12B+ credential database</div></div>
+      <div class="card">
+        <div class="card-hd">
+          <div class="card-hd-l">
+            <div class="card-ico" style="background:var(--red-dim);border:1px solid rgba(239,68,68,0.15)"><svg viewBox="0 0 24 24" stroke="var(--red)"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></div>
+            <div><div class="card-title">Check Email for Breaches</div><div class="card-sub">12B+ compromised credentials</div></div>
           </div>
         </div>
         <div class="tool-form">
-          <div class="f-grp">
-            <label class="f-lbl">Email address</label>
-            <input class="f-inp" type="email" id="breach-email" placeholder="employee@company.com" onkeydown="if(event.key==='Enter')runBreach()"/>
+          <div class="f-group">
+            <label class="f-label">Email address</label>
+            <input class="f-input" type="email" id="breach-email" placeholder="employee@company.com" onkeydown="if(event.key==='Enter')runBreach()"/>
           </div>
           <button class="run-btn" id="breach-btn" onclick="runBreach()">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
             Check for breaches
           </button>
         </div>
         <div class="results-wrap" id="breach-results"></div>
       </div>
-      <div class="panel">
-        <div class="panel-hd">
-          <div class="p-title">Recent Checks</div>
-          <span class="p-act" onclick="clearBreachHistory()">Clear</span>
+      <div class="card">
+        <div class="card-hd">
+          <div class="card-title">Recent Checks</div>
+          <span class="card-act" onclick="clearBreachHistory()">Clear history</span>
         </div>
         <div id="breach-history">
-          <div class="act-item"><div class="act-d" style="background:var(--muted)"></div><div><div class="act-text" style="color:var(--muted)">No checks yet.</div><div class="act-time">Enter an email to get started</div></div></div>
+          <div class="act-item"><div class="act-dot" style="background:var(--muted)"></div><div><div class="act-text" style="color:var(--muted)">No checks yet.</div><div class="act-time">Enter an email to get started</div></div></div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ══════ SCANNER ══════ -->
+  <!-- ══════════ SCANNER ══════════ -->
   <div class="page" id="page-scanner">
-    <div class="g2e" style="margin-bottom:10px">
-      <div class="panel">
-        <div class="panel-hd">
-          <div class="panel-hd-l">
-            <div class="p-ico" style="background:var(--orange3);border:1px solid var(--orange4)"><svg viewBox="0 0 24 24" stroke="var(--orange)"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
-            <div><div class="p-title">Vulnerability Scan</div><div class="p-sub">Real HTTP checks · 100% accurate</div></div>
+    <div class="g2e" style="margin-bottom:1rem">
+      <div class="card">
+        <div class="card-hd">
+          <div class="card-hd-l">
+            <div class="card-ico" style="background:var(--orange-dim);border:1px solid var(--orange-border)"><svg viewBox="0 0 24 24" stroke="var(--orange)"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+            <div><div class="card-title">Vulnerability Scan</div><div class="card-sub">Real HTTP checks · 100% accurate</div></div>
           </div>
         </div>
         <div class="tool-form">
-          <div class="f-grp">
-            <label class="f-lbl">Target URL</label>
-            <input class="f-inp" type="url" id="scan-url" placeholder="https://yourwebsite.com" onkeydown="if(event.key==='Enter')runScan()"/>
+          <div class="f-group">
+            <label class="f-label">Target URL</label>
+            <input class="f-input" type="url" id="scan-url" placeholder="https://yourwebsite.com" onkeydown="if(event.key==='Enter')runScan()"/>
           </div>
           <button class="run-btn" id="scan-btn" onclick="runScan()">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
             Run vulnerability scan
           </button>
         </div>
         <div id="scan-steps-area" style="display:none">
-          <div class="prog-line"><div class="prog-fill" id="scan-prog" style="width:0%"></div></div>
+          <div class="prog-bar"><div class="prog-fill" id="scan-prog" style="width:0%"></div></div>
           <div class="scan-steps">
             <div class="step" id="step-ssl"><div class="step-ico">1</div>Checking SSL Certificate</div>
             <div class="step" id="step-headers"><div class="step-ico">2</div>Checking Security Headers</div>
@@ -739,11 +677,11 @@ button{font-family:var(--font)}
         </div>
         <div id="scan-limit-area"></div>
       </div>
-      <div class="panel">
-        <div class="panel-hd">
-          <div class="p-title">Scan Results</div>
-          <div style="display:flex;align-items:center;gap:6px">
-            <span class="p-sub" id="scan-result-url"></span>
+      <div class="card">
+        <div class="card-hd">
+          <div class="card-title">Scan Results</div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <span class="card-sub" id="scan-result-url"></span>
             <button class="pdf-btn" id="pdf-btn" onclick="downloadScanPDF()" style="display:none">
               <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
               Download PDF
@@ -751,40 +689,40 @@ button{font-family:var(--font)}
           </div>
         </div>
         <div id="scan-results">
-          <div style="padding:24px 12px;text-align:center">
-            <div style="width:36px;height:36px;background:var(--orange3);border:1px solid var(--orange4);border-radius:6px;display:flex;align-items:center;justify-content:center;margin:0 auto 8px">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <div style="padding:2.5rem 1.25rem;text-align:center">
+            <div style="width:44px;height:44px;background:var(--orange-dim);border:1px solid var(--orange-border);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
             </div>
-            <div style="font-size:.65rem;color:var(--muted);font-family:var(--mono)">Enter a URL and run a scan</div>
+            <div style="font-size:0.78rem;color:var(--muted)">Enter a URL and run a scan to see your full vulnerability report</div>
           </div>
         </div>
       </div>
     </div>
-    <div class="panel">
-      <div class="panel-hd"><div class="p-title">What We Check</div><div class="p-sub">8 security checks per scan</div></div>
+    <div class="card">
+      <div class="card-hd"><div class="card-title">What We Check</div><div class="card-sub">8 security checks per scan</div></div>
       <div class="checks-grid" id="checks-grid"></div>
     </div>
   </div>
 
-  <!-- ══════ TEAM ══════ -->
+  <!-- ══════════ TEAM ══════════ -->
   <div class="page" id="page-team">
-    <div class="panel">
-      <div class="panel-hd">
-        <div class="panel-hd-l">
-          <div class="p-ico" style="background:rgba(255,255,255,.04);border:1px solid var(--border)"><svg viewBox="0 0 24 24" stroke="var(--muted)"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
-          <div><div class="p-title">Team Members</div><div class="p-sub" id="seats-info">Loading...</div></div>
+    <div class="card">
+      <div class="card-hd">
+        <div class="card-hd-l">
+          <div class="card-ico" style="background:rgba(255,255,255,0.04);border:1px solid var(--border)"><svg viewBox="0 0 24 24" stroke="var(--muted)"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+          <div><div class="card-title">Team Members</div><div class="card-sub" id="seats-info">Loading seats...</div></div>
         </div>
       </div>
       <table class="team-tbl">
         <thead><tr><th></th><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Last login</th></tr></thead>
-        <tbody id="team-tbody"><tr><td colspan="6" style="text-align:center;color:var(--muted);padding:20px;font-family:var(--mono)">Loading...</td></tr></tbody>
+        <tbody id="team-tbody"><tr><td colspan="6" style="text-align:center;color:var(--muted);padding:2rem">Loading...</td></tr></tbody>
       </table>
-      <div class="add-member-row">
-        <div class="f-grp" style="margin:0"><label class="f-lbl">Full name</label><input class="f-inp" type="text" id="invite-name" placeholder="Jane Smith"/></div>
-        <div class="f-grp" style="margin:0"><label class="f-lbl">Email</label><input class="f-inp" type="email" id="invite-email" placeholder="jane@company.com"/></div>
+      <div class="add-row">
+        <div class="f-group" style="margin:0"><label class="f-label">Full name</label><input class="f-input" type="text" id="invite-name" placeholder="Jane Smith"/></div>
+        <div class="f-group" style="margin:0"><label class="f-label">Email</label><input class="f-input" type="email" id="invite-email" placeholder="jane@company.com"/></div>
         <button class="run-btn" style="width:auto;white-space:nowrap;margin-top:auto" onclick="inviteMember()">Add member</button>
       </div>
-      <div style="padding:0 12px 8px;font-size:.62rem;font-family:var(--mono)" id="invite-msg"></div>
+      <div style="padding:0 1.25rem 1rem;font-size:0.72rem" id="invite-msg"></div>
     </div>
   </div>
 
@@ -797,17 +735,17 @@ button{font-family:var(--font)}
   <div class="modal">
     <button class="m-close" onclick="closeUpgradeModal()">×</button>
     <div class="modal-title">Upgrade your plan</div>
-    <div class="modal-sub">Currently on <strong id="modal-plan" style="color:var(--orange)">Starter</strong> · More power available</div>
+    <div class="modal-sub">Currently on <strong id="modal-plan" style="color:var(--orange)">Starter</strong> · Unlock more power</div>
     <div class="m-plans">
       <div class="m-plan" onclick="doUpgrade('starter')"><div><div class="m-plan-name">Starter</div><div class="m-plan-price">$49/month · 10 seats · 5 scans/month</div></div></div>
       <div class="m-plan" onclick="doUpgrade('business')"><div><div class="m-plan-name">Business</div><div class="m-plan-price">$199/month · 50 seats · Unlimited scans</div></div><div class="m-badge">Popular</div></div>
       <div class="m-plan" onclick="doUpgrade('enterprise')"><div><div class="m-plan-name">Enterprise</div><div class="m-plan-price">$599/month · Unlimited seats · Everything</div></div></div>
     </div>
-    <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border3)">
-      <div style="font-size:.58rem;color:var(--dim);margin-bottom:5px;font-family:var(--mono)">Already subscribed?</div>
-      <div id="sub-status-display" style="font-size:.6rem;margin-bottom:5px;display:none;font-family:var(--mono)"></div>
-      <button id="portal-btn" onclick="openBillingPortal()" style="background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:3px;padding:6px 12px;color:var(--muted);font-size:.65rem;font-weight:500;cursor:pointer;font-family:var(--font);transition:all .12s;width:100%" onmouseover="this.style.color=getComputedStyle(document.documentElement).getPropertyValue('--text')" onmouseout="this.style.color=getComputedStyle(document.documentElement).getPropertyValue('--muted')">Manage or cancel subscription →</button>
-      <div style="font-size:.55rem;color:var(--dim);margin-top:4px;text-align:center;font-family:var(--mono)">Opens Stripe · Cancel anytime · Access until period ends</div>
+    <div style="margin-top:1.25rem;padding-top:1.25rem;border-top:1px solid var(--border)">
+      <div style="font-size:0.65rem;color:var(--dim);margin-bottom:0.625rem">Already subscribed?</div>
+      <div id="sub-status-display" style="font-size:0.68rem;margin-bottom:0.625rem;display:none"></div>
+      <button id="portal-btn" onclick="openBillingPortal()" style="background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px;padding:9px 16px;color:var(--muted);font-size:0.75rem;font-weight:600;cursor:pointer;font-family:'Hanken Grotesk',sans-serif;transition:all 0.15s;width:100%" onmouseover="this.style.color='#fff';this.style.borderColor='rgba(255,255,255,0.2)'" onmouseout="this.style.color='var(--muted)';this.style.borderColor='var(--border)'">Manage or cancel subscription →</button>
+      <div style="font-size:0.62rem;color:var(--dim);margin-top:0.5rem;text-align:center">Opens Stripe · Cancel anytime · Access until period ends</div>
     </div>
     <div id="billing-msg"></div>
   </div>
@@ -817,6 +755,7 @@ button{font-family:var(--font)}
 const API='https://cybershield-backend-production-492b.up.railway.app';
 let authToken=null,userData=null,companyData=null,lastScanResults=null,lastScanUrl='';
 
+// ── Auth guard ─────────────────────────────────────────────────
 (function(){
   authToken=sessionStorage.getItem('cs_token');
   if(!authToken){window.location.href='auth.html';return;}
@@ -827,7 +766,7 @@ let authToken=null,userData=null,companyData=null,lastScanResults=null,lastScanU
   initApp();
 })();
 
-function cap(s){return s?s.charAt(0).toUpperCase()+s.slice(1):''}
+function cap(s){return s?s.charAt(0).toUpperCase()+s.slice(1):'';}
 
 function initApp(){
   const email=sessionStorage.getItem('cs_email')||'';
@@ -839,7 +778,6 @@ function initApp(){
   document.getElementById('modal-plan').textContent=plan;
   document.getElementById('cov-pl').textContent=plan;
   buildChecksGrid();
-  buildMapDots();
   loadDashboard();
   loadThreats();
 }
@@ -852,22 +790,7 @@ function buildChecksGrid(){
     </div>`).join('');
 }
 
-function buildMapDots(){
-  const dots=[
-    {x:18,y:38,color:'var(--orange)',label:'North America'},
-    {x:47,y:32,color:'var(--red)',label:'Europe'},
-    {x:55,y:40,color:'var(--orange)',label:'Russia'},
-    {x:72,y:36,color:'var(--yellow)',label:'South Asia'},
-    {x:82,y:38,color:'var(--orange)',label:'East Asia'},
-    {x:50,y:60,color:'var(--cyan)',label:'Africa'},
-    {x:30,y:60,color:'var(--purple)',label:'South America'},
-  ];
-  const container=document.getElementById('map-dots');
-  container.innerHTML=dots.map(d=>`
-    <div class="map-dot" style="left:${d.x}%;top:${d.y}%;color:${d.color};background:${d.color}" title="${d.label}"></div>
-  `).join('');
-}
-
+// ── Page navigation ────────────────────────────────────────────
 function showPage(name,navEl){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.s-item').forEach(n=>n.classList.remove('active'));
@@ -878,7 +801,7 @@ function showPage(name,navEl){
   if(name==='team')loadTeam();
 }
 
-// ── Dashboard ──────────────────────────────────────────
+// ── Dashboard ──────────────────────────────────────────────────
 async function loadDashboard(){
   try{
     const r=await fetch(`${API}/dashboard`,{headers:{'Authorization':'Bearer '+authToken}});
@@ -899,11 +822,11 @@ async function loadDashboard(){
     document.getElementById('ts-done').textContent=trainings;
 
     const scanLimit=plan==='business'||plan==='enterprise'?'∞':'5';
-    document.getElementById('scans-sub').textContent=`of ${scanLimit} scans this month`;
+    document.getElementById('scans-foot').textContent='of '+scanLimit+' scans this month';
 
-    // Score ring
-    const circ=263.89;
-    document.getElementById('score-circle').style.strokeDashoffset=circ-(score/100)*circ;
+    // Ring
+    const circ=289.03;
+    setTimeout(()=>{document.getElementById('score-circle').style.strokeDashoffset=circ-(score/100)*circ;},200);
     document.getElementById('score-num').textContent=score;
     const grade=score>=80?'EXCELLENT':score>=65?'GOOD':score>=45?'FAIR':'AT RISK';
     const gc=score>=80?'var(--green)':score>=65?'var(--yellow)':score>=45?'var(--orange)':'var(--red)';
@@ -912,17 +835,12 @@ async function loadDashboard(){
     document.getElementById('score-circle').style.stroke=gc;
     document.getElementById('dash-score-lbl').textContent=grade.toLowerCase().replace('_',' ');
     document.getElementById('dash-score').style.color=gc;
-    document.getElementById('kg-ghost').textContent=score;
 
     // Bars
-    const tp=Math.min(trainings*25,100);
-    const sp=scans>0?Math.min(scans*20,100):5;
-    const bp=scans>0?75:10;
+    const tp=Math.min(trainings*25,100),sp=scans>0?Math.min(scans*20,100):5,bp=scans>0?75:10;
     setTimeout(()=>{
-      setBar('bar-t','bt-v',tp);
-      setBar('bar-s','bs-v',sp);
-      setBar('bar-b','bb-v',bp);
-    },200);
+      setBar('bar-t','bt-p',tp);setBar('bar-s','bs-p',sp);setBar('bar-b','bb-p',bp);
+    },300);
 
     // Coverage
     document.getElementById('cov-em').textContent=(s.emailsMonitored||0)+'';
@@ -932,18 +850,11 @@ async function loadDashboard(){
     document.getElementById('cov-sc').textContent=scans+'';
     document.getElementById('cb-sc').style.width=(scanLimit==='∞'?100:Math.min((scans/5)*100,100))+'%';
 
-    // Map stats
-    document.getElementById('map-active').textContent=d.threats?.length||'—';
-    document.getElementById('map-countries').textContent='15+';
-    const maxSev=d.threats?.[0]?.severity||'medium';
-    document.getElementById('map-blocked').textContent=maxSev.toUpperCase();
-    document.getElementById('map-blocked').style.color=maxSev==='critical'?'var(--red)':maxSev==='high'?'var(--yellow)':'var(--orange)';
-
     // Activity
     if(d.recentActivity&&d.recentActivity.length){
       document.getElementById('dash-activity').innerHTML=d.recentActivity.slice(0,4).map(a=>`
         <div class="act-item">
-          <div class="act-d" style="background:${a.type==='breach'?'var(--red)':a.type==='scan'?'var(--orange)':'var(--green)'}"></div>
+          <div class="act-dot" style="background:${a.type==='breach'?'var(--red)':a.type==='scan'?'var(--orange)':'var(--green)'}"></div>
           <div><div class="act-text">${a.description||a.message||a.type}</div><div class="act-time">${a.createdAt?new Date(a.createdAt).toLocaleString():''}</div></div>
         </div>`).join('');
     }
@@ -971,14 +882,14 @@ async function loadThreats(){
   }catch(e){}
 }
 
-// ── Training ──────────────────────────────────────────
+// ── Training ───────────────────────────────────────────────────
 async function startTraining(topic){
   const modal=document.getElementById('training-modal');
   const content=document.getElementById('training-modal-content');
   modal.classList.add('show');
-  content.innerHTML=`<div style="text-align:center;padding:24px 0">
-    <div style="width:28px;height:28px;border:2px solid var(--orange);border-top-color:transparent;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 10px"></div>
-    <div style="font-size:.68rem;color:var(--muted);font-family:var(--mono)">Generating AI lesson from CyberWire Daily...</div>
+  content.innerHTML=`<div style="text-align:center;padding:2.5rem 0">
+    <div style="width:32px;height:32px;border:2px solid var(--orange);border-top-color:transparent;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 1rem"></div>
+    <div style="font-size:0.78rem;color:var(--muted)">Generating AI lesson from CyberWire Daily...</div>
   </div>`;
   try{
     const r=await fetch(`${API}/training/lesson`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+authToken},body:JSON.stringify({topic})});
@@ -986,22 +897,21 @@ async function startTraining(topic){
     if(d.lesson){
       const l=d.lesson;
       content.innerHTML=`
-        <div style="font-size:.55rem;font-weight:600;text-transform:uppercase;letter-spacing:.12em;color:var(--orange);margin-bottom:5px;font-family:var(--mono)">AI TRAINING · ${topic.toUpperCase()}</div>
-        <div style="font-size:1rem;font-weight:700;color:var(--text);margin-bottom:10px;letter-spacing:-.015em">${l.title||'Security Training'}</div>
-        <div style="font-size:.72rem;color:rgba(232,232,240,.65);line-height:1.85;white-space:pre-wrap;max-height:240px;overflow-y:auto;border:1px solid var(--border);border-radius:4px;padding:10px;background:rgba(255,255,255,.02);margin-bottom:12px;font-family:var(--mono)">${l.content||l}</div>
+        <div class="eyebrow" style="margin-bottom:0.75rem">AI Training · ${topic}</div>
+        <div style="font-size:1.1rem;font-weight:800;color:var(--text);margin-bottom:1rem;letter-spacing:-0.02em">${l.title||'Security Training'}</div>
+        <div style="font-size:0.8rem;color:rgba(255,255,255,0.65);line-height:1.85;white-space:pre-wrap;max-height:260px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;padding:1.1rem;background:rgba(255,255,255,0.02);margin-bottom:1.25rem">${l.content||l}</div>
         ${d.quiz?`
-        <div style="border-top:1px solid var(--border);padding-top:10px">
-          <div style="font-size:.58rem;font-weight:600;color:var(--orange);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;font-family:var(--mono)">/ QUICK QUIZ</div>
-          <div style="font-size:.78rem;color:var(--text);margin-bottom:8px;font-weight:500">${d.quiz.question}</div>
+        <div style="border-top:1px solid var(--border);padding-top:1.1rem">
+          <div class="eyebrow" style="margin-bottom:0.75rem">Quick Quiz</div>
+          <div style="font-size:0.875rem;color:var(--text);margin-bottom:1rem;font-weight:500">${d.quiz.question}</div>
           <div>${d.quiz.options.map((opt,i)=>`<button class="quiz-btn" onclick="selectAnswer(this,${i===d.quiz.correctIndex})">${opt}</button>`).join('')}</div>
         </div>`:''}
       `;
     }
   }catch(e){
-    content.innerHTML='<div style="color:var(--red);font-size:.75rem;font-family:var(--mono)">Failed to load. Please try again.</div>';
+    content.innerHTML='<div style="color:var(--red);font-size:0.82rem">Failed to load. Please try again.</div>';
   }
 }
-
 function selectAnswer(btn,correct){
   btn.parentElement.querySelectorAll('.quiz-btn').forEach(b=>b.disabled=true);
   btn.classList.add(correct?'correct':'wrong');
@@ -1010,12 +920,11 @@ function selectAnswer(btn,correct){
 }
 async function recordTraining(){
   try{await fetch(`${API}/training/complete`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+authToken},body:JSON.stringify({topic:'training'})});}catch(e){}
-  const el=document.getElementById('ts-done');
-  if(el)el.textContent=parseInt(el.textContent||0)+1;
+  const el=document.getElementById('ts-done');if(el)el.textContent=parseInt(el.textContent||0)+1;
 }
 function closeTrainingModal(){document.getElementById('training-modal').classList.remove('show');}
 
-// ── Breach ────────────────────────────────────────────
+// ── Breach ─────────────────────────────────────────────────────
 async function runBreach(){
   const email=document.getElementById('breach-email').value.trim();
   if(!email)return;
@@ -1026,10 +935,10 @@ async function runBreach(){
     const r=await fetch(`${API}/breach/check`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+authToken},body:JSON.stringify({email})});
     const d=await r.json();
     if(r.status===402||d.limitReached){
-      results.innerHTML=`<div class="limit-box"><div style="color:var(--orange);flex-shrink:0">⚠</div><div class="limit-txt"><strong>Limit reached.</strong> Upgrade for unlimited checks.<div class="limit-upgrade" onclick="openUpgradeModal()">Upgrade now →</div></div></div>`;
+      results.innerHTML=`<div class="limit-box"><div style="color:var(--orange);flex-shrink:0;font-size:1.1rem">⚠</div><div class="limit-txt"><strong>Limit reached.</strong> Upgrade for unlimited checks.<div class="up-link" onclick="openUpgradeModal()">Upgrade now →</div></div></div>`;
     }else if(d.breaches&&d.breaches.length>0){
       results.innerHTML=`
-        <div class="r-row" style="border-color:rgba(239,68,68,.2);background:rgba(239,68,68,.04)">
+        <div class="r-row" style="border-color:rgba(239,68,68,0.2);background:rgba(239,68,68,0.04)">
           <span class="r-key" style="color:var(--red)">⚠ ${d.breaches.length} BREACH${d.breaches.length>1?'ES':''} FOUND</span>
           <span class="r-val fail">ACTION REQUIRED</span>
         </div>
@@ -1037,32 +946,30 @@ async function runBreach(){
           const name=b.Name||b.name||b.title||'Unknown';
           const date=b.BreachDate||b.breachDate||b.date||'—';
           const domain=b.Domain||b.domain||'';
-          return `<div class="r-row"><div><span class="r-key">${name}</span>${domain?`<div style="font-size:.55rem;color:var(--muted);margin-top:1px;font-family:var(--mono)">${domain}</div>`:''}</div><span class="r-val warn">${date}</span></div>`;
+          return `<div class="r-row"><div><span class="r-key">${name}</span>${domain?`<div style="font-size:0.6rem;color:var(--muted);margin-top:1px">${domain}</div>`:''}</div><span class="r-val warn">${date}</span></div>`;
         }).join('')}`;
       addBreachHistory(email,'⚠ '+d.breaches.length+' breach'+(d.breaches.length>1?'es':''),'var(--red)');
     }else{
-      results.innerHTML=`<div class="r-row" style="border-color:rgba(16,185,129,.15);background:rgba(16,185,129,.04)"><span class="r-key" style="color:var(--green)">✓ NO BREACHES FOUND</span><span class="r-val pass">SECURE</span></div>`;
+      results.innerHTML=`<div class="r-row" style="border-color:rgba(16,185,129,0.15);background:rgba(16,185,129,0.04)"><span class="r-key" style="color:var(--green)">✓ NO BREACHES FOUND</span><span class="r-val pass">SECURE</span></div>`;
       addBreachHistory(email,'✓ Secure','var(--green)');
     }
-  }catch(e){results.innerHTML=`<div style="color:var(--red);font-size:.65rem;padding:6px;font-family:var(--mono)">Error. Please try again.</div>`;}
+  }catch(e){results.innerHTML=`<div style="color:var(--red);font-size:0.75rem;padding:0.5rem">Error. Please try again.</div>`;}
   btn.textContent='Check for breaches';btn.disabled=false;
 }
-
 function addBreachHistory(email,status,color){
   const hist=document.getElementById('breach-history');
-  const placeholder=hist.querySelector('.act-item');
-  if(placeholder&&placeholder.querySelector('.act-text').style.color==='var(--muted)')hist.innerHTML='';
-  const el=document.createElement('div');
-  el.className='act-item';
-  el.innerHTML=`<div class="act-d" style="background:${color}"></div><div><div class="act-text">${email}</div><div class="act-time">${status} · ${new Date().toLocaleTimeString()}</div></div>`;
+  const ph=hist.querySelector('.act-item');
+  if(ph&&ph.querySelector('.act-text').style.color==='var(--muted)')hist.innerHTML='';
+  const el=document.createElement('div');el.className='act-item';
+  el.innerHTML=`<div class="act-dot" style="background:${color}"></div><div><div class="act-text">${email}</div><div class="act-time">${status} · ${new Date().toLocaleTimeString()}</div></div>`;
   hist.insertBefore(el,hist.firstChild);
 }
 function clearBreachHistory(){
-  document.getElementById('breach-history').innerHTML='<div class="act-item"><div class="act-d" style="background:var(--muted)"></div><div><div class="act-text" style="color:var(--muted)">Cleared.</div></div></div>';
+  document.getElementById('breach-history').innerHTML='<div class="act-item"><div class="act-dot" style="background:var(--muted)"></div><div><div class="act-text" style="color:var(--muted)">Cleared.</div></div></div>';
   document.getElementById('breach-results').innerHTML='';
 }
 
-// ── Scanner ───────────────────────────────────────────
+// ── Scanner ────────────────────────────────────────────────────
 async function runScan(){
   const url=document.getElementById('scan-url').value.trim();
   if(!url)return;
@@ -1100,10 +1007,10 @@ async function runScan(){
     const isLimit=r.status===402||d.code==='SCAN_LIMIT_REACHED'||d.limitReached||(d.error&&d.error.toLowerCase().includes('limit'));
     if(isLimit){
       stepsArea.style.display='none';
-      limitArea.innerHTML=`<div class="limit-box"><div style="color:var(--orange);flex-shrink:0">⚠</div><div class="limit-txt"><strong>Monthly limit reached.</strong> 5 scans/month on Starter.<div class="limit-upgrade" onclick="openUpgradeModal()">Upgrade for unlimited →</div></div></div>`;
+      limitArea.innerHTML=`<div class="limit-box"><div style="color:var(--orange);flex-shrink:0;font-size:1.1rem">⚠</div><div class="limit-txt"><strong>Monthly limit reached.</strong> 5 scans/month on Starter.<div class="up-link" onclick="openUpgradeModal()">Upgrade for unlimited →</div></div></div>`;
       btn.textContent='Run vulnerability scan';btn.disabled=false;return;
     }
-    if(d.error&&!isLimit){results.innerHTML=`<div style="color:var(--red);font-size:.65rem;padding:8px;font-family:var(--mono)">${d.error}</div>`;btn.textContent='Run vulnerability scan';btn.disabled=false;return;}
+    if(d.error&&!isLimit){results.innerHTML=`<div style="color:var(--red);font-size:0.78rem;padding:0.875rem">${d.error}</div>`;btn.textContent='Run vulnerability scan';btn.disabled=false;return;}
 
     const raw=d.results||d;
     const skip=new Set(['error','code','message','url','scannedAt','scanId','id','domain']);
@@ -1116,16 +1023,16 @@ async function runScan(){
     lastScanResults=entries;lastScanUrl=url;
 
     if(entries.length===0){
-      results.innerHTML='<div style="color:var(--muted);font-size:.65rem;text-align:center;padding:16px;font-family:var(--mono)">No results. Check the URL and try again.</div>';
+      results.innerHTML='<div style="color:var(--muted);font-size:0.78rem;text-align:center;padding:1.5rem">No results. Check the URL and try again.</div>';
     }else{
       const pass=entries.filter(([,v])=>rc(v)==='pass').length;
       const fail=entries.filter(([,v])=>rc(v)==='fail').length;
       const warn=entries.length-pass-fail;
       results.innerHTML=`
-        <div class="scan-summary-row">
-          <div class="scan-sum"><div class="scan-sum-val" style="color:var(--green)">${pass}</div><div class="scan-sum-lbl">PASSED</div></div>
-          <div class="scan-sum"><div class="scan-sum-val" style="color:var(--red)">${fail}</div><div class="scan-sum-lbl">FAILED</div></div>
-          <div class="scan-sum"><div class="scan-sum-val" style="color:var(--yellow)">${warn}</div><div class="scan-sum-lbl">WARNINGS</div></div>
+        <div class="scan-summary">
+          <div class="scan-sum"><div class="scan-sum-val" style="color:var(--green)">${pass}</div><div class="scan-sum-lbl">Passed</div></div>
+          <div class="scan-sum"><div class="scan-sum-val" style="color:var(--red)">${fail}</div><div class="scan-sum-lbl">Failed</div></div>
+          <div class="scan-sum"><div class="scan-sum-val" style="color:var(--yellow)">${warn}</div><div class="scan-sum-lbl">Warnings</div></div>
         </div>
         <div class="results-wrap">
           ${entries.map(([k,v])=>`
@@ -1138,44 +1045,45 @@ async function runScan(){
     }
   }catch(e){
     clearInterval(timer);
-    results.innerHTML='<div style="color:var(--red);font-size:.65rem;padding:8px;font-family:var(--mono)">Scan failed. Check the URL includes https:// and try again.</div>';
+    results.innerHTML='<div style="color:var(--red);font-size:0.78rem;padding:0.875rem">Scan failed. Check the URL includes https:// and try again.</div>';
   }
   btn.textContent='Run vulnerability scan';btn.disabled=false;
 }
 
-// ── PDF Export ────────────────────────────────────────
+// ── PDF Export ─────────────────────────────────────────────────
 function downloadScanPDF(){
   if(!lastScanResults||!lastScanResults.length){alert('No scan results to export.');return;}
   const{jsPDF}=window.jspdf;
   const doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
-  const W=210,M=18,lh=7,cw=W-M*2;
+  const W=210,M=20,lh=7,cw=W-M*2;
+
+  const labels={ssl:'SSL Certificate',hsts:'HSTS Header',csp:'Content Security Policy',xframe:'X-Frame-Options',xContentType:'X-Content-Type Options',xss:'XSS Protection',spf:'SPF Record',dmarc:'DMARC Policy',cookies:'Secure Cookies',redirectsHttps:'HTTPS Redirect',sslValid:'SSL Certificate Valid',sslExpiry:'SSL Expiry',hstsEnabled:'HSTS Enabled',cspPresent:'CSP Present',xFrameOptions:'X-Frame-Options'};
   const rc=(v)=>{if(v===true||['pass','ok','valid','configured','present','enabled'].includes(String(v).toLowerCase()))return 'pass';if(v===false||['fail','missing','invalid','error','absent','disabled'].includes(String(v).toLowerCase()))return 'fail';return 'warn';};
-  const labels={ssl:'SSL Certificate',hsts:'HSTS Header',csp:'Content Security Policy',xframe:'X-Frame-Options',xContentType:'X-Content-Type Options',xss:'XSS Protection',spf:'SPF Record',dmarc:'DMARC Policy',cookies:'Secure Cookies',redirectsHttps:'HTTPS Redirect',sslValid:'SSL Valid',sslExpiry:'SSL Expiry',hstsEnabled:'HSTS Enabled',cspPresent:'CSP Present',xFrameOptions:'X-Frame-Options'};
 
   // Dark background
-  doc.setFillColor(10,10,16);doc.rect(0,0,210,297,'F');
-  // Orange header bar
-  doc.setFillColor(255,77,0);doc.rect(0,0,210,16,'F');
-  // Logo
-  doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(12);doc.text('CyberShield',M,11);
-  doc.setFont('helvetica','normal');doc.setFontSize(7);doc.setTextColor(255,200,180);doc.text('SECURITY OPERATIONS PLATFORM',M,15.5);
-  // Right header
-  doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(10);doc.text('VULNERABILITY SCAN REPORT',W-M,10,{align:'right'});
-  doc.setFont('helvetica','normal');doc.setFontSize(7);doc.setTextColor(255,200,180);doc.text(new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}),W-M,15,{align:'right'});
+  doc.setFillColor(8,11,18);doc.rect(0,0,210,297,'F');
 
-  let y=24;
-  // Target info
-  doc.setFillColor(19,19,27);doc.setDrawColor(40,40,55);doc.roundedRect(M,y,cw,14,2,2,'FD');
-  doc.setTextColor(120,120,150);doc.setFontSize(6.5);doc.setFont('helvetica','bold');doc.text('TARGET',M+4,y+5);doc.text('SCAN DATE',W/2,y+5);
-  doc.setTextColor(232,232,240);doc.setFont('helvetica','normal');doc.setFontSize(8.5);doc.text(lastScanUrl,M+4,y+11);doc.text(new Date().toLocaleString(),W/2,y+11);
+  // Orange header
+  doc.setFillColor(255,107,0);doc.rect(0,0,210,18,'F');
+  doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(13);doc.text('CyberShield',M,12);
+  doc.setFont('helvetica','normal');doc.setFontSize(7);doc.setTextColor(255,210,180);doc.text('SECURITY OPERATIONS PLATFORM',M,16.5);
+  doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(11);doc.text('VULNERABILITY SCAN REPORT',W-M,11,{align:'right'});
+  doc.setFont('helvetica','normal');doc.setFontSize(7);doc.setTextColor(255,210,180);doc.text(new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}),W-M,16,{align:'right'});
+
+  let y=26;
+
+  // Target
+  doc.setFillColor(13,18,32);doc.setDrawColor(30,40,60);doc.roundedRect(M,y,cw,14,2,2,'FD');
+  doc.setTextColor(100,120,160);doc.setFontSize(6.5);doc.setFont('helvetica','bold');doc.text('TARGET',M+4,y+5.5);doc.text('SCANNED',W/2,y+5.5);
+  doc.setTextColor(232,232,240);doc.setFont('helvetica','normal');doc.setFontSize(9);doc.text(lastScanUrl,M+4,y+11.5);doc.text(new Date().toLocaleString(),W/2,y+11.5);
   y+=20;
 
-  // Summary
+  // Summary boxes
   const pass=lastScanResults.filter(([,v])=>rc(v)==='pass').length;
   const fail=lastScanResults.filter(([,v])=>rc(v)==='fail').length;
   const warn=lastScanResults.length-pass-fail;
   const bw=(cw-8)/3;
-  [[pass,[0,150,80],[0,40,20],'PASSED'],[fail,[200,50,70],[50,10,15],'FAILED'],[warn,[180,130,0],[40,35,0],'WARNINGS']].forEach(([val,sc,bg,lbl],i)=>{
+  [[pass,[16,185,129],[0,40,20],'PASSED'],[fail,[239,68,68],[50,10,15],'FAILED'],[warn,[245,158,11],[40,35,0],'WARNINGS']].forEach(([val,sc,bg,lbl],i)=>{
     const bx=M+i*(bw+4);
     doc.setFillColor(...bg);doc.setDrawColor(...sc);doc.roundedRect(bx,y,bw,18,2,2,'FD');
     doc.setTextColor(...sc);doc.setFont('helvetica','bold');doc.setFontSize(16);doc.text(String(val),bx+bw/2,y+12,{align:'center'});
@@ -1183,24 +1091,23 @@ function downloadScanPDF(){
   });
   y+=24;
 
-  // Section header
-  doc.setTextColor(255,77,0);doc.setFont('helvetica','bold');doc.setFontSize(7.5);doc.text('/ SECURITY FINDINGS',M,y);
-  doc.setDrawColor(255,77,0);doc.setLineWidth(.3);doc.line(M+42,y-1,W-M,y-1);
+  // Findings header
+  doc.setTextColor(255,107,0);doc.setFont('helvetica','bold');doc.setFontSize(7.5);doc.text('/ SECURITY FINDINGS',M,y);
+  doc.setDrawColor(255,107,0);doc.setLineWidth(0.3);doc.line(M+44,y-1,W-M,y-1);
   y+=5;
 
-  // Column headers
-  doc.setFillColor(20,20,30);doc.rect(M,y,cw,6,'F');
-  doc.setTextColor(100,100,130);doc.setFont('helvetica','bold');doc.setFontSize(6);doc.text('CHECK NAME',M+3,y+4);doc.text('STATUS',W-M-3,y+4,{align:'right'});
+  // Table header
+  doc.setFillColor(13,18,32);doc.rect(M,y,cw,6,'F');
+  doc.setTextColor(100,120,160);doc.setFont('helvetica','bold');doc.setFontSize(6);doc.text('CHECK',M+3,y+4);doc.text('STATUS',W-M-3,y+4,{align:'right'});
   y+=8;
 
   lastScanResults.forEach(([k,v],i)=>{
-    if(y>270){doc.addPage();doc.setFillColor(10,10,16);doc.rect(0,0,210,297,'F');y=20;}
+    if(y>270){doc.addPage();doc.setFillColor(8,11,18);doc.rect(0,0,210,297,'F');y=20;}
     const cls=rc(v);
-    doc.setFillColor(i%2===0?13:16,i%2===0?13:16,i%2===0?20:24);doc.rect(M,y-1,cw,lh,'F');
+    doc.setFillColor(i%2===0?10:14,i%2===0?14:19,i%2===0?22:30);doc.rect(M,y-1,cw,lh,'F');
     if(cls==='pass')doc.setFillColor(16,100,60);else if(cls==='fail')doc.setFillColor(200,50,60);else doc.setFillColor(180,130,0);
     doc.rect(M,y-1,2,lh,'F');
-    doc.setTextColor(175,175,195);doc.setFont('helvetica','normal');doc.setFontSize(7.5);
-    doc.text(labels[k]||k.replace(/([A-Z])/g,' $1').trim(),M+4,y+4);
+    doc.setTextColor(180,190,210);doc.setFont('helvetica','normal');doc.setFontSize(8);doc.text(labels[k]||k.replace(/([A-Z])/g,' $1').trim(),M+5,y+4);
     const st=v===true?'✓ PASS':v===false?'✗ FAIL':String(v).toUpperCase();
     if(cls==='pass')doc.setTextColor(16,185,129);else if(cls==='fail')doc.setTextColor(239,68,68);else doc.setTextColor(245,158,11);
     doc.setFont('helvetica','bold');doc.text(st,W-M-3,y+4,{align:'right'});
@@ -1211,28 +1118,28 @@ function downloadScanPDF(){
   const failures=lastScanResults.filter(([,v])=>rc(v)==='fail');
   if(failures.length>0&&y<240){
     y+=6;
-    doc.setTextColor(255,77,0);doc.setFont('helvetica','bold');doc.setFontSize(7.5);doc.text('/ RECOMMENDED FIXES',M,y);
+    doc.setTextColor(255,107,0);doc.setFont('helvetica','bold');doc.setFontSize(7.5);doc.text('/ RECOMMENDED FIXES',M,y);
     doc.line(M+46,y-1,W-M,y-1);y+=6;
-    const recs={ssl:'Renew SSL certificate immediately — expired certificates cause browser security warnings.',hsts:'Add Strict-Transport-Security header to enforce HTTPS connections.',csp:'Implement Content-Security-Policy to prevent XSS and injection attacks.',xframe:'Add X-Frame-Options: DENY to prevent clickjacking.',spf:'Configure SPF DNS record to prevent email spoofing from your domain.',dmarc:'Set up DMARC policy (p=reject) to protect from email fraud.',cookies:'Set Secure and HttpOnly flags on all authentication cookies.',redirectsHttps:'Configure permanent 301 redirects from HTTP to HTTPS.'};
+    const recs={ssl:'Renew your SSL certificate immediately — expired certificates trigger browser warnings and loss of trust.',hsts:'Add Strict-Transport-Security header to enforce HTTPS connections across your site.',csp:'Implement Content-Security-Policy header to prevent XSS and code injection attacks.',xframe:'Add X-Frame-Options: DENY to prevent clickjacking attacks.',spf:'Configure SPF DNS record to prevent email spoofing from your domain.',dmarc:'Set up DMARC policy (p=reject) to protect against email fraud.',cookies:'Set Secure and HttpOnly flags on all session cookies.',redirectsHttps:'Configure 301 permanent redirects from HTTP to HTTPS.'};
     failures.slice(0,5).forEach(([k])=>{
       if(y>272)return;
-      doc.setFillColor(35,12,5);doc.setDrawColor(80,30,0);doc.roundedRect(M,y-1,cw,9,1,1,'FD');
+      doc.setFillColor(35,15,5);doc.setDrawColor(80,35,0);doc.roundedRect(M,y-1,cw,9,1,1,'FD');
       doc.setTextColor(255,120,60);doc.setFont('helvetica','bold');doc.setFontSize(6.5);doc.text('→',M+2,y+5);
-      doc.setTextColor(190,170,160);doc.setFont('helvetica','normal');doc.text(recs[k]||`Review and fix the ${k} configuration.`,M+7,y+5,{maxWidth:cw-10});
+      doc.setTextColor(200,180,165);doc.setFont('helvetica','normal');doc.text(recs[k]||`Review and fix the ${k} configuration.`,M+7,y+5,{maxWidth:cw-10});
       y+=12;
     });
   }
 
   // Footer
-  doc.setFillColor(14,14,20);doc.rect(0,283,210,14,'F');
-  doc.setTextColor(70,70,90);doc.setFont('helvetica','normal');doc.setFontSize(6.5);
-  doc.text('Generated by CyberShield Security Platform · Confidential · For authorized use only',W/2,290,{align:'center'});
+  doc.setFillColor(13,18,32);doc.rect(0,283,210,14,'F');
+  doc.setTextColor(60,80,110);doc.setFont('helvetica','normal');doc.setFontSize(6.5);
+  doc.text('Generated by CyberShield Security Platform · cybershield.io · Confidential',W/2,290,{align:'center'});
   doc.text(`Report ID: CS-${Date.now()} · ${new Date().toISOString()}`,W/2,294,{align:'center'});
 
   doc.save(`cybershield-scan-${lastScanUrl.replace(/https?:\/\//,'').replace(/[^a-z0-9]/gi,'-').slice(0,25)}-${new Date().toISOString().split('T')[0]}.pdf`);
 }
 
-// ── Team ──────────────────────────────────────────────
+// ── Team ───────────────────────────────────────────────────────
 async function loadTeam(){
   try{
     const r=await fetch(`${API}/auth/team`,{headers:{'Authorization':'Bearer '+authToken}});
@@ -1241,11 +1148,11 @@ async function loadTeam(){
     document.getElementById('team-tbody').innerHTML=d.team.map(u=>`
       <tr>
         <td><div class="t-av">${(u.full_name||u.email).slice(0,2).toUpperCase()}</div></td>
-        <td style="color:var(--text);font-weight:500">${u.full_name||'—'}</td>
-        <td style="color:var(--muted);font-family:var(--mono)">${u.email}</td>
-        <td style="color:var(--muted);text-transform:capitalize;font-family:var(--mono)">${u.role}</td>
-        <td><span class="status-chip ${u.is_active?'on':'off'}">${u.is_active?'ACTIVE':'INACTIVE'}</span></td>
-        <td style="color:var(--muted);font-family:var(--mono)">${u.last_login?new Date(u.last_login).toLocaleDateString():'Never'}</td>
+        <td style="color:var(--text);font-weight:600">${u.full_name||'—'}</td>
+        <td style="color:var(--muted)">${u.email}</td>
+        <td style="color:var(--muted);text-transform:capitalize">${u.role}</td>
+        <td><span class="status-chip ${u.is_active?'on':'off'}">${u.is_active?'Active':'Inactive'}</span></td>
+        <td style="color:var(--muted)">${u.last_login?new Date(u.last_login).toLocaleDateString():'Never'}</td>
       </tr>`).join('');
   }catch(e){}
 }
@@ -1253,44 +1160,43 @@ async function inviteMember(){
   const fullName=document.getElementById('invite-name').value.trim();
   const email=document.getElementById('invite-email').value.trim();
   const msg=document.getElementById('invite-msg');
-  if(!fullName||!email){msg.textContent='Fill in both fields.';msg.style.color='var(--red)';return;}
+  if(!fullName||!email){msg.textContent='Please fill in both fields.';msg.style.color='var(--red)';return;}
   try{
     const r=await fetch(`${API}/auth/invite`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+authToken},body:JSON.stringify({fullName,email})});
     const d=await r.json();
     if(!r.ok){msg.textContent=d.error||'Failed.';msg.style.color='var(--red)';}
-    else{msg.textContent='✓ Added. Temp password: '+d.tempPassword;msg.style.color='var(--green)';loadTeam();document.getElementById('invite-name').value='';document.getElementById('invite-email').value='';}
+    else{msg.textContent='✓ Member added. Temp password: '+d.tempPassword;msg.style.color='var(--green)';loadTeam();document.getElementById('invite-name').value='';document.getElementById('invite-email').value='';}
   }catch(e){msg.textContent='Connection error.';msg.style.color='var(--red)';}
 }
 
-// ── Billing ───────────────────────────────────────────
-function openUpgradeModal(){document.getElementById('billing-msg').innerHTML='';document.getElementById('upgrade-modal').classList.add('show');loadSubStatus();}
+// ── Billing ────────────────────────────────────────────────────
+function openUpgradeModal(){
+  document.getElementById('billing-msg').innerHTML='';
+  document.getElementById('upgrade-modal').classList.add('show');
+  loadSubStatus();
+}
 function closeUpgradeModal(){document.getElementById('upgrade-modal').classList.remove('show');}
 
 async function loadSubStatus(){
   try{
     const r=await fetch(`${API}/billing/subscription`,{headers:{'Authorization':'Bearer '+authToken}});
     const d=await r.json();
-    const el=document.getElementById('sub-status-display');
-    if(!el)return;
+    const el=document.getElementById('sub-status-display');if(!el)return;
     const sc={trialing:'var(--yellow)',active:'var(--green)',past_due:'var(--red)',canceled:'var(--muted)'};
-    const sl={trialing:'FREE TRIAL ACTIVE',active:'PAID · ACTIVE',past_due:'PAYMENT PAST DUE',canceled:'CANCELED'};
-    const color=sc[d.status]||'var(--muted)';
+    const sl={trialing:'Free trial active',active:'Paid · Active',past_due:'Payment past due',canceled:'Canceled'};
     let detail='';
     if(d.status==='trialing'&&d.trialEndsAt){const days=Math.max(0,Math.ceil((new Date(d.trialEndsAt)-Date.now())/(1000*60*60*24)));detail=` · ${days}d remaining`;}
     else if(d.currentPeriodEnd){detail=` · Renews ${new Date(d.currentPeriodEnd).toLocaleDateString()}`;}
     el.style.display='block';
-    el.innerHTML=`<span style="color:${color}">●</span> <span style="color:rgba(232,232,240,.5)">${sl[d.status]||d.status}</span><span style="color:var(--muted)">${detail}</span>`;
+    el.innerHTML=`<span style="color:${sc[d.status]||'var(--muted)'}">●</span> <span style="color:rgba(255,255,255,0.5)">${sl[d.status]||d.status}</span><span style="color:var(--muted)">${detail}</span>`;
   }catch(e){}
 }
-
 async function doUpgrade(plan){
   try{
     const r=await fetch(`${API}/billing/upgrade`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+authToken},body:JSON.stringify({plan})});
-    const d=await r.json();
-    if(d.url)window.location.href=d.url;
+    const d=await r.json();if(d.url)window.location.href=d.url;
   }catch(e){}
 }
-
 async function openBillingPortal(){
   const btn=document.getElementById('portal-btn');
   if(btn){btn.textContent='Opening...';btn.disabled=true;}
@@ -1299,10 +1205,10 @@ async function openBillingPortal(){
     const d=await r.json();
     if(d.url){window.open(d.url,'_blank');}
     else{
-      document.getElementById('billing-msg').innerHTML=`<div style="margin-top:8px;padding:6px 10px;background:var(--orange3);border:1px solid var(--orange4);border-radius:3px;font-size:.62rem;color:var(--muted);font-family:var(--mono)">${d.error?.includes('No billing')?'No subscription found. Complete checkout first.':'⚠ '+(d.error||'Could not open portal. Email support@cybershield.io')}</div>`;
+      document.getElementById('billing-msg').innerHTML=`<div style="margin-top:0.75rem;padding:8px 12px;background:var(--orange-dim);border:1px solid var(--orange-border);border-radius:6px;font-size:0.7rem;color:var(--muted)">${d.error?.includes('No billing')?'No subscription found. Complete checkout to subscribe.':'⚠ '+(d.error||'Could not open portal. Email support@cybershield.io')}</div>`;
     }
   }catch(e){
-    document.getElementById('billing-msg').innerHTML=`<div style="margin-top:6px;font-size:.62rem;color:var(--red);font-family:var(--mono)">Connection error. Try again.</div>`;
+    document.getElementById('billing-msg').innerHTML=`<div style="margin-top:0.625rem;font-size:0.7rem;color:var(--red)">Connection error. Try again.</div>`;
   }
   if(btn){btn.textContent='Manage or cancel subscription →';btn.disabled=false;}
 }
