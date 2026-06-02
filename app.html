@@ -1037,10 +1037,32 @@ async function startQuiz(){
   try{
     const r = await fetch(`${API}/training/quiz`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+authToken},body:JSON.stringify({topic:currentTopic,seed:Math.floor(Math.random()*9999)})});
     const d = await r.json();
-    currentQuiz = d.quiz;
+    console.log('Quiz response:', JSON.stringify(d).slice(0,500));
+
+    // Handle all possible formats the backend might return
+    if(d.quiz?.questions) {
+      currentQuiz = d.quiz; // {questions:[{q,options,correct}]}
+    } else if(Array.isArray(d.quiz)) {
+      currentQuiz = {questions: d.quiz};
+    } else if(d.questions) {
+      currentQuiz = d; // questions at top level
+    } else if(d.quiz?.question) {
+      // Single question format — wrap it
+      currentQuiz = {questions:[{q:d.quiz.question, options:d.quiz.options, correct:d.quiz.correctIndex??d.quiz.correct}]};
+    } else if(d.question) {
+      currentQuiz = {questions:[{q:d.question, options:d.options, correct:d.correctIndex??d.correct}]};
+    } else {
+      // Unknown format — show what we got
+      console.error('Unknown quiz format:', d);
+      document.getElementById('tm-quiz-body').innerHTML = `<div style="color:var(--muted);font-size:0.78rem;padding:1rem">Quiz unavailable for this topic. Try a different module.</div>`;
+      showTrainingScreen('quiz');
+      return;
+    }
+
     renderQuiz();
     showTrainingScreen('quiz');
   }catch(e){
+    console.error('Quiz error:', e);
     showTrainingScreen('lesson');
   }
 }
