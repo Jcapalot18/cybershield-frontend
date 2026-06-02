@@ -54,9 +54,9 @@ a{text-decoration:none;color:inherit}
 .sidebar{width:var(--sw);flex-shrink:0;background:var(--bg);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:30;position:relative}
 .sidebar::after{content:'';position:absolute;top:0;right:0;bottom:0;width:1px;background:linear-gradient(to bottom,transparent 0%,var(--orange-border) 30%,var(--orange-border) 70%,transparent 100%);pointer-events:none}
 .s-brand{padding:0 1.5rem;height:var(--th);display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border)}
-.s-brand a{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1rem;letter-spacing:-0.02em;color:var(--text)}
+.s-brand a{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1rem;letter-spacing:-0.02em;color:var(--text);white-space:nowrap}
 .s-brand svg{width:26px;height:26px;flex-shrink:0}
-.s-brand .acc{color:var(--orange)}
+.s-brand .acc{color:var(--orange);margin-left:-3px}
 .s-nav{flex:1;padding:1rem 0.75rem;overflow-y:auto;display:flex;flex-direction:column;gap:1px}
 .s-section{font-size:0.6rem;font-weight:800;text-transform:uppercase;letter-spacing:0.15em;color:var(--dim);padding:1rem 0.75rem 0.35rem;margin-top:0.5rem}
 .s-item{display:flex;align-items:center;gap:10px;padding:9px 0.875rem;border-radius:8px;cursor:pointer;transition:all 0.15s;color:var(--muted);font-size:0.8rem;font-weight:500;position:relative;border:1px solid transparent}
@@ -568,7 +568,7 @@ a{text-decoration:none;color:inherit}
           <div class="t-desc">Live threat data from CyberWire Daily. Learn exactly what attackers are doing right now — not last year's examples.</div>
           <div class="t-prog"><div class="t-prog-fill" style="width:0%"></div></div>
           <div class="t-meta"><span>0% complete</span><span>5 min</span></div>
-      <div class="t-start" onclick="startTraining('Phishing and Social Engineering')">Start module →</div>
+          <div class="t-start" onclick="startTraining('phishing')">Start module →</div>
         </div>
       </div>
       <div class="t-mod">
@@ -578,7 +578,7 @@ a{text-decoration:none;color:inherit}
           <div class="t-desc">Best practices for strong passwords and multi-factor authentication across all your business accounts and tools.</div>
           <div class="t-prog"><div class="t-prog-fill" style="width:0%"></div></div>
           <div class="t-meta"><span>0% complete</span><span>5 min</span></div>
-          <div class="t-start" onclick="startTraining('Password Security and MFA')">Start module →</div>
+          <div class="t-start" onclick="startTraining('password')">Start module →</div>
         </div>
       </div>
       <div class="t-mod">
@@ -588,7 +588,7 @@ a{text-decoration:none;color:inherit}
           <div class="t-desc">How ransomware spreads through businesses and the exact steps to protect your files, backups, and operations.</div>
           <div class="t-prog"><div class="t-prog-fill" style="width:0%"></div></div>
           <div class="t-meta"><span>0% complete</span><span>5 min</span></div>
-          <div class="t-start" onclick="startTraining('Ransomware Defense')">Start module →</div>
+          <div class="t-start" onclick="startTraining('ransomware')">Start module →</div>
         </div>
       </div>
     </div>
@@ -782,6 +782,7 @@ function initApp(){
   document.getElementById('modal-plan').textContent=plan;
   document.getElementById('cov-pl').textContent=plan;
   buildChecksGrid();
+  loadValidTopics();
   loadDashboard();
   loadThreats();
 }
@@ -915,7 +916,35 @@ async function loadThreats(){
 }
 
 // ── Training ───────────────────────────────────────────────────
-async function startTraining(topic){
+// ── Training — fetch valid topics then start
+let validTopics = [];
+async function loadValidTopics(){
+  try{
+    const r = await fetch(`${API}/training/topics`,{headers:{'Authorization':'Bearer '+authToken}});
+    const d = await r.json();
+    validTopics = d.topics || [];
+    // Update the start buttons with real topic names
+    const btns = document.querySelectorAll('.t-start');
+    const topicMap = ['phish','password','ransom'];
+    btns.forEach((btn, i) => {
+      const match = validTopics.find(t => t.toLowerCase().includes(topicMap[i])) || validTopics[i];
+      if(match) btn.setAttribute('data-topic', match);
+    });
+  }catch(e){ console.log('Could not load topics, using defaults'); }
+}
+
+async function startTraining(topicOrBtn){
+  // Get topic — either passed directly or from data-topic attr
+  let topic = typeof topicOrBtn === 'string' ? topicOrBtn : topicOrBtn.getAttribute('data-topic');
+  
+  // If we have valid topics loaded, try to match
+  if(validTopics.length > 0 && topic){
+    const lower = topic.toLowerCase();
+    const match = validTopics.find(t => t.toLowerCase().includes(lower.split(' ')[0]));
+    if(match) topic = match;
+  } else if(!topic){
+    topic = 'Phishing';
+  }
   const modal=document.getElementById('training-modal');
   const content=document.getElementById('training-modal-content');
   modal.classList.add('show');
