@@ -623,20 +623,23 @@ async function loadStats(){
     document.getElementById('acc-score').textContent = score;
     document.getElementById('acc-trainings').textContent = trainings;
     document.getElementById('acc-scans').textContent = scans;
-    const color = score>=80?'var(--green)':score>=65?'var(--yellow)':score>=45?'var(--orange)':'var(--red)';
-    const label = score>=80?'Excellent':score>=65?'Good':score>=45?'Fair':'At Risk';
-    document.getElementById('acc-score').style.color = color;
-    // Add label under score
-    const scoreBox = document.getElementById('acc-score').closest('.stat-box');
+    const color = score>=80?'#10B981':score>=65?'#F59E0B':score>=45?'#FF6B00':'#EF4444';
+    const label = score>=80?'EXCELLENT':score>=65?'GOOD':score>=45?'FAIR':'AT RISK';
+    const scoreEl = document.getElementById('acc-score');
+    scoreEl.style.color = color;
+    scoreEl.style.textShadow = `0 0 20px ${color}40`;
+    // Add/update label
     let labelEl = document.getElementById('acc-score-label');
     if(!labelEl){
       labelEl = document.createElement('div');
       labelEl.id = 'acc-score-label';
-      labelEl.style.cssText = 'font-size:0.62rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;margin-top:4px';
-      scoreBox.appendChild(labelEl);
+      labelEl.style.cssText = 'font-size:0.65rem;font-weight:800;text-transform:uppercase;letter-spacing:0.12em;margin-top:5px;padding:2px 8px;border-radius:4px;display:inline-block';
+      scoreEl.closest('.stat-box').appendChild(labelEl);
     }
-    labelEl.style.color = color;
     labelEl.textContent = label;
+    labelEl.style.color = color;
+    labelEl.style.background = color+'18';
+    labelEl.style.border = `1px solid ${color}35`;
   }catch(e){}
 }
 
