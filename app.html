@@ -1444,7 +1444,28 @@ async function downloadScanPDF(){
   const doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
   const W=210,M=20,lh=7,cw=W-M*2;
 
-  // Render SVG logo to PNG via canvas
+  // Draw shield logo with pure jsPDF shapes - no canvas needed
+  function drawShield(x, y, sz) {
+    const s = sz/20;
+    doc.setLineWidth(0);
+    // White outer shield
+    doc.setFillColor(255,255,255); doc.rect(x, y, sz, sz, 'F');
+    // Dark bg
+    doc.setFillColor(8,11,18); doc.rect(x+s, y+s, sz-2*s, sz-2*s, 'F');
+    // Orange shield body
+    doc.setFillColor(255,107,0); doc.rect(x+4*s, y+2*s, 12*s, 10*s, 'F');
+    // Orange triangle bottom
+    doc.setFillColor(255,107,0);
+    doc.triangle(x+4*s, y+12*s, x+10*s, y+17*s, x+16*s, y+12*s, 'F');
+    // White icon inside
+    doc.setFillColor(255,255,255);
+    doc.rect(x+7.5*s, y+4.5*s, 5*s, 3*s, 'F');
+    doc.rect(x+6*s, y+7.5*s, 3*s, 5*s, 'F');
+    doc.rect(x+11*s, y+7.5*s, 3*s, 5*s, 'F');
+  }
+  drawShield(M, 3, 20);
+
+  // Skip canvas logo attempt
   let logoDataUrl = null;
   try {
     const svgStr = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="8" fill="#080b12"/><path d="M16 3L28 7.5V18C28 25 22 29.5 16 31C10 29.5 4 25 4 18V7.5L16 3Z" fill="rgba(255,107,0,0.15)" stroke="#FF6B00" stroke-width="1.5"/><path d="M16 11L20 13.5L16 16L12 13.5Z" fill="rgba(255,107,0,0.3)" stroke="#FF6B00" stroke-width="1.25" stroke-linejoin="round"/><path d="M12 13.5L16 16V21L12 18.5Z" stroke="#FF6B00" stroke-width="1.25" stroke-linejoin="round"/><path d="M20 13.5L16 16V21L20 18.5Z" fill="rgba(255,107,0,0.1)" stroke="#FF6B00" stroke-width="1.25" stroke-linejoin="round"/></svg>`;
@@ -1476,31 +1497,15 @@ async function downloadScanPDF(){
   doc.setFillColor(255,107,0);doc.rect(0,0,210,26,'F');
 
   // Logo on LEFT, title on RIGHT
-  if(logoDataUrl){
-    doc.addImage(logoDataUrl, 'PNG', M, 3, 18, 18);
-    doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(16);
-    doc.text('Cyber', M+21, 14);
-    const cyberW = doc.getTextWidth('Cyber');
-    doc.setTextColor(255,180,100);
-    doc.text('Shield', M+21+cyberW, 14);
-  } else {
-    doc.setLineWidth(0);
-    doc.setFillColor(255,255,255);doc.rect(M, 3, 13, 18, 'F');
-    doc.setFillColor(180,60,0);doc.rect(M+1.5, 4.5, 10, 15, 'F');
-    doc.setFillColor(255,255,255);
-    doc.rect(M+3.5, 7.5, 7, 3, 'F');
-    doc.rect(M+3.5, 10.5, 3, 6, 'F');
-    doc.rect(M+7, 10.5, 3, 6, 'F');
-    doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(16);
-    doc.text('Cyber', M+15, 14);
-    const cyberW = doc.getTextWidth('Cyber');
-    doc.setTextColor(255,180,100);
-    doc.text('Shield', M+15+cyberW, 14);
-  }
+  doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(16);
+  doc.text('Cyber', M+23, 14);
+  const cyberW = doc.getTextWidth('Cyber');
+  doc.setTextColor(255,180,100);
+  doc.text('Shield', M+23+cyberW, 14);
   doc.setFont('helvetica','normal');doc.setFontSize(6);doc.setTextColor(255,220,185);
-  doc.text('SECURITY OPERATIONS PLATFORM', logoDataUrl?M+21:M+15, 19.5);
+  doc.text('SECURITY OPERATIONS PLATFORM', M+23, 19.5);
 
-  // Right side — title only (no logo here)
+  // Right side — title only
   doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(10);
   doc.text('VULNERABILITY SCAN REPORT', W-M, 13, {align:'right'});
   doc.setFont('helvetica','normal');doc.setFontSize(6.5);doc.setTextColor(255,210,175);
