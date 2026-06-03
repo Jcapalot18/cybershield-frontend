@@ -603,16 +603,16 @@ async function loadStats(){
 
     let trainings = 0, scans = 0, breaches = 0;
     if(d.stats){
-      trainings = Number(d.stats.trainings?.total||d.stats.trainings||0);
-      scans     = Number(d.stats.scans||0);
-      breaches  = Number(d.stats.breachChecks||0);
+      // Handle nested stats object with various field formats
+      const s = d.stats;
+      trainings = Number(s.trainings?.total ?? s.trainings ?? s.trainingsCompleted ?? 0) || 0;
+      scans     = Number(s.scans?.total ?? s.scans ?? s.scansThisMonth ?? 0) || 0;
+      breaches  = Number(s.breachChecks?.total ?? s.breachChecks ?? s.breachesFound ?? 0) || 0;
     } else {
-      r = await fetch(`${API}/dashboard`, { headers:{'Authorization':'Bearer '+authToken} });
-      d = await r.json();
-      const s = d.stats||d;
-      trainings = Number(s.trainingsCompleted||s.trainings?.total||0);
-      scans     = Number(s.scansThisMonth||s.scans||0);
-      breaches  = Number(s.breachesFound||s.breachChecks||0);
+      const s = d;
+      trainings = Number(s.trainingsCompleted ?? s.trainings?.total ?? s.trainings ?? 0) || 0;
+      scans     = Number(s.scansThisMonth ?? s.scans?.total ?? s.scans ?? 0) || 0;
+      breaches  = Number(s.breachesFound ?? s.breachChecks ?? 0) || 0;
     }
 
     // Calculate score same way as dashboard
