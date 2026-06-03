@@ -161,6 +161,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
     <div class="a-tab" onclick="switchAdminTab('trials',this)">Trials</div>
     <div class="a-tab" onclick="switchAdminTab('activity',this)">Security Activity</div>
     <div class="a-tab" onclick="switchAdminTab('users',this)">Users</div>
+    <div class="a-tab" onclick="switchAdminTab('scanner',this)">🔍 Scanner</div>
   </div>
 
   <div class="a-body">
@@ -299,6 +300,49 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
           <thead><tr><th>Name</th><th>Email</th><th>Company</th><th>Role</th><th>Verified</th><th>Joined</th><th>Action</th></tr></thead>
           <tbody id="users-tbody"><tr class="loading-row"><td colspan="7"><div class="spin"></div></td></tr></tbody>
         </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+    <!-- SCANNER PAGE -->
+    <div class="a-page" id="page-scanner">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;align-items:start">
+        <div class="a-card">
+          <div class="a-card-hd"><div class="a-card-title">🔍 Vulnerability Scanner</div><div style="font-size:0.7rem;color:var(--muted)">Unlimited · Admin only</div></div>
+          <div style="padding:1.5rem">
+            <div class="l-label" style="margin-bottom:6px">Target URL</div>
+            <input id="admin-scan-url" class="a-search" style="width:100%;margin-bottom:1rem;padding:10px 14px;font-size:0.875rem" placeholder="https://example.com" onkeydown="if(event.key==='Enter')runAdminScan()"/>
+            <button onclick="runAdminScan()" id="admin-scan-btn" style="width:100%;background:var(--orange);color:#fff;border:none;border-radius:8px;padding:11px;font-size:0.875rem;font-weight:700;cursor:pointer;font-family:var(--font)">▶ Run Scan</button>
+            <div id="admin-scan-progress" style="margin-top:1rem;display:none">
+              <div id="admin-scan-step1" style="display:flex;align-items:center;gap:8px;padding:6px 0;font-size:0.78rem;color:var(--muted)"><span>⏳</span> Checking SSL Certificate...</div>
+              <div id="admin-scan-step2" style="display:flex;align-items:center;gap:8px;padding:6px 0;font-size:0.78rem;color:var(--muted)"><span>⏳</span> Checking Security Headers...</div>
+              <div id="admin-scan-step3" style="display:flex;align-items:center;gap:8px;padding:6px 0;font-size:0.78rem;color:var(--muted)"><span>⏳</span> Checking DNS Configuration...</div>
+              <div id="admin-scan-step4" style="display:flex;align-items:center;gap:8px;padding:6px 0;font-size:0.78rem;color:var(--muted)"><span>⏳</span> Checking Cookie Security...</div>
+            </div>
+          </div>
+        </div>
+        <div class="a-card" id="admin-scan-results-card" style="display:none">
+          <div class="a-card-hd">
+            <div class="a-card-title">Results <span id="admin-scan-domain" style="color:var(--muted);font-weight:400;font-size:0.72rem"></span></div>
+            <button onclick="downloadAdminPDF()" style="font-size:0.68rem;font-weight:600;padding:5px 12px;border-radius:6px;cursor:pointer;font-family:var(--font);border:1px solid var(--orange-border);background:var(--orange-dim);color:var(--orange)">⬇ PDF</button>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;border-bottom:1px solid var(--border)">
+            <div style="padding:1rem;text-align:center;border-right:1px solid var(--border2)"><div style="font-size:1.75rem;font-weight:900;color:var(--green)" id="admin-pass-count">0</div><div style="font-size:0.62rem;color:var(--muted);margin-top:2px">PASSED</div></div>
+            <div style="padding:1rem;text-align:center;border-right:1px solid var(--border2)"><div style="font-size:1.75rem;font-weight:900;color:var(--red)" id="admin-fail-count">0</div><div style="font-size:0.62rem;color:var(--muted);margin-top:2px">FAILED</div></div>
+            <div style="padding:1rem;text-align:center"><div style="font-size:1.75rem;font-weight:900;color:var(--yellow)" id="admin-warn-count">0</div><div style="font-size:0.62rem;color:var(--muted);margin-top:2px">WARNINGS</div></div>
+          </div>
+          <div style="padding:0.75rem 1.5rem;border-bottom:1px solid var(--border);display:flex;gap:1.5rem">
+            <div style="font-size:0.78rem">Risk Score: <strong id="admin-risk-score" style="color:var(--orange)">—</strong></div>
+            <div style="font-size:0.78rem">Risk Level: <strong id="admin-risk-level" style="color:var(--orange)">—</strong></div>
+          </div>
+          <div id="admin-findings-list" style="max-height:500px;overflow-y:auto"></div>
+        </div>
+      </div>
+      <div class="a-card" id="admin-recs-card" style="display:none;margin-top:1.5rem">
+        <div class="a-card-hd"><div class="a-card-title">Recommended Fixes</div></div>
+        <div id="admin-recs-list" style="padding:1rem;display:flex;flex-direction:column;gap:0.75rem"></div>
       </div>
     </div>
 
@@ -727,6 +771,241 @@ function statusChip(s){
   if(status==='canceled'||status==='cancelled') return '<span class="chip chip-red">Canceled</span>';
   if(status==='past_due') return '<span class="chip" style="background:rgba(245,158,11,0.1);color:var(--yellow);border:1px solid rgba(245,158,11,0.2)">Past Due</span>';
   return '<span class="chip chip-gray">'+(s||'Unknown')+'</span>';
+}
+
+// ── ADMIN SCANNER ─────────────────────────────────────────────
+const SCANNER_API = 'https://cybershield-backend-production-492b.up.railway.app';
+let adminScanToken = null;
+let adminLastFindings = [];
+let adminLastRecs = [];
+let adminLastUrl = '';
+
+async function getAdminScanToken(){
+  // Use stored auth token if available, otherwise prompt for login
+  return sessionStorage.getItem('cs_token') || adminToken;
+}
+
+async function runAdminScan(){
+  let url = document.getElementById('admin-scan-url').value.trim();
+  if(!url){ alert('Enter a URL to scan.'); return; }
+  if(!url.startsWith('http')) url = 'https://' + url;
+
+  const btn = document.getElementById('admin-scan-btn');
+  const progress = document.getElementById('admin-scan-progress');
+  btn.textContent = 'Scanning...'; btn.disabled = true;
+  progress.style.display = 'block';
+  document.getElementById('admin-scan-results-card').style.display = 'none';
+  document.getElementById('admin-recs-card').style.display = 'none';
+
+  // Animate steps
+  const steps = ['admin-scan-step1','admin-scan-step2','admin-scan-step3','admin-scan-step4'];
+  const labels = ['✅','✅','✅','✅'];
+  steps.forEach((s,i) => {
+    setTimeout(() => {
+      document.getElementById(s).children[0].textContent = labels[i];
+      document.getElementById(s).style.color = 'var(--green)';
+    }, (i+1)*800);
+  });
+
+  try{
+    const token = sessionStorage.getItem('cs_token');
+    if(!token){
+      alert('To use the scanner, you need to be logged in to your CyberShield account.\n\nOpen app.html in another tab, log in, then come back here.');
+      btn.textContent='▶ Run Scan'; btn.disabled=false;
+      return;
+    }
+    
+    const r = await fetch(`${SCANNER_API}/scanner/scan`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json', 'Authorization': 'Bearer ' + token},
+      body: JSON.stringify({url})
+    });
+    const d = await r.json();
+
+    if(!r.ok){ alert(d.error||'Scan failed.'); btn.textContent='▶ Run Scan'; btn.disabled=false; return; }
+
+    adminLastFindings = d.findings||[];
+    adminLastRecs = d.recommendations||[];
+    adminLastUrl = url;
+
+    // Counts
+    const passCount = adminLastFindings.filter(f=>f.severity==='pass').length;
+    const failCount = adminLastFindings.filter(f=>['critical','high'].includes((f.severity||'').toLowerCase())).length;
+    const warnCount = adminLastFindings.filter(f=>['medium','low'].includes((f.severity||'').toLowerCase())).length;
+
+    document.getElementById('admin-pass-count').textContent = passCount;
+    document.getElementById('admin-fail-count').textContent = failCount;
+    document.getElementById('admin-warn-count').textContent = warnCount;
+    document.getElementById('admin-risk-score').textContent = d.riskScore||'—';
+    document.getElementById('admin-risk-level').textContent = d.riskLevel||'—';
+    document.getElementById('admin-scan-domain').textContent = url.replace(/https?:\/\//,'').replace(/\/$/,'');
+
+    // Findings
+    const findingsList = document.getElementById('admin-findings-list');
+    findingsList.innerHTML = adminLastFindings.map(f=>{
+      const sev = (f.severity||'').toLowerCase();
+      const isPass = sev==='pass';
+      const color = isPass?'var(--green)':['critical','high'].includes(sev)?'var(--red)':sev==='medium'?'var(--yellow)':'var(--orange)';
+      const label = isPass?'✓ PASS':sev==='critical'?'✗ CRITICAL':sev==='high'?'✗ HIGH':sev==='medium'?'⚠ MEDIUM':'⚠ LOW';
+      return `<div style="border-left:3px solid ${color};padding:0.875rem 1.25rem;border-bottom:1px solid var(--border2)">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:${f.description?'6px':'0'}">
+          <span style="font-size:0.82rem;font-weight:700;color:var(--text)">${f.issue||f.name||'Check'}</span>
+          <span style="font-size:0.7rem;font-weight:800;color:${color}">${label}</span>
+        </div>
+        ${f.currentValue&&!isPass?`<div style="display:flex;gap:8px;margin-bottom:4px;flex-wrap:wrap">
+          <span style="font-size:0.65rem;padding:2px 8px;border-radius:4px;background:rgba(239,68,68,0.06);color:var(--red);border:1px solid rgba(239,68,68,0.15)">Current: ${f.currentValue}</span>
+          ${f.recommendedValue?`<span style="font-size:0.65rem;padding:2px 8px;border-radius:4px;background:rgba(16,185,129,0.06);color:var(--green);border:1px solid rgba(16,185,129,0.15)">Recommended: ${f.recommendedValue}</span>`:''}
+        </div>`:''}
+        ${f.description&&!isPass?`<div style="font-size:0.72rem;color:var(--muted);line-height:1.5">${f.description}</div>`:''}
+      </div>`;
+    }).join('');
+
+    // Recommendations
+    if(adminLastRecs.length){
+      document.getElementById('admin-recs-list').innerHTML = adminLastRecs.map((r,i)=>{
+        const effortColor = r.effort==='low'?'var(--green)':r.effort==='medium'?'var(--yellow)':'var(--red)';
+        return `<div style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:1rem;display:flex;gap:1rem;align-items:flex-start">
+          <div style="width:24px;height:24px;background:var(--orange);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:0.72rem;font-weight:800;color:#fff;flex-shrink:0">${i+1}</div>
+          <div style="flex:1">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+              <span style="font-size:0.82rem;font-weight:700;color:var(--text)">${r.action}</span>
+              <span style="font-size:0.6rem;font-weight:700;padding:2px 8px;border-radius:4px;background:rgba(16,185,129,0.08);color:${effortColor};border:1px solid ${effortColor}20;text-transform:uppercase">${r.effort||'low'}</span>
+            </div>
+            ${r.detail?`<div style="font-size:0.72rem;color:var(--muted);line-height:1.55;font-family:var(--mono)">${r.detail}</div>`:''}
+          </div>
+        </div>`;
+      }).join('');
+      document.getElementById('admin-recs-card').style.display = 'block';
+    }
+
+    document.getElementById('admin-scan-results-card').style.display = 'block';
+  }catch(e){
+    alert('Scan failed: '+e.message);
+  }
+
+  btn.textContent='▶ Run Scan'; btn.disabled=false;
+  progress.style.display='none';
+}
+
+async function downloadAdminPDF(){
+  if(!adminLastFindings.length){ alert('Run a scan first.'); return; }
+  // Store for PDF generation then open app.html PDF function
+  // Simple approach: open app.html with scan data in sessionStorage
+  sessionStorage.setItem('admin_scan_export', JSON.stringify({
+    url: adminLastUrl,
+    findings: adminLastFindings,
+    recommendations: adminLastRecs
+  }));
+  // Download PDF directly using jsPDF
+  const script = document.createElement('script');
+  script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+  script.onload = () => generateAdminPDF();
+  document.head.appendChild(script);
+}
+
+function generateAdminPDF(){
+  const {jsPDF} = window.jspdf;
+  const doc = new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+  const W=210,M=20,cw=W-M*2;
+
+  doc.setFillColor(8,11,18);doc.rect(0,0,210,297,'F');
+  doc.setFillColor(255,107,0);doc.rect(0,0,210,26,'F');
+  doc.setLineWidth(0);
+  doc.setFillColor(255,255,255);doc.rect(M,3,20,20,'F');
+  doc.setFillColor(8,11,18);doc.rect(M+1,4,18,18,'F');
+  doc.setFillColor(255,107,0);
+  doc.rect(M+3,5,14,9,'F');doc.rect(M+4,14,12,3,'F');
+  doc.rect(M+6,17,8,2,'F');doc.rect(M+8,19,4,2,'F');
+  doc.setFillColor(255,255,255);
+  doc.rect(M+7,7,6,2.5,'F');doc.rect(M+6,9.5,2.5,4,'F');doc.rect(M+11.5,9.5,2.5,4,'F');
+  doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(16);
+  doc.text('Cyber',M+23,14);
+  doc.setTextColor(255,180,100);doc.text('Shield',M+23+doc.getTextWidth('Cyber'),14);
+  doc.setFont('helvetica','normal');doc.setFontSize(6);doc.setTextColor(255,220,185);
+  doc.text('SECURITY OPERATIONS PLATFORM',M+23,19.5);
+  doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(10);
+  doc.text('VULNERABILITY SCAN REPORT',W-M,13,{align:'right'});
+  doc.setFont('helvetica','normal');doc.setFontSize(6.5);doc.setTextColor(255,210,175);
+  doc.text(new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}),W-M,19,{align:'right'});
+
+  let y=34;
+  doc.setFillColor(15,19,30);doc.rect(M,y,cw,18,'F');
+  doc.setTextColor(100,120,160);doc.setFont('helvetica','bold');doc.setFontSize(7);
+  doc.text('TARGET',M+4,y+6);doc.text('SCANNED',W/2+4,y+6);
+  doc.setTextColor(232,232,240);doc.setFont('helvetica','normal');doc.setFontSize(10);
+  doc.text(adminLastUrl.replace(/https?:\/\//,'').replace(/\/$/,''),M+4,y+14,{maxWidth:cw/2-8});
+  doc.text(new Date().toLocaleString(),W/2+4,y+14);
+  y+=26;
+
+  const passC = adminLastFindings.filter(f=>f.severity==='pass').length;
+  const failC = adminLastFindings.filter(f=>['critical','high'].includes((f.severity||'').toLowerCase())).length;
+  const warnC = adminLastFindings.filter(f=>['medium','low'].includes((f.severity||'').toLowerCase())).length;
+  const bw=(cw-8)/3;
+  [[passC,[16,185,129],[0,40,20],'PASSED'],[failC,[239,68,68],[50,10,15],'FAILED'],[warnC,[245,158,11],[40,35,0],'WARNINGS']].forEach(([val,sc,bg,lbl],i)=>{
+    const bx=M+i*(bw+4);
+    doc.setFillColor(...bg);doc.rect(bx,y,bw,22,'F');
+    doc.setDrawColor(...sc);doc.setLineWidth(0.5);doc.rect(bx,y,bw,22,'S');
+    doc.setTextColor(...sc);doc.setFont('helvetica','bold');doc.setFontSize(20);
+    doc.text(String(val),bx+bw/2,y+13,{align:'center'});
+    doc.setFontSize(6);doc.text(lbl,bx+bw/2,y+19,{align:'center'});
+  });
+  y+=30;
+
+  doc.setTextColor(255,107,0);doc.setFont('helvetica','bold');doc.setFontSize(9);
+  doc.text('SECURITY FINDINGS',M,y);
+  doc.setDrawColor(255,107,0);doc.setLineWidth(0.3);doc.line(M+48,y-1,W-M,y-1);
+  y+=6;
+
+  adminLastFindings.forEach((f,i)=>{
+    if(y>260){doc.addPage();doc.setFillColor(8,11,18);doc.rect(0,0,210,297,'F');y=20;}
+    const sev=(f.severity||'').toLowerCase();
+    const isPass=sev==='pass';
+    const cardH=28;
+    doc.setFillColor(i%2===0?10:14,i%2===0?14:19,i%2===0?22:30);doc.rect(M,y,cw,cardH,'F');
+    if(isPass)doc.setFillColor(16,100,60);else if(['critical','high'].includes(sev))doc.setFillColor(200,50,60);else doc.setFillColor(140,100,0);
+    doc.rect(M,y,2,cardH,'F');
+    doc.setTextColor(200,210,230);doc.setFont('helvetica','bold');doc.setFontSize(9);
+    doc.text(String(f.issue||f.name||'Check'),M+5,y+8,{maxWidth:cw-30});
+    if(isPass)doc.setTextColor(16,185,129);else if(['CRITICAL','HIGH'].includes(sev.toUpperCase()))doc.setTextColor(239,68,68);else if(sev==='MEDIUM')doc.setTextColor(245,158,11);else doc.setTextColor(200,180,80);
+    doc.setFont('helvetica','bold');doc.setFontSize(8);
+    doc.text(sev.toUpperCase(),W-M-3,y+8,{align:'right'});
+    if(f.description&&!isPass){
+      doc.setTextColor(130,145,175);doc.setFont('helvetica','normal');doc.setFontSize(7);
+      doc.text(String(f.description),M+5,y+16,{maxWidth:cw-8});
+    }
+    if(f.fix&&!isPass){
+      doc.setTextColor(220,130,60);doc.setFont('helvetica','bold');doc.setFontSize(7);
+      doc.text('Fix: '+String(f.fix),M+5,y+23,{maxWidth:cw-8});
+    }
+    y+=cardH+3;
+  });
+
+  if(adminLastRecs.length){
+    y+=6;
+    doc.setTextColor(255,107,0);doc.setFont('helvetica','bold');doc.setFontSize(9);
+    doc.text('RECOMMENDED FIXES',M,y);
+    doc.setDrawColor(255,107,0);doc.setLineWidth(0.3);doc.line(M+52,y-1,W-M,y-1);
+    y+=7;
+    adminLastRecs.forEach((r,i)=>{
+      if(y>268)return;
+      const cardH=r.detail?20:12;
+      doc.setFillColor(18,22,35);doc.setDrawColor(60,40,10);doc.roundedRect(M,y,cw,cardH,1.5,1.5,'FD');
+      doc.setFillColor(255,107,0);doc.circle(M+5,y+6,3,'F');
+      doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(6);doc.text(String(i+1),M+5,y+7.5,{align:'center'});
+      doc.setTextColor(230,230,245);doc.setFont('helvetica','bold');doc.setFontSize(9);
+      doc.text(String(r.action),M+11,y+7,{maxWidth:cw-30});
+      if(r.detail){doc.setTextColor(150,160,180);doc.setFont('helvetica','normal');doc.setFontSize(7);doc.text(String(r.detail),M+11,y+14,{maxWidth:cw-14});}
+      y+=cardH+4;
+    });
+  }
+
+  doc.setFillColor(15,19,30);doc.rect(0,285,210,12,'F');
+  doc.setTextColor(80,90,110);doc.setFont('helvetica','normal');doc.setFontSize(7);
+  doc.text('Generated by CyberShield Security Platform · cybrshieldtech.com · Confidential',W/2,291,{align:'center'});
+  doc.text(`Report ID: CS-${Date.now()} · ${new Date().toISOString()}`,W/2,295,{align:'center'});
+
+  const domain = adminLastUrl.replace(/https?:\/\//,'').replace(/\//g,'-').replace(/\./g,'-');
+  doc.save(`cybershield-scan-${domain}-${new Date().toISOString().slice(0,10)}.pdf`);
 }
 </script>
 </body>
