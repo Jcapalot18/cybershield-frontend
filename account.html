@@ -465,7 +465,8 @@ function initAccount(){
   document.getElementById('avatar-big').textContent = initials;
   document.getElementById('plan-badge').textContent = (companyData.plan||'starter').toUpperCase();
   loadProfile(); loadCompany(); loadBillingInfo(); loadStats(); buildPlanTable();
-  if(!userData.emailVerified){ document.getElementById('verify-banner').style.display='flex'; }
+  const isVerified = userData.emailVerified || userData.email_verified || userData.verified;
+  if(!isVerified){ document.getElementById('verify-banner').style.display='flex'; }
   document.getElementById('session-info').textContent = `${navigator.userAgent.includes('Chrome')?'Chrome':navigator.userAgent.includes('Firefox')?'Firefox':'Browser'} · ${new Date().toLocaleDateString()}`;
 }
 
