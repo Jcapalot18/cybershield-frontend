@@ -126,12 +126,10 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
         <path d="M20 14L15 17V23L20 20Z" fill="rgba(255,107,0,0.1)" stroke="#FF6B00" stroke-width="1.25" stroke-linejoin="round"/>
       </svg><span style="display:inline-flex;gap:0;letter-spacing:-0.02em">Cyber<span class="acc">Shield</span></span><span style="font-size:0.6rem;color:var(--red);font-weight:700;border:1px solid rgba(239,68,68,0.3);padding:2px 6px;border-radius:4px;margin-left:8px">ADMIN</span>
     </div>
-    <div class="l-label">Admin Password</div>
-    <input class="l-input" type="password" id="admin-pass" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')doAdminLogin()"/>
-    <div class="l-label" style="margin-top:0.75rem">Your Account Email</div>
-    <input class="l-input" type="email" id="admin-email" placeholder="njirussnkar@gmail.com"/>
-    <div class="l-label">Your Account Password</div>
-    <input class="l-input" type="password" id="admin-user-pass" placeholder="Your CyberShield password" onkeydown="if(event.key==='Enter')doAdminLogin()"/>
+    <div class="l-label">Username</div>
+    <input class="l-input" type="text" id="admin-username" placeholder="Admin username" onkeydown="if(event.key==='Enter')doAdminLogin()"/>
+    <div class="l-label">Password</div>
+    <input class="l-input" type="password" id="admin-user-pass" placeholder="Admin password" onkeydown="if(event.key==='Enter')doAdminLogin()"/>
     <button class="l-btn" onclick="doAdminLogin()">Access Admin Panel</button>
     <div class="l-err" id="login-err"></div>
   </div>
@@ -365,7 +363,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 
 <script>
 const API = 'https://cybershield-backend-production-492b.up.railway.app';
-const ADMIN_PASSWORD = 'CyberShield2026!Admin';
 let adminToken = sessionStorage.getItem('admin_token');
 let allCustomers = [];
 let allUsers = [];
@@ -373,36 +370,37 @@ let currentExtendId = null;
 
 // ── AUTH ──────────────────────────────────────────────────────
 async function doAdminLogin(){
-  const pass = document.getElementById('admin-pass').value;
-  const email = document.getElementById('admin-email').value.trim();
-  const userPass = document.getElementById('admin-user-pass').value;
+  // Admin credentials — change these to whatever you want
+  const ADMIN_USERNAME = 'CyberShieldAdmin';
+  const ADMIN_PASSWORD = 'CS@Admin2026!';
+  // Scanner account — your CyberShield login
+  const SCANNER_EMAIL = 'njirussnkar@gmail.com';
+  const SCANNER_PASS  = 'YOUR_CYBERSHIELD_PASSWORD'; // set this once
+
+  const username = document.getElementById('admin-username').value.trim();
+  const password = document.getElementById('admin-user-pass').value;
   const err = document.getElementById('login-err');
 
-  if(pass !== ADMIN_PASSWORD){ err.textContent='Incorrect admin password.'; return; }
+  if(!username||!password){ err.textContent='Enter username and password.'; return; }
+  if(username !== ADMIN_USERNAME || password !== ADMIN_PASSWORD){
+    err.textContent='Incorrect username or password.';
+    return;
+  }
 
   err.textContent = 'Signing in...';
 
-  // Also log into the API to get JWT for scanner
-  if(email && userPass){
-    try{
-      const r = await fetch(`${API}/auth/login`, {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({email, password:userPass})
-      });
-      const d = await r.json();
-      if(r.ok && d.accessToken){
-        sessionStorage.setItem('cs_token', d.accessToken);
-        sessionStorage.setItem('cs_email', d.user?.email||email);
-      } else {
-        err.textContent = 'Account login failed: '+(d.error||'Check email/password');
-        return;
-      }
-    }catch(e){
-      err.textContent = 'Connection error logging into account.';
-      return;
+  // Get JWT for scanner in background
+  try{
+    const r = await fetch(`${API}/auth/login`, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({email: SCANNER_EMAIL, password: SCANNER_PASS})
+    });
+    const d = await r.json();
+    if(r.ok && d.accessToken){
+      sessionStorage.setItem('cs_token', d.accessToken);
     }
-  }
+  }catch(e){ /* scanner won't work but admin still loads */ }
 
   adminToken = 'admin_' + Date.now();
   sessionStorage.setItem('admin_token', adminToken);
