@@ -638,7 +638,7 @@ async function doExtendTrial(){
   try{
     const r = await fetch(`${API}/admin/extend-trial`, {
       method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':'Bearer '+adminToken,'X-Admin':'true'},
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+adminToken},
       body:JSON.stringify({companyId:currentExtendId, days})
     });
     const d = await r.json();
@@ -681,7 +681,7 @@ async function deleteAccount(id, name){
 async function suspendAccount(id, name){
   if(!confirm(`Suspend ${name}? They won't be able to log in.`)) return;
   try{
-    await fetch(`${API}/admin/suspend`, {method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+adminToken,'X-Admin':'true'},body:JSON.stringify({companyId:id})});
+    await fetch(`${API}/admin/suspend`, {method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+adminToken},body:JSON.stringify({companyId:id})});
     alert(`${name} has been suspended.`);
     loadCustomers();
   }catch(e){ alert('Failed to suspend account.'); }
@@ -690,7 +690,7 @@ async function suspendAccount(id, name){
 async function suspendUser(id, name){
   if(!confirm(`Suspend user ${name}?`)) return;
   try{
-    await fetch(`${API}/admin/suspend-user`, {method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+adminToken,'X-Admin':'true'},body:JSON.stringify({userId:id})});
+    await fetch(`${API}/admin/suspend-user`, {method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+adminToken},body:JSON.stringify({userId:id})});
     alert(`${name} has been suspended.`);
     loadUsers();
   }catch(e){ alert('Failed to suspend user.'); }
