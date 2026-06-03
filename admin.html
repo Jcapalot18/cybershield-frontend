@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
+<title>CyberShield Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#080b12;--bg2:#0d1220;--bg3:#111827;
+  --orange:#FF6B00;--orange-dim:rgba(255,107,0,0.08);--orange-border:rgba(255,107,0,0.2);
+  --green:#10B981;--red:#EF4444;--yellow:#F59E0B;--blue:#3B82F6;--purple:#8B5CF6;
+  --text:#f0f2f8;--muted:rgba(255,255,255,0.45);--dim:rgba(255,255,255,0.25);
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.04);
+  --font:'Hanken Grotesk',sans-serif;--mono:'JetBrains Mono',monospace;
+}
+body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;overflow-x:hidden}
+
+/* LOGIN */
+#login-page{display:flex;align-items:center;justify-content:center;min-height:100vh;background:radial-gradient(ellipse at 50% 0%,rgba(255,107,0,0.08) 0%,transparent 60%)}
+.login-box{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:2.5rem;width:360px}
+.login-logo{display:flex;align-items:center;gap:10px;font-size:1.2rem;font-weight:900;margin-bottom:2rem}
+.login-logo svg{width:32px;height:32px}
+.login-logo .acc{color:var(--orange)}
+.l-label{font-size:0.62rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:5px}
+.l-input{width:100%;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text);font-size:0.875rem;font-family:var(--font);outline:none;margin-bottom:1rem}
+.l-input:focus{border-color:var(--orange-border)}
+.l-btn{width:100%;background:var(--orange);color:#fff;border:none;border-radius:8px;padding:11px;font-size:0.875rem;font-weight:700;cursor:pointer;font-family:var(--font)}
+.l-err{color:var(--red);font-size:0.75rem;margin-top:0.75rem;text-align:center}
+
+/* ADMIN LAYOUT */
+#admin-page{display:none;min-height:100vh}
+.a-header{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 2rem;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.a-logo{display:flex;align-items:center;gap:10px;font-size:1rem;font-weight:900}
+.a-logo .acc{color:var(--orange)}
+.a-badge{font-size:0.55rem;font-weight:800;padding:2px 8px;background:rgba(239,68,68,0.15);color:var(--red);border:1px solid rgba(239,68,68,0.2);border-radius:4px;text-transform:uppercase;letter-spacing:0.1em;margin-left:4px}
+.a-nav{display:flex;gap:0;border-bottom:1px solid var(--border)}
+.a-tab{padding:0 1.5rem;height:44px;display:flex;align-items:center;font-size:0.78rem;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all 0.15s;white-space:nowrap}
+.a-tab:hover{color:var(--text)}
+.a-tab.active{color:var(--orange);border-bottom-color:var(--orange)}
+.a-body{padding:2rem;max-width:1400px;margin:0 auto}
+.a-page{display:none}.a-page.active{display:block}
+
+/* KPI CARDS */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;margin-bottom:2rem}
+.kpi{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1.25rem 1.5rem;position:relative;overflow:hidden}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.kpi.orange::before{background:var(--orange)}
+.kpi.green::before{background:var(--green)}
+.kpi.red::before{background:var(--red)}
+.kpi.blue::before{background:var(--blue)}
+.kpi.purple::before{background:var(--purple)}
+.kpi.yellow::before{background:var(--yellow)}
+.kpi-label{font-size:0.62rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:0.625rem}
+.kpi-val{font-size:2rem;font-weight:900;letter-spacing:-0.04em;line-height:1}
+.kpi-sub{font-size:0.68rem;color:var(--muted);margin-top:4px}
+.kpi-trend{font-size:0.68rem;font-weight:600;margin-top:6px}
+.kpi-trend.up{color:var(--green)}.kpi-trend.down{color:var(--red)}
+
+/* TABLES */
+.a-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:1.5rem}
+.a-card-hd{padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+.a-card-title{font-size:0.875rem;font-weight:700}
+.a-tbl{width:100%;border-collapse:collapse}
+.a-tbl th{font-size:0.6rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);padding:0.75rem 1.5rem;text-align:left;border-bottom:1px solid var(--border);background:rgba(255,255,255,0.01)}
+.a-tbl td{padding:0.875rem 1.5rem;border-bottom:1px solid var(--border2);font-size:0.8rem;vertical-align:middle}
+.a-tbl tr:last-child td{border-bottom:none}
+.a-tbl tr:hover td{background:rgba(255,255,255,0.02)}
+.chip{display:inline-flex;align-items:center;font-size:0.6rem;font-weight:700;padding:2px 8px;border-radius:4px;text-transform:uppercase;letter-spacing:0.06em}
+.chip-green{background:rgba(16,185,129,0.1);color:var(--green);border:1px solid rgba(16,185,129,0.2)}
+.chip-orange{background:var(--orange-dim);color:var(--orange);border:1px solid var(--orange-border)}
+.chip-red{background:rgba(239,68,68,0.1);color:var(--red);border:1px solid rgba(239,68,68,0.2)}
+.chip-blue{background:rgba(59,130,246,0.1);color:var(--blue);border:1px solid rgba(59,130,246,0.2)}
+.chip-gray{background:rgba(255,255,255,0.05);color:var(--muted);border:1px solid var(--border)}
+
+/* ACTION BUTTONS */
+.act-btn{font-size:0.68rem;font-weight:600;padding:4px 10px;border-radius:5px;cursor:pointer;font-family:var(--font);border:1px solid var(--border);background:transparent;color:var(--muted);transition:all 0.15s}
+.act-btn:hover{border-color:var(--orange-border);color:var(--orange)}
+.act-btn.danger:hover{border-color:rgba(239,68,68,0.3);color:var(--red)}
+
+/* SEARCH */
+.a-search{background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:8px;padding:8px 14px;color:var(--text);font-size:0.78rem;font-family:var(--font);outline:none;width:240px}
+.a-search:focus{border-color:var(--orange-border)}
+
+/* SECTION TITLE */
+.sec-hd{font-size:0.62rem;font-weight:800;text-transform:uppercase;letter-spacing:0.12em;color:var(--orange);margin-bottom:1rem;display:flex;align-items:center;gap:8px}
+.sec-hd::after{content:'';flex:1;height:1px;background:var(--orange-border)}
+
+/* LOADING */
+.spin{width:20px;height:20px;border:2px solid var(--border);border-top-color:var(--orange);border-radius:50%;animation:spin 0.8s linear infinite;margin:2rem auto}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-row td{text-align:center;color:var(--muted);padding:2rem!important}
+
+/* MONO */
+.mono{font-family:var(--mono);font-size:0.75rem}
+
+/* MODAL */
+.modal-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:200;align-items:center;justify-content:center}
+.modal-ov.show{display:flex}
+.modal-box{background:var(--bg3);border:1px solid var(--border);border-radius:16px;padding:2rem;width:440px;max-width:92vw;position:relative}
+.modal-title{font-size:1rem;font-weight:800;margin-bottom:1.25rem}
+.modal-close{position:absolute;top:1rem;right:1rem;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:6px;color:var(--muted);cursor:pointer;font-size:1rem;padding:3px 8px;font-family:var(--font)}
+
+/* REFRESH BTN */
+.refresh-btn{font-size:0.68rem;font-weight:600;padding:5px 12px;border-radius:6px;cursor:pointer;font-family:var(--font);border:1px solid var(--border);background:transparent;color:var(--muted);transition:all 0.15s}
+.refresh-btn:hover{color:var(--text);border-color:rgba(255,255,255,0.15)}
+
+/* GRIDS */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.5rem}
+@media(max-width:900px){.two-col,.three-col{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-page">
+  <div class="login-box">
+    <div class="login-logo">
+      <svg viewBox="0 0 30 36" fill="none">
+        <path d="M15 1L29 6.5V21C29 30 22 35.5 15 37.5C8 35.5 1 30 1 21V6.5L15 1Z" fill="rgba(255,107,0,0.08)" stroke="#FF6B00" stroke-width="1.5"/>
+        <path d="M15 11L20 14L15 17L10 14Z" fill="rgba(255,107,0,0.2)" stroke="#FF6B00" stroke-width="1.25" stroke-linejoin="round"/>
+        <path d="M10 14L15 17V23L10 20Z" stroke="#FF6B00" stroke-width="1.25" stroke-linejoin="round"/>
+        <path d="M20 14L15 17V23L20 20Z" fill="rgba(255,107,0,0.1)" stroke="#FF6B00" stroke-width="1.25" stroke-linejoin="round"/>
+      </svg>
+      Cyber<span class="acc">Shield</span> <span style="font-size:0.6rem;color:var(--red);font-weight:700;border:1px solid rgba(239,68,68,0.3);padding:2px 6px;border-radius:4px;margin-left:4px">ADMIN</span>
+    </div>
+    <div class="l-label">Admin Password</div>
+    <input class="l-input" type="password" id="admin-pass" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')doAdminLogin()"/>
+    <button class="l-btn" onclick="doAdminLogin()">Access Admin Panel</button>
+    <div class="l-err" id="login-err"></div>
+  </div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div id="admin-page">
+  <div class="a-header">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div class="a-logo">
+        <svg viewBox="0 0 30 36" fill="none" style="width:24px;height:24px">
+          <path d="M15 1L29 6.5V21C29 30 22 35.5 15 37.5C8 35.5 1 30 1 21V6.5L15 1Z" fill="rgba(255,107,0,0.08)" stroke="#FF6B00" stroke-width="1.5"/>
+          <path d="M15 11L20 14L15 17L10 14Z" fill="rgba(255,107,0,0.2)" stroke="#FF6B00" stroke-width="1.25" stroke-linejoin="round"/>
+          <path d="M10 14L15 17V23L10 20Z" stroke="#FF6B00" stroke-width="1.25" stroke-linejoin="round"/>
+          <path d="M20 14L15 17V23L20 20Z" fill="rgba(255,107,0,0.1)" stroke="#FF6B00" stroke-width="1.25" stroke-linejoin="round"/>
+        </svg>
+        Cyber<span class="acc">Shield</span>
+      </div>
+      <span class="a-badge">Admin</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:1rem">
+      <div style="font-size:0.72rem;color:var(--muted)" id="last-refresh">—</div>
+      <button class="refresh-btn" onclick="refreshAll()">↻ Refresh</button>
+      <button class="refresh-btn" onclick="adminLogout()">Sign out</button>
+    </div>
+  </div>
+
+  <div class="a-nav" id="admin-nav">
+    <div class="a-tab active" onclick="switchAdminTab('overview',this)">Overview</div>
+    <div class="a-tab" onclick="switchAdminTab('customers',this)">Customers</div>
+    <div class="a-tab" onclick="switchAdminTab('revenue',this)">Revenue</div>
+    <div class="a-tab" onclick="switchAdminTab('trials',this)">Trials</div>
+    <div class="a-tab" onclick="switchAdminTab('activity',this)">Security Activity</div>
+    <div class="a-tab" onclick="switchAdminTab('users',this)">Users</div>
+  </div>
+
+  <div class="a-body">
+
+    <!-- OVERVIEW -->
+    <div class="a-page active" id="page-overview">
+      <div class="kpi-grid" id="kpi-grid">
+        <div class="kpi orange"><div class="kpi-label">MRR</div><div class="kpi-val" id="kpi-mrr">—</div><div class="kpi-sub">Monthly Recurring Revenue</div></div>
+        <div class="kpi green"><div class="kpi-label">Active Customers</div><div class="kpi-val" id="kpi-active">—</div><div class="kpi-sub">Paid subscriptions</div></div>
+        <div class="kpi blue"><div class="kpi-label">Trial Users</div><div class="kpi-val" id="kpi-trials">—</div><div class="kpi-sub">14-day free trials</div></div>
+        <div class="kpi purple"><div class="kpi-label">Total Users</div><div class="kpi-val" id="kpi-users">—</div><div class="kpi-sub">All registered users</div></div>
+        <div class="kpi yellow"><div class="kpi-label">ARR</div><div class="kpi-val" id="kpi-arr">—</div><div class="kpi-sub">Annual Recurring Revenue</div></div>
+        <div class="kpi red"><div class="kpi-label">Churned</div><div class="kpi-val" id="kpi-churned">—</div><div class="kpi-sub">Canceled subscriptions</div></div>
+      </div>
+
+      <div class="two-col">
+        <div class="a-card">
+          <div class="a-card-hd"><div class="a-card-title">Recent Signups</div></div>
+          <table class="a-tbl">
+            <thead><tr><th>Company</th><th>Plan</th><th>Joined</th><th>Status</th></tr></thead>
+            <tbody id="recent-signups"><tr class="loading-row"><td colspan="4"><div class="spin"></div></td></tr></tbody>
+          </table>
+        </div>
+        <div class="a-card">
+          <div class="a-card-hd"><div class="a-card-title">Trials Expiring Soon</div></div>
+          <table class="a-tbl">
+            <thead><tr><th>Company</th><th>Expires</th><th>Days Left</th><th>Action</th></tr></thead>
+            <tbody id="expiring-trials"><tr class="loading-row"><td colspan="4"><div class="spin"></div></td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="a-card">
+        <div class="a-card-hd"><div class="a-card-title">Security Activity (Last 30 Days)</div></div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0">
+          <div style="padding:1.5rem;border-right:1px solid var(--border2);text-align:center">
+            <div style="font-size:2rem;font-weight:900;color:var(--orange)" id="stat-scans">—</div>
+            <div style="font-size:0.68rem;color:var(--muted);margin-top:4px">Total Scans</div>
+          </div>
+          <div style="padding:1.5rem;border-right:1px solid var(--border2);text-align:center">
+            <div style="font-size:2rem;font-weight:900;color:var(--red)" id="stat-breaches">—</div>
+            <div style="font-size:0.68rem;color:var(--muted);margin-top:4px">Breaches Found</div>
+          </div>
+          <div style="padding:1.5rem;border-right:1px solid var(--border2);text-align:center">
+            <div style="font-size:2rem;font-weight:900;color:var(--green)" id="stat-trainings">—</div>
+            <div style="font-size:0.68rem;color:var(--muted);margin-top:4px">Trainings Done</div>
+          </div>
+          <div style="padding:1.5rem;text-align:center">
+            <div style="font-size:2rem;font-weight:900;color:var(--blue)" id="stat-conversion">—</div>
+            <div style="font-size:0.68rem;color:var(--muted);margin-top:4px">Trial Conversion %</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CUSTOMERS -->
+    <div class="a-page" id="page-customers">
+      <div class="a-card">
+        <div class="a-card-hd">
+          <div class="a-card-title">All Customers</div>
+          <input class="a-search" id="customer-search" placeholder="Search by company or email..." oninput="filterCustomers()"/>
+        </div>
+        <table class="a-tbl">
+          <thead><tr><th>Company</th><th>Owner</th><th>Plan</th><th>Status</th><th>MRR</th><th>Joined</th><th>Last Active</th><th>Actions</th></tr></thead>
+          <tbody id="customers-tbody"><tr class="loading-row"><td colspan="8"><div class="spin"></div></td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- REVENUE -->
+    <div class="a-page" id="page-revenue">
+      <div class="kpi-grid">
+        <div class="kpi orange"><div class="kpi-label">MRR</div><div class="kpi-val" id="rev-mrr">—</div><div class="kpi-sub">Monthly Recurring Revenue</div></div>
+        <div class="kpi green"><div class="kpi-label">ARR</div><div class="kpi-val" id="rev-arr">—</div><div class="kpi-sub">Annual Recurring Revenue</div></div>
+        <div class="kpi blue"><div class="kpi-label">Avg Revenue/Customer</div><div class="kpi-val" id="rev-arpu">—</div><div class="kpi-sub">ARPU</div></div>
+        <div class="kpi red"><div class="kpi-label">Failed Payments</div><div class="kpi-val" id="rev-failed">—</div><div class="kpi-sub">Needs attention</div></div>
+      </div>
+      <div class="a-card">
+        <div class="a-card-hd"><div class="a-card-title">Revenue by Plan</div></div>
+        <table class="a-tbl">
+          <thead><tr><th>Plan</th><th>Price</th><th>Customers</th><th>MRR</th><th>% of Total</th></tr></thead>
+          <tbody id="revenue-by-plan"><tr class="loading-row"><td colspan="5"><div class="spin"></div></td></tr></tbody>
+        </table>
+      </div>
+      <div class="a-card">
+        <div class="a-card-hd"><div class="a-card-title">Failed Payments</div></div>
+        <table class="a-tbl">
+          <thead><tr><th>Company</th><th>Amount</th><th>Failed</th><th>Action</th></tr></thead>
+          <tbody id="failed-payments"><tr class="loading-row"><td colspan="4"><div class="spin"></div></td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TRIALS -->
+    <div class="a-page" id="page-trials">
+      <div class="kpi-grid">
+        <div class="kpi blue"><div class="kpi-label">Active Trials</div><div class="kpi-val" id="trial-active">—</div><div class="kpi-sub">Currently trialing</div></div>
+        <div class="kpi green"><div class="kpi-label">Converted Today</div><div class="kpi-val" id="trial-today">—</div><div class="kpi-sub">Trial → paid</div></div>
+        <div class="kpi orange"><div class="kpi-label">Conversion Rate</div><div class="kpi-val" id="trial-rate">—</div><div class="kpi-sub">All time</div></div>
+        <div class="kpi red"><div class="kpi-label">Expiring in 3 days</div><div class="kpi-val" id="trial-expiring">—</div><div class="kpi-sub">Need outreach</div></div>
+      </div>
+      <div class="a-card">
+        <div class="a-card-hd"><div class="a-card-title">All Active Trials</div></div>
+        <table class="a-tbl">
+          <thead><tr><th>Company</th><th>Owner Email</th><th>Started</th><th>Expires</th><th>Days Left</th><th>Activity</th><th>Action</th></tr></thead>
+          <tbody id="trials-tbody"><tr class="loading-row"><td colspan="7"><div class="spin"></div></td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SECURITY ACTIVITY -->
+    <div class="a-page" id="page-activity">
+      <div class="kpi-grid">
+        <div class="kpi orange"><div class="kpi-label">Total Scans</div><div class="kpi-val" id="act-scans">—</div></div>
+        <div class="kpi red"><div class="kpi-label">Breaches Detected</div><div class="kpi-val" id="act-breaches">—</div></div>
+        <div class="kpi green"><div class="kpi-label">Trainings Completed</div><div class="kpi-val" id="act-trainings">—</div></div>
+        <div class="kpi blue"><div class="kpi-label">Avg Score</div><div class="kpi-val" id="act-score">—</div></div>
+      </div>
+      <div class="a-card">
+        <div class="a-card-hd"><div class="a-card-title">Most Active Accounts</div></div>
+        <table class="a-tbl">
+          <thead><tr><th>Company</th><th>Plan</th><th>Scans</th><th>Breaches Checked</th><th>Trainings</th><th>Security Score</th><th>Last Active</th></tr></thead>
+          <tbody id="activity-tbody"><tr class="loading-row"><td colspan="7"><div class="spin"></div></td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- USERS -->
+    <div class="a-page" id="page-users">
+      <div class="a-card">
+        <div class="a-card-hd">
+          <div class="a-card-title">All Users</div>
+          <input class="a-search" id="user-search" placeholder="Search users..." oninput="filterUsers()"/>
+        </div>
+        <table class="a-tbl">
+          <thead><tr><th>Name</th><th>Email</th><th>Company</th><th>Role</th><th>Verified</th><th>Joined</th><th>Action</th></tr></thead>
+          <tbody id="users-tbody"><tr class="loading-row"><td colspan="7"><div class="spin"></div></td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- EXTEND TRIAL MODAL -->
+<div class="modal-ov" id="extend-modal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('extend-modal')">×</button>
+    <div class="modal-title">Extend Trial</div>
+    <div style="font-size:0.8rem;color:var(--muted);margin-bottom:1.25rem">Extend trial for <strong id="extend-company" style="color:var(--text)"></strong></div>
+    <div class="l-label">Extra Days</div>
+    <input class="l-input" type="number" id="extend-days" value="7" min="1" max="90"/>
+    <button class="l-btn" onclick="doExtendTrial()">Extend Trial</button>
+    <div id="extend-msg" style="margin-top:0.75rem;font-size:0.75rem;text-align:center"></div>
+  </div>
+</div>
+
+<script>
+const API = 'https://cybershield-backend-production-492b.up.railway.app';
+const ADMIN_PASSWORD = 'CyberShield2026!Admin';
+let adminToken = sessionStorage.getItem('admin_token');
+let allCustomers = [];
+let allUsers = [];
+let currentExtendId = null;
+
+// ── AUTH ──────────────────────────────────────────────────────
+function doAdminLogin(){
+  const pass = document.getElementById('admin-pass').value;
+  if(pass === ADMIN_PASSWORD){
+    adminToken = 'admin_' + Date.now();
+    sessionStorage.setItem('admin_token', adminToken);
+    showAdmin();
+  } else {
+    document.getElementById('login-err').textContent = 'Incorrect password.';
+  }
+}
+
+function adminLogout(){
+  sessionStorage.removeItem('admin_token');
+  adminToken = null;
+  document.getElementById('admin-page').style.display = 'none';
+  document.getElementById('login-page').style.display = 'flex';
+}
+
+function showAdmin(){
+  document.getElementById('login-page').style.display = 'none';
+  document.getElementById('admin-page').style.display = 'block';
+  refreshAll();
+}
+
+if(adminToken) showAdmin();
+
+// ── TABS ──────────────────────────────────────────────────────
+function switchAdminTab(name, el){
+  document.querySelectorAll('.a-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.a-page').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('page-'+name).classList.add('active');
+}
+
+// ── API CALLS ─────────────────────────────────────────────────
+async function adminFetch(path){
+  const r = await fetch(`${API}${path}`, {
+    headers: {'Authorization': 'Bearer ' + adminToken, 'X-Admin': 'true'}
+  });
+  return r.json();
+}
+
+// ── REFRESH ALL ───────────────────────────────────────────────
+async function refreshAll(){
+  document.getElementById('last-refresh').textContent = 'Loading...';
+  await Promise.all([
+    loadOverview(),
+    loadCustomers(),
+    loadRevenue(),
+    loadTrials(),
+    loadActivity(),
+    loadUsers()
+  ]);
+  document.getElementById('last-refresh').textContent = 'Updated ' + new Date().toLocaleTimeString();
+}
+
+// ── OVERVIEW ──────────────────────────────────────────────────
+async function loadOverview(){
+  try{
+    // Get companies from Supabase via backend
+    const d = await adminFetch('/admin/overview');
+    
+    if(d.mrr !== undefined){
+      document.getElementById('kpi-mrr').textContent = '$' + (d.mrr||0).toLocaleString();
+      document.getElementById('kpi-arr').textContent = '$' + ((d.mrr||0)*12).toLocaleString();
+      document.getElementById('kpi-active').textContent = d.activeCustomers||0;
+      document.getElementById('kpi-trials').textContent = d.trialUsers||0;
+      document.getElementById('kpi-users').textContent = d.totalUsers||0;
+      document.getElementById('kpi-churned').textContent = d.churned||0;
+      document.getElementById('rev-mrr').textContent = '$' + (d.mrr||0).toLocaleString();
+      document.getElementById('rev-arr').textContent = '$' + ((d.mrr||0)*12).toLocaleString();
+      const arpu = d.activeCustomers>0?Math.round(d.mrr/d.activeCustomers):0;
+      document.getElementById('rev-arpu').textContent = '$' + arpu;
+      document.getElementById('stat-scans').textContent = d.totalScans||0;
+      document.getElementById('stat-breaches').textContent = d.totalBreaches||0;
+      document.getElementById('stat-trainings').textContent = d.totalTrainings||0;
+      document.getElementById('act-scans').textContent = d.totalScans||0;
+      document.getElementById('act-breaches').textContent = d.totalBreaches||0;
+      document.getElementById('act-trainings').textContent = d.totalTrainings||0;
+      document.getElementById('act-score').textContent = d.avgScore||'—';
+      document.getElementById('trial-active').textContent = d.trialUsers||0;
+      document.getElementById('trial-today').textContent = d.convertedToday||0;
+      document.getElementById('trial-expiring').textContent = d.expiringIn3Days||0;
+      const rate = d.totalCustomers>0?Math.round((d.activeCustomers/(d.totalCustomers||1))*100):0;
+      document.getElementById('trial-rate').textContent = rate+'%';
+      document.getElementById('stat-conversion').textContent = rate+'%';
+    }
+
+    // Recent signups
+    if(d.recentSignups){
+      document.getElementById('recent-signups').innerHTML = d.recentSignups.length ?
+        d.recentSignups.map(c=>`<tr>
+          <td><strong>${esc(c.name)}</strong></td>
+          <td>${planChip(c.plan)}</td>
+          <td style="color:var(--muted)">${timeAgo(c.created_at)}</td>
+          <td>${statusChip(c.subscription_status)}</td>
+        </tr>`).join('') :
+        '<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:1.5rem">No signups yet</td></tr>';
+    }
+
+    // Expiring trials
+    if(d.expiringTrials){
+      document.getElementById('expiring-trials').innerHTML = d.expiringTrials.length ?
+        d.expiringTrials.map(c=>{
+          const days = Math.ceil((new Date(c.trial_ends_at)-new Date())/(1000*60*60*24));
+          return `<tr>
+            <td><strong>${esc(c.name)}</strong></td>
+            <td style="color:var(--muted)">${c.trial_ends_at?new Date(c.trial_ends_at).toLocaleDateString():'-'}</td>
+            <td><span style="color:${days<=1?'var(--red)':days<=3?'var(--yellow)':'var(--green)';font-weight:700}">${days}d</span></td>
+            <td><button class="act-btn" onclick="openExtend('${c.id}','${esc(c.name)}')">Extend</button></td>
+          </tr>`;
+        }).join('') :
+        '<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:1.5rem">No trials expiring soon</td></tr>';
+    }
+  }catch(e){
+    console.error('Overview error:', e);
+    showFallback();
+  }
+}
+
+function showFallback(){
+  // Show placeholder data when admin endpoint not available
+  document.getElementById('kpi-mrr').textContent = '$0';
+  document.getElementById('kpi-arr').textContent = '$0';
+  document.getElementById('kpi-active').textContent = '0';
+  document.getElementById('kpi-trials').textContent = '0';
+  document.getElementById('kpi-users').textContent = '0';
+  document.getElementById('kpi-churned').textContent = '0';
+  document.getElementById('rev-mrr').textContent = '$0';
+  document.getElementById('rev-arr').textContent = '$0';
+  document.getElementById('rev-arpu').textContent = '$0';
+  document.getElementById('rev-failed').textContent = '0';
+  document.getElementById('stat-scans').textContent = '0';
+  document.getElementById('stat-breaches').textContent = '0';
+  document.getElementById('stat-trainings').textContent = '0';
+  document.getElementById('stat-conversion').textContent = '0%';
+  document.getElementById('trial-active').textContent = '0';
+  document.getElementById('trial-today').textContent = '0';
+  document.getElementById('trial-rate').textContent = '0%';
+  document.getElementById('trial-expiring').textContent = '0';
+  document.getElementById('act-scans').textContent = '0';
+  document.getElementById('act-breaches').textContent = '0';
+  document.getElementById('act-trainings').textContent = '0';
+  document.getElementById('act-score').textContent = '—';
+  ['recent-signups','expiring-trials','customers-tbody','revenue-by-plan','failed-payments','trials-tbody','activity-tbody','users-tbody'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.innerHTML = `<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:1.5rem;font-size:0.78rem">⚠ Admin API endpoint not set up yet — <a href="#" style="color:var(--orange)" onclick="setupInfo()">see setup info</a></td></tr>`;
+  });
+}
+
+function setupInfo(){
+  alert('To enable live admin data, add the /admin/overview route to your backend.\n\nFor now, you can view data directly in Supabase or Stripe dashboards.');
+}
+
+// ── CUSTOMERS ─────────────────────────────────────────────────
+async function loadCustomers(){
+  try{
+    const d = await adminFetch('/admin/customers');
+    allCustomers = d.customers||[];
+    renderCustomers(allCustomers);
+  }catch(e){ /* handled by fallback */ }
+}
+
+function renderCustomers(list){
+  const tbody = document.getElementById('customers-tbody');
+  if(!list.length){ tbody.innerHTML='<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:1.5rem">No customers yet</td></tr>'; return; }
+  tbody.innerHTML = list.map(c=>{
+    const mrr = c.plan==='starter'?49:c.plan==='business'?199:c.plan==='enterprise'?599:0;
+    return `<tr>
+      <td><strong>${esc(c.name)}</strong></td>
+      <td style="color:var(--muted);font-size:0.75rem">${esc(c.owner_email||'—')}</td>
+      <td>${planChip(c.plan)}</td>
+      <td>${statusChip(c.subscription_status)}</td>
+      <td style="color:var(--orange);font-weight:700">$${mrr}/mo</td>
+      <td style="color:var(--muted);font-size:0.75rem">${c.created_at?new Date(c.created_at).toLocaleDateString():'-'}</td>
+      <td style="color:var(--muted);font-size:0.75rem">${c.last_active?timeAgo(c.last_active):'Never'}</td>
+      <td style="display:flex;gap:6px">
+        <button class="act-btn" onclick="openExtend('${c.id}','${esc(c.name)}')">Extend</button>
+        <button class="act-btn danger" onclick="suspendAccount('${c.id}','${esc(c.name)}')">Suspend</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function filterCustomers(){
+  const q = document.getElementById('customer-search').value.toLowerCase();
+  renderCustomers(allCustomers.filter(c=>(c.name||'').toLowerCase().includes(q)||(c.owner_email||'').toLowerCase().includes(q)));
+}
+
+// ── REVENUE ───────────────────────────────────────────────────
+async function loadRevenue(){
+  try{
+    const d = await adminFetch('/admin/revenue');
+    if(d.byPlan){
+      const total = d.mrr||0;
+      document.getElementById('revenue-by-plan').innerHTML = d.byPlan.map(p=>`<tr>
+        <td>${planChip(p.plan)}</td>
+        <td style="color:var(--muted)">$${p.price}/mo</td>
+        <td style="font-weight:600">${p.count}</td>
+        <td style="color:var(--orange);font-weight:700">$${(p.count*p.price).toLocaleString()}</td>
+        <td style="color:var(--muted)">${total?Math.round((p.count*p.price/total)*100):0}%</td>
+      </tr>`).join('');
+    }
+    if(d.failedPayments){
+      document.getElementById('rev-failed').textContent = d.failedPayments.length;
+      document.getElementById('failed-payments').innerHTML = d.failedPayments.length ?
+        d.failedPayments.map(p=>`<tr>
+          <td><strong>${esc(p.company)}</strong></td>
+          <td style="color:var(--red)">$${p.amount}</td>
+          <td style="color:var(--muted)">${timeAgo(p.failed_at)}</td>
+          <td><button class="act-btn" onclick="window.open('https://dashboard.stripe.com','_blank')">View in Stripe</button></td>
+        </tr>`).join('') :
+        '<tr><td colspan="4" style="text-align:center;color:var(--green);padding:1.5rem">✓ No failed payments</td></tr>';
+    }
+  }catch(e){}
+}
+
+// ── TRIALS ────────────────────────────────────────────────────
+async function loadTrials(){
+  try{
+    const d = await adminFetch('/admin/trials');
+    if(d.trials){
+      document.getElementById('trials-tbody').innerHTML = d.trials.length ?
+        d.trials.map(t=>{
+          const days = t.trial_ends_at?Math.ceil((new Date(t.trial_ends_at)-new Date())/(1000*60*60*24)):'-';
+          const dayColor = days<=1?'var(--red)':days<=3?'var(--yellow)':'var(--green)';
+          return `<tr>
+            <td><strong>${esc(t.name)}</strong></td>
+            <td style="color:var(--muted);font-size:0.75rem">${esc(t.owner_email||'—')}</td>
+            <td style="color:var(--muted)">${t.created_at?new Date(t.created_at).toLocaleDateString():'-'}</td>
+            <td style="color:var(--muted)">${t.trial_ends_at?new Date(t.trial_ends_at).toLocaleDateString():'-'}</td>
+            <td><span style="color:${dayColor};font-weight:700">${days}d</span></td>
+            <td style="color:var(--muted)">${t.scans||0} scans, ${t.trainings||0} trainings</td>
+            <td><button class="act-btn" onclick="openExtend('${t.id}','${esc(t.name)}')">Extend</button></td>
+          </tr>`;
+        }).join('') :
+        '<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:1.5rem">No active trials</td></tr>';
+    }
+  }catch(e){}
+}
+
+// ── ACTIVITY ──────────────────────────────────────────────────
+async function loadActivity(){
+  try{
+    const d = await adminFetch('/admin/activity');
+    if(d.companies){
+      document.getElementById('activity-tbody').innerHTML = d.companies.length ?
+        d.companies.map(c=>{
+          const score = Math.max(10,Math.min(100,Math.round(50+Math.min(c.trainings*4,20)+(c.scans>0?15:-10)-Math.min(c.breaches*3,25))));
+          const scoreColor = score>=80?'var(--green)':score>=65?'var(--yellow)':score>=45?'var(--orange)':'var(--red)';
+          return `<tr>
+            <td><strong>${esc(c.name)}</strong></td>
+            <td>${planChip(c.plan)}</td>
+            <td style="font-weight:600">${c.scans||0}</td>
+            <td style="font-weight:600">${c.breach_checks||0}</td>
+            <td style="font-weight:600">${c.trainings||0}</td>
+            <td><span style="color:${scoreColor};font-weight:700">${score}</span></td>
+            <td style="color:var(--muted);font-size:0.75rem">${c.last_active?timeAgo(c.last_active):'Never'}</td>
+          </tr>`;
+        }).join('') :
+        '<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:1.5rem">No activity data yet</td></tr>';
+    }
+  }catch(e){}
+}
+
+// ── USERS ─────────────────────────────────────────────────────
+async function loadUsers(){
+  try{
+    const d = await adminFetch('/admin/users');
+    allUsers = d.users||[];
+    renderUsers(allUsers);
+  }catch(e){}
+}
+
+function renderUsers(list){
+  const tbody = document.getElementById('users-tbody');
+  if(!list.length){ tbody.innerHTML='<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:1.5rem">No users yet</td></tr>'; return; }
+  tbody.innerHTML = list.map(u=>`<tr>
+    <td><strong>${esc(u.full_name||'—')}</strong></td>
+    <td style="color:var(--muted);font-size:0.75rem">${esc(u.email||'—')}</td>
+    <td style="color:var(--muted)">${esc(u.company_name||'—')}</td>
+    <td>${u.role==='owner'?'<span class="chip chip-orange">Owner</span>':'<span class="chip chip-gray">Member</span>'}</td>
+    <td>${u.email_verified?'<span class="chip chip-green">Verified</span>':'<span class="chip chip-red">Unverified</span>'}</td>
+    <td style="color:var(--muted);font-size:0.75rem">${u.created_at?new Date(u.created_at).toLocaleDateString():'-'}</td>
+    <td><button class="act-btn danger" onclick="suspendUser('${u.id}','${esc(u.full_name||u.email)}')">Suspend</button></td>
+  </tr>`).join('');
+}
+
+function filterUsers(){
+  const q = document.getElementById('user-search').value.toLowerCase();
+  renderUsers(allUsers.filter(u=>(u.full_name||'').toLowerCase().includes(q)||(u.email||'').toLowerCase().includes(q)||(u.company_name||'').toLowerCase().includes(q)));
+}
+
+// ── ACTIONS ───────────────────────────────────────────────────
+function openExtend(id, name){
+  currentExtendId = id;
+  document.getElementById('extend-company').textContent = name;
+  document.getElementById('extend-days').value = 7;
+  document.getElementById('extend-msg').textContent = '';
+  document.getElementById('extend-modal').classList.add('show');
+}
+
+async function doExtendTrial(){
+  const days = parseInt(document.getElementById('extend-days').value)||7;
+  const msg = document.getElementById('extend-msg');
+  msg.textContent = 'Extending...';
+  try{
+    const r = await fetch(`${API}/admin/extend-trial`, {
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+adminToken,'X-Admin':'true'},
+      body:JSON.stringify({companyId:currentExtendId, days})
+    });
+    const d = await r.json();
+    if(r.ok){ msg.style.color='var(--green)'; msg.textContent='Trial extended by '+days+' days.'; setTimeout(()=>closeModal('extend-modal'),1500); }
+    else{ msg.style.color='var(--red)'; msg.textContent=d.error||'Failed to extend trial.'; }
+  }catch(e){ msg.style.color='var(--red)'; msg.textContent='Connection error.'; }
+}
+
+async function suspendAccount(id, name){
+  if(!confirm(`Suspend ${name}? They won't be able to log in.`)) return;
+  try{
+    await fetch(`${API}/admin/suspend`, {method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+adminToken,'X-Admin':'true'},body:JSON.stringify({companyId:id})});
+    alert(`${name} has been suspended.`);
+    loadCustomers();
+  }catch(e){ alert('Failed to suspend account.'); }
+}
+
+async function suspendUser(id, name){
+  if(!confirm(`Suspend user ${name}?`)) return;
+  try{
+    await fetch(`${API}/admin/suspend-user`, {method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+adminToken,'X-Admin':'true'},body:JSON.stringify({userId:id})});
+    alert(`${name} has been suspended.`);
+    loadUsers();
+  }catch(e){ alert('Failed to suspend user.'); }
+}
+
+function closeModal(id){ document.getElementById(id).classList.remove('show'); }
+
+// ── HELPERS ───────────────────────────────────────────────────
+function esc(s){ return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+function timeAgo(d){
+  if(!d) return '—';
+  const diff = Date.now()-new Date(d).getTime();
+  const min=Math.floor(diff/60000),hr=Math.floor(min/60),day=Math.floor(hr/24);
+  if(day>30) return new Date(d).toLocaleDateString();
+  if(day>0) return day+'d ago';
+  if(hr>0) return hr+'h ago';
+  if(min>0) return min+'m ago';
+  return 'Just now';
+}
+
+function planChip(plan){
+  const p = (plan||'free').toLowerCase();
+  if(p==='enterprise') return '<span class="chip chip-purple" style="background:rgba(139,92,246,0.1);color:#8B5CF6;border:1px solid rgba(139,92,246,0.2)">Enterprise</span>';
+  if(p==='business') return '<span class="chip chip-blue">Business</span>';
+  if(p==='starter') return '<span class="chip chip-orange">Starter</span>';
+  return '<span class="chip chip-gray">Free</span>';
+}
+
+function statusChip(s){
+  const status = (s||'').toLowerCase();
+  if(status==='active') return '<span class="chip chip-green">Active</span>';
+  if(status==='trialing') return '<span class="chip chip-blue">Trial</span>';
+  if(status==='canceled'||status==='cancelled') return '<span class="chip chip-red">Canceled</span>';
+  if(status==='past_due') return '<span class="chip" style="background:rgba(245,158,11,0.1);color:var(--yellow);border:1px solid rgba(245,158,11,0.2)">Past Due</span>';
+  return '<span class="chip chip-gray">'+(s||'Unknown')+'</span>';
+}
+</script>
+</body>
+</html>
