@@ -128,6 +128,10 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
     </div>
     <div class="l-label">Admin Password</div>
     <input class="l-input" type="password" id="admin-pass" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')doAdminLogin()"/>
+    <div class="l-label" style="margin-top:0.75rem">Your Account Email</div>
+    <input class="l-input" type="email" id="admin-email" placeholder="njirussnkar@gmail.com"/>
+    <div class="l-label">Your Account Password</div>
+    <input class="l-input" type="password" id="admin-user-pass" placeholder="Your CyberShield password" onkeydown="if(event.key==='Enter')doAdminLogin()"/>
     <button class="l-btn" onclick="doAdminLogin()">Access Admin Panel</button>
     <div class="l-err" id="login-err"></div>
   </div>
@@ -368,15 +372,42 @@ let allUsers = [];
 let currentExtendId = null;
 
 // ── AUTH ──────────────────────────────────────────────────────
-function doAdminLogin(){
+async function doAdminLogin(){
   const pass = document.getElementById('admin-pass').value;
-  if(pass === ADMIN_PASSWORD){
-    adminToken = 'admin_' + Date.now();
-    sessionStorage.setItem('admin_token', adminToken);
-    showAdmin();
-  } else {
-    document.getElementById('login-err').textContent = 'Incorrect password.';
+  const email = document.getElementById('admin-email').value.trim();
+  const userPass = document.getElementById('admin-user-pass').value;
+  const err = document.getElementById('login-err');
+
+  if(pass !== ADMIN_PASSWORD){ err.textContent='Incorrect admin password.'; return; }
+
+  err.textContent = 'Signing in...';
+
+  // Also log into the API to get JWT for scanner
+  if(email && userPass){
+    try{
+      const r = await fetch(`${API}/auth/login`, {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({email, password:userPass})
+      });
+      const d = await r.json();
+      if(r.ok && d.accessToken){
+        sessionStorage.setItem('cs_token', d.accessToken);
+        sessionStorage.setItem('cs_email', d.user?.email||email);
+      } else {
+        err.textContent = 'Account login failed: '+(d.error||'Check email/password');
+        return;
+      }
+    }catch(e){
+      err.textContent = 'Connection error logging into account.';
+      return;
+    }
   }
+
+  adminToken = 'admin_' + Date.now();
+  sessionStorage.setItem('admin_token', adminToken);
+  err.textContent = '';
+  showAdmin();
 }
 
 function adminLogout(){
@@ -806,11 +837,7 @@ async function runAdminScan(){
 
   try{
     const token = sessionStorage.getItem('cs_token');
-    if(!token){
-      alert('To use the scanner, you need to be logged in to your CyberShield account.\n\nOpen app.html in another tab, log in, then come back here.');
-      btn.textContent='▶ Run Scan'; btn.disabled=false;
-      return;
-    }
+    if(!token){ alert('No account token found. Please log out and log back in with your email and password.'); btn.textContent='▶ Run Scan'; btn.disabled=false; return; }
     
     const r = await fetch(`${SCANNER_API}/scanner/scan`, {
       method: 'POST',
