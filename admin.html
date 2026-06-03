@@ -320,7 +320,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 
 <script>
 const API = 'https://cybershield-backend-production-492b.up.railway.app';
-const ADMIN_PASSWORD = 'Wooking1521!!';
+const ADMIN_PASSWORD = 'CyberShield2026!Admin';
 let adminToken = sessionStorage.getItem('admin_token');
 let allCustomers = [];
 let allUsers = [];
@@ -503,9 +503,11 @@ function renderCustomers(list){
       <td style="color:var(--orange);font-weight:700">$${mrr}/mo</td>
       <td style="color:var(--muted);font-size:0.75rem">${c.created_at?new Date(c.created_at).toLocaleDateString():'-'}</td>
       <td style="color:var(--muted);font-size:0.75rem">${c.last_active?timeAgo(c.last_active):'Never'}</td>
-      <td style="display:flex;gap:6px">
+      <td style="display:flex;gap:4px;flex-wrap:wrap">
         <button class="act-btn" onclick="openExtend('${c.id}','${esc(c.name)}')">Extend</button>
+        <button class="act-btn danger" onclick="cancelSubscription('${c.id}','${esc(c.name)}')">Cancel Sub</button>
         <button class="act-btn danger" onclick="suspendAccount('${c.id}','${esc(c.name)}')">Suspend</button>
+        <button class="act-btn danger" onclick="deleteAccount('${c.id}','${esc(c.name)}')">Delete</button>
       </td>
     </tr>`;
   }).join('');
@@ -643,6 +645,37 @@ async function doExtendTrial(){
     if(r.ok){ msg.style.color='var(--green)'; msg.textContent='Trial extended by '+days+' days.'; setTimeout(()=>closeModal('extend-modal'),1500); }
     else{ msg.style.color='var(--red)'; msg.textContent=d.error||'Failed to extend trial.'; }
   }catch(e){ msg.style.color='var(--red)'; msg.textContent='Connection error.'; }
+}
+
+async function cancelSubscription(id, name){
+  if(!confirm(`Cancel subscription for ${name}?\n\nThis will cancel their Stripe subscription immediately. They will lose access at the end of their billing period.`)) return;
+  try{
+    const r = await fetch(`${API}/admin/cancel-subscription`, {
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+adminToken},
+      body:JSON.stringify({companyId:id})
+    });
+    const d = await r.json();
+    if(r.ok){ alert(`${name}'s subscription has been cancelled.`); loadCustomers(); loadOverview(); }
+    else alert('Failed: '+(d.error||'Unknown error'));
+  }catch(e){ alert('Connection error.'); }
+}
+
+async function deleteAccount(id, name){
+  const confirm1 = confirm(`DELETE account for ${name}?\n\nThis will permanently delete ALL their data including scans, breaches, trainings, and users.\n\nThis cannot be undone.`);
+  if(!confirm1) return;
+  const confirm2 = prompt(`Type DELETE to confirm permanent deletion of ${name}:`);
+  if(confirm2 !== 'DELETE'){ alert('Deletion cancelled.'); return; }
+  try{
+    const r = await fetch(`${API}/admin/delete-account`, {
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+adminToken},
+      body:JSON.stringify({companyId:id})
+    });
+    const d = await r.json();
+    if(r.ok){ alert(`${name} has been permanently deleted.`); loadCustomers(); loadOverview(); }
+    else alert('Failed: '+(d.error||'Unknown error'));
+  }catch(e){ alert('Connection error.'); }
 }
 
 async function suspendAccount(id, name){
