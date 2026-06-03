@@ -1239,16 +1239,18 @@ async function runScan(){
     document.getElementById('scan-result-url').textContent=url.replace(/https?:\/\//,'').replace(/\/$/,'');
     lastScanResults=null; lastScanUrl=url;
 
-    // Handle new backend format with findings array
-    if(raw.findings && Array.isArray(raw.findings)){
-      const findings = raw.findings;
+    // Check for findings array at top level (d.findings) or nested (d.results.findings)
+    const findings = d.findings || raw.findings;
+
+    if(findings && Array.isArray(findings) && findings.length > 0){
       console.log('First finding:', JSON.stringify(findings[0]));
       console.log('First recommendation:', JSON.stringify(raw.recommendations?.[0]));
       const pass = findings.filter(f=>f.status==='pass'||f.passed===true).length;
       const fail = findings.filter(f=>f.status==='fail'||f.passed===false).length;
       const warn = findings.length - pass - fail;
-      const riskScore = raw.riskScore||raw.risk_score||'—';
-      const riskLevel = raw.riskLevel||raw.risk_level||'—';
+      const riskScore = d.riskScore||d.risk_score||raw.riskScore||raw.risk_score||'—';
+      const riskLevel = d.riskLevel||d.risk_level||raw.riskLevel||raw.risk_level||'—';
+      const recommendations = d.recommendations||raw.recommendations||[];
 
       // Store for PDF with correct field names
       lastScanResults = findings.map(f=>{
@@ -1283,10 +1285,10 @@ async function runScan(){
               ${desc?`<div style="font-size:0.68rem;color:var(--muted);line-height:1.5">${desc}</div>`:''}
             </div>`;
           }).join('')}
-            ${raw.recommendations&&Array.isArray(raw.recommendations)&&raw.recommendations.length?`
+            ${recommendations&&Array.isArray(recommendations)&&recommendations.length?`
           <div style="margin-top:0.75rem;padding-top:0.75rem;border-top:1px solid var(--border2)">
             <div style="font-size:0.65rem;font-weight:800;color:var(--orange);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.625rem">Recommended Fixes</div>
-            ${raw.recommendations.sort((a,b)=>(a.priority||99)-(b.priority||99)).map(r=>{
+            ${recommendations.sort((a,b)=>(a.priority||99)-(b.priority||99)).map(r=>{
               const action = typeof r==='object'?(r.action||r.message||r.text||r.recommendation||''):r;
               const detail = typeof r==='object'?(r.detail||r.details||''):'';
               const effort = typeof r==='object'&&r.effort?r.effort:'';
@@ -1300,7 +1302,7 @@ async function runScan(){
             }).join('')}
           </div>`:''}
         </div>`;
-      window._lastRawRecommendations = raw.recommendations||[];
+      window._lastRawRecommendations = recommendations||[];
       pdfBtn.style.display='inline-flex';
       // Legacy format — simple key/value pairs
       const labels={ssl:'SSL Certificate',hsts:'HSTS Header',csp:'Content Security Policy',xframe:'X-Frame-Options',xContentType:'X-Content-Type',xss:'XSS Protection',spf:'SPF Record',dmarc:'DMARC Policy',cookies:'Secure Cookies',redirectsHttps:'HTTPS Redirect',sslValid:'SSL Valid',sslExpiry:'SSL Expiry',hstsEnabled:'HSTS Enabled',cspPresent:'CSP Present',xFrameOptions:'X-Frame-Options',isHttps:'HTTPS',sslDaysLeft:'SSL Days Left',httpStatus:'HTTP Status'};
