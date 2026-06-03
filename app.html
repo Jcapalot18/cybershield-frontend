@@ -1366,14 +1366,34 @@ function downloadScanPDF(){
   // Dark background
   doc.setFillColor(8,11,18);doc.rect(0,0,210,297,'F');
 
-  // Orange header
-  doc.setFillColor(255,107,0);doc.rect(0,0,210,18,'F');
-  doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(13);doc.text('CyberShield',M,12);
-  doc.setFont('helvetica','normal');doc.setFontSize(7);doc.setTextColor(255,210,180);doc.text('SECURITY OPERATIONS PLATFORM',M,16.5);
-  doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(11);doc.text('VULNERABILITY SCAN REPORT',W-M,11,{align:'right'});
-  doc.setFont('helvetica','normal');doc.setFontSize(7);doc.setTextColor(255,210,180);doc.text(new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}),W-M,16,{align:'right'});
+  // Orange header bar
+  doc.setFillColor(255,107,0);doc.rect(0,0,210,22,'F');
 
-  let y=26;
+  // Shield logo — drawn with jsPDF
+  const sx=M, sy=3, sw=10, sh=14;
+  doc.setFillColor(255,255,255,0.15);
+  // Shield outline (approximated with lines)
+  doc.setDrawColor(255,255,255);doc.setLineWidth(0.8);
+  doc.lines([[sw/2,0],[sw,sh*0.3],[sw,sh*0.65],[sw/2,sh],[0,sh*0.65],[0,sh*0.3],[-sw/2+sw/2,0]],sx,sy,null,'FD');
+  // Inner diamond shape
+  doc.setFillColor(255,107,0);doc.setLineWidth(0);
+  doc.lines([[sw/4,0],[sw/2,sh*0.25],[sw/4,sh*0.5],[-sw/4,sh*0.5],[-sw/2+sw/4,sh*0.25],[0,-sh*0.25]],sx+sw/4,sy+sh*0.25,null,'F');
+
+  // CyberShield text
+  doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(14);
+  doc.text('Cyber',M+13,12);
+  doc.setTextColor(255,230,200);
+  doc.text('Shield',M+13+doc.getTextWidth('Cyber'),12);
+  doc.setFont('helvetica','normal');doc.setFontSize(6.5);doc.setTextColor(255,220,190);
+  doc.text('SECURITY OPERATIONS PLATFORM',M+13,17);
+
+  // Right side title
+  doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(11);
+  doc.text('VULNERABILITY SCAN REPORT',W-M,11,{align:'right'});
+  doc.setFont('helvetica','normal');doc.setFontSize(7);doc.setTextColor(255,210,180);
+  doc.text(new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}),W-M,17,{align:'right'});
+
+  let y=30;
 
   // Target
   doc.setFillColor(13,18,32);doc.setDrawColor(30,40,60);doc.roundedRect(M,y,cw,14,2,2,'FD');
