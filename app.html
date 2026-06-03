@@ -1244,9 +1244,9 @@ async function runScan(){
         if(findings && Array.isArray(findings) && findings.length > 0){
       console.log('First finding:', JSON.stringify(findings[0]));
       console.log('First recommendation:', JSON.stringify(raw.recommendations?.[0]));
-      const pass = findings.filter(f=>f.status==='pass'||f.passed===true).length;
-      const fail = findings.filter(f=>f.status==='fail'||f.passed===false).length;
-      const warn = findings.length - pass - fail;
+      const pass = d.summary?.passed || findings.filter(f=>f.status==='pass'||f.severity==='pass').length;
+      const fail = d.summary ? (d.summary.critical + d.summary.high) : findings.filter(f=>f.status==='fail'||['critical','high'].includes(f.severity)).length;
+      const warn = d.summary ? (d.summary.medium + d.summary.low) : findings.length - pass - fail;
       const riskScore = d.riskScore||d.risk_score||raw.riskScore||raw.risk_score||'—';
       const riskLevel = d.riskLevel||d.risk_level||raw.riskLevel||raw.risk_level||'—';
       const recommendations = d.recommendations||raw.recommendations||[];
@@ -1271,23 +1271,34 @@ async function runScan(){
           ${findings.map(f=>{
             const label = f.issue||f.name||f.check||f.label||'Check';
             const severity = (f.severity||'warn').toLowerCase();
-            const cls = severity==='pass'?'pass':['critical','high','fail','error'].includes(severity)?'fail':severity==='low'?'warn':'warn';
-            const statusText = cls==='pass'?'✓ PASS':severity==='critical'?'✗ CRITICAL':severity==='high'?'✗ HIGH':severity==='medium'?'⚠ MEDIUM':'⚠ LOW';
+            const isPass = severity==='pass';
+            const cls = isPass?'pass':['critical','high','fail','error'].includes(severity)?'fail':'warn';
+            const statusText = isPass?'✓ PASS':severity==='critical'?'✗ CRITICAL':severity==='high'?'✗ HIGH':severity==='medium'?'⚠ MEDIUM':'⚠ LOW';
             const desc = f.description||'';
             const pe = getPlainEnglish(f);
-            return `<div class="r-row" style="flex-direction:column;align-items:flex-start;gap:6px;padding:1rem">
-              <div style="display:flex;align-items:center;justify-content:space-between;width:100%">
+            const currentVal = f.currentValue;
+            const recommendedVal = f.recommendedValue;
+            const borderColor = isPass?'var(--green)':cls==='fail'?'var(--red)':'var(--yellow)';
+            return `<div style="border:1px solid var(--border2);border-left:3px solid ${borderColor};border-radius:8px;padding:1rem;margin-bottom:8px">
+              <div style="display:flex;align-items:center;justify-content:space-between;width:100%;margin-bottom:${(pe||currentVal)?'8px':'0'}">
                 <span style="font-size:0.82rem;font-weight:700;color:var(--text)">${label}</span>
-                <span class="r-val ${cls}" style="font-size:0.7rem;font-weight:800;flex-shrink:0">${statusText}</span>
+                <span class="r-val ${cls}" style="font-size:0.7rem;font-weight:800;flex-shrink:0;margin-left:8px">${statusText}</span>
               </div>
-              ${pe?`
-              <div style="background:rgba(255,255,255,0.02);border-radius:6px;padding:0.625rem 0.875rem;width:100%;border-left:3px solid ${cls==='fail'?'var(--red)':cls==='pass'?'var(--green)':'var(--yellow)'}">
-                <div style="font-size:0.7rem;font-weight:700;color:${cls==='fail'?'var(--red)':cls==='pass'?'var(--green)':'var(--yellow)'};margin-bottom:3px;text-transform:uppercase;letter-spacing:0.06em">What this means</div>
+              ${currentVal&&!isPass?`<div style="display:flex;gap:8px;margin-bottom:6px;flex-wrap:wrap">
+                <div style="background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.15);border-radius:5px;padding:3px 10px;font-size:0.68rem">
+                  <span style="color:var(--muted)">Current: </span><span style="color:var(--red);font-family:monospace">${currentVal}</span>
+                </div>
+                ${recommendedVal?`<div style="background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.15);border-radius:5px;padding:3px 10px;font-size:0.68rem">
+                  <span style="color:var(--muted)">Recommended: </span><span style="color:var(--green);font-family:monospace">${recommendedVal}</span>
+                </div>`:''}
+              </div>`:''}
+              ${pe?`<div style="background:rgba(255,255,255,0.02);border-radius:6px;padding:0.625rem 0.875rem">
+                <div style="font-size:0.7rem;font-weight:700;color:${borderColor};margin-bottom:3px;text-transform:uppercase;letter-spacing:0.06em">What this means</div>
                 <div style="font-size:0.75rem;color:rgba(255,255,255,0.7);line-height:1.6;margin-bottom:8px">${pe.means}</div>
                 <div style="font-size:0.7rem;font-weight:700;color:var(--orange);margin-bottom:3px;text-transform:uppercase;letter-spacing:0.06em">What to do</div>
                 <div style="font-size:0.75rem;color:rgba(255,255,255,0.7);line-height:1.6">${pe.todo}</div>
               </div>`
-              :desc?`<div style="font-size:0.75rem;color:var(--muted);line-height:1.6">${desc}</div>`:''}
+              :desc&&!isPass?`<div style="font-size:0.75rem;color:var(--muted);line-height:1.6">${desc}</div>`:''}
             </div>`;
           }).join('')}
             ${recommendations&&Array.isArray(recommendations)&&recommendations.length?`
