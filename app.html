@@ -1475,7 +1475,7 @@ async function downloadScanPDF(){
   // Orange header bar
   doc.setFillColor(255,107,0);doc.rect(0,0,210,26,'F');
 
-  // Logo - use rendered SVG if available, fallback to rectangles
+  // Logo on LEFT, title on RIGHT
   if(logoDataUrl){
     doc.addImage(logoDataUrl, 'PNG', M, 3, 18, 18);
     doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(16);
@@ -1484,7 +1484,6 @@ async function downloadScanPDF(){
     doc.setTextColor(255,180,100);
     doc.text('Shield', M+21+cyberW, 14);
   } else {
-    // Fallback rect logo
     doc.setLineWidth(0);
     doc.setFillColor(255,255,255);doc.rect(M, 3, 13, 18, 'F');
     doc.setFillColor(180,60,0);doc.rect(M+1.5, 4.5, 10, 15, 'F');
@@ -1501,7 +1500,7 @@ async function downloadScanPDF(){
   doc.setFont('helvetica','normal');doc.setFontSize(6);doc.setTextColor(255,220,185);
   doc.text('SECURITY OPERATIONS PLATFORM', logoDataUrl?M+21:M+15, 19.5);
 
-  // Right side
+  // Right side — title only (no logo here)
   doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(10);
   doc.text('VULNERABILITY SCAN REPORT', W-M, 13, {align:'right'});
   doc.setFont('helvetica','normal');doc.setFontSize(6.5);doc.setTextColor(255,210,175);
@@ -1515,13 +1514,14 @@ async function downloadScanPDF(){
   doc.setTextColor(232,232,240);doc.setFont('helvetica','normal');doc.setFontSize(11);doc.text(lastScanUrl,M+4,y+11.5);doc.text(new Date().toLocaleString(),W/2,y+11.5);
   y+=20;
 
-  // Summary boxes
+  // Summary boxes — use raw findings for accurate counts
+  const rawFindings = window._lastRawFindings || [];
+  const passCount = rawFindings.filter(f=>f.severity==='pass').length;
+  const failCount = rawFindings.filter(f=>['critical','high'].includes((f.severity||'').toLowerCase())).length;
+  const warnCount = rawFindings.filter(f=>['medium','low'].includes((f.severity||'').toLowerCase())).length;
   const rc2=(v)=>{if(v===true||['pass','ok','valid','configured','present','enabled','passed'].includes(String(v).toLowerCase()))return 'pass';if(v===false||['fail','failed','missing','invalid','error','absent','disabled'].includes(String(v).toLowerCase()))return 'fail';return 'warn';};
-  const pass=rows.filter(([,v])=>rc2(v)==='pass').length;
-  const fail=rows.filter(([,v])=>rc2(v)==='fail').length;
-  const warn=rows.length-pass-fail;
   const bw=(cw-8)/3;
-  [[pass,[16,185,129],[0,40,20],'PASSED'],[fail,[239,68,68],[50,10,15],'FAILED'],[warn,[245,158,11],[40,35,0],'WARNINGS']].forEach(([val,sc,bg,lbl],i)=>{
+  [[passCount,[16,185,129],[0,40,20],'PASSED'],[failCount,[239,68,68],[50,10,15],'FAILED'],[warnCount,[245,158,11],[40,35,0],'WARNINGS']].forEach(([val,sc,bg,lbl],i)=>{
     const bx=M+i*(bw+4);
     doc.setFillColor(...bg);doc.setDrawColor(...sc);doc.roundedRect(bx,y,bw,18,2,2,'FD');
     doc.setTextColor(...sc);doc.setFont('helvetica','bold');doc.setFontSize(16);doc.text(String(val),bx+bw/2,y+12,{align:'center'});
