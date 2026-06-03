@@ -1157,20 +1157,70 @@ async function runBreach(){
     if(r.status===402||d.limitReached){
       results.innerHTML=`<div class="limit-box"><div style="color:var(--orange);flex-shrink:0;font-size:1.1rem">⚠</div><div class="limit-txt"><strong>Limit reached.</strong> Upgrade for unlimited checks.<div class="up-link" onclick="openUpgradeModal()">Upgrade now →</div></div></div>`;
     }else if(d.breaches&&d.breaches.length>0){
+      const dataTypes = {
+        'Passwords':'🔑 Passwords',
+        'Email addresses':'📧 Email addresses',
+        'Usernames':'👤 Usernames',
+        'Phone numbers':'📱 Phone numbers',
+        'Physical addresses':'🏠 Physical addresses',
+        'Credit cards':'💳 Credit card info',
+        'Social security numbers':'🔒 Social Security Numbers',
+        'IP addresses':'🌐 IP addresses',
+        'Names':'👤 Names',
+        'Dates of birth':'📅 Dates of birth',
+        'Geographic locations':'📍 Location data',
+        'Device information':'💻 Device info',
+        'Financial data':'💰 Financial data',
+        'Health data':'🏥 Health data'
+      };
       results.innerHTML=`
-        <div class="r-row" style="border-color:rgba(239,68,68,0.2);background:rgba(239,68,68,0.04)">
-          <span class="r-key" style="color:var(--red)">⚠ ${d.breaches.length} BREACH${d.breaches.length>1?'ES':''} FOUND</span>
-          <span class="r-val fail">ACTION REQUIRED</span>
+        <div style="background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.2);border-radius:8px;padding:1rem;margin-bottom:1rem">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+            <span style="font-size:0.875rem;font-weight:800;color:var(--red)">⚠ ${d.breaches.length} BREACH${d.breaches.length>1?'ES':''} FOUND</span>
+            <span style="font-size:0.68rem;font-weight:700;background:rgba(239,68,68,0.15);color:var(--red);padding:3px 8px;border-radius:4px">ACTION REQUIRED</span>
+          </div>
+          <div style="font-size:0.75rem;color:rgba(255,255,255,0.6);line-height:1.6">This email appeared in <strong style="color:var(--text)">${d.breaches.length}</strong> known data breach${d.breaches.length>1?'es':''}. Hackers may already have access to this account's password.</div>
         </div>
+        <div style="background:rgba(255,107,0,0.05);border:1px solid rgba(255,107,0,0.15);border-radius:8px;padding:1rem;margin-bottom:1rem">
+          <div style="font-size:0.72rem;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px">What to do immediately</div>
+          <div style="display:flex;flex-direction:column;gap:5px">
+            <div style="font-size:0.75rem;color:rgba(255,255,255,0.7)">1. <strong style="color:var(--text)">Change the password</strong> for this email account right now</div>
+            <div style="font-size:0.75rem;color:rgba(255,255,255,0.7)">2. <strong style="color:var(--text)">Enable two-factor authentication</strong> on the account</div>
+            <div style="font-size:0.75rem;color:rgba(255,255,255,0.7)">3. <strong style="color:var(--text)">Change any other accounts</strong> that used the same password</div>
+            <div style="font-size:0.75rem;color:rgba(255,255,255,0.7)">4. <strong style="color:var(--text)">Watch for phishing emails</strong> — attackers may use your info to target you</div>
+          </div>
+        </div>
+        <div style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px">Breach Details</div>
         ${d.breaches.map(b=>{
-          const name=b.Name||b.name||b.title||'Unknown';
+          const name=b.Name||b.name||b.title||'Unknown Service';
           const date=b.BreachDate||b.breachDate||b.date||'—';
           const domain=b.Domain||b.domain||'';
-          return `<div class="r-row"><div><span class="r-key">${name}</span>${domain?`<div style="font-size:0.6rem;color:var(--muted);margin-top:1px">${domain}</div>`:''}</div><span class="r-val warn">${date}</span></div>`;
+          const dataClasses=b.DataClasses||b.dataClasses||[];
+          const hasPassword=dataClasses.some(dc=>dc.toLowerCase().includes('password'));
+          return `<div style="border:1px solid var(--border);border-left:3px solid ${hasPassword?'var(--red)':'var(--yellow)'};border-radius:8px;padding:0.875rem;margin-bottom:8px">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:${dataClasses.length?'8px':'0'}">
+              <div>
+                <div style="font-size:0.82rem;font-weight:700;color:var(--text)">${name}</div>
+                ${domain?`<div style="font-size:0.65rem;color:var(--muted);margin-top:1px">${domain} · Breached: ${date}</div>`:`<div style="font-size:0.65rem;color:var(--muted);margin-top:1px">Breached: ${date}</div>`}
+              </div>
+              <span style="font-size:0.62rem;font-weight:700;padding:2px 8px;border-radius:4px;background:${hasPassword?'rgba(239,68,68,0.1)':'rgba(245,158,11,0.1)'};color:${hasPassword?'var(--red)':'var(--yellow)'};border:1px solid ${hasPassword?'rgba(239,68,68,0.2)':'rgba(245,158,11,0.2)'}">${hasPassword?'HIGH RISK':'MEDIUM'}</span>
+            </div>
+            ${dataClasses.length?`<div style="font-size:0.7rem;color:var(--muted);margin-bottom:4px">Exposed data:</div>
+            <div style="display:flex;flex-wrap:wrap;gap:4px">
+              ${dataClasses.map(dc=>`<span style="font-size:0.65rem;padding:2px 8px;border-radius:4px;background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.6);border:1px solid var(--border)">${dataTypes[dc]||dc}</span>`).join('')}
+            </div>`:''}
+          </div>`;
         }).join('')}`;
       addBreachHistory(email,'⚠ '+d.breaches.length+' breach'+(d.breaches.length>1?'es':''),'var(--red)');
     }else{
-      results.innerHTML=`<div class="r-row" style="border-color:rgba(16,185,129,0.15);background:rgba(16,185,129,0.04)"><span class="r-key" style="color:var(--green)">✓ NO BREACHES FOUND</span><span class="r-val pass">SECURE</span></div>`;
+      results.innerHTML=`
+        <div style="background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.2);border-radius:8px;padding:1.25rem">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+            <span style="font-size:0.875rem;font-weight:800;color:var(--green)">✓ No breaches found</span>
+            <span style="font-size:0.68rem;font-weight:700;background:rgba(16,185,129,0.1);color:var(--green);padding:3px 8px;border-radius:4px">SECURE</span>
+          </div>
+          <div style="font-size:0.75rem;color:rgba(255,255,255,0.6);line-height:1.6">This email has not appeared in any known data breaches. Keep it secure by using a strong unique password and enabling two-factor authentication.</div>
+        </div>`;
       addBreachHistory(email,'✓ Secure','var(--green)');
     }
   }catch(e){results.innerHTML=`<div style="color:var(--red);font-size:0.75rem;padding:0.5rem">Error. Please try again.</div>`;}
