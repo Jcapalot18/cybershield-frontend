@@ -1422,36 +1422,52 @@ function downloadScanPDF(){
     y+=lh+3;
   });
 
-  // Recommendations
-  const failures=rows.filter(([,v])=>rc2(v)==='fail');
-  if(failures.length>0&&y<240){
-    y+=6;
-    doc.setTextColor(255,107,0);doc.setFont('helvetica','bold');doc.setFontSize(7.5);doc.text('/ RECOMMENDED FIXES',M,y);
-    doc.line(M+46,y-1,W-M,y-1);y+=6;
-    const recs={ssl:'Renew your SSL certificate immediately — expired certificates trigger browser warnings and loss of trust.',hsts:'Add Strict-Transport-Security header to enforce HTTPS connections across your site.',csp:'Implement Content-Security-Policy header to prevent XSS and code injection attacks.',xframe:'Add X-Frame-Options: DENY to prevent clickjacking attacks.',spf:'Configure SPF DNS record to prevent email spoofing from your domain.',dmarc:'Set up DMARC policy (p=reject) to protect against email fraud.',cookies:'Set Secure and HttpOnly flags on all session cookies.',redirectsHttps:'Configure 301 permanent redirects from HTTP to HTTPS.'};
-    failures.slice(0,5).forEach(([k])=>{
-      if(y>272)return;
-      doc.setFillColor(35,15,5);doc.setDrawColor(80,35,0);doc.roundedRect(M,y-1,cw,10,1,1,'FD');
-      doc.setTextColor(255,120,60);doc.setFont('helvetica','bold');doc.setFontSize(6.5);doc.text('>>',M+2,y+6);
-      doc.setTextColor(200,180,165);doc.setFont('helvetica','normal');doc.text(String(k),M+10,y+6,{maxWidth:cw-12});
-      y+=13;
-    });
+  // Recommendations — always show if available
+  const recs = window._lastRawRecommendations||[];
+  if(recs.length > 0 && y < 250){
+    y+=8;
+    doc.setTextColor(255,107,0);doc.setFont('helvetica','bold');doc.setFontSize(8);
+    doc.text('RECOMMENDED FIXES',M,y);
+    doc.setDrawColor(255,107,0);doc.setLineWidth(0.3);doc.line(M+52,y-1,W-M,y-1);
+    y+=7;
 
-    // Also add recommendations from raw data if available
-    if(window._lastRawRecommendations&&window._lastRawRecommendations.length){
-      y+=4;
-      doc.setTextColor(255,107,0);doc.setFont('helvetica','bold');doc.setFontSize(7.5);doc.text('/ IMPLEMENTATION DETAILS',M,y);
-      doc.line(M+54,y-1,W-M,y-1);y+=6;
-      window._lastRawRecommendations.slice(0,4).forEach(r=>{
-        if(y>275)return;
-        const action = r.action||r.message||String(r);
-        const detail = r.detail||'';
-        doc.setFillColor(20,12,5);doc.setDrawColor(60,30,0);doc.roundedRect(M,y-1,cw,detail?14:9,1,1,'FD');
-        doc.setTextColor(255,150,80);doc.setFont('helvetica','bold');doc.setFontSize(7);doc.text(action,M+3,y+5,{maxWidth:cw-6});
-        if(detail){doc.setTextColor(170,150,130);doc.setFont('helvetica','normal');doc.setFontSize(6.5);doc.text(detail,M+3,y+11,{maxWidth:cw-6});}
-        y+=detail?17:12;
-      });
-    }
+    recs.slice(0,5).forEach((r,i)=>{
+      if(y>268)return;
+      const action = typeof r==='object'?(r.action||r.message||String(r)):String(r);
+      const detail = typeof r==='object'?(r.detail||r.details||''):'';
+      const effort = typeof r==='object'&&r.effort?r.effort.toUpperCase():'';
+      const effortColor = effort==='LOW'?[16,185,129]:effort==='MEDIUM'?[245,158,11]:[239,68,68];
+
+      // Card background
+      const cardH = detail ? 18 : 11;
+      doc.setFillColor(18,22,35);doc.setDrawColor(60,40,10);
+      doc.roundedRect(M,y,cw,cardH,1.5,1.5,'FD');
+
+      // Priority number
+      doc.setFillColor(255,107,0);doc.circle(M+5,y+5.5,3,'F');
+      doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(6);
+      doc.text(String(i+1),M+5,y+7,{align:'center'});
+
+      // Action title
+      doc.setTextColor(230,230,245);doc.setFont('helvetica','bold');doc.setFontSize(8);
+      doc.text(action,M+11,y+6.5,{maxWidth:cw-30});
+
+      // Effort badge
+      if(effort){
+        doc.setFillColor(...effortColor);
+        doc.roundedRect(W-M-18,y+2,16,5,1,1,'F');
+        doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(5.5);
+        doc.text(effort,W-M-10,y+5.5,{align:'center'});
+      }
+
+      // Detail text
+      if(detail){
+        doc.setTextColor(150,160,180);doc.setFont('helvetica','normal');doc.setFontSize(6.5);
+        doc.text(detail,M+11,y+13,{maxWidth:cw-14});
+      }
+
+      y+=cardH+4;
+    });
   }
 
   // Footer
