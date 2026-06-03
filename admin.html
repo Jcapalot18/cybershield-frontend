@@ -366,7 +366,7 @@ function switchAdminTab(name, el){
 // ── API CALLS ─────────────────────────────────────────────────
 async function adminFetch(path){
   const r = await fetch(`${API}${path}`, {
-    headers: {'Authorization': 'Bearer ' + adminToken, 'X-Admin': 'true'}
+    headers: {'Authorization': 'Bearer ' + adminToken}
   });
   return r.json();
 }
