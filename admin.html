@@ -919,30 +919,63 @@ async function downloadAdminPDF(){
   // Download PDF directly using jsPDF
   const script = document.createElement('script');
   script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
-  script.onload = () => generateAdminPDF();
+  script.onload = () => generateAdminPDF().catch(console.error);
   document.head.appendChild(script);
 }
 
-function generateAdminPDF(){
+async function generateAdminPDF(){
   const {jsPDF} = window.jspdf;
   const doc = new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
   const W=210,M=20,cw=W-M*2;
 
   doc.setFillColor(8,11,18);doc.rect(0,0,210,297,'F');
   doc.setFillColor(255,107,0);doc.rect(0,0,210,26,'F');
-  doc.setLineWidth(0);
-  doc.setFillColor(255,255,255);doc.rect(M,3,20,20,'F');
-  doc.setFillColor(8,11,18);doc.rect(M+1,4,18,18,'F');
-  doc.setFillColor(255,107,0);
-  doc.rect(M+3,5,14,9,'F');doc.rect(M+4,14,12,3,'F');
-  doc.rect(M+6,17,8,2,'F');doc.rect(M+8,19,4,2,'F');
-  doc.setFillColor(255,255,255);
-  doc.rect(M+7,7,6,2.5,'F');doc.rect(M+6,9.5,2.5,4,'F');doc.rect(M+11.5,9.5,2.5,4,'F');
-  doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(16);
-  doc.text('Cyber',M+23,14);
-  doc.setTextColor(255,180,100);doc.text('Shield',M+23+doc.getTextWidth('Cyber'),14);
-  doc.setFont('helvetica','normal');doc.setFontSize(6);doc.setTextColor(255,220,185);
-  doc.text('SECURITY OPERATIONS PLATFORM',M+23,19.5);
+
+  // Render exact SVG logo via XMLSerializer
+  let adminLogoUrl = null;
+  try {
+    const svgNS = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(svgNS,'svg');
+    svg.setAttribute('xmlns',svgNS);svg.setAttribute('viewBox','0 0 32 32');
+    svg.setAttribute('width','128');svg.setAttribute('height','128');
+    const bg=document.createElementNS(svgNS,'rect');
+    bg.setAttribute('width','32');bg.setAttribute('height','32');
+    bg.setAttribute('rx','8');bg.setAttribute('fill','#080b12');svg.appendChild(bg);
+    const sh=document.createElementNS(svgNS,'path');
+    sh.setAttribute('d','M16 3L28 7.5V18C28 25 22 29.5 16 31C10 29.5 4 25 4 18V7.5L16 3Z');
+    sh.setAttribute('fill','rgba(255,107,0,0.15)');sh.setAttribute('stroke','#FF6B00');sh.setAttribute('stroke-width','1.5');svg.appendChild(sh);
+    const t=document.createElementNS(svgNS,'path');
+    t.setAttribute('d','M16 11L20 13.5L16 16L12 13.5Z');t.setAttribute('fill','rgba(255,107,0,0.3)');
+    t.setAttribute('stroke','#FF6B00');t.setAttribute('stroke-width','1');t.setAttribute('stroke-linejoin','round');svg.appendChild(t);
+    const l=document.createElementNS(svgNS,'path');
+    l.setAttribute('d','M12 13.5L16 16V21L12 18.5Z');l.setAttribute('fill','none');
+    l.setAttribute('stroke','#FF6B00');l.setAttribute('stroke-width','1');l.setAttribute('stroke-linejoin','round');svg.appendChild(l);
+    const r2=document.createElementNS(svgNS,'path');
+    r2.setAttribute('d','M20 13.5L16 16V21L20 18.5Z');r2.setAttribute('fill','rgba(255,107,0,0.15)');
+    r2.setAttribute('stroke','#FF6B00');r2.setAttribute('stroke-width','1');r2.setAttribute('stroke-linejoin','round');svg.appendChild(r2);
+    const ser=new XMLSerializer();
+    const blob=new Blob([ser.serializeToString(svg)],{type:'image/svg+xml;charset=utf-8'});
+    const burl=URL.createObjectURL(blob);
+    await new Promise(res=>{
+      const img=new Image();
+      img.onload=()=>{const c=document.createElement('canvas');c.width=128;c.height=128;c.getContext('2d').drawImage(img,0,0,128,128);adminLogoUrl=c.toDataURL('image/png');URL.revokeObjectURL(burl);res();};
+      img.onerror=()=>{URL.revokeObjectURL(burl);res();};img.src=burl;
+    });
+  } catch(e){}
+
+  if(adminLogoUrl){
+    doc.addImage(adminLogoUrl,'PNG',M,3,20,20);
+    doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(16);
+    doc.text('Cyber',M+23,14);
+    doc.setTextColor(255,180,100);doc.text('Shield',M+23+doc.getTextWidth('Cyber'),14);
+    doc.setFont('helvetica','normal');doc.setFontSize(6);doc.setTextColor(255,220,185);
+    doc.text('SECURITY OPERATIONS PLATFORM',M+23,19.5);
+  } else {
+    doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(16);
+    doc.text('CyberShield',M+3,14);
+    doc.setFont('helvetica','normal');doc.setFontSize(6);doc.setTextColor(255,220,185);
+    doc.text('SECURITY OPERATIONS PLATFORM',M+3,19.5);
+  }
   doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(10);
   doc.text('VULNERABILITY SCAN REPORT',W-M,13,{align:'right'});
   doc.setFont('helvetica','normal');doc.setFontSize(6.5);doc.setTextColor(255,210,175);
