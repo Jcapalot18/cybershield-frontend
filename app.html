@@ -1688,7 +1688,7 @@ async function openBillingPortal(){
     const d=await r.json();
     if(d.url){window.open(d.url,'_blank');}
     else{
-      document.getElementById('billing-msg').innerHTML=`<div style="margin-top:0.75rem;padding:8px 12px;background:var(--orange-dim);border:1px solid var(--orange-border);border-radius:6px;font-size:0.7rem;color:var(--muted)">${d.error?.includes('No billing')?'No subscription found. Complete checkout to subscribe.':'⚠ '+(d.error||'Could not open portal. Email support@cybershield.io')}</div>`;
+      document.getElementById('billing-msg').innerHTML=`<div style="margin-top:0.75rem;padding:8px 12px;background:var(--orange-dim);border:1px solid var(--orange-border);border-radius:6px;font-size:0.7rem;color:var(--muted)">${d.error?.includes('No billing')?'No subscription found. Complete checkout to subscribe.':'⚠ '+(d.error||'Could not open portal. Email support@cybrshieldtech.com')}</div>`;
     }
   }catch(e){
     document.getElementById('billing-msg').innerHTML=`<div style="margin-top:0.625rem;font-size:0.7rem;color:var(--red)">Connection error. Try again.</div>`;
