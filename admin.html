@@ -161,7 +161,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
     <div class="a-tab" onclick="switchAdminTab('trials',this)">Trials</div>
     <div class="a-tab" onclick="switchAdminTab('activity',this)">Security Activity</div>
     <div class="a-tab" onclick="switchAdminTab('users',this)">Users</div>
-    <div class="a-tab" onclick="switchAdminTab('scanner',this)">🔍 Scanner</div>
+    <div class="a-tab" onclick="switchAdminTab('scanner',this)">Scanner</div>
   </div>
 
   <div class="a-body">
@@ -303,14 +303,11 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
       </div>
     </div>
 
-  </div>
-</div>
-
     <!-- SCANNER PAGE -->
     <div class="a-page" id="page-scanner">
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;align-items:start">
         <div class="a-card">
-          <div class="a-card-hd"><div class="a-card-title">🔍 Vulnerability Scanner</div><div style="font-size:0.7rem;color:var(--muted)">Unlimited · Admin only</div></div>
+          <div class="a-card-hd"><div class="a-card-title">Vulnerability Scanner</div><div style="font-size:0.7rem;color:var(--muted)">Unlimited · Admin only</div></div>
           <div style="padding:1.5rem">
             <div class="l-label" style="margin-bottom:6px">Target URL</div>
             <input id="admin-scan-url" class="a-search" style="width:100%;margin-bottom:1rem;padding:10px 14px;font-size:0.875rem" placeholder="https://example.com" onkeydown="if(event.key==='Enter')runAdminScan()"/>
