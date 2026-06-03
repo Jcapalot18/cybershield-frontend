@@ -1500,8 +1500,8 @@ async function downloadScanPDF(){
 
   // Target
   doc.setFillColor(13,18,32);doc.setDrawColor(30,40,60);doc.roundedRect(M,y,cw,14,2,2,'FD');
-  doc.setTextColor(100,120,160);doc.setFontSize(6.5);doc.setFont('helvetica','bold');doc.text('TARGET',M+4,y+5.5);doc.text('SCANNED',W/2,y+5.5);
-  doc.setTextColor(232,232,240);doc.setFont('helvetica','normal');doc.setFontSize(9);doc.text(lastScanUrl,M+4,y+11.5);doc.text(new Date().toLocaleString(),W/2,y+11.5);
+  doc.setTextColor(100,120,160);doc.setFontSize(8);doc.setFont('helvetica','bold');doc.text('TARGET',M+4,y+5.5);doc.text('SCANNED',W/2,y+5.5);
+  doc.setTextColor(232,232,240);doc.setFont('helvetica','normal');doc.setFontSize(11);doc.text(lastScanUrl,M+4,y+11.5);doc.text(new Date().toLocaleString(),W/2,y+11.5);
   y+=20;
 
   // Summary boxes
@@ -1519,13 +1519,13 @@ async function downloadScanPDF(){
   y+=24;
 
   // Findings header
-  doc.setTextColor(255,107,0);doc.setFont('helvetica','bold');doc.setFontSize(7.5);doc.text('/ SECURITY FINDINGS',M,y);
+  doc.setTextColor(255,107,0);doc.setFont('helvetica','bold');doc.setFontSize(10);doc.text('/ SECURITY FINDINGS',M,y);
   doc.setDrawColor(255,107,0);doc.setLineWidth(0.3);doc.line(M+44,y-1,W-M,y-1);
   y+=5;
 
   // Table header
   doc.setFillColor(13,18,32);doc.rect(M,y,cw,6,'F');
-  doc.setTextColor(100,120,160);doc.setFont('helvetica','bold');doc.setFontSize(6);doc.text('CHECK',M+3,y+4);doc.text('STATUS',W-M-3,y+4,{align:'right'});
+  doc.setTextColor(100,120,160);doc.setFont('helvetica','bold');doc.setFontSize(8);doc.text('CHECK',M+3,y+4);doc.text('STATUS',W-M-3,y+4,{align:'right'});
   y+=8;
 
   rows.forEach(([k,v],i)=>{
@@ -1534,21 +1534,21 @@ async function downloadScanPDF(){
     const isFailed = ['critical','high','fail','failed','error'].includes(String(v).toLowerCase());
     const rawFinding = (window._lastRawFindings||[]).find(f=>(f.issue||f.name||'')===k);
     const pe = rawFinding ? getPlainEnglish(rawFinding) : null;
-    const cardH = pe ? 26 : 11;
+    const cardH = pe ? 32 : 14;
     doc.setFillColor(i%2===0?10:14,i%2===0?14:19,i%2===0?22:30);doc.rect(M,y,cw,cardH,'F');
     if(isPassed)doc.setFillColor(16,100,60);else if(isFailed)doc.setFillColor(200,50,60);else doc.setFillColor(140,100,0);
     doc.rect(M,y,2,cardH,'F');
-    doc.setTextColor(200,210,230);doc.setFont('helvetica','bold');doc.setFontSize(8.5);
+    doc.setTextColor(200,210,230);doc.setFont('helvetica','bold');doc.setFontSize(10);
     doc.text(String(k),M+5,y+7);
     const severity = String(v).toUpperCase();
     if(isPassed)doc.setTextColor(16,185,129);else if(['CRITICAL','HIGH'].includes(severity))doc.setTextColor(239,68,68);else if(severity==='MEDIUM')doc.setTextColor(245,158,11);else doc.setTextColor(200,180,80);
-    doc.setFont('helvetica','bold');doc.setFontSize(8);
+    doc.setFont('helvetica','bold');doc.setFontSize(9);
     doc.text(severity,W-M-3,y+7,{align:'right'});
     if(pe){
-      doc.setTextColor(130,145,175);doc.setFont('helvetica','normal');doc.setFontSize(6.2);
-      doc.text('What this means: '+pe.means,M+5,y+14,{maxWidth:cw-8});
-      doc.setTextColor(220,130,60);doc.setFont('helvetica','bold');doc.setFontSize(6.2);
-      doc.text('Action: '+pe.todo,M+5,y+21,{maxWidth:cw-8});
+      doc.setTextColor(130,145,175);doc.setFont('helvetica','normal');doc.setFontSize(8);
+      doc.text('What this means: '+pe.means,M+5,y+16,{maxWidth:cw-8});
+      doc.setTextColor(220,130,60);doc.setFont('helvetica','bold');doc.setFontSize(8);
+      doc.text('Action: '+pe.todo,M+5,y+25,{maxWidth:cw-8});
     }
     y+=cardH+3;
   });
@@ -1580,7 +1580,7 @@ async function downloadScanPDF(){
       doc.text(String(i+1),M+5,y+7,{align:'center'});
 
       // Action title
-      doc.setTextColor(230,230,245);doc.setFont('helvetica','bold');doc.setFontSize(8);
+      doc.setTextColor(230,230,245);doc.setFont('helvetica','bold');doc.setFontSize(10);
       doc.text(action,M+11,y+6.5,{maxWidth:cw-30});
 
       // Effort badge
@@ -1593,7 +1593,7 @@ async function downloadScanPDF(){
 
       // Detail text
       if(detail){
-        doc.setTextColor(150,160,180);doc.setFont('helvetica','normal');doc.setFontSize(6.5);
+        doc.setTextColor(150,160,180);doc.setFont('helvetica','normal');doc.setFontSize(8);
         doc.text(detail,M+11,y+13,{maxWidth:cw-14});
       }
 
