@@ -1367,33 +1367,38 @@ function downloadScanPDF(){
   doc.setFillColor(8,11,18);doc.rect(0,0,210,297,'F');
 
   // Orange header bar
-  doc.setFillColor(255,107,0);doc.rect(0,0,210,22,'F');
+  doc.setFillColor(255,107,0);doc.rect(0,0,210,26,'F');
 
-  // Shield logo — drawn with jsPDF
-  const sx=M, sy=3, sw=10, sh=14;
-  doc.setFillColor(255,255,255,0.15);
-  // Shield outline (approximated with lines)
-  doc.setDrawColor(255,255,255);doc.setLineWidth(0.8);
-  doc.lines([[sw/2,0],[sw,sh*0.3],[sw,sh*0.65],[sw/2,sh],[0,sh*0.65],[0,sh*0.3],[-sw/2+sw/2,0]],sx,sy,null,'FD');
-  // Inner diamond shape
-  doc.setFillColor(255,107,0);doc.setLineWidth(0);
-  doc.lines([[sw/4,0],[sw/2,sh*0.25],[sw/4,sh*0.5],[-sw/4,sh*0.5],[-sw/2+sw/4,sh*0.25],[0,-sh*0.25]],sx+sw/4,sy+sh*0.25,null,'F');
+  // Shield logo using simple rectangles
+  // Outer white shield body
+  doc.setFillColor(255,255,255);
+  doc.roundedRect(M, 4, 12, 16, 2, 2, 'F');
+  // Orange inner shield
+  doc.setFillColor(200,80,0);
+  doc.roundedRect(M+1.5, 5.5, 9, 13, 1.5, 1.5, 'F');
+  // White highlight bars (cyber lock icon look)
+  doc.setFillColor(255,255,255);
+  doc.roundedRect(M+3, 8, 6, 2.5, 0.5, 0.5, 'F');   // top bar
+  doc.roundedRect(M+3, 11.5, 2.5, 5, 0.5, 0.5, 'F'); // left bar
+  doc.roundedRect(M+6.5, 11.5, 2.5, 5, 0.5, 0.5, 'F'); // right bar
 
-  // CyberShield text
-  doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(14);
-  doc.text('Cyber',M+13,12);
-  doc.setTextColor(255,230,200);
-  doc.text('Shield',M+13+doc.getTextWidth('Cyber'),12);
-  doc.setFont('helvetica','normal');doc.setFontSize(6.5);doc.setTextColor(255,220,190);
-  doc.text('SECURITY OPERATIONS PLATFORM',M+13,17);
+  // CyberShield wordmark next to logo
+  doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(16);
+  const cyberTxt = 'Cyber';
+  doc.text(cyberTxt, M+15, 14);
+  const cyberW = doc.getTextWidth(cyberTxt);
+  doc.setTextColor(255,235,200);
+  doc.text('Shield', M+15+cyberW, 14);
+  doc.setFont('helvetica','normal');doc.setFontSize(6);doc.setTextColor(255,220,185);
+  doc.text('SECURITY OPERATIONS PLATFORM', M+15, 19.5);
 
-  // Right side title
-  doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(11);
-  doc.text('VULNERABILITY SCAN REPORT',W-M,11,{align:'right'});
-  doc.setFont('helvetica','normal');doc.setFontSize(7);doc.setTextColor(255,210,180);
-  doc.text(new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}),W-M,17,{align:'right'});
+  // Right side
+  doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(10);
+  doc.text('VULNERABILITY SCAN REPORT', W-M, 13, {align:'right'});
+  doc.setFont('helvetica','normal');doc.setFontSize(6.5);doc.setTextColor(255,210,175);
+  doc.text(new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}), W-M, 19, {align:'right'});
 
-  let y=30;
+  let y=34;
 
   // Target
   doc.setFillColor(13,18,32);doc.setDrawColor(30,40,60);doc.roundedRect(M,y,cw,14,2,2,'FD');
