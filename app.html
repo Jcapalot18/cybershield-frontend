@@ -1369,18 +1369,18 @@ function downloadScanPDF(){
   // Orange header bar
   doc.setFillColor(255,107,0);doc.rect(0,0,210,26,'F');
 
-  // Shield logo using simple rectangles
-  // Outer white shield body
-  doc.setFillColor(255,255,255);
-  doc.roundedRect(M, 4, 12, 16, 2, 2, 'F');
-  // Orange inner shield
-  doc.setFillColor(200,80,0);
-  doc.roundedRect(M+1.5, 5.5, 9, 13, 1.5, 1.5, 'F');
-  // White highlight bars (cyber lock icon look)
-  doc.setFillColor(255,255,255);
-  doc.roundedRect(M+3, 8, 6, 2.5, 0.5, 0.5, 'F');   // top bar
-  doc.roundedRect(M+3, 11.5, 2.5, 5, 0.5, 0.5, 'F'); // left bar
-  doc.roundedRect(M+6.5, 11.5, 2.5, 5, 0.5, 0.5, 'F'); // right bar
+  // Shield logo - plain rects only (maximum compatibility)
+  doc.setLineWidth(0);
+  // White outer shield
+  doc.setFillColor(255,255,255);doc.rect(M, 3, 13, 18, 'F');
+  // Dark orange inner
+  doc.setFillColor(180,60,0);doc.rect(M+1.5, 4.5, 10, 15, 'F');
+  // White lock top
+  doc.setFillColor(255,255,255);doc.rect(M+3.5, 7.5, 7, 3, 'F');
+  // White lock body left
+  doc.setFillColor(255,255,255);doc.rect(M+3.5, 10.5, 3, 6, 'F');
+  // White lock body right
+  doc.setFillColor(255,255,255);doc.rect(M+7, 10.5, 3, 6, 'F');
 
   // CyberShield wordmark next to logo
   doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(16);
