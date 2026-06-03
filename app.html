@@ -1304,6 +1304,7 @@ async function runScan(){
         </div>`;
       window._lastRawRecommendations = recommendations||[];
       pdfBtn.style.display='inline-flex';
+    } else {
       // Legacy format — simple key/value pairs
       const labels={ssl:'SSL Certificate',hsts:'HSTS Header',csp:'Content Security Policy',xframe:'X-Frame-Options',xContentType:'X-Content-Type',xss:'XSS Protection',spf:'SPF Record',dmarc:'DMARC Policy',cookies:'Secure Cookies',redirectsHttps:'HTTPS Redirect',sslValid:'SSL Valid',sslExpiry:'SSL Expiry',hstsEnabled:'HSTS Enabled',cspPresent:'CSP Present',xFrameOptions:'X-Frame-Options',isHttps:'HTTPS',sslDaysLeft:'SSL Days Left',httpStatus:'HTTP Status'};
       const rc=(v)=>{if(v===true||['pass','ok','valid','configured','present','enabled'].includes(String(v).toLowerCase()))return 'pass';if(v===false||['fail','missing','invalid','error','absent','disabled'].includes(String(v).toLowerCase()))return 'fail';return 'warn';};
