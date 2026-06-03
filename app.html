@@ -1241,71 +1241,7 @@ async function runScan(){
     // Check for findings array at top level (d.findings) or nested (d.results.findings)
     const findings = d.findings || raw.findings;
 
-    // Plain English explanations for each check type
-    const plainEnglish = {
-      'missing_header': {
-        'strict-transport-security': {
-          means: 'Your website can be intercepted by hackers on public WiFi networks.',
-          todo: 'Forward this report to your web developer or hosting company and ask them to "enable HSTS." Takes 5 minutes.'
-        },
-        'content-security-policy': {
-          means: 'Hackers could inject malicious code into your website and steal your visitors\' data.',
-          todo: 'Ask your web developer to add a Content Security Policy. This protects your customers from malicious scripts.'
-        },
-        'x-frame-options': {
-          means: 'Your website could be embedded inside a fake site to trick your customers into giving up their information.',
-          todo: 'Ask your web developer to add clickjacking protection. Takes 5 minutes and is a simple configuration change.'
-        },
-        'x-content-type-options': {
-          means: 'Browsers could misinterpret files on your site, which attackers can exploit.',
-          todo: 'Ask your web developer to add one line to your server configuration. Quick fix.'
-        },
-        'referrer-policy': {
-          means: 'When visitors leave your site, your website address is shared with other sites — potentially leaking sensitive URLs.',
-          todo: 'Ask your web developer to add a Referrer Policy header. Simple one-line fix.'
-        },
-        'permissions-policy': {
-          means: 'Your website gives browsers unrestricted access to camera, microphone and location — even if you don\'t use them.',
-          todo: 'Ask your web developer to restrict browser permissions. Protects your visitors\' privacy.'
-        },
-        'x-xss-protection': {
-          means: 'Older browsers won\'t automatically block cross-site scripting attacks on your website.',
-          todo: 'Ask your web developer to enable XSS protection. Legacy but quick to add.'
-        }
-      },
-      'ssl_expiring': {
-        means: 'Your SSL certificate is expiring soon. When it expires, visitors will see a scary warning saying your site is "Not Secure" and most will leave immediately.',
-        todo: 'Contact your hosting company or web developer immediately to renew your SSL certificate before it expires.'
-      },
-      'missing_spf': {
-        means: 'Hackers can send emails pretending to be from your business. Your clients could receive fake invoices or requests from what looks like your email address.',
-        todo: 'Contact your email provider or web developer and ask them to add an SPF record to your DNS. Prevents email spoofing.'
-      },
-      'missing_dmarc': {
-        means: 'Without DMARC, there\'s no policy telling email providers what to do with fake emails pretending to be from you.',
-        todo: 'Ask your web developer or IT person to add a DMARC record. Works together with SPF to protect your email reputation.'
-      }
-    };
-
-    function getPlainEnglish(finding) {
-      const type = finding.type || '';
-      const header = finding.header || '';
-      if(type === 'missing_header' && plainEnglish.missing_header && plainEnglish.missing_header[header]) {
-        return plainEnglish.missing_header[header];
-      }
-      if(type === 'ssl_expiring' || (finding.issue||'').toLowerCase().includes('ssl') && (finding.issue||'').toLowerCase().includes('expir')) {
-        return plainEnglish.ssl_expiring;
-      }
-      if(type === 'missing_spf' || (finding.issue||'').toLowerCase().includes('spf')) {
-        return plainEnglish.missing_spf;
-      }
-      if(type === 'missing_dmarc' || (finding.issue||'').toLowerCase().includes('dmarc')) {
-        return plainEnglish.missing_dmarc;
-      }
-      return null;
-    }
-
-    if(findings && Array.isArray(findings) && findings.length > 0){
+        if(findings && Array.isArray(findings) && findings.length > 0){
       console.log('First finding:', JSON.stringify(findings[0]));
       console.log('First recommendation:', JSON.stringify(raw.recommendations?.[0]));
       const pass = findings.filter(f=>f.status==='pass'||f.passed===true).length;
@@ -1412,6 +1348,71 @@ async function runScan(){
 }
 
 // ── PDF Export ─────────────────────────────────────────────────
+    // Plain English explanations for each check type
+const plainEnglish = {
+  'missing_header': {
+    'strict-transport-security': {
+      means: 'Your website can be intercepted by hackers on public WiFi networks.',
+      todo: 'Forward this report to your web developer or hosting company and ask them to "enable HSTS." Takes 5 minutes.'
+    },
+    'content-security-policy': {
+      means: 'Hackers could inject malicious code into your website and steal your visitors\' data.',
+      todo: 'Ask your web developer to add a Content Security Policy. This protects your customers from malicious scripts.'
+    },
+    'x-frame-options': {
+      means: 'Your website could be embedded inside a fake site to trick your customers into giving up their information.',
+      todo: 'Ask your web developer to add clickjacking protection. Takes 5 minutes and is a simple configuration change.'
+    },
+    'x-content-type-options': {
+      means: 'Browsers could misinterpret files on your site, which attackers can exploit.',
+      todo: 'Ask your web developer to add one line to your server configuration. Quick fix.'
+    },
+    'referrer-policy': {
+      means: 'When visitors leave your site, your website address is shared with other sites — potentially leaking sensitive URLs.',
+      todo: 'Ask your web developer to add a Referrer Policy header. Simple one-line fix.'
+    },
+    'permissions-policy': {
+      means: 'Your website gives browsers unrestricted access to camera, microphone and location — even if you don\'t use them.',
+      todo: 'Ask your web developer to restrict browser permissions. Protects your visitors\' privacy.'
+    },
+    'x-xss-protection': {
+      means: 'Older browsers won\'t automatically block cross-site scripting attacks on your website.',
+      todo: 'Ask your web developer to enable XSS protection. Legacy but quick to add.'
+    }
+  },
+  'ssl_expiring': {
+    means: 'Your SSL certificate is expiring soon. When it expires, visitors will see a scary warning saying your site is "Not Secure" and most will leave immediately.',
+    todo: 'Contact your hosting company or web developer immediately to renew your SSL certificate before it expires.'
+  },
+  'missing_spf': {
+    means: 'Hackers can send emails pretending to be from your business. Your clients could receive fake invoices or requests from what looks like your email address.',
+    todo: 'Contact your email provider or web developer and ask them to add an SPF record to your DNS. Prevents email spoofing.'
+  },
+  'missing_dmarc': {
+    means: 'Without DMARC, there\'s no policy telling email providers what to do with fake emails pretending to be from you.',
+    todo: 'Ask your web developer or IT person to add a DMARC record. Works together with SPF to protect your email reputation.'
+  }
+};
+
+function getPlainEnglish(finding) {
+  const type = finding.type || '';
+  const header = finding.header || '';
+  if(type === 'missing_header' && plainEnglish.missing_header && plainEnglish.missing_header[header]) {
+    return plainEnglish.missing_header[header];
+  }
+  if(type === 'ssl_expiring' || (finding.issue||'').toLowerCase().includes('ssl') && (finding.issue||'').toLowerCase().includes('expir')) {
+    return plainEnglish.ssl_expiring;
+  }
+  if(type === 'missing_spf' || (finding.issue||'').toLowerCase().includes('spf')) {
+    return plainEnglish.missing_spf;
+  }
+  if(type === 'missing_dmarc' || (finding.issue||'').toLowerCase().includes('dmarc')) {
+    return plainEnglish.missing_dmarc;
+  }
+  return null;
+}
+
+
 function getClass(v){
   if(v===true||['pass','ok','valid','configured','present','enabled','passed'].includes(String(v).toLowerCase())) return 'pass';
   if(v===false||['fail','failed','missing','invalid','error','absent','disabled'].includes(String(v).toLowerCase())) return 'fail';
@@ -1526,11 +1527,6 @@ async function downloadScanPDF(){
   doc.setFillColor(13,18,32);doc.rect(M,y,cw,6,'F');
   doc.setTextColor(100,120,160);doc.setFont('helvetica','bold');doc.setFontSize(6);doc.text('CHECK',M+3,y+4);doc.text('STATUS',W-M-3,y+4,{align:'right'});
   y+=8;
-
-  function getPlainEnglishForPDF(finding){
-    if(!finding) return null;
-    return getPlainEnglish(finding);
-  }
 
   rows.forEach(([k,v],i)=>{
     if(y>260){doc.addPage();doc.setFillColor(8,11,18);doc.rect(0,0,210,297,'F');y=20;}
