@@ -1252,12 +1252,10 @@ async function runScan(){
       const riskLevel = d.riskLevel||d.risk_level||raw.riskLevel||raw.risk_level||'—';
       const recommendations = d.recommendations||raw.recommendations||[];
 
-      // Store for PDF with correct field names
       lastScanResults = findings.map(f=>{
         const label = f.issue||f.name||f.check||f.label||'Check';
-        const severity = (f.severity||'warn').toLowerCase();
-        const status = ['critical','high','fail','error'].includes(severity)?'fail':severity==='pass'?'pass':'warn';
-        return [label, status];
+        const severity = (f.severity||'warn').toUpperCase();
+        return [label, severity];
       });
 
       results.innerHTML=`
@@ -1409,21 +1407,19 @@ function downloadScanPDF(){
 
   rows.forEach(([k,v],i)=>{
     if(y>270){doc.addPage();doc.setFillColor(8,11,18);doc.rect(0,0,210,297,'F');y=20;}
-    const cls=rc2(v);
-    doc.setFillColor(i%2===0?10:14,i%2===0?14:19,i%2===0?22:30);doc.rect(M,y-1,cw,lh+1,'F');
-    if(cls==='pass')doc.setFillColor(16,100,60);else if(cls==='fail')doc.setFillColor(200,50,60);else doc.setFillColor(180,130,0);
-    doc.rect(M,y-1,2,lh+1,'F');
-    // Clean up the label
-    const cleanLabel = String(k).replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
-    doc.setTextColor(200,200,215);doc.setFont('helvetica','normal');doc.setFontSize(8.5);
-    doc.text(cleanLabel,M+5,y+5);
-    // Status text
-    const vStr = String(v);
-    const st = ['pass','ok','passed',true].includes(v)||['pass','ok','passed'].includes(vStr.toLowerCase())?'✓ PASS':
-                ['fail','failed','error',false].includes(v)||['fail','failed','error'].includes(vStr.toLowerCase())?'✗ FAIL':'⚠ WARN';
-    if(cls==='pass')doc.setTextColor(16,185,129);else if(cls==='fail')doc.setTextColor(239,68,68);else doc.setTextColor(245,158,11);
-    doc.setFont('helvetica','bold');doc.text(st,W-M-3,y+5,{align:'right'});
-    y+=lh+2;
+    const isPassed = ['pass','ok','passed'].includes(String(v).toLowerCase());
+    const isFailed = ['critical','high','fail','failed','error'].includes(String(v).toLowerCase());
+    const isWarn = !isPassed && !isFailed;
+    doc.setFillColor(i%2===0?10:14,i%2===0?14:19,i%2===0?22:30);doc.rect(M,y-1,cw,lh+2,'F');
+    if(isPassed)doc.setFillColor(16,100,60);else if(isFailed)doc.setFillColor(200,50,60);else doc.setFillColor(140,100,0);
+    doc.rect(M,y-1,2,lh+2,'F');
+    doc.setTextColor(200,210,230);doc.setFont('helvetica','normal');doc.setFontSize(8.5);
+    doc.text(String(k),M+5,y+5);
+    const severity = String(v).toUpperCase();
+    if(isPassed)doc.setTextColor(16,185,129);else if(['CRITICAL','HIGH'].includes(severity))doc.setTextColor(239,68,68);else if(severity==='MEDIUM')doc.setTextColor(245,158,11);else if(severity==='LOW')doc.setTextColor(200,180,80);else doc.setTextColor(245,158,11);
+    doc.setFont('helvetica','bold');doc.setFontSize(8);
+    doc.text(severity,W-M-3,y+5,{align:'right'});
+    y+=lh+3;
   });
 
   // Recommendations
@@ -1436,8 +1432,8 @@ function downloadScanPDF(){
     failures.slice(0,5).forEach(([k])=>{
       if(y>272)return;
       doc.setFillColor(35,15,5);doc.setDrawColor(80,35,0);doc.roundedRect(M,y-1,cw,10,1,1,'FD');
-      doc.setTextColor(255,120,60);doc.setFont('helvetica','bold');doc.setFontSize(6.5);doc.text('→',M+2,y+6);
-      doc.setTextColor(200,180,165);doc.setFont('helvetica','normal');doc.text(String(k),M+7,y+6,{maxWidth:cw-10});
+      doc.setTextColor(255,120,60);doc.setFont('helvetica','bold');doc.setFontSize(6.5);doc.text('>>',M+2,y+6);
+      doc.setTextColor(200,180,165);doc.setFont('helvetica','normal');doc.text(String(k),M+10,y+6,{maxWidth:cw-12});
       y+=13;
     });
 
