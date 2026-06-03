@@ -375,7 +375,7 @@ async function doAdminLogin(){
   const ADMIN_PASSWORD = 'CS@Admin2026!';
   // Scanner account — your CyberShield login
   const SCANNER_EMAIL = 'njirussnkar@gmail.com';
-  const SCANNER_PASS  = 'Wooking1521!!'; // set this once
+  const SCANNER_PASS  = 'YOUR_CYBERSHIELD_PASSWORD'; // set this once
 
   const username = document.getElementById('admin-username').value.trim();
   const password = document.getElementById('admin-user-pass').value;
@@ -834,12 +834,10 @@ async function runAdminScan(){
   });
 
   try{
-    const token = sessionStorage.getItem('cs_token');
-    if(!token){ alert('No account token found. Please log out and log back in with your email and password.'); btn.textContent='▶ Run Scan'; btn.disabled=false; return; }
     
-    const r = await fetch(`${SCANNER_API}/scanner/scan`, {
+    const r = await fetch(`${API}/admin/scan`, {
       method: 'POST',
-      headers: {'Content-Type':'application/json', 'Authorization': 'Bearer ' + token},
+      headers: {'Content-Type':'application/json', 'Authorization': 'Bearer ' + adminToken},
       body: JSON.stringify({url})
     });
     const d = await r.json();
