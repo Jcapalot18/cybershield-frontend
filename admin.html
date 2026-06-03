@@ -437,7 +437,7 @@ async function loadOverview(){
           return `<tr>
             <td><strong>${esc(c.name)}</strong></td>
             <td style="color:var(--muted)">${c.trial_ends_at?new Date(c.trial_ends_at).toLocaleDateString():'-'}</td>
-            <td><span style="color:${days<=1?'var(--red)':days<=3?'var(--yellow)':'var(--green)';font-weight:700}">${days}d</span></td>
+            <td><span style="color:${days<=1?'var(--red)':days<=3?'var(--yellow)':'var(--green)'};font-weight:700">${days}d</span></td>
             <td><button class="act-btn" onclick="openExtend('${c.id}','${esc(c.name)}')">Extend</button></td>
           </tr>`;
         }).join('') :
