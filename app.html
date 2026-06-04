@@ -1383,8 +1383,8 @@ async function loadDashboard(){
     },300);
 
     // Coverage
-    document.getElementById('cov-em').textContent=(stats.emailsMonitored||0)+'';
-    document.getElementById('cb-em').style.width=Math.min(((stats.emailsMonitored||0)/seats)*100,100)+'%';
+    document.getElementById('cov-em').textContent=(stats.emailsMonitored||stats.teamSize||stats.totalUsers||0)+'';
+    document.getElementById('cb-em').style.width=Math.min(((stats.emailsMonitored||stats.teamSize||stats.totalUsers||0)/seats)*100,100)+'%';
     document.getElementById('cov-tr').textContent=trainings+'';
     document.getElementById('cb-tr').style.width=tp+'%';
     document.getElementById('cov-sc').textContent=scans+'';
@@ -1658,7 +1658,6 @@ async function runBreach(){
           </div>`;
         }).join('')}`;
       addBreachHistory(email,'⚠ '+d.breaches.length+' breach'+(d.breaches.length>1?'es':''),'var(--red)');
-      logActivity('breach', `Breach check: ${email} — ${d.breaches.length} breach${d.breaches.length>1?'es':''} found`);
     }else{
       results.innerHTML=`
         <div style="background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.2);border-radius:8px;padding:1.25rem">
