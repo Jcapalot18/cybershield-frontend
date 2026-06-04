@@ -979,9 +979,9 @@ function showPage(name,navEl){
 // ── Dashboard ──────────────────────────────────────────────────
 // ── ONBOARDING CHECKLIST ─────────────────────────────────────
 function updateOnboarding(stats){
-  const scans = stats?.scans_this_month || 0
-  const breaches = stats?.breach_checks || 0
-  const trainings = stats?.trainings || 0
+  const scans = stats?.scansThisMonth || stats?.scans_this_month || stats?.scans || 0
+  const breaches = stats?.breachesFound || stats?.breach_checks || stats?.breachChecks || 0
+  const trainings = stats?.trainingsCompleted || stats?.trainings || 0
   const hasReport = scans > 0
 
   const steps = [
