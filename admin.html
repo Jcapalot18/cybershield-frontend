@@ -172,6 +172,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
     <div class="a-tab" onclick="switchAdminTab('activity',this)">Security Activity</div>
     <div class="a-tab" onclick="switchAdminTab('users',this)">Users</div>
     <div class="a-tab" onclick="switchAdminTab('scanner',this)">Scanner</div>
+    <div class="a-tab" onclick="switchAdminTab('waitlist',this)">Waitlist</div>
   </div>
 
   <div class="a-body">
@@ -313,6 +314,20 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
       </div>
     </div>
 
+    <!-- WAITLIST -->
+    <div class="a-page" id="page-waitlist">
+      <div class="a-card">
+        <div class="a-card-hd">
+          <div class="a-card-title">Waitlist Signups</div>
+          <button class="refresh-btn" onclick="loadWaitlist()">↻ Refresh</button>
+        </div>
+        <table class="a-tbl">
+          <thead><tr><th>Email</th><th>Signed Up</th><th>Action</th></tr></thead>
+          <tbody id="waitlist-tbody"><tr class="loading-row"><td colspan="3"><div class="spin"></div></td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
     <!-- SCANNER PAGE -->
     <div class="a-page" id="page-scanner">
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;align-items:start">
@@ -437,6 +452,7 @@ function switchAdminTab(name, el){
   document.querySelectorAll('.a-page').forEach(p=>p.classList.remove('active'));
   el.classList.add('active');
   document.getElementById('page-'+name).classList.add('active');
+  if(name==='waitlist') loadWaitlist();
 }
 
 // ── API CALLS ─────────────────────────────────────────────────
@@ -805,6 +821,26 @@ function statusChip(s){
   if(status==='canceled'||status==='cancelled') return '<span class="chip chip-red">Canceled</span>';
   if(status==='past_due') return '<span class="chip" style="background:rgba(245,158,11,0.1);color:var(--yellow);border:1px solid rgba(245,158,11,0.2)">Past Due</span>';
   return '<span class="chip chip-gray">'+(s||'Unknown')+'</span>';
+}
+
+// ── WAITLIST ──────────────────────────────────────────────────
+async function loadWaitlist(){
+  try{
+    const d = await adminFetch('/admin/waitlist');
+    const tbody = document.getElementById('waitlist-tbody');
+    const list = d.waitlist||[];
+    if(!list.length){
+      tbody.innerHTML='<tr><td colspan="3" style="text-align:center;color:var(--muted);padding:1.5rem">No waitlist signups yet</td></tr>';
+      return;
+    }
+    tbody.innerHTML = list.map(w=>`<tr>
+      <td><strong>${esc(w.email)}</strong></td>
+      <td style="color:var(--muted);font-size:0.75rem">${w.created_at?new Date(w.created_at).toLocaleDateString():'-'}</td>
+      <td>
+        <a href="mailto:${esc(w.email)}" style="font-size:0.68rem;font-weight:600;padding:4px 10px;border-radius:5px;cursor:pointer;font-family:var(--font);border:1px solid var(--border);background:transparent;color:var(--orange);text-decoration:none">Email</a>
+      </td>
+    </tr>`).join('');
+  }catch(e){ console.error('Waitlist error:', e); }
 }
 
 // ── ADMIN SCANNER ─────────────────────────────────────────────
