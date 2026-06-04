@@ -142,6 +142,18 @@ a{text-decoration:none;color:inherit}
 .kpi-val.vy{color:var(--yellow)}
 .kpi-foot{font-size:0.65rem;color:var(--muted)}
 
+/* ── ONBOARDING ── */
+.onboard-step{display:flex;align-items:center;gap:1rem;padding:0.875rem;border-radius:8px;background:var(--bg3);border:1px solid var(--border);transition:all 0.2s}
+.onboard-step.done{opacity:0.5;background:rgba(16,185,129,0.04);border-color:rgba(16,185,129,0.15)}
+.onboard-dot{width:28px;height:28px;border-radius:50%;background:var(--orange-dim);border:1px solid var(--orange-border);color:var(--orange);font-size:0.72rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.onboard-step.done .onboard-dot{background:rgba(16,185,129,0.1);border-color:rgba(16,185,129,0.2);color:var(--green)}
+.onboard-info{flex:1}
+.onboard-title{font-size:0.82rem;font-weight:700;color:var(--text);margin-bottom:2px}
+.onboard-step.done .onboard-title{text-decoration:line-through;color:var(--muted)}
+.onboard-sub{font-size:0.7rem;color:var(--muted)}
+.onboard-btn{font-size:0.68rem;font-weight:700;padding:5px 12px;border-radius:6px;border:1px solid var(--orange-border);background:var(--orange-dim);color:var(--orange);cursor:pointer;font-family:var(--font);white-space:nowrap}
+.onboard-step.done .onboard-btn{display:none}
+
 /* ── SCORE RING ── */
 .score-wrap{padding:1.25rem;display:flex;align-items:center;gap:1.5rem}
 .ring-pos{position:relative;flex-shrink:0}
@@ -444,6 +456,100 @@ a{text-decoration:none;color:inherit}
         <div class="kpi-eyebrow"><svg viewBox="0 0 24 24" stroke="var(--yellow)"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Scans This Month</div>
         <div class="kpi-val vy" id="dash-scans">—</div>
         <div class="kpi-foot" id="scans-foot">Vulnerability scans</div>
+      </div>
+    </div>
+
+    <!-- ── ONBOARDING CHECKLIST (shown only when steps incomplete) ── -->
+    <div id="onboarding-checklist" class="card" style="display:none;margin-bottom:1.5rem;border:1px solid rgba(255,107,0,0.2);background:rgba(255,107,0,0.04)">
+      <div class="card-hd">
+        <div class="card-hd-l">
+          <div class="card-ico" style="background:rgba(255,107,0,0.08);border:1px solid rgba(255,107,0,0.15)"><svg viewBox="0 0 24 24" stroke="var(--orange)" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+          <div><div class="card-title">Get started — 4 steps to full protection</div><div class="card-sub">Complete these to get the most out of CyberShield</div></div>
+        </div>
+        <span id="onboarding-pct" style="font-size:0.72rem;font-weight:700;color:var(--orange)">0 of 4 complete</span>
+      </div>
+      <div style="padding:0 1.25rem 1.25rem;display:flex;flex-direction:column;gap:0.75rem">
+        <div class="onboard-step" id="step-scan">
+          <div class="onboard-dot" id="dot-scan">1</div>
+          <div class="onboard-info">
+            <div class="onboard-title">Run your first vulnerability scan</div>
+            <div class="onboard-sub">Scan your website and get an instant security score</div>
+          </div>
+          <button class="onboard-btn" onclick="showPage('scanner',document.querySelectorAll('.s-item')[2])">Start →</button>
+        </div>
+        <div class="onboard-step" id="step-breach">
+          <div class="onboard-dot" id="dot-breach">2</div>
+          <div class="onboard-info">
+            <div class="onboard-title">Check your emails for breaches</div>
+            <div class="onboard-sub">Find out if your company emails have been compromised</div>
+          </div>
+          <button class="onboard-btn" onclick="showPage('breach',document.querySelectorAll('.s-item')[3])">Check →</button>
+        </div>
+        <div class="onboard-step" id="step-training">
+          <div class="onboard-dot" id="dot-training">3</div>
+          <div class="onboard-info">
+            <div class="onboard-title">Complete your first security training</div>
+            <div class="onboard-sub">Takes 5 minutes — protects your whole team</div>
+          </div>
+          <button class="onboard-btn" onclick="showPage('training',document.querySelectorAll('.s-item')[1])">Train →</button>
+        </div>
+        <div class="onboard-step" id="step-report">
+          <div class="onboard-dot" id="dot-report">4</div>
+          <div class="onboard-info">
+            <div class="onboard-title">Download your security report</div>
+            <div class="onboard-sub">A professional PDF you can share with partners or clients</div>
+          </div>
+          <button class="onboard-btn" onclick="showPage('scanner',document.querySelectorAll('.s-item')[2])">Get report →</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="g2">
+      <!-- ── RISK COST WIDGET ── -->
+      <div class="card" id="risk-cost-card">
+        <div class="card-hd">
+          <div class="card-hd-l">
+            <div class="card-ico" style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.15)"><svg viewBox="0 0 24 24" stroke="var(--red)" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+            <div><div class="card-title">Estimated Breach Risk</div><div class="card-sub">Based on your current security posture</div></div>
+          </div>
+        </div>
+        <div style="padding:1.25rem">
+          <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1.25rem">
+            <div id="risk-badge" style="font-size:0.7rem;font-weight:800;padding:4px 12px;border-radius:4px;text-transform:uppercase;letter-spacing:0.08em">—</div>
+            <div id="risk-label" style="font-size:0.82rem;color:var(--muted)">Calculating risk level...</div>
+          </div>
+          <div style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:1rem;margin-bottom:1rem">
+            <div style="font-size:0.62rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:6px">Potential Financial Exposure</div>
+            <div id="risk-exposure" style="font-size:1.5rem;font-weight:900;letter-spacing:-0.03em;color:var(--red)">—</div>
+            <div style="font-size:0.7rem;color:var(--muted);margin-top:4px">Based on industry average breach costs for small businesses</div>
+          </div>
+          <div style="font-size:0.72rem;color:var(--muted);line-height:1.6" id="risk-detail">Improve your security score to reduce your financial exposure.</div>
+        </div>
+      </div>
+
+      <!-- ── PROGRESS TRACKING ── -->
+      <div class="card" id="progress-card">
+        <div class="card-hd">
+          <div class="card-hd-l">
+            <div class="card-ico" style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.15)"><svg viewBox="0 0 24 24" stroke="var(--green)" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+            <div><div class="card-title">Security Progress</div><div class="card-sub">Your score over time</div></div>
+          </div>
+        </div>
+        <div style="padding:1.25rem">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem">
+            <div>
+              <div style="font-size:0.62rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:4px">Current Score</div>
+              <div id="prog-current" style="font-size:2.5rem;font-weight:900;letter-spacing:-0.05em;color:var(--green)">—</div>
+            </div>
+            <div style="text-align:right">
+              <div style="font-size:0.62rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:4px">Change</div>
+              <div id="prog-change" style="font-size:1.5rem;font-weight:900;letter-spacing:-0.03em">—</div>
+            </div>
+          </div>
+          <div id="prog-bars" style="display:flex;flex-direction:column;gap:0.75rem">
+            <div style="text-align:center;color:var(--muted);font-size:0.78rem;padding:1rem">Run your first scan to start tracking progress</div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -871,6 +977,133 @@ function showPage(name,navEl){
 }
 
 // ── Dashboard ──────────────────────────────────────────────────
+// ── ONBOARDING CHECKLIST ─────────────────────────────────────
+function updateOnboarding(stats){
+  const scans = stats?.scans_this_month || 0
+  const breaches = stats?.breach_checks || 0
+  const trainings = stats?.trainings || 0
+  const hasReport = scans > 0
+
+  const steps = [
+    { id: 'step-scan', dot: 'dot-scan', done: scans > 0 },
+    { id: 'step-breach', dot: 'dot-breach', done: breaches > 0 },
+    { id: 'step-training', dot: 'dot-training', done: trainings > 0 },
+    { id: 'step-report', dot: 'dot-report', done: hasReport && scans > 0 }
+  ]
+
+  let completed = 0
+  steps.forEach(s => {
+    const el = document.getElementById(s.id)
+    const dot = document.getElementById(s.dot)
+    if(s.done){
+      completed++
+      el?.classList.add('done')
+      if(dot) dot.innerHTML = '✓'
+    }
+  })
+
+  const pct = document.getElementById('onboarding-pct')
+  if(pct) pct.textContent = `${completed} of 4 complete`
+
+  // Hide checklist when all done
+  const checklist = document.getElementById('onboarding-checklist')
+  if(checklist){
+    checklist.style.display = completed < 4 ? 'block' : 'none'
+  }
+}
+
+// ── RISK COST WIDGET ──────────────────────────────────────────
+function updateRiskCost(score){
+  const badge = document.getElementById('risk-badge')
+  const label = document.getElementById('risk-label')
+  const exposure = document.getElementById('risk-exposure')
+  const detail = document.getElementById('risk-detail')
+
+  if(!badge) return
+
+  let level, color, bg, low, high, desc
+  if(score >= 80){
+    level='LOW RISK'; color='var(--green)'; bg='rgba(16,185,129,0.1)'
+    low=5000; high=25000
+    desc='Your security posture is strong. Keep running scans and training your team to maintain this level.'
+  } else if(score >= 65){
+    level='MEDIUM RISK'; color='var(--yellow)'; bg='rgba(245,158,11,0.1)'
+    low=25000; high=75000
+    desc='Several vulnerabilities detected. Addressing the recommended fixes could significantly reduce your exposure.'
+  } else if(score >= 45){
+    level='HIGH RISK'; color='var(--orange)'; bg='rgba(255,107,0,0.1)'
+    low=75000; high=150000
+    desc='Multiple critical vulnerabilities detected. Immediate action recommended to protect your business and clients.'
+  } else {
+    level='CRITICAL RISK'; color='var(--red)'; bg='rgba(239,68,68,0.1)'
+    low=150000; high=250000
+    desc='Your business has critical security gaps. You are highly vulnerable to a breach. Act immediately.'
+  }
+
+  badge.textContent = level
+  badge.style.background = bg
+  badge.style.color = color
+  badge.style.border = `1px solid ${color}30`
+  label.textContent = `Based on ${score}/100 security score`
+  exposure.textContent = `$${low.toLocaleString()} – $${high.toLocaleString()}`
+  detail.textContent = desc
+}
+
+// ── PROGRESS TRACKING ─────────────────────────────────────────
+function updateProgress(score, history){
+  const current = document.getElementById('prog-current')
+  const change = document.getElementById('prog-change')
+  const bars = document.getElementById('prog-bars')
+
+  if(!current) return
+
+  current.textContent = score || '—'
+  const scoreColor = score >= 80 ? 'var(--green)' : score >= 65 ? 'var(--yellow)' : score >= 45 ? 'var(--orange)' : 'var(--red)'
+  current.style.color = scoreColor
+
+  // Store score in localStorage for tracking
+  const key = 'cs_score_history'
+  let hist = []
+  try { hist = JSON.parse(localStorage.getItem(key)||'[]') } catch(e){}
+
+  const now = new Date()
+  const monthKey = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`
+
+  // Update current month
+  const existingIdx = hist.findIndex(h => h.month === monthKey)
+  if(existingIdx >= 0) hist[existingIdx].score = score
+  else hist.push({ month: monthKey, score, label: now.toLocaleDateString('en-US',{month:'short'}) })
+
+  // Keep last 4 months
+  hist = hist.slice(-4)
+  try { localStorage.setItem(key, JSON.stringify(hist)) } catch(e){}
+
+  // Show change
+  if(hist.length >= 2){
+    const prev = hist[hist.length-2].score
+    const diff = score - prev
+    change.textContent = (diff >= 0 ? '+' : '') + diff
+    change.style.color = diff >= 0 ? 'var(--green)' : 'var(--red)'
+  } else {
+    change.textContent = '—'
+    change.style.color = 'var(--muted)'
+  }
+
+  // Render bars
+  if(hist.length > 0){
+    bars.innerHTML = hist.map(h => {
+      const c = h.score >= 80 ? 'var(--green)' : h.score >= 65 ? 'var(--yellow)' : h.score >= 45 ? 'var(--orange)' : 'var(--red)'
+      return `<div style="display:flex;align-items:center;gap:0.75rem">
+        <div style="font-size:0.65rem;color:var(--muted);width:28px;text-align:right">${h.label||h.month}</div>
+        <div style="flex:1;height:8px;background:rgba(255,255,255,0.05);border-radius:4px;overflow:hidden">
+          <div style="height:100%;width:${h.score}%;background:${c};border-radius:4px;transition:width 0.8s ease"></div>
+        </div>
+        <div style="font-size:0.72rem;font-weight:700;color:${c};width:24px">${h.score}</div>
+      </div>`
+    }).join('')
+  }
+}
+
 async function loadDashboard(){
   try{
     // Try /dashboard/stats first (original endpoint), fallback to /dashboard
@@ -931,6 +1164,11 @@ async function loadDashboard(){
     document.getElementById('score-circle').style.stroke=gc;
     document.getElementById('dash-score-lbl').textContent=grade.toLowerCase().replace('_',' ');
     document.getElementById('dash-score').style.color=gc;
+
+    // Update new widgets
+    updateRiskCost(score);
+    updateProgress(score);
+    updateOnboarding(stats);
 
     // Bars
     const tp=Math.min(trainings*25,100),sp=scans>0?Math.min(scans*20,100):5,bp=scans>0?75:10;
