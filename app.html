@@ -1342,6 +1342,15 @@ async function loadDashboard(){
     const seats     = companyData.seats||10;
     const plan      = companyData.plan||'starter';
 
+    // Get team count
+    let teamCount = 1;
+    try {
+      const tr = await fetch(`${API}/auth/team`,{headers:{'Authorization':'Bearer '+authToken}});
+      const td = await tr.json();
+      teamCount = td.team?.length || 1;
+    } catch(e){}
+    stats.emailsMonitored = teamCount;
+
     // Calculate score
     const trainPts  = Math.min(trainings*4,20);
     const scanPts   = scans>0?(scans>=3?20:15):-10;
@@ -1385,6 +1394,13 @@ async function loadDashboard(){
     // Coverage
     document.getElementById('cov-em').textContent=(stats.emailsMonitored||stats.teamSize||stats.totalUsers||0)+'';
     document.getElementById('cb-em').style.width=Math.min(((stats.emailsMonitored||stats.teamSize||stats.totalUsers||0)/seats)*100,100)+'%';
+    // Also update from team members if loaded
+    const teamRows = document.querySelectorAll('#team-tbody tr');
+    if(teamRows.length > 0){
+      const teamCount = teamRows.length;
+      document.getElementById('cov-em').textContent = teamCount;
+      document.getElementById('cb-em').style.width = Math.min((teamCount/seats)*100,100)+'%';
+    }
     document.getElementById('cov-tr').textContent=trainings+'';
     document.getElementById('cb-tr').style.width=tp+'%';
     document.getElementById('cov-sc').textContent=scans+'';
