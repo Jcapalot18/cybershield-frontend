@@ -122,7 +122,7 @@ a{text-decoration:none;color:inherit}
 .g4{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1rem}
 .g2{display:grid;grid-template-columns:1fr 1.55fr;gap:1rem;margin-bottom:1rem}
 .g3{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:1rem;margin-bottom:1rem}
-.g2e{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
+.g2e{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;align-items:start}
 .g3e{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1rem}
 
 /* ── KPI ── */
@@ -854,7 +854,7 @@ a{text-decoration:none;color:inherit}
             Check for breaches
           </button>
         </div>
-        <div class="results-wrap" id="breach-results"></div>
+        <div class="results-wrap" id="breach-results" style="max-height:none;overflow:visible"></div>
       </div>
       <div class="card">
         <div class="card-hd">
