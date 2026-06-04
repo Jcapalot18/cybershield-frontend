@@ -1154,7 +1154,7 @@ function updateProgress(score, history){
   }
 }
 
-async // ── LAST SCAN CARD ────────────────────────────────────────────
+// ── LAST SCAN CARD ────────────────────────────────────────────
 function updateLastScanCard(data){
   if(!data) {
     try { data = JSON.parse(localStorage.getItem('cs_last_scan')||'null') } catch(e){}
@@ -1256,7 +1256,7 @@ function showScoreBanner(prevScore, currScore){
   setTimeout(()=>{ banner.style.display='none' }, 10000)
 }
 
-function loadDashboard(){
+async function loadDashboard(){
   try{
     // Try /dashboard/stats first (original endpoint), fallback to /dashboard
     let r = await fetch(`${API}/dashboard/stats`,{headers:{'Authorization':'Bearer '+authToken}});
