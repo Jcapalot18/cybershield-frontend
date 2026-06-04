@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-KNS974VS3N"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-KNS974VS3N');
+</script>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
+<title>About — CyberShield</title>
+<meta name="description" content="The story behind CyberShield — built by a 20-year-old Information Systems student who saw small businesses getting destroyed by cyber threats and decided to build a solution."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --orange:#FF5500;--orange-light:#FF7733;--orange-dim:rgba(255,85,0,0.12);
+  --orange-border:rgba(255,85,0,0.3);--black:#0a0a0a;--gray-900:#111;
+  --gray-800:#1a1a1a;--gray-100:#f2f2f2;--muted:#666;--border:#e5e5e5;
+  --text:#0a0a0a;
+}
+body{background:#fff;color:var(--text);font-family:'DM Sans',sans-serif;font-size:16px;line-height:1.6;overflow-x:hidden}
+a{text-decoration:none;color:inherit}
+
+/* NAV */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 4rem;height:72px;display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,0.96);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.nav-logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:1.1rem;letter-spacing:-0.02em}
+.nav-logo svg{width:30px;height:30px}
+.nav-logo span{color:var(--orange)}
+.nav-right{display:flex;align-items:center;gap:0.75rem}
+.btn{display:inline-flex;align-items:center;padding:10px 22px;border-radius:4px;font-size:0.875rem;font-weight:600;cursor:pointer;border:none;transition:all 0.2s;font-family:'DM Sans',sans-serif}
+.btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border)}
+.btn-ghost:hover{color:var(--text)}
+.btn-primary{background:var(--orange);color:#fff;border:1px solid var(--orange)}
+.btn-primary:hover{background:var(--orange-light)}
+
+/* HERO */
+.about-hero{padding:160px 4rem 80px;background:var(--black);position:relative;overflow:hidden}
+.about-hero::before{content:'';position:absolute;top:-200px;right:-200px;width:600px;height:600px;background:radial-gradient(circle,rgba(255,85,0,0.12) 0%,transparent 70%);pointer-events:none}
+.about-hero-inner{max-width:760px;margin:0 auto;text-align:center;position:relative;z-index:1}
+.about-label{display:inline-flex;align-items:center;gap:8px;background:var(--orange-dim);color:var(--orange);font-size:0.72rem;font-weight:700;padding:6px 14px;border-radius:2px;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:2rem;border:1px solid var(--orange-border)}
+.about-hero h1{font-size:clamp(2.2rem,4vw,3.5rem);font-weight:700;line-height:1.1;letter-spacing:-0.03em;color:#fff;margin-bottom:1.5rem}
+.about-hero h1 span{color:var(--orange)}
+.about-hero p{font-size:1.1rem;color:rgba(255,255,255,0.6);line-height:1.75;max-width:580px;margin:0 auto}
+
+/* CONTENT */
+.about-content{max-width:760px;margin:0 auto;padding:80px 4rem}
+
+.story-section{margin-bottom:4rem}
+.story-section h2{font-size:1.5rem;font-weight:700;letter-spacing:-0.02em;margin-bottom:1rem;color:var(--black)}
+.story-section p{font-size:1rem;color:var(--muted);line-height:1.85;margin-bottom:1rem}
+.story-section p strong{color:var(--black);font-weight:600}
+
+.divider{height:1px;background:var(--border);margin:4rem 0}
+
+/* FOUNDER CARD */
+.founder-card{background:var(--gray-100);border-radius:12px;padding:2.5rem;display:flex;gap:2rem;align-items:flex-start;margin-bottom:4rem}
+.founder-avatar{width:80px;height:80px;border-radius:50%;background:var(--orange);display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:800;color:#fff;flex-shrink:0;letter-spacing:-0.02em}
+.founder-info h3{font-size:1.2rem;font-weight:700;letter-spacing:-0.02em;margin-bottom:4px}
+.founder-info .role{font-size:0.82rem;color:var(--orange);font-weight:600;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:1rem}
+.founder-info p{font-size:0.9rem;color:var(--muted);line-height:1.75}
+
+/* MISSION */
+.mission-box{background:var(--black);border-radius:12px;padding:3rem;text-align:center;margin-bottom:4rem}
+.mission-box h2{font-size:1.75rem;font-weight:700;color:#fff;letter-spacing:-0.03em;margin-bottom:1rem}
+.mission-box p{font-size:1rem;color:rgba(255,255,255,0.6);line-height:1.85;max-width:520px;margin:0 auto}
+.mission-box .orange{color:var(--orange)}
+
+/* VALUES */
+.values-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:4rem}
+.value-card{border:1px solid var(--border);border-radius:8px;padding:1.75rem}
+.value-card h3{font-size:1rem;font-weight:700;margin-bottom:0.5rem}
+.value-card p{font-size:0.875rem;color:var(--muted);line-height:1.7}
+
+/* CTA */
+.about-cta{background:var(--orange);border-radius:12px;padding:3rem;text-align:center}
+.about-cta h2{font-size:1.75rem;font-weight:700;color:#fff;letter-spacing:-0.03em;margin-bottom:0.75rem}
+.about-cta p{color:rgba(255,255,255,0.8);margin-bottom:2rem;font-size:0.95rem}
+.btn-white{background:#fff;color:var(--orange);border:none;padding:14px 32px;border-radius:4px;font-size:0.95rem;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s}
+.btn-white:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(0,0,0,0.15)}
+
+/* FOOTER */
+footer{background:var(--black);padding:2rem 4rem;text-align:center}
+footer p{font-size:0.8rem;color:rgba(255,255,255,0.3)}
+footer a{color:rgba(255,255,255,0.4)}
+footer a:hover{color:#fff}
+
+@media(max-width:768px){
+  .nav{padding:0 1.5rem}
+  .about-hero{padding:120px 1.5rem 60px}
+  .about-content{padding:60px 1.5rem}
+  .founder-card{flex-direction:column;gap:1.5rem}
+  .values-grid{grid-template-columns:1fr}
+  footer{padding:2rem 1.5rem}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="index.html" class="nav-logo">
+    <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="32" height="32" rx="8" fill="#080b12"/>
+      <path d="M16 3L28 7.5V18C28 25 22 29.5 16 31C10 29.5 4 25 4 18V7.5L16 3Z" fill="rgba(255,107,0,0.15)" stroke="#FF6B00" stroke-width="1.5"/>
+      <path d="M16 11L20 13.5L16 16L12 13.5Z" fill="rgba(255,107,0,0.3)" stroke="#FF6B00" stroke-width="1" stroke-linejoin="round"/>
+      <path d="M12 13.5L16 16V21L12 18.5Z" stroke="#FF6B00" stroke-width="1" stroke-linejoin="round"/>
+      <path d="M20 13.5L16 16V21L20 18.5Z" fill="rgba(255,107,0,0.15)" stroke="#FF6B00" stroke-width="1" stroke-linejoin="round"/>
+    </svg>
+    Cyber<span>Shield</span>
+  </a>
+  <div class="nav-right">
+    <a href="index.html" class="btn btn-ghost">Home</a>
+    <a href="auth.html?signup=true" class="btn btn-primary">Start free trial</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="about-hero">
+  <div class="about-hero-inner">
+    <div class="about-label">Our Story</div>
+    <h1>Built by someone who saw <span>the problem firsthand</span></h1>
+    <p>CyberShield was built by a 20-year-old founder who believed small businesses deserved the same protection as enterprise companies — without the enterprise price tag.</p>
+  </div>
+</section>
+
+<!-- CONTENT -->
+<div class="about-content">
+
+  <!-- FOUNDER CARD -->
+  <div class="founder-card">
+    <div class="founder-avatar">NS</div>
+    <div class="founder-info">
+      <h3>Njiru Sankar</h3>
+      <div class="role">Founder & CEO, CyberShield</div>
+      <p>Information Systems student, cybersecurity specialist, and self-taught developer based in the New York area. Built CyberShield from scratch at 20 years old — vulnerability scanner, breach monitor, AI training, billing system, and everything in between.</p>
+    </div>
+  </div>
+
+  <!-- STORY -->
+  <div class="story-section">
+    <h2>Why I built this</h2>
+    <p>I've always been drawn to news about cybersecurity — following outlets like CyberWire, reading about breaches, watching how attackers operate. What I kept seeing was a pattern: <strong>small businesses were getting destroyed</strong> while the tools to protect them were priced for Fortune 500 companies.</p>
+    <p>A dental office, a law firm, an accounting practice — these businesses handle some of the most sensitive data imaginable. Patient records. Financial information. Confidential legal documents. But they have no IT team, no security budget, and no way to know if they've already been compromised.</p>
+    <p>I decided to build the solution. Not because it was easy — it wasn't — but because the problem was real and nobody was solving it at the right price point for small businesses.</p>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="story-section">
+    <h2>What drives me</h2>
+    <p>Since I was young I wanted to build something that actually mattered. Not just a successful business in terms of revenue — but a business that's successful because of <strong>what it does for people</strong>.</p>
+    <p>The world is advancing at a rapid pace. Cyber threats are evolving faster than most small businesses can keep up with. I built CyberShield to close that gap — to give a Brooklyn law firm the same level of protection that a major corporation has, for $49 a month.</p>
+    <p>That's the mission. That's what gets me up every day.</p>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- MISSION BOX -->
+  <div class="mission-box">
+    <h2>Our <span class="orange">mission</span></h2>
+    <p>Make enterprise-grade cybersecurity accessible to every small business — regardless of their size, budget, or technical expertise. Every business deserves to know if they've been compromised before it's too late.</p>
+  </div>
+
+  <!-- VALUES -->
+  <div class="values-grid">
+    <div class="value-card">
+      <h3>Transparency</h3>
+      <p>No jargon. No hidden fees. No fake metrics. We show you exactly what's wrong and exactly how to fix it.</p>
+    </div>
+    <div class="value-card">
+      <h3>Accessibility</h3>
+      <p>Built for business owners, not IT professionals. If you can use email, you can use CyberShield.</p>
+    </div>
+    <div class="value-card">
+      <h3>Real protection</h3>
+      <p>We don't sell fear. We sell actual security — scans that find real vulnerabilities, breach monitoring that catches real exposures.</p>
+    </div>
+    <div class="value-card">
+      <h3>Small business first</h3>
+      <p>Every feature, every price point, every decision is made with small business owners in mind. Not enterprise clients. You.</p>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="about-cta">
+    <h2>Ready to protect your business?</h2>
+    <p>Start your free 14-day trial. No credit card required. No IT team needed.</p>
+    <a href="auth.html?signup=true" class="btn-white">Start free trial →</a>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2026 CyberShield · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="contact.html">Contact</a> · 30 Prospect Ave, Asbury Park, NJ 07712</p>
+</footer>
+
+</body>
+</html>
