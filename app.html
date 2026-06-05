@@ -1684,10 +1684,11 @@ async function downloadBreachPDF(){
   doc.text(lastBreachData.email,M+4,y+14);
   if(lastBreachData.status==='clean'){
     doc.setTextColor(16,185,129); doc.setFont('helvetica','bold');
-    doc.text('✓ SECURE — No breaches found',W/2+4,y+14);
+    doc.text('SECURE — No breaches found',W/2+4,y+14);
   } else {
     doc.setTextColor(239,68,68); doc.setFont('helvetica','bold');
-    doc.text(`⚠ ${lastBreachData.breaches.length} BREACH${lastBreachData.breaches.length>1?'ES':''} FOUND`,W/2+4,y+14);
+    const count = lastBreachData.breaches.length;
+    doc.text(`${count} BREACH${count>1?'ES':''} FOUND`,W/2+4,y+14);
   }
   y+=26;
 
@@ -1706,20 +1707,42 @@ async function downloadBreachPDF(){
     y+=6;
 
     lastBreachData.breaches.forEach((b,i)=>{
-      if(y>260){ doc.addPage(); doc.setFillColor(8,11,18); doc.rect(0,0,210,297,'F'); y=20; }
-      const cardH = 22;
+      if(y>255){ doc.addPage(); doc.setFillColor(8,11,18); doc.rect(0,0,210,297,'F'); y=20; }
+      
+      // Get exposed data classes
+      const dataClasses = b.DataClasses||b.data_classes||[]
+      const classStr = Array.isArray(dataClasses) ? dataClasses.slice(0,5).join(', ') : String(dataClasses)
+      const breachDate = b.BreachDate||b.breach_date||''
+      const domain = b.Domain||b.domain||''
+      const hasExtra = classStr || breachDate
+      const cardH = hasExtra ? 30 : 16
+
       doc.setFillColor(i%2===0?10:14,i%2===0?14:19,i%2===0?22:30);
       doc.rect(M,y,cw,cardH,'F');
       doc.setFillColor(239,68,68); doc.rect(M,y,2,cardH,'F');
+
+      // Breach name
       doc.setTextColor(220,220,235); doc.setFont('helvetica','bold'); doc.setFontSize(9);
-      doc.text(b.Name||b.name||'Unknown Breach',M+5,y+8,{maxWidth:cw-40});
-      const breachDate = b.BreachDate||b.breach_date||'';
-      if(breachDate){ doc.setTextColor(150,160,180); doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.text(`Breached: ${breachDate}`,W-M-4,y+8,{align:'right'}); }
-      if(b.DataClasses||b.data_classes){
-        const classes = Array.isArray(b.DataClasses||b.data_classes) ? (b.DataClasses||b.data_classes).slice(0,4).join(', ') : String(b.DataClasses||b.data_classes);
-        doc.setTextColor(200,100,100); doc.setFont('helvetica','normal'); doc.setFontSize(7);
-        doc.text('Exposed: '+classes,M+5,y+16,{maxWidth:cw-10});
+      doc.text(b.Name||b.name||'Unknown Breach',M+5,y+8,{maxWidth:cw-50});
+
+      // Date on right
+      if(breachDate){
+        doc.setTextColor(150,160,180); doc.setFont('helvetica','normal'); doc.setFontSize(7);
+        doc.text(`Breached: ${breachDate}`,W-M-4,y+8,{align:'right'});
       }
+
+      // Domain
+      if(domain){
+        doc.setTextColor(120,130,150); doc.setFont('helvetica','normal'); doc.setFontSize(6.5);
+        doc.text(domain,M+5,y+14,{maxWidth:80});
+      }
+
+      // Exposed data
+      if(classStr){
+        doc.setTextColor(200,100,100); doc.setFont('helvetica','normal'); doc.setFontSize(6.5);
+        doc.text('Exposed: '+classStr,M+5,y+(domain?22:16),{maxWidth:cw-10});
+      }
+
       y+=cardH+3;
     });
 
@@ -1747,7 +1770,7 @@ async function downloadBreachPDF(){
     doc.setFillColor(0,40,20); doc.setDrawColor(16,185,129); doc.setLineWidth(0.3);
     doc.rect(M,y,cw,20,'FD');
     doc.setTextColor(16,185,129); doc.setFont('helvetica','bold'); doc.setFontSize(10);
-    doc.text('✓ No breaches detected',M+cw/2,y+8,{align:'center'});
+    doc.text('No breaches detected',M+cw/2,y+8,{align:'center'});
     doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor(100,200,150);
     doc.text('This email has not appeared in any known data breaches. Keep it secure with a strong password and 2FA.',M+cw/2,y+15,{align:'center',maxWidth:cw-8});
     y+=28;
