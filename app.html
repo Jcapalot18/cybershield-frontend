@@ -1407,10 +1407,11 @@ async function loadDashboard(){
     stats.emailsMonitored = teamCount;
 
     // Calculate score
-    const trainPts  = Math.min(trainings*4,20);
-    const scanPts   = scans>0?(scans>=3?20:15):-10;
-    const breachPts = -Math.min(breaches*3,25);
-    const score     = Math.max(10,Math.min(100,Math.round(50+trainPts+scanPts+breachPts)));
+    const trainPts  = Math.min(trainings*5,25);
+    const scanPts   = Math.min(scans*3,30);
+    const breachCheckPts = Math.min(stats.breachesFound||breaches,10);
+    const breachPts = -Math.min(breaches*2,15);
+    const score     = Math.max(10,Math.min(95,Math.round(30+trainPts+scanPts+breachCheckPts+breachPts)));
 
     document.getElementById('dash-score').textContent=score;
     document.getElementById('dash-trainings').textContent=trainings;
