@@ -42,7 +42,7 @@
   --sw:230px;
   --th:64px;
 }
-html,body{height:100dvh;max-height:100dvh;overflow:hidden}
+html,body{height:100%;overflow:hidden}
 body{background:var(--bg);color:var(--text);font-family:'Hanken Grotesk',sans-serif;font-size:14px;line-height:1.5}
 a{text-decoration:none;color:inherit}
 ::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--orange);border-radius:2px}
@@ -57,10 +57,10 @@ a{text-decoration:none;color:inherit}
 @keyframes scanline{0%{top:-2px}100%{top:100%}}
 
 /* ── LAYOUT ── */
-.app{display:flex;height:100dvh;max-height:100dvh;overflow:hidden}
+.app{display:flex;height:100%;overflow:hidden}
 
 /* ── SIDEBAR ── */
-.sidebar{width:var(--sw);flex-shrink:0;background:var(--bg);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:30;position:relative}
+.sidebar{width:var(--sw);flex-shrink:0;background:var(--bg);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:30;position:relative;min-height:0;overflow:hidden}
 .sidebar::after{content:'';position:absolute;top:0;right:0;bottom:0;width:1px;background:linear-gradient(to bottom,transparent 0%,var(--orange-border) 30%,var(--orange-border) 70%,transparent 100%);pointer-events:none}
 .s-brand{padding:0 1.5rem;height:var(--th);display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border)}
 .s-brand a{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1rem;letter-spacing:-0.02em;color:var(--text);white-space:nowrap;word-spacing:0}
@@ -102,7 +102,7 @@ a{text-decoration:none;color:inherit}
 .tb-cta:hover{background:var(--orange2);transform:translateY(-1px);box-shadow:0 8px 24px rgba(255,107,0,0.4)}
 
 /* ── CONTENT ── */
-.content{flex:1;overflow-y:auto;background:var(--bg);position:relative}
+.content{flex:1;overflow-y:auto;background:var(--bg);position:relative;min-height:0}
 .page{display:none;padding:1.5rem 1.75rem 3rem;animation:fadeUp 0.25s ease}
 .page.active{display:block}
 
