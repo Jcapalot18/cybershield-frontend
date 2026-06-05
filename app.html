@@ -1693,79 +1693,99 @@ async function downloadBreachPDF(){
   y+=26;
 
   if(lastBreachData.status==='breached' && lastBreachData.breaches.length > 0){
-    // ── SUMMARY BOX ──
-    doc.setFillColor(50,10,15); doc.setDrawColor(239,68,68); doc.setLineWidth(0.3);
-    doc.rect(M,y,cw,16,'FD');
-    doc.setTextColor(239,68,68); doc.setFont('helvetica','bold'); doc.setFontSize(8);
-    doc.text(`This email appeared in ${lastBreachData.breaches.length} known data breach${lastBreachData.breaches.length>1?'es':''}. Immediate action recommended.`,M+4,y+10);
-    y+=24;
+    // ── ALERT BOX ──
+    doc.setFillColor(50,10,15); doc.setDrawColor(239,68,68); doc.setLineWidth(0.5);
+    doc.rect(M,y,cw,20,'FD');
+    doc.setTextColor(239,68,68); doc.setFont('helvetica','bold'); doc.setFontSize(9);
+    doc.text(`This email appeared in ${lastBreachData.breaches.length} known data breach${lastBreachData.breaches.length>1?'es':''}. Hackers may already have access to this account's password.`,M+4,y+8,{maxWidth:cw-8});
+    y+=28;
+
+    // ── WHAT TO DO IMMEDIATELY ──
+    doc.setTextColor(255,107,0); doc.setFont('helvetica','bold'); doc.setFontSize(9);
+    doc.text('WHAT TO DO IMMEDIATELY',M,y);
+    doc.setDrawColor(255,107,0); doc.setLineWidth(0.3); doc.line(M+58,y-1,W-M,y-1);
+    y+=6;
+    const actions = [
+      'Change the password for this email account right now',
+      'Enable two-factor authentication on the account',
+      'Change any other accounts that used the same password',
+      'Watch for phishing emails — attackers may use your info to target you'
+    ];
+    actions.forEach((action,i)=>{
+      doc.setFillColor(18,22,35); doc.setDrawColor(60,40,10); doc.roundedRect(M,y,cw,11,1.5,1.5,'FD');
+      doc.setFillColor(255,107,0); doc.circle(M+5,y+5.5,3,'F');
+      doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(6); doc.text(String(i+1),M+5,y+7,{align:'center'});
+      doc.setTextColor(230,230,245); doc.setFont('helvetica','normal'); doc.setFontSize(8);
+      doc.text(action,M+11,y+7,{maxWidth:cw-14});
+      y+=14;
+    });
+    y+=6;
 
     // ── BREACH DETAILS ──
     doc.setTextColor(255,107,0); doc.setFont('helvetica','bold'); doc.setFontSize(9);
     doc.text('BREACH DETAILS',M,y);
     doc.setDrawColor(255,107,0); doc.setLineWidth(0.3); doc.line(M+40,y-1,W-M,y-1);
-    y+=6;
+    y+=7;
 
     lastBreachData.breaches.forEach((b,i)=>{
-      if(y>255){ doc.addPage(); doc.setFillColor(8,11,18); doc.rect(0,0,210,297,'F'); y=20; }
-      
-      // Get exposed data classes
-      const dataClasses = b.DataClasses||b.data_classes||[]
-      const classStr = Array.isArray(dataClasses) ? dataClasses.slice(0,5).join(', ') : String(dataClasses)
-      const breachDate = b.BreachDate||b.breach_date||''
-      const domain = b.Domain||b.domain||''
-      const hasExtra = classStr || breachDate
-      const cardH = hasExtra ? 30 : 16
+      // Get data
+      const name = b.Name||b.name||'Unknown Breach';
+      const domain = b.Domain||b.domain||'';
+      const breachDate = b.BreachDate||b.breach_date||'';
+      const dataClasses = b.DataClasses||b.data_classes||[];
+      const classArr = Array.isArray(dataClasses) ? dataClasses : [];
+      // Strip emojis from data classes for PDF
+      const cleanClasses = classArr.map(c=>c.replace(/[^\x00-\x7F]/g,'').trim()).filter(Boolean);
+      const severity = b.severity||b.Severity||'MEDIUM';
+      const sevColor = (severity==='HIGH RISK'||severity==='HIGH') ? [239,68,68] : [245,158,11];
 
-      doc.setFillColor(i%2===0?10:14,i%2===0?14:19,i%2===0?22:30);
+      // Calculate card height
+      const classLines = doc.splitTextToSize(cleanClasses.join(', '), cw-10);
+      const cardH = 10 + (domain||breachDate?7:0) + (classLines.length>0?5+classLines.length*4:0) + 4;
+
+      if(y+cardH>270){ doc.addPage(); doc.setFillColor(8,11,18); doc.rect(0,0,210,297,'F'); y=20; }
+
+      // Card background
+      doc.setFillColor(i%2===0?12:16, i%2===0?16:21, i%2===0?26:32);
       doc.rect(M,y,cw,cardH,'F');
-      doc.setFillColor(239,68,68); doc.rect(M,y,2,cardH,'F');
+      // Left accent
+      doc.setFillColor(...sevColor); doc.rect(M,y,2,cardH,'F');
 
+      let cy = y+8;
       // Breach name
       doc.setTextColor(220,220,235); doc.setFont('helvetica','bold'); doc.setFontSize(9);
-      doc.text(b.Name||b.name||'Unknown Breach',M+5,y+8,{maxWidth:cw-50});
+      doc.text(name,M+5,cy,{maxWidth:cw-55});
+      // Severity badge on right
+      doc.setFillColor(...sevColor.map(v=>Math.max(0,v-180)), ...sevColor.map(v=>Math.min(255,v+20)));
+      doc.setTextColor(...sevColor); doc.setFont('helvetica','bold'); doc.setFontSize(7);
+      doc.text(severity,W-M-4,cy,{align:'right'});
+      cy+=6;
 
-      // Date on right
-      if(breachDate){
-        doc.setTextColor(150,160,180); doc.setFont('helvetica','normal'); doc.setFontSize(7);
-        doc.text(`Breached: ${breachDate}`,W-M-4,y+8,{align:'right'});
-      }
-
-      // Domain
-      if(domain){
-        doc.setTextColor(120,130,150); doc.setFont('helvetica','normal'); doc.setFontSize(6.5);
-        doc.text(domain,M+5,y+14,{maxWidth:80});
+      // Domain + date
+      if(domain||breachDate){
+        doc.setTextColor(130,140,160); doc.setFont('helvetica','normal'); doc.setFontSize(7);
+        let sub = '';
+        if(domain) sub += domain;
+        if(domain && breachDate) sub += ' · ';
+        if(breachDate) sub += 'Breached: '+breachDate;
+        doc.text(sub,M+5,cy,{maxWidth:cw-10});
+        cy+=6;
       }
 
       // Exposed data
-      if(classStr){
-        doc.setTextColor(200,100,100); doc.setFont('helvetica','normal'); doc.setFontSize(6.5);
-        doc.text('Exposed: '+classStr,M+5,y+(domain?22:16),{maxWidth:cw-10});
+      if(cleanClasses.length > 0){
+        doc.setTextColor(180,90,90); doc.setFont('helvetica','italic'); doc.setFontSize(6.5);
+        doc.text('Exposed data:',M+5,cy);
+        cy+=4;
+        doc.setTextColor(200,120,120); doc.setFont('helvetica','normal'); doc.setFontSize(6.5);
+        classLines.forEach(line=>{ doc.text(line,M+5,cy,{maxWidth:cw-10}); cy+=4; });
       }
 
-      y+=cardH+3;
+      y+=cardH+4;
+      // Divider
+      doc.setDrawColor(40,40,55); doc.setLineWidth(0.2); doc.line(M,y-2,W-M,y-2);
     });
 
-    // ── ACTION STEPS ──
-    y+=4;
-    doc.setTextColor(255,107,0); doc.setFont('helvetica','bold'); doc.setFontSize(9);
-    doc.text('RECOMMENDED ACTIONS',M,y);
-    doc.setDrawColor(255,107,0); doc.setLineWidth(0.3); doc.line(M+56,y-1,W-M,y-1);
-    y+=7;
-    const actions = [
-      'Change the password for this email account immediately',
-      'Enable two-factor authentication on the account',
-      'Change any other accounts using the same password',
-      'Watch for phishing emails — attackers may use your exposed info'
-    ];
-    actions.forEach((action,i)=>{
-      doc.setFillColor(18,22,35); doc.setDrawColor(60,40,10); doc.roundedRect(M,y,cw,12,1.5,1.5,'FD');
-      doc.setFillColor(255,107,0); doc.circle(M+5,y+6,3,'F');
-      doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(6); doc.text(String(i+1),M+5,y+7.5,{align:'center'});
-      doc.setTextColor(230,230,245); doc.setFont('helvetica','normal'); doc.setFontSize(8);
-      doc.text(action,M+11,y+7.5,{maxWidth:cw-14});
-      y+=16;
-    });
   } else {
     doc.setFillColor(0,40,20); doc.setDrawColor(16,185,129); doc.setLineWidth(0.3);
     doc.rect(M,y,cw,20,'FD');
