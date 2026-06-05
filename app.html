@@ -2486,7 +2486,7 @@ async function loadSubStatus(){
     const sc={trialing:'var(--yellow)',active:'var(--green)',past_due:'var(--red)',canceled:'var(--muted)'};
     const sl={trialing:'Free trial active',active:'Paid · Active',past_due:'Payment past due',canceled:'Canceled'};
     let detail='';
-    if(d.status==='trialing'&&d.trialEndsAt){const days=Math.max(0,Math.ceil((new Date(d.trialEndsAt)-Date.now())/(1000*60*60*24)));detail=` · ${days}d remaining`;}
+    if(d.status==='trialing'&&d.trialEndsAt){const days=Math.max(0,Math.floor((new Date(d.trialEndsAt)-Date.now())/(1000*60*60*24)));detail=` · ${days}d remaining`;}
     else if(d.currentPeriodEnd){detail=` · Renews ${new Date(d.currentPeriodEnd).toLocaleDateString()}`;}
     el.style.display='block';
     el.innerHTML=`<span style="color:${sc[d.status]||'var(--muted)'}">●</span> <span style="color:rgba(255,255,255,0.5)">${sl[d.status]||d.status}</span><span style="color:var(--muted)">${detail}</span>`;
