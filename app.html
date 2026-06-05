@@ -1392,7 +1392,7 @@ async function loadDashboard(){
     }
 
     const trainings = stats.trainingsCompleted||0;
-    const breaches  = stats.breachesFound||0;
+    const breaches  = 0; // no penalty for checking breaches
     const scans     = stats.scansThisMonth||0;
     const seats     = companyData.seats||10;
     const plan      = companyData.plan||'starter';
