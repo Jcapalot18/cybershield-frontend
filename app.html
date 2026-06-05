@@ -667,7 +667,7 @@ a{text-decoration:none;color:inherit}
 
     <div class="t-stats">
       <!-- Coverage -->
-      <div class="t-stat" style="flex-direction:column;align-items:stretch;max-height:200px;overflow-y:auto">
+      <div class="t-stat" style="flex-direction:column;align-items:stretch">
         <div class="card-hd">
           <div class="card-title">Protection Coverage</div>
           <span class="card-act" onclick="showPage('team',document.querySelectorAll('.s-item')[4])">Manage team →</span>
@@ -681,7 +681,7 @@ a{text-decoration:none;color:inherit}
       </div>
 
       <!-- Activity -->
-      <div class="t-stat" style="flex-direction:column;align-items:stretch;max-height:200px;overflow-y:auto">
+      <div class="t-stat" style="flex-direction:column;align-items:stretch">
         <div class="card-hd"><div class="card-title">Recent Activity</div></div>
         <div id="dash-activity">
           <div class="act-item"><div class="act-dot" style="background:var(--muted)"></div><div><div class="act-text" style="color:var(--muted)">No activity yet.</div><div class="act-time">Run a scan or training</div></div></div>
@@ -689,7 +689,7 @@ a{text-decoration:none;color:inherit}
       </div>
 
       <!-- Recommended Actions -->
-      <div class="t-stat" style="flex-direction:column;align-items:stretch;max-height:200px;overflow-y:auto">
+      <div class="card" style="overflow-y:auto;max-height:400px">
         <div class="card-hd"><div class="card-title">Recommended Actions</div></div>
         <div class="action-item" onclick="showPage('training',document.querySelectorAll('.s-item')[1])">
           <div class="action-ico" style="background:var(--orange-dim);border:1px solid var(--orange-border)"><svg viewBox="0 0 24 24" stroke="var(--orange)"><path d="M12 2L2 7l10 5 10-5-10-5z"/></svg></div>
