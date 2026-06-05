@@ -837,7 +837,7 @@ a{text-decoration:none;color:inherit}
       </div>
     </div>
     <div style="display:grid;grid-template-columns:320px 1fr;gap:1rem;align-items:start">
-      <div class="card">
+      <div class="card" style="overflow:visible">
         <div class="card-hd">
           <div class="card-hd-l">
             <div class="card-ico" style="background:var(--red-dim);border:1px solid rgba(239,68,68,0.15)"><svg viewBox="0 0 24 24" stroke="var(--red)"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></div>
@@ -858,7 +858,7 @@ a{text-decoration:none;color:inherit}
             Check for breaches
           </button>
         </div>
-        <div class="results-wrap" id="breach-results" style="padding-bottom:1rem"></div>
+        <div id="breach-results" style="padding:0 1.25rem 1.25rem"></div>
       </div>
       <div class="card">
         <div class="card-hd">
@@ -875,7 +875,7 @@ a{text-decoration:none;color:inherit}
   <!-- ══════════ SCANNER ══════════ -->
   <div class="page" id="page-scanner">
     <div style="display:grid;grid-template-columns:320px 1fr;gap:1rem;margin-bottom:1rem;align-items:start">
-      <div class="card">
+      <div class="card" style="overflow:visible;align-self:start">
         <div class="card-hd">
           <div class="card-hd-l">
             <div class="card-ico" style="background:var(--orange-dim);border:1px solid var(--orange-border)"><svg viewBox="0 0 24 24" stroke="var(--orange)"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
@@ -1780,7 +1780,7 @@ async function downloadBreachPDF(){
       const subLine = [domain, breachDate?'Breached: '+breachDate:''].filter(Boolean).join(' · ');
       const cardH = 12 + (subLine?8:0) + (classLines.length>0?classLines.length*5+9:0) + 4;
 
-      if(y+cardH>270){ doc.addPage(); doc.setFillColor(8,11,18); doc.rect(0,0,210,297,'F'); y=20; }
+      if(y+cardH>255){ doc.addPage(); doc.setFillColor(8,11,18); doc.rect(0,0,210,297,'F'); y=20; }
 
       doc.setFillColor(i%2===0?10:14,i%2===0?14:19,i%2===0?22:30);doc.rect(M,y,cw,cardH,'F');
       doc.setFillColor(...sevColor);doc.rect(M,y,2,cardH,'F');
@@ -2355,7 +2355,7 @@ async function downloadScanPDF(){
   y+=8;
 
   rows.forEach(([k,v],i)=>{
-    if(y>260){doc.addPage();doc.setFillColor(8,11,18);doc.rect(0,0,210,297,'F');y=20;}
+    if(y>250){doc.addPage();doc.setFillColor(8,11,18);doc.rect(0,0,210,297,'F');y=20;}
     const isPassed = ['pass','ok','passed'].includes(String(v).toLowerCase());
     const isFailed = ['critical','high','fail','failed','error'].includes(String(v).toLowerCase());
     const rawFinding = (window._lastRawFindings||[]).find(f=>(f.issue||f.name||'')===k);
