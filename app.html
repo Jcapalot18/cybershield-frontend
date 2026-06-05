@@ -1374,12 +1374,12 @@ async function loadDashboard(){
     const circ=289.03;
     setTimeout(()=>{document.getElementById('score-circle').style.strokeDashoffset=circ-(score/100)*circ;},200);
     document.getElementById('score-num').textContent=score;
-    const grade=score>=80?'EXCELLENT':score>=65?'GOOD':score>=45?'FAIR':'AT RISK';
+    const grade=score>=80?'Excellent':score>=65?'Good':score>=45?'Fair':'At Risk';
     const gc=score>=80?'var(--green)':score>=65?'var(--yellow)':score>=45?'var(--orange)':'var(--red)';
     document.getElementById('score-lbl').textContent=grade;
     document.getElementById('score-lbl').style.color=gc;
     document.getElementById('score-circle').style.stroke=gc;
-    document.getElementById('dash-score-lbl').textContent=grade.toLowerCase().replace('_',' ');
+    document.getElementById('dash-score-lbl').textContent=grade;
     document.getElementById('dash-score').style.color=gc;
 
     // Update new widgets
