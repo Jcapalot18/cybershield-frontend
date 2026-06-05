@@ -102,8 +102,8 @@ a{text-decoration:none;color:inherit}
 .tb-cta:hover{background:var(--orange2);transform:translateY(-1px);box-shadow:0 8px 24px rgba(255,107,0,0.4)}
 
 /* ── CONTENT ── */
-.content{flex:1;overflow-y:scroll;background:var(--bg);position:relative;min-height:0}
-.page{display:none;padding:1.5rem 1.75rem 3rem;animation:fadeUp 0.25s ease;min-height:100%}
+.content{flex:1;overflow-y:auto;background:var(--bg);position:relative;min-height:0}
+.page{display:none;padding:1.5rem 1.75rem 3rem;animation:fadeUp 0.25s ease}
 .page.active{display:block}
 
 /* ── CARDS ── */
@@ -836,8 +836,8 @@ a{text-decoration:none;color:inherit}
         <div style="font-size:0.75rem;color:var(--muted);line-height:1.65">Check any email against HaveIBeenPwned's database of 12+ billion breached credentials across 800+ known data breaches. Instant detection.</div>
       </div>
     </div>
-    <div style="display:grid;grid-template-columns:320px 1fr;gap:1rem;align-items:start">
-      <div class="card" style="overflow:visible">
+    <div class="g2e" style="align-items:start">
+      <div class="card">
         <div class="card-hd">
           <div class="card-hd-l">
             <div class="card-ico" style="background:var(--red-dim);border:1px solid rgba(239,68,68,0.15)"><svg viewBox="0 0 24 24" stroke="var(--red)"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></div>
@@ -858,7 +858,7 @@ a{text-decoration:none;color:inherit}
             Check for breaches
           </button>
         </div>
-        <div id="breach-results" style="padding:0 1.25rem 1.25rem"></div>
+        <div class="results-wrap" id="breach-results" style="max-height:600px;overflow-y:auto;scrollbar-width:thin;padding-bottom:1rem"></div>
       </div>
       <div class="card">
         <div class="card-hd">
@@ -874,8 +874,8 @@ a{text-decoration:none;color:inherit}
 
   <!-- ══════════ SCANNER ══════════ -->
   <div class="page" id="page-scanner">
-    <div style="display:grid;grid-template-columns:320px 1fr;gap:1rem;margin-bottom:1rem;align-items:start">
-      <div class="card" style="overflow:visible;align-self:start">
+    <div class="g2e" style="margin-bottom:1rem;align-items:start">
+      <div class="card">
         <div class="card-hd">
           <div class="card-hd-l">
             <div class="card-ico" style="background:var(--orange-dim);border:1px solid var(--orange-border)"><svg viewBox="0 0 24 24" stroke="var(--orange)"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
@@ -914,7 +914,7 @@ a{text-decoration:none;color:inherit}
             </button>
           </div>
         </div>
-        <div id="scan-results" style="padding-bottom:1rem">
+        <div id="scan-results" style="max-height:650px;overflow-y:auto;padding-bottom:1rem">
           <div style="padding:2.5rem 1.25rem;text-align:center">
             <div style="width:44px;height:44px;background:var(--orange-dim);border:1px solid var(--orange-border);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
@@ -1780,7 +1780,7 @@ async function downloadBreachPDF(){
       const subLine = [domain, breachDate?'Breached: '+breachDate:''].filter(Boolean).join(' · ');
       const cardH = 12 + (subLine?8:0) + (classLines.length>0?classLines.length*5+9:0) + 4;
 
-      if(y+cardH>255){ doc.addPage(); doc.setFillColor(8,11,18); doc.rect(0,0,210,297,'F'); y=20; }
+      if(y+cardH>270){ doc.addPage(); doc.setFillColor(8,11,18); doc.rect(0,0,210,297,'F'); y=20; }
 
       doc.setFillColor(i%2===0?10:14,i%2===0?14:19,i%2===0?22:30);doc.rect(M,y,cw,cardH,'F');
       doc.setFillColor(...sevColor);doc.rect(M,y,2,cardH,'F');
@@ -2355,7 +2355,7 @@ async function downloadScanPDF(){
   y+=8;
 
   rows.forEach(([k,v],i)=>{
-    if(y>250){doc.addPage();doc.setFillColor(8,11,18);doc.rect(0,0,210,297,'F');y=20;}
+    if(y>260){doc.addPage();doc.setFillColor(8,11,18);doc.rect(0,0,210,297,'F');y=20;}
     const isPassed = ['pass','ok','passed'].includes(String(v).toLowerCase());
     const isFailed = ['critical','high','fail','failed','error'].includes(String(v).toLowerCase());
     const rawFinding = (window._lastRawFindings||[]).find(f=>(f.issue||f.name||'')===k);
@@ -2486,7 +2486,7 @@ async function loadSubStatus(){
     const sc={trialing:'var(--yellow)',active:'var(--green)',past_due:'var(--red)',canceled:'var(--muted)'};
     const sl={trialing:'Free trial active',active:'Paid · Active',past_due:'Payment past due',canceled:'Canceled'};
     let detail='';
-    if(d.status==='trialing'&&d.trialEndsAt){const days=Math.max(0,Math.floor((new Date(d.trialEndsAt)-Date.now())/(1000*60*60*24)));detail=` · ${days}d remaining`;}
+    if(d.status==='trialing'&&d.trialEndsAt){const days=Math.max(0,Math.ceil((new Date(d.trialEndsAt)-Date.now())/(1000*60*60*24)));detail=` · ${days}d remaining`;}
     else if(d.currentPeriodEnd){detail=` · Renews ${new Date(d.currentPeriodEnd).toLocaleDateString()}`;}
     el.style.display='block';
     el.innerHTML=`<span style="color:${sc[d.status]||'var(--muted)'}">●</span> <span style="color:rgba(255,255,255,0.5)">${sl[d.status]||d.status}</span><span style="color:var(--muted)">${detail}</span>`;
