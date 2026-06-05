@@ -1751,21 +1751,28 @@ async function downloadBreachPDF(){
     y+=8;
 
     lastBreachData.breaches.forEach((b,i)=>{
-      const name = b.Name||b.name||'Unknown';
+      const name = b.Name||b.name||b.title||'Unknown Service';
       const domain = b.Domain||b.domain||'';
-      const breachDate = b.BreachDate||b.breach_date||'';
-      const dataClasses = b.DataClasses||b.data_classes||[];
+      const breachDate = b.BreachDate||b.breachDate||b.date||'';
+      const dataClasses = b.DataClasses||b.dataClasses||[];
       const classArr = Array.isArray(dataClasses)?dataClasses:[];
-      const cleanClasses = classArr.map(c => {
-        // Remove emojis and clean up for PDF
-        return c.replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F000}-\u{1FFFF}]/gu, '').trim();
-      }).filter(Boolean);
-      const severity = (b.severity||b.Severity||'MEDIUM').toString().toUpperCase();
-      const isHigh = severity.includes('HIGH');
-      const sevColor = isHigh?[239,68,68]:[245,158,11];
+      const hasPassword = classArr.some(dc=>(dc||'').toLowerCase().includes('password'));
+      const severity = hasPassword ? 'HIGH RISK' : 'MEDIUM';
+      const sevColor = hasPassword?[239,68,68]:[245,158,11];
 
-      const classText = cleanClasses.join(', ');
-      const bulletText = cleanClasses.map(c=>'• '+c).join('   ');
+      // Clean label mapping for PDF (no emojis)
+      const labelMap = {
+        'Passwords':'Passwords','Email addresses':'Email addresses',
+        'Usernames':'Usernames','Phone numbers':'Phone numbers',
+        'Physical addresses':'Physical addresses','Credit cards':'Credit card info',
+        'Social security numbers':'Social Security Numbers','IP addresses':'IP addresses',
+        'Names':'Names','Dates of birth':'Dates of birth',
+        'Geographic locations':'Location data','Device information':'Device info',
+        'Financial data':'Financial data','Health data':'Health data'
+      };
+      const cleanClasses = classArr.map(c=>labelMap[c]||c);
+
+      const bulletText = cleanClasses.join('  •  ');
       const classLines = cleanClasses.length > 0 ? doc.splitTextToSize(bulletText, cw-10) : [];
       const subLine = [domain, breachDate?'Breached: '+breachDate:''].filter(Boolean).join(' · ');
       const cardH = 10 + (subLine?7:0) + (classLines.length>0?classLines.length*4+8:0) + 4;
