@@ -843,7 +843,10 @@ a{text-decoration:none;color:inherit}
             <div class="card-ico" style="background:var(--red-dim);border:1px solid rgba(239,68,68,0.15)"><svg viewBox="0 0 24 24" stroke="var(--red)"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></div>
             <div><div class="card-title">Check Email for Breaches</div><div class="card-sub">12B+ compromised credentials</div></div>
           </div>
-          <button onclick="downloadBreachPDF()" id="breach-pdf-btn" style="display:none;font-size:0.68rem;font-weight:600;padding:5px 12px;border-radius:6px;cursor:pointer;font-family:var(--font);border:1px solid var(--orange-border);background:var(--orange-dim);color:var(--orange)">⬇ PDF</button>
+          <button onclick="downloadBreachPDF()" id="breach-pdf-btn" class="pdf-btn" style="display:none">
+            <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Download PDF
+          </button>
         </div>
         <div class="tool-form">
           <div class="f-group">
