@@ -526,6 +526,7 @@ function switchTab(name, el){
     if(tabs[idx]) tabs[idx].classList.add('active');
   }
   if(name==='security') loadMFAStatus();
+  if(name==='billing') loadBillingInfo();
 }
 
 function loadProfile(){
@@ -708,7 +709,7 @@ async function loadBillingInfo(){
     const statusLabels = {trialing:'Free trial active',active:'Active',past_due:'Payment past due',canceled:'Canceled'};
     if(d.status){ statusEl.style.cssText=statusColors[d.status]||''; statusEl.textContent=statusLabels[d.status]||d.status; }
     if(d.currentPeriodEnd){ document.getElementById('billing-next').textContent='Renews '+new Date(d.currentPeriodEnd).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}); }
-    if(d.status==='trialing'&&d.trialEndsAt){ const days=Math.max(0,Math.ceil((new Date(d.trialEndsAt)-Date.now())/(1000*60*60*24))); document.getElementById('billing-next').textContent=`Trial ends in ${days} days`; }
+    if(d.status==='trialing'&&d.trialEndsAt){ const days=Math.max(0,Math.floor((new Date(d.trialEndsAt)-Date.now())/(1000*60*60*24))); document.getElementById('billing-next').textContent=`Trial ends in ${days} day${days!==1?'s':''}`; }
     const features = { starter:['10 seats','5 scans/month','Breach monitoring','AI training'], business:['50 seats','Unlimited scans','Breach monitoring','AI training','PDF reports','Slack alerts'], enterprise:['Unlimited seats','Everything in Business','Custom integrations','Dedicated support'] };
     document.getElementById('billing-features').innerHTML = (features[plan]||features.starter).map(f=>`<span class="plan-tag">${f}</span>`).join('');
   }catch(e){}

@@ -102,8 +102,8 @@ a{text-decoration:none;color:inherit}
 .tb-cta:hover{background:var(--orange2);transform:translateY(-1px);box-shadow:0 8px 24px rgba(255,107,0,0.4)}
 
 /* ── CONTENT ── */
-.content{flex:1;overflow-y:auto;background:var(--bg);position:relative;min-height:0}
-.page{display:none;padding:1.5rem 1.75rem 3rem;animation:fadeUp 0.25s ease}
+.content{flex:1;overflow-y:scroll;background:var(--bg);position:relative;min-height:0}
+.page{display:none;padding:1.5rem 1.75rem 3rem;animation:fadeUp 0.25s ease;min-height:100%}
 .page.active{display:block}
 
 /* ── CARDS ── */
@@ -858,12 +858,9 @@ a{text-decoration:none;color:inherit}
             Check for breaches
           </button>
         </div>
-        <div class="results-wrap" id="breach-results" style="max-height:600px;overflow-y:auto;scrollbar-width:thin;padding-bottom:1rem"></div>
+        <div class="results-wrap" id="breach-results" style="padding-bottom:1rem"></div>
       </div>
-      <div class="card">
-        <div class="card-hd">
-          <div class="card-title">Recent Checks</div>
-          <span class="card-act" onclick="clearBreachHistory()">Clear history</span>
+      <div class="card" style="flex:1;min-width:0">
         </div>
         <div id="breach-history">
           <div class="act-item"><div class="act-dot" style="background:var(--muted)"></div><div><div class="act-text" style="color:var(--muted)">No checks yet.</div><div class="act-time">Enter an email to get started</div></div></div>
@@ -914,7 +911,7 @@ a{text-decoration:none;color:inherit}
             </button>
           </div>
         </div>
-        <div id="scan-results" style="max-height:650px;overflow-y:auto;padding-bottom:1rem">
+        <div id="scan-results" style="padding-bottom:1rem">
           <div style="padding:2.5rem 1.25rem;text-align:center">
             <div style="width:44px;height:44px;background:var(--orange-dim);border:1px solid var(--orange-border);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
@@ -2486,7 +2483,7 @@ async function loadSubStatus(){
     const sc={trialing:'var(--yellow)',active:'var(--green)',past_due:'var(--red)',canceled:'var(--muted)'};
     const sl={trialing:'Free trial active',active:'Paid · Active',past_due:'Payment past due',canceled:'Canceled'};
     let detail='';
-    if(d.status==='trialing'&&d.trialEndsAt){const days=Math.max(0,Math.ceil((new Date(d.trialEndsAt)-Date.now())/(1000*60*60*24)));detail=` · ${days}d remaining`;}
+    if(d.status==='trialing'&&d.trialEndsAt){const days=Math.max(0,Math.floor((new Date(d.trialEndsAt)-Date.now())/(1000*60*60*24)));detail=` · ${days}d remaining`;}
     else if(d.currentPeriodEnd){detail=` · Renews ${new Date(d.currentPeriodEnd).toLocaleDateString()}`;}
     el.style.display='block';
     el.innerHTML=`<span style="color:${sc[d.status]||'var(--muted)'}">●</span> <span style="color:rgba(255,255,255,0.5)">${sl[d.status]||d.status}</span><span style="color:var(--muted)">${detail}</span>`;
