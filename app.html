@@ -1184,8 +1184,9 @@ function updateProgress(score, history){
     change.style.color = 'var(--muted)'
   }
 
-  // Render bars
-  if(hist.length > 0){
+  // Render single bar
+  if(score){
+    const c = score>=80?'var(--green)':score>=65?'var(--yellow)':score>=45?'var(--orange)':'var(--red)'
     const quotes = [
       '"The best time to fix a vulnerability was yesterday. The second best time is now."',
       '"It takes 20 years to build a reputation and a few minutes of a cyber incident to ruin it."',
@@ -1195,18 +1196,16 @@ function updateProgress(score, history){
       '"Amateurs hack systems. Professionals hack people." — Bruce Schneier'
     ]
     const q = quotes[Math.floor(Math.random() * quotes.length)]
-    bars.innerHTML = hist.map(h => {
-      const c = h.score >= 80 ? 'var(--green)' : h.score >= 65 ? 'var(--yellow)' : h.score >= 45 ? 'var(--orange)' : 'var(--red)'
-      return `<div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:6px">
-        <div style="font-size:0.72rem;font-weight:700;color:var(--muted);width:32px;text-align:right">${h.label||h.month}</div>
-        <div style="flex:1;height:14px;background:rgba(255,255,255,0.04);border-radius:6px;overflow:hidden;border:1px solid rgba(255,255,255,0.05)">
-          <div style="height:100%;width:${h.score}%;background:linear-gradient(90deg,${c},${c}99);border-radius:6px;transition:width 1s ease;box-shadow:0 0 8px ${c}55"></div>
+    bars.innerHTML = `
+      <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem">
+        <div style="flex:1;height:12px;background:rgba(255,255,255,0.04);border-radius:6px;overflow:hidden;border:1px solid rgba(255,255,255,0.05)">
+          <div style="height:100%;width:${score}%;background:linear-gradient(90deg,var(--orange),var(--orange2));border-radius:6px;transition:width 1.2s ease;box-shadow:0 0 8px rgba(255,107,0,0.4)"></div>
         </div>
-        <div style="font-size:0.78rem;font-weight:800;color:${c};width:28px">${h.score}</div>
+        <div style="font-size:0.78rem;font-weight:800;color:${c};width:32px">${score}%</div>
+      </div>
+      <div style="padding:0.75rem;background:rgba(255,255,255,0.02);border-radius:8px;border:1px solid var(--border2)">
+        <div style="font-size:0.7rem;color:var(--muted);line-height:1.6;font-style:italic">${q}</div>
       </div>`
-    }).join('') + `<div style="margin-top:1rem;padding:0.75rem;background:rgba(255,255,255,0.02);border-radius:8px;border:1px solid var(--border2)">
-      <div style="font-size:0.7rem;color:var(--muted);line-height:1.6;font-style:italic">${q}</div>
-    </div>`
   }
 }
 
