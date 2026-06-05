@@ -924,9 +924,9 @@ a{text-decoration:none;color:inherit}
         </div>
       </div>
     </div>
-    <div class="card">
+    <div class="card" style="margin-top:1rem">
       <div class="card-hd"><div class="card-title">What We Check</div><div class="card-sub">8 security checks per scan</div></div>
-      <div class="checks-grid" id="checks-grid"></div>
+      <div class="checks-grid" id="checks-grid" style="grid-template-columns:repeat(4,1fr)"></div>
     </div>
   </div>
 
@@ -1858,13 +1858,47 @@ async function runBreach(){
         'Financial data':'💰 Financial data',
         'Health data':'🏥 Health data'
       };
+      const hasPasswords = d.breaches.some(b=>(b.DataClasses||[]).some(dc=>dc.toLowerCase().includes('password')));
+      const riskLevel = d.breaches.length >= 5 ? 'HIGH' : d.breaches.length >= 2 ? 'MEDIUM' : 'LOW';
+      const riskColor = riskLevel==='HIGH'?'var(--red)':riskLevel==='MEDIUM'?'var(--yellow)':'var(--orange)';
+      const checkedAt = new Date().toLocaleString('en-US',{month:'long',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit'});
+
       results.innerHTML=`
         <div style="background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.2);border-radius:8px;padding:1rem;margin-bottom:1rem">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
-            <span style="font-size:0.875rem;font-weight:800;color:var(--red)">⚠ ${d.breaches.length} BREACH${d.breaches.length>1?'ES':''} FOUND</span>
+            <span style="font-size:0.875rem;font-weight:800;color:var(--red)">⚠ ${d.breaches.length} BREACH RECORDS DETECTED</span>
             <span style="font-size:0.68rem;font-weight:700;background:rgba(239,68,68,0.15);color:var(--red);padding:3px 8px;border-radius:4px">ACTION REQUIRED</span>
           </div>
-          <div style="font-size:0.75rem;color:rgba(255,255,255,0.6);line-height:1.6">This email appeared in <strong style="color:var(--text)">${d.breaches.length}</strong> known data breach${d.breaches.length>1?'es':''}. Hackers may already have access to this account's password.</div>
+          <div style="font-size:0.75rem;color:rgba(255,255,255,0.6);line-height:1.6">This email was found in <strong style="color:var(--text)">${d.breaches.length}</strong> compromised records. Hackers may already have access to this account's password.</div>
+          <div style="font-size:0.65rem;color:var(--muted);margin-top:6px">Last checked: ${checkedAt}</div>
+        </div>
+
+        <!-- Risk Summary Box -->
+        <div style="background:rgba(15,19,30,1);border:1px solid var(--border);border-radius:8px;padding:1rem;margin-bottom:1rem;display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.75rem">
+          <div style="text-align:center;padding:0.75rem;background:rgba(255,255,255,0.02);border-radius:6px;border:1px solid var(--border2)">
+            <div style="font-size:0.6rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:4px">Risk Level</div>
+            <div style="font-size:1rem;font-weight:900;color:${riskColor}">${riskLevel}</div>
+          </div>
+          <div style="text-align:center;padding:0.75rem;background:rgba(255,255,255,0.02);border-radius:6px;border:1px solid var(--border2)">
+            <div style="font-size:0.6rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:4px">Passwords Exposed</div>
+            <div style="font-size:1rem;font-weight:900;color:${hasPasswords?'var(--red)':'var(--green)'}">${hasPasswords?'YES':'NO'}</div>
+          </div>
+          <div style="text-align:center;padding:0.75rem;background:rgba(255,255,255,0.02);border-radius:6px;border:1px solid var(--border2)">
+            <div style="font-size:0.6rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:4px">MFA Recommended</div>
+            <div style="font-size:1rem;font-weight:900;color:var(--orange)">YES</div>
+          </div>
+        </div>
+
+        <!-- Potential Risk -->
+        <div style="background:rgba(239,68,68,0.04);border:1px solid rgba(239,68,68,0.1);border-radius:8px;padding:1rem;margin-bottom:1rem">
+          <div style="font-size:0.72rem;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px">Potential Risk</div>
+          <div style="font-size:0.75rem;color:rgba(255,255,255,0.6);line-height:1.6;margin-bottom:6px">Attackers may use exposed credentials for:</div>
+          <div style="display:flex;flex-direction:column;gap:4px">
+            <div style="font-size:0.75rem;color:rgba(255,255,255,0.7)">• Account takeover attacks</div>
+            <div style="font-size:0.75rem;color:rgba(255,255,255,0.7)">• Business email compromise (BEC)</div>
+            <div style="font-size:0.75rem;color:rgba(255,255,255,0.7)">• Credential stuffing attacks</div>
+            <div style="font-size:0.75rem;color:rgba(255,255,255,0.7)">• Targeted phishing campaigns</div>
+          </div>
         </div>
         <div style="background:rgba(255,107,0,0.05);border:1px solid rgba(255,107,0,0.15);border-radius:8px;padding:1rem;margin-bottom:1rem">
           <div style="font-size:0.72rem;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px">What to do immediately</div>
