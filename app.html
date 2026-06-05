@@ -836,7 +836,7 @@ a{text-decoration:none;color:inherit}
         <div style="font-size:0.75rem;color:var(--muted);line-height:1.65">Check any email against HaveIBeenPwned's database of 12+ billion breached credentials across 800+ known data breaches. Instant detection.</div>
       </div>
     </div>
-    <div class="g2e" style="align-items:start">
+    <div style="display:grid;grid-template-columns:320px 1fr;gap:1rem;align-items:start">
       <div class="card">
         <div class="card-hd">
           <div class="card-hd-l">
@@ -860,7 +860,10 @@ a{text-decoration:none;color:inherit}
         </div>
         <div class="results-wrap" id="breach-results" style="padding-bottom:1rem"></div>
       </div>
-      <div class="card" style="flex:1;min-width:0">
+      <div class="card">
+        <div class="card-hd">
+          <div class="card-title">Recent Checks</div>
+          <span class="card-act" onclick="clearBreachHistory()">Clear history</span>
         </div>
         <div id="breach-history">
           <div class="act-item"><div class="act-dot" style="background:var(--muted)"></div><div><div class="act-text" style="color:var(--muted)">No checks yet.</div><div class="act-time">Enter an email to get started</div></div></div>
@@ -871,7 +874,7 @@ a{text-decoration:none;color:inherit}
 
   <!-- ══════════ SCANNER ══════════ -->
   <div class="page" id="page-scanner">
-    <div class="g2e" style="margin-bottom:1rem;align-items:start">
+    <div style="display:grid;grid-template-columns:320px 1fr;gap:1rem;margin-bottom:1rem;align-items:start">
       <div class="card">
         <div class="card-hd">
           <div class="card-hd-l">
