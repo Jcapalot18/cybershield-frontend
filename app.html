@@ -2488,6 +2488,9 @@ async function loadTeam(){
     const r=await fetch(`${API}/auth/team`,{headers:{'Authorization':'Bearer '+authToken}});
     const d=await r.json();
     document.getElementById('seats-info').textContent=`${d.team.length} of ${d.seats} seats used`;
+    document.getElementById('team-stat-members').textContent = d.team.length || 0;
+    document.getElementById('team-stat-active').textContent = d.team.filter(u=>u.is_active).length || 0;
+    document.getElementById('team-stat-seats').textContent = (d.seats - d.team.length) || 0;
     document.getElementById('team-tbody').innerHTML=d.team.map(u=>`
       <tr>
         <td><div class="t-av">${(u.full_name||u.email).slice(0,2).toUpperCase()}</div></td>
