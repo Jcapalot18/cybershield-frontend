@@ -1163,13 +1163,11 @@ function updateProgress(score, history){
   const now = new Date()
   const monthKey = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`
 
-  // Update current month
-  const existingIdx = hist.findIndex(h => h.month === monthKey)
-  if(existingIdx >= 0) hist[existingIdx].score = score
-  else hist.push({ month: monthKey, score, label: now.toLocaleDateString('en-US',{month:'short'}) })
+  // Track per action
+  hist.push({ month: new Date().toISOString(), score, label: now.toLocaleDateString('en-US',{month:'short',day:'numeric'}) })
 
-  // Keep last 4 months
-  hist = hist.slice(-4)
+  //Keep last 8 months
+  hist = hist.slice(-8)
   try { localStorage.setItem(key, JSON.stringify(hist)) } catch(e){}
 
   // Show change
@@ -1185,18 +1183,40 @@ function updateProgress(score, history){
     change.style.color = 'var(--muted)'
   }
 
-  // Render bars
+  // Render sparkline chart
   if(hist.length > 0){
-    bars.innerHTML = hist.map(h => {
-      const c = h.score >= 80 ? 'var(--green)' : h.score >= 65 ? 'var(--yellow)' : h.score >= 45 ? 'var(--orange)' : 'var(--red)'
-      return `<div style="display:flex;align-items:center;gap:0.75rem">
-        <div style="font-size:0.72rem;font-weight:700;color:var(--muted);width:32px;text-align:right">${h.label||h.month}</div>
-        <div style="flex:1;height:14px;background:rgba(255,255,255,0.04);border-radius:6px;overflow:hidden;border:1px solid rgba(255,255,255,0.05)">
-          <div style="height:100%;width:${h.score}%;background:linear-gradient(90deg,${c},${c}99);border-radius:6px;transition:width 1s ease;box-shadow:0 0 8px ${c}55"></div>
-        </div>
-        <div style="font-size:0.78rem;font-weight:800;color:${c};width:28px">${h.score}</div>
+    const scores = hist.map(h=>h.score)
+    const labels = hist.map(h=>h.label||h.month)
+    const min = Math.min(...scores) - 5
+    const max = Math.max(...scores) + 5
+    const W = 100, H = 60
+    const pts = scores.map((s,i)=>{
+      const x = hist.length===1 ? 50 : (i/(hist.length-1))*W
+      const y = H - ((s-min)/(max-min))*H
+      return `${x},${y}`
+    })
+    const lineColor = score>=80?'var(--green)':score>=65?'var(--yellow)':score>=45?'var(--orange)':'var(--red)'
+    const areaPath = `M${pts[0]} ` + pts.slice(1).map(p=>`L${p}`).join(' ') + ` L${pts[pts.length-1].split(',')[0]},${H} L${pts[0].split(',')[0]},${H} Z`
+    const linePath = `M${pts[0]} ` + pts.slice(1).map(p=>`L${p}`).join(' ')
+    bars.innerHTML = `
+      <svg viewBox="0 0 100 60" preserveAspectRatio="none" style="width:100%;height:80px;overflow:visible">
+        <defs>
+          <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="${lineColor}" stop-opacity="0.3"/>
+            <stop offset="100%" stop-color="${lineColor}" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        <path d="${areaPath}" fill="url(#areaGrad)"/>
+        <path d="${linePath}" fill="none" stroke="${lineColor}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        ${pts.map((p,i)=>{
+          const [x,y]=p.split(',')
+          return `<circle cx="${x}" cy="${y}" r="2.5" fill="${lineColor}" stroke="var(--bg2)" stroke-width="1.5"/>
+                  <text x="${x}" y="${parseFloat(y)-6}" text-anchor="middle" font-size="6" fill="${lineColor}" font-family="sans-serif" font-weight="bold">${scores[i]}</text>`
+        }).join('')}
+      </svg>
+      <div style="display:flex;justify-content:space-between;margin-top:2px">
+        ${labels.map(l=>`<div style="font-size:0.6rem;color:var(--muted);font-weight:600">${l}</div>`).join('')}
       </div>`
-    }).join('')
   }
 }
 
