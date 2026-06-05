@@ -843,6 +843,7 @@ a{text-decoration:none;color:inherit}
             <div class="card-ico" style="background:var(--red-dim);border:1px solid rgba(239,68,68,0.15)"><svg viewBox="0 0 24 24" stroke="var(--red)"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></div>
             <div><div class="card-title">Check Email for Breaches</div><div class="card-sub">12B+ compromised credentials</div></div>
           </div>
+          <button onclick="downloadBreachPDF()" id="breach-pdf-btn" style="display:none;font-size:0.68rem;font-weight:600;padding:5px 12px;border-radius:6px;cursor:pointer;font-family:var(--font);border:1px solid var(--orange-border);background:var(--orange-dim);color:var(--orange)">⬇ PDF</button>
         </div>
         <div class="tool-form">
           <div class="f-group">
@@ -1607,6 +1608,161 @@ function mdToHtml(md){
 
 
 // ── Breach ─────────────────────────────────────────────────────
+let lastBreachData = null;
+
+async function downloadBreachPDF(){
+  if(!lastBreachData){ alert('Run a breach check first.'); return; }
+
+  // Load jsPDF if not already loaded
+  if(!window.jspdf){
+    await new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+      script.onload = resolve; script.onerror = reject;
+      document.head.appendChild(script);
+    });
+  }
+
+  const {jsPDF} = window.jspdf;
+  const doc = new jsPDF({orientation:'portrait', unit:'mm', format:'a4'});
+  const W=210, M=20, cw=W-M*2;
+
+  // ── HEADER ──
+  doc.setFillColor(8,11,18); doc.rect(0,0,210,297,'F');
+  doc.setFillColor(255,107,0); doc.rect(0,0,210,26,'F');
+
+  // Logo via XMLSerializer
+  let logoUrl = null;
+  try {
+    const svgNS = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(svgNS,'svg');
+    svg.setAttribute('xmlns',svgNS); svg.setAttribute('viewBox','0 0 32 32');
+    svg.setAttribute('width','128'); svg.setAttribute('height','128');
+    const bg=document.createElementNS(svgNS,'rect');
+    bg.setAttribute('width','32'); bg.setAttribute('height','32');
+    bg.setAttribute('rx','8'); bg.setAttribute('fill','#080b12'); svg.appendChild(bg);
+    const sh=document.createElementNS(svgNS,'path');
+    sh.setAttribute('d','M16 3L28 7.5V18C28 25 22 29.5 16 31C10 29.5 4 25 4 18V7.5L16 3Z');
+    sh.setAttribute('fill','rgba(255,107,0,0.15)'); sh.setAttribute('stroke','#FF6B00'); sh.setAttribute('stroke-width','1.5'); svg.appendChild(sh);
+    const t=document.createElementNS(svgNS,'path');
+    t.setAttribute('d','M16 11L20 13.5L16 16L12 13.5Z'); t.setAttribute('fill','rgba(255,107,0,0.3)');
+    t.setAttribute('stroke','#FF6B00'); t.setAttribute('stroke-width','1'); t.setAttribute('stroke-linejoin','round'); svg.appendChild(t);
+    const l=document.createElementNS(svgNS,'path');
+    l.setAttribute('d','M12 13.5L16 16V21L12 18.5Z'); l.setAttribute('fill','none');
+    l.setAttribute('stroke','#FF6B00'); l.setAttribute('stroke-width','1'); l.setAttribute('stroke-linejoin','round'); svg.appendChild(l);
+    const r2=document.createElementNS(svgNS,'path');
+    r2.setAttribute('d','M20 13.5L16 16V21L20 18.5Z'); r2.setAttribute('fill','rgba(255,107,0,0.15)');
+    r2.setAttribute('stroke','#FF6B00'); r2.setAttribute('stroke-width','1'); r2.setAttribute('stroke-linejoin','round'); svg.appendChild(r2);
+    const ser=new XMLSerializer();
+    const blob=new Blob([ser.serializeToString(svg)],{type:'image/svg+xml;charset=utf-8'});
+    const burl=URL.createObjectURL(blob);
+    await new Promise(res=>{
+      const img=new Image();
+      img.onload=()=>{const c=document.createElement('canvas');c.width=128;c.height=128;c.getContext('2d').drawImage(img,0,0,128,128);logoUrl=c.toDataURL('image/png');URL.revokeObjectURL(burl);res();};
+      img.onerror=()=>{URL.revokeObjectURL(burl);res();}; img.src=burl;
+    });
+  } catch(e){}
+
+  if(logoUrl) doc.addImage(logoUrl,'PNG',M,3,20,20);
+  doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(16);
+  doc.text('Cyber',M+23,14);
+  doc.setTextColor(255,180,100); doc.text('Shield',M+23+doc.getTextWidth('Cyber'),14);
+  doc.setFont('helvetica','normal'); doc.setFontSize(6); doc.setTextColor(255,220,185);
+  doc.text('SECURITY OPERATIONS PLATFORM',M+23,19.5);
+  doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(10);
+  doc.text('BREACH MONITOR REPORT',W-M,13,{align:'right'});
+  doc.setFont('helvetica','normal'); doc.setFontSize(6.5); doc.setTextColor(255,210,175);
+  doc.text(new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}),W-M,19,{align:'right'});
+
+  let y=34;
+
+  // ── EMAIL + STATUS BOX ──
+  doc.setFillColor(15,19,30); doc.rect(M,y,cw,18,'F');
+  doc.setTextColor(100,120,160); doc.setFont('helvetica','bold'); doc.setFontSize(7);
+  doc.text('EMAIL CHECKED',M+4,y+6); doc.text('STATUS',W/2+4,y+6);
+  doc.setTextColor(232,232,240); doc.setFont('helvetica','normal'); doc.setFontSize(10);
+  doc.text(lastBreachData.email,M+4,y+14);
+  if(lastBreachData.status==='clean'){
+    doc.setTextColor(16,185,129); doc.setFont('helvetica','bold');
+    doc.text('✓ SECURE — No breaches found',W/2+4,y+14);
+  } else {
+    doc.setTextColor(239,68,68); doc.setFont('helvetica','bold');
+    doc.text(`⚠ ${lastBreachData.breaches.length} BREACH${lastBreachData.breaches.length>1?'ES':''} FOUND`,W/2+4,y+14);
+  }
+  y+=26;
+
+  if(lastBreachData.status==='breached' && lastBreachData.breaches.length > 0){
+    // ── SUMMARY BOX ──
+    doc.setFillColor(50,10,15); doc.setDrawColor(239,68,68); doc.setLineWidth(0.3);
+    doc.rect(M,y,cw,16,'FD');
+    doc.setTextColor(239,68,68); doc.setFont('helvetica','bold'); doc.setFontSize(8);
+    doc.text(`This email appeared in ${lastBreachData.breaches.length} known data breach${lastBreachData.breaches.length>1?'es':''}. Immediate action recommended.`,M+4,y+10);
+    y+=24;
+
+    // ── BREACH DETAILS ──
+    doc.setTextColor(255,107,0); doc.setFont('helvetica','bold'); doc.setFontSize(9);
+    doc.text('BREACH DETAILS',M,y);
+    doc.setDrawColor(255,107,0); doc.setLineWidth(0.3); doc.line(M+40,y-1,W-M,y-1);
+    y+=6;
+
+    lastBreachData.breaches.forEach((b,i)=>{
+      if(y>260){ doc.addPage(); doc.setFillColor(8,11,18); doc.rect(0,0,210,297,'F'); y=20; }
+      const cardH = 22;
+      doc.setFillColor(i%2===0?10:14,i%2===0?14:19,i%2===0?22:30);
+      doc.rect(M,y,cw,cardH,'F');
+      doc.setFillColor(239,68,68); doc.rect(M,y,2,cardH,'F');
+      doc.setTextColor(220,220,235); doc.setFont('helvetica','bold'); doc.setFontSize(9);
+      doc.text(b.Name||b.name||'Unknown Breach',M+5,y+8,{maxWidth:cw-40});
+      const breachDate = b.BreachDate||b.breach_date||'';
+      if(breachDate){ doc.setTextColor(150,160,180); doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.text(`Breached: ${breachDate}`,W-M-4,y+8,{align:'right'}); }
+      if(b.DataClasses||b.data_classes){
+        const classes = Array.isArray(b.DataClasses||b.data_classes) ? (b.DataClasses||b.data_classes).slice(0,4).join(', ') : String(b.DataClasses||b.data_classes);
+        doc.setTextColor(200,100,100); doc.setFont('helvetica','normal'); doc.setFontSize(7);
+        doc.text('Exposed: '+classes,M+5,y+16,{maxWidth:cw-10});
+      }
+      y+=cardH+3;
+    });
+
+    // ── ACTION STEPS ──
+    y+=4;
+    doc.setTextColor(255,107,0); doc.setFont('helvetica','bold'); doc.setFontSize(9);
+    doc.text('RECOMMENDED ACTIONS',M,y);
+    doc.setDrawColor(255,107,0); doc.setLineWidth(0.3); doc.line(M+56,y-1,W-M,y-1);
+    y+=7;
+    const actions = [
+      'Change the password for this email account immediately',
+      'Enable two-factor authentication on the account',
+      'Change any other accounts using the same password',
+      'Watch for phishing emails — attackers may use your exposed info'
+    ];
+    actions.forEach((action,i)=>{
+      doc.setFillColor(18,22,35); doc.setDrawColor(60,40,10); doc.roundedRect(M,y,cw,12,1.5,1.5,'FD');
+      doc.setFillColor(255,107,0); doc.circle(M+5,y+6,3,'F');
+      doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(6); doc.text(String(i+1),M+5,y+7.5,{align:'center'});
+      doc.setTextColor(230,230,245); doc.setFont('helvetica','normal'); doc.setFontSize(8);
+      doc.text(action,M+11,y+7.5,{maxWidth:cw-14});
+      y+=16;
+    });
+  } else {
+    doc.setFillColor(0,40,20); doc.setDrawColor(16,185,129); doc.setLineWidth(0.3);
+    doc.rect(M,y,cw,20,'FD');
+    doc.setTextColor(16,185,129); doc.setFont('helvetica','bold'); doc.setFontSize(10);
+    doc.text('✓ No breaches detected',M+cw/2,y+8,{align:'center'});
+    doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor(100,200,150);
+    doc.text('This email has not appeared in any known data breaches. Keep it secure with a strong password and 2FA.',M+cw/2,y+15,{align:'center',maxWidth:cw-8});
+    y+=28;
+  }
+
+  // ── FOOTER ──
+  doc.setFillColor(15,19,30); doc.rect(0,285,210,12,'F');
+  doc.setTextColor(80,90,110); doc.setFont('helvetica','normal'); doc.setFontSize(7);
+  doc.text('Generated by CyberShield Security Platform · cybrshieldtech.com · Confidential',W/2,291,{align:'center'});
+  doc.text(`Report ID: CS-${Date.now()} · ${new Date().toISOString()}`,W/2,295,{align:'center'});
+
+  const safeEmail = lastBreachData.email.replace(/[@.]/g,'-');
+  doc.save(`cybershield-breach-${safeEmail}-${new Date().toISOString().slice(0,10)}.pdf`);
+}
+
 async function runBreach(){
   const email=document.getElementById('breach-email').value.trim();
   if(!email)return;
@@ -1674,6 +1830,8 @@ async function runBreach(){
           </div>`;
         }).join('')}`;
       addBreachHistory(email,'⚠ '+d.breaches.length+' breach'+(d.breaches.length>1?'es':''),'var(--red)');
+      document.getElementById('breach-pdf-btn').style.display='block';
+      lastBreachData = { email, breaches: d.breaches, date: new Date().toISOString(), status: 'breached' };
     }else{
       results.innerHTML=`
         <div style="background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.2);border-radius:8px;padding:1.25rem">
@@ -1684,6 +1842,8 @@ async function runBreach(){
           <div style="font-size:0.75rem;color:rgba(255,255,255,0.6);line-height:1.6">This email has not appeared in any known data breaches. Keep it secure by using a strong unique password and enabling two-factor authentication.</div>
         </div>`;
       addBreachHistory(email,'✓ Secure','var(--green)');
+      document.getElementById('breach-pdf-btn').style.display='block';
+      lastBreachData = { email, breaches: [], date: new Date().toISOString(), status: 'clean' };
     }
   }catch(e){results.innerHTML=`<div style="color:var(--red);font-size:0.75rem;padding:0.5rem">Error. Please try again.</div>`;}
   btn.textContent='Check for breaches';btn.disabled=false;
