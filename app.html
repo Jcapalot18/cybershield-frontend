@@ -1257,8 +1257,8 @@ function getTimeAgo(dateStr){
 }
 
 function refreshWidgets(){
-  // Reload dashboard data without full page refresh
-  loadDashboard()
+  // Reload dashboard data after short delay to let backend save
+  setTimeout(()=>{ loadDashboard() }, 1500)
 }
 
 // ── LAST SCAN CARD ────────────────────────────────────────────
