@@ -1163,11 +1163,14 @@ function updateProgress(score, history){
   const now = new Date()
   const monthKey = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`
 
-  // Track per action
-  hist.push({ month: new Date().toISOString(), score, label: now.toLocaleDateString('en-US',{month:'short',day:'numeric'}) })
+// Update current month only
+  const monthKey = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`
+  const existingIdx = hist.findIndex(h => h.month === monthKey)
+  if(existingIdx >= 0) hist[existingIdx].score = score
+  else hist.push({ month: monthKey, score, label: now.toLocaleDateString('en-US',{month:'short'}) })
 
-  //Keep last 8 months
-  hist = hist.slice(-8)
+  // Keep last 4 months
+  hist = hist.slice(-4)
   try { localStorage.setItem(key, JSON.stringify(hist)) } catch(e){}
 
   // Show change
