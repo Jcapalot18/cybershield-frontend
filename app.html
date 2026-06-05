@@ -1734,7 +1734,7 @@ async function downloadBreachPDF(){
     actions.forEach((action,i)=>{
       doc.setFillColor(i%2===0?10:14,i%2===0?14:19,i%2===0?22:30);doc.rect(M,y,cw,12,'F');
       doc.setFillColor(255,107,0);doc.rect(M,y,2,12,'F');
-      doc.setTextColor(200,210,230);doc.setFont('helvetica','bold');doc.setFontSize(9);
+      doc.setTextColor(200,210,230);doc.setFont('helvetica','bold');doc.setFontSize(10);
       doc.text((i+1)+'. '+action,M+5,y+8,{maxWidth:cw-8});
       y+=14;
     });
@@ -1775,7 +1775,7 @@ async function downloadBreachPDF(){
       const bulletText = cleanClasses.join('  •  ');
       const classLines = cleanClasses.length > 0 ? doc.splitTextToSize(bulletText, cw-10) : [];
       const subLine = [domain, breachDate?'Breached: '+breachDate:''].filter(Boolean).join(' · ');
-      const cardH = 10 + (subLine?7:0) + (classLines.length>0?classLines.length*4+8:0) + 4;
+      const cardH = 12 + (subLine?8:0) + (classLines.length>0?classLines.length*5+9:0) + 4;
 
       if(y+cardH>270){ doc.addPage(); doc.setFillColor(8,11,18); doc.rect(0,0,210,297,'F'); y=20; }
 
@@ -1783,24 +1783,24 @@ async function downloadBreachPDF(){
       doc.setFillColor(...sevColor);doc.rect(M,y,2,cardH,'F');
 
       let cy=y+8;
-      doc.setTextColor(200,210,230);doc.setFont('helvetica','bold');doc.setFontSize(10);
+      doc.setTextColor(200,210,230);doc.setFont('helvetica','bold');doc.setFontSize(11);
       doc.text(name,M+5,cy,{maxWidth:cw-40});
-      doc.setTextColor(...sevColor);doc.setFont('helvetica','bold');doc.setFontSize(9);
+      doc.setTextColor(...sevColor);doc.setFont('helvetica','bold');doc.setFontSize(10);
       doc.text(severity,W-M-3,cy,{align:'right'});
       cy+=6;
 
       if(subLine){
-        doc.setTextColor(130,145,175);doc.setFont('helvetica','normal');doc.setFontSize(8);
+        doc.setTextColor(130,145,175);doc.setFont('helvetica','normal');doc.setFontSize(9);
         doc.text(subLine,M+5,cy,{maxWidth:cw-10});
         cy+=6;
       }
 
       if(cleanClasses.length>0){
-        doc.setTextColor(200,120,120);doc.setFont('helvetica','bold');doc.setFontSize(7);
+        doc.setTextColor(200,120,120);doc.setFont('helvetica','bold');doc.setFontSize(8);
         doc.text('Exposed data:',M+5,cy);
         cy+=4;
-        doc.setTextColor(190,140,140);doc.setFont('helvetica','normal');doc.setFontSize(7);
-        classLines.forEach(line=>{ doc.text(line,M+5,cy,{maxWidth:cw-10}); cy+=4; });
+        doc.setTextColor(190,140,140);doc.setFont('helvetica','normal');doc.setFontSize(8);
+        classLines.forEach(line=>{ doc.text(line,M+5,cy,{maxWidth:cw-10}); cy+=5; });
       }
 
       y+=cardH+3;
