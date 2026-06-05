@@ -563,7 +563,7 @@ a{text-decoration:none;color:inherit}
             </div>
             <div style="text-align:right">
               <div style="font-size:0.62rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:4px">Change</div>
-              <div id="prog-change" style="font-size:1.5rem;font-weight:900;letter-spacing:-0.03em">—</div>
+              <<div id="prog-change" style="font-size:2.5rem;font-weight:900;letter-spacing:-0.03em">—</div>
             </div>
           </div>
           <div id="prog-bars" style="display:flex;flex-direction:column;gap:0.75rem">
@@ -1181,7 +1181,7 @@ function updateProgress(score, history){
     // Show improvement banner
     if(diff > 0) showScoreBanner(prev, score)
   } else {
-    change.textContent = '—'
+    change.textContent = '0'
     change.style.color = 'var(--muted)'
   }
 
@@ -1191,7 +1191,7 @@ function updateProgress(score, history){
       const c = h.score >= 80 ? 'var(--green)' : h.score >= 65 ? 'var(--yellow)' : h.score >= 45 ? 'var(--orange)' : 'var(--red)'
       return `<div style="display:flex;align-items:center;gap:0.75rem">
         <div style="font-size:0.65rem;color:var(--muted);width:28px;text-align:right">${h.label||h.month}</div>
-        <div style="flex:1;height:8px;background:rgba(255,255,255,0.05);border-radius:4px;overflow:hidden">
+        <div style="flex:1;height:12px;background:rgba(255,255,255,0.05);border-radius:4px;overflow:hidden">
           <div style="height:100%;width:${h.score}%;background:${c};border-radius:4px;transition:width 0.8s ease"></div>
         </div>
         <div style="font-size:0.72rem;font-weight:700;color:${c};width:24px">${h.score}</div>
