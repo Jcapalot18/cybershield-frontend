@@ -858,9 +858,12 @@ a{text-decoration:none;color:inherit}
             Check for breaches
           </button>
         </div>
-        <div class="results-wrap" id="breach-results" style="padding-bottom:1rem"></div>
+        <div class="results-wrap" id="breach-results" style="max-height:600px;overflow-y:auto;scrollbar-width:thin;padding-bottom:1rem"></div>
       </div>
-      <div class="card" style="flex:1;min-width:0">
+      <div class="card">
+        <div class="card-hd">
+          <div class="card-title">Recent Checks</div>
+          <span class="card-act" onclick="clearBreachHistory()">Clear history</span>
         </div>
         <div id="breach-history">
           <div class="act-item"><div class="act-dot" style="background:var(--muted)"></div><div><div class="act-text" style="color:var(--muted)">No checks yet.</div><div class="act-time">Enter an email to get started</div></div></div>
@@ -911,7 +914,7 @@ a{text-decoration:none;color:inherit}
             </button>
           </div>
         </div>
-        <div id="scan-results" style="padding-bottom:1rem">
+        <div id="scan-results" style="max-height:650px;overflow-y:auto;padding-bottom:1rem">
           <div style="padding:2.5rem 1.25rem;text-align:center">
             <div style="width:44px;height:44px;background:var(--orange-dim);border:1px solid var(--orange-border);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
