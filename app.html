@@ -836,8 +836,8 @@ a{text-decoration:none;color:inherit}
         <div style="font-size:0.75rem;color:var(--muted);line-height:1.65">Check any email against HaveIBeenPwned's database of 12+ billion breached credentials across 800+ known data breaches. Instant detection.</div>
       </div>
     </div>
-    <div class="g2e" style="align-items:start">
-      <div class="card">
+    <div style="display:flex;flex-direction:row;gap:1rem;align-items:flex-start">
+      <div class="card" style="width:320px;flex-shrink:0">
         <div class="card-hd">
           <div class="card-hd-l">
             <div class="card-ico" style="background:var(--red-dim);border:1px solid rgba(239,68,68,0.15)"><svg viewBox="0 0 24 24" stroke="var(--red)"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></div>
@@ -860,10 +860,7 @@ a{text-decoration:none;color:inherit}
         </div>
         <div class="results-wrap" id="breach-results" style="padding-bottom:1rem"></div>
       </div>
-      <div class="card">
-        <div class="card-hd">
-          <div class="card-title">Recent Checks</div>
-          <span class="card-act" onclick="clearBreachHistory()">Clear history</span>
+      <div class="card" style="flex:1;min-width:0">
         </div>
         <div id="breach-history">
           <div class="act-item"><div class="act-dot" style="background:var(--muted)"></div><div><div class="act-text" style="color:var(--muted)">No checks yet.</div><div class="act-time">Enter an email to get started</div></div></div>
@@ -874,8 +871,8 @@ a{text-decoration:none;color:inherit}
 
   <!-- ══════════ SCANNER ══════════ -->
   <div class="page" id="page-scanner">
-    <div class="g2e" style="margin-bottom:1rem;align-items:start">
-      <div class="card">
+    <div style="display:flex;flex-direction:row;gap:1rem;align-items:flex-start;margin-bottom:1rem">
+      <div class="card" style="width:320px;flex-shrink:0">
         <div class="card-hd">
           <div class="card-hd-l">
             <div class="card-ico" style="background:var(--orange-dim);border:1px solid var(--orange-border)"><svg viewBox="0 0 24 24" stroke="var(--orange)"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
@@ -903,7 +900,7 @@ a{text-decoration:none;color:inherit}
         </div>
         <div id="scan-limit-area"></div>
       </div>
-      <div class="card">
+      <div class="card" style="flex:1;min-width:0">
         <div class="card-hd">
           <div class="card-title">Scan Results</div>
           <div style="display:flex;align-items:center;gap:8px">
