@@ -1409,7 +1409,7 @@ async function loadDashboard(){
     // Calculate score
     const trainPts  = Math.min(trainings*5,25);
     const scanPts   = Math.min(scans*3,30);
-    const breachCheckPts = Math.min(stats.breachesFound||breaches,10);
+    const breachCheckPts = Math.min((stats.breachChecks||0),10);
     const breachPts = -Math.min(breaches*2,15);
     const score     = Math.max(10,Math.min(95,Math.round(30+trainPts+scanPts+breachCheckPts+breachPts)));
 
