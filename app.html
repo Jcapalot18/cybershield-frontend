@@ -1068,6 +1068,8 @@ function showPage(name,navEl){
   const titles={dashboard:'Dashboard',training:'AI Training',breach:'Breach Monitor',scanner:'Vulnerability Scanner',team:'Team'};
   document.getElementById('topbar-title').textContent=titles[name]||cap(name);
   if(name==='team')loadTeam();
+  if(name==='breach')loadBreachHistory();
+  if(name==='scanner')loadScanHistory();
 }
 
 // ── Dashboard ──────────────────────────────────────────────────
