@@ -1672,6 +1672,11 @@ async function loadBreachHistory(){
   try{
     const r = await fetch(`${API}/dashboard/stats`,{headers:{'Authorization':'Bearer '+authToken}});
     const d = await r.json();
+    // Update breach stats
+    const breachStatChecks = document.getElementById('breach-stat-checks')
+    const breachStatFound = document.getElementById('breach-stat-found')
+    if(breachStatChecks) breachStatChecks.textContent = d.stats?.breachChecks || 0
+    if(breachStatFound) breachStatFound.textContent = d.recent?.breaches?.[0]?.breach_count || 0
     const checks = d.recent?.breaches||[];
     if(!checks.length) return;
     const hist = document.getElementById('breach-history');
@@ -1690,6 +1695,11 @@ async function loadScanHistory(){
   try{
     const r = await fetch(`${API}/dashboard/stats`,{headers:{'Authorization':'Bearer '+authToken}});
     const d = await r.json();
+    // Update scan stats
+    const scanStatScans = document.getElementById('scan-stat-scans')
+    const scanStatIssues = document.getElementById('scan-stat-issues')
+    if(scanStatScans) scanStatScans.textContent = d.stats?.scans || 0
+    if(scanStatIssues) scanStatIssues.textContent = d.recent?.scans?.[0]?.risk_score || 0
     const scans = d.recent?.scans||[];
     if(!scans.length) return;
     const el = document.getElementById('scan-history');
