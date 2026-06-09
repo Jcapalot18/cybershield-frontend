@@ -1,521 +1,474 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-KNS974VS3N"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-KNS974VS3N');
-</script>
 <meta charset="UTF-8"/>
-<link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
+<link rel="icon" type="image/svg+xml" href="favicon.svg"/>
+<script>document.documentElement.classList.add('js')</script>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>CyberShield — AI Cybersecurity for Small Business</title>
-<meta name="description" content="AI-powered security training, breach monitoring, and vulnerability scanning built for small businesses."/>
+<title>CyberShield — Enterprise-grade security for small business</title>
+<meta name="description" content="AI security training, breach monitoring, and vulnerability scanning. Fortune 500 defense without the IT team."/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<script src="image-slot.js"></script>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --white:#ffffff;
-  --black:#0a0a0a;
-  --orange:#FF5500;
-  --orange-light:#FF7733;
-  --orange-dim:rgba(255,85,0,0.12);
-  --orange-border:rgba(255,85,0,0.3);
-  --gray-900:#111111;
-  --gray-800:#1a1a1a;
-  --gray-700:#252525;
-  --gray-500:#555;
-  --gray-400:#888;
-  --gray-200:#ddd;
-  --gray-100:#f2f2f2;
-  --text:#0a0a0a;
-  --muted:#666;
-  --border:#e5e5e5;
-  --bg:#ffffff;
+  --bg:#080b12;
+  --bg2:#0d1220;
+  --bg3:#111827;
+  --bg4:#141d2e;
+  --orange:#FF6B00;
+  --orange2:#ff8c00;
+  --orange-dim:rgba(255,107,0,0.08);
+  --orange-border:rgba(255,107,0,0.25);
+  --gold:#FFD700;
+  --gold-dim:rgba(255,215,0,0.08);
+  --gold-border:rgba(255,215,0,0.28);
+  --border:rgba(255,255,255,0.08);
+  --border2:rgba(255,255,255,0.045);
+  --text:#ffffff;
+  --muted:rgba(255,255,255,0.52);
+  --dim:rgba(255,255,255,0.26);
+  --green:#10B981;
+  --green-dim:rgba(16,185,129,0.08);
+  --red:#EF4444;
+  --yellow:#F59E0B;
+  --cyan:#06B6D4;
+  --font:'Hanken Grotesk',sans-serif;
+  --grid-line:rgba(255,255,255,0.022);
+  --maxw:1280px;
+  --ease:cubic-bezier(0.4,0,0.2,1);
+  --spring:cubic-bezier(.34,1.56,.64,1);
 }
 html{scroll-behavior:smooth}
-body{background:var(--white);color:var(--text);font-family:'DM Sans',sans-serif;font-size:16px;line-height:1.6;overflow-x:hidden}
+body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;overflow-x:hidden}
 a{text-decoration:none;color:inherit}
-::-webkit-scrollbar{width:4px}
-::-webkit-scrollbar-track{background:#f1f1f1}
-::-webkit-scrollbar-thumb{background:var(--orange);border-radius:2px}
+::-webkit-scrollbar{width:9px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:rgba(255,107,0,0.35);border-radius:6px}
+::-webkit-scrollbar-thumb:hover{background:var(--orange)}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 2.5rem}
 
-/* ── NAV ─────────────────────────────────────────────── */
-.nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 4rem;height:72px;display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,0.96);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);transition:all 0.3s}
-.nav.dark{background:rgba(10,10,10,0.96);border-color:rgba(255,255,255,0.08)}
-.nav-logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:1.1rem;letter-spacing:-0.02em}
-.nav-logo svg{width:30px;height:30px}
-.nav-logo .brand{display:flex;align-items:center}
-.nav-logo .brand span{color:var(--orange)}
-.nav.dark .nav-logo{color:#fff}
-.nav-links{display:flex;align-items:center;gap:2.5rem}
-.nav-links a{font-size:0.875rem;font-weight:500;color:var(--muted);transition:color 0.2s}
+/* ── GLOBAL TEXTURE ── */
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(var(--grid-line) 1px,transparent 1px),linear-gradient(90deg,var(--grid-line) 1px,transparent 1px);background-size:38px 38px;pointer-events:none;z-index:0}
+
+/* ── ANIMATIONS ── */
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.7)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes tickerScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+@keyframes glowPulse{0%,100%{box-shadow:0 0 24px rgba(255,107,0,0.18)}50%{box-shadow:0 0 48px rgba(255,107,0,0.4),0 0 90px rgba(255,107,0,0.08)}}
+@keyframes scanSweep{0%{top:-10%}100%{top:110%}}
+.js .reveal{opacity:0;transform:translateY(30px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+.js .reveal.in{opacity:1;transform:translateY(0)}
+.rd1{transition-delay:.08s}.rd2{transition-delay:.16s}.rd3{transition-delay:.24s}.rd4{transition-delay:.32s}.rd5{transition-delay:.40s}
+@media(prefers-reduced-motion:reduce){.js .reveal,.reveal{opacity:1!important;transform:none!important;transition:none}*{animation:none!important}}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 24px;border-radius:10px;font-size:.9rem;font-weight:700;cursor:pointer;border:1px solid transparent;font-family:var(--font);letter-spacing:-0.01em;transition:all .2s var(--spring);white-space:nowrap}
+.btn-primary{background:var(--orange);color:#fff;box-shadow:0 6px 24px rgba(255,107,0,0.34);position:relative;overflow:hidden}
+.btn-primary::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,rgba(255,255,255,0.14),transparent)}
+.btn-primary:hover{background:var(--orange2);transform:translateY(-2px) scale(1.02);box-shadow:0 12px 36px rgba(255,107,0,0.5)}
+.btn-primary:active{transform:translateY(0) scale(.99)}
+.btn-ghost{background:rgba(255,255,255,0.03);color:var(--text);border-color:var(--border)}
+.btn-ghost:hover{background:rgba(255,255,255,0.07);border-color:rgba(255,255,255,0.2);transform:translateY(-2px)}
+.btn-lg{padding:15px 30px;font-size:.98rem;border-radius:11px}
+
+/* ── NAV ── */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;height:68px;display:flex;align-items:center;background:rgba(8,11,18,0.72);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border-bottom:1px solid transparent;transition:border-color .3s,background .3s}
+.nav.scrolled{border-bottom-color:var(--border);background:rgba(8,11,18,0.9)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;width:100%}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.08rem;letter-spacing:-0.03em}
+.logo svg{width:28px;height:28px;flex-shrink:0}
+.logo .acc{color:var(--orange)}
+.nav-links{display:flex;align-items:center;gap:2.25rem}
+.nav-links a{font-size:.875rem;font-weight:600;color:var(--muted);transition:color .2s;position:relative;white-space:nowrap}
 .nav-links a:hover{color:var(--text)}
-.nav.dark .nav-links a{color:rgba(255,255,255,0.5)}
-.nav.dark .nav-links a:hover{color:#fff}
-.nav-right{display:flex;align-items:center;gap:0.75rem}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 22px;border-radius:4px;font-size:0.875rem;font-weight:600;cursor:pointer;border:none;transition:all 0.2s;font-family:'DM Sans',sans-serif;letter-spacing:-0.01em}
-.btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border)}
-.btn-ghost:hover{color:var(--text);border-color:var(--gray-400)}
-.nav.dark .btn-ghost{color:rgba(255,255,255,0.6);border-color:rgba(255,255,255,0.15)}
-.nav.dark .btn-ghost:hover{color:#fff;border-color:rgba(255,255,255,0.4)}
-.btn-primary{background:var(--orange);color:#fff;border:1px solid var(--orange)}
-.btn-primary:hover{background:var(--orange-light);transform:translateY(-1px);box-shadow:0 6px 20px rgba(255,85,0,0.3)}
-.btn-lg{padding:14px 32px;font-size:0.95rem}
-.btn-outline-white{background:transparent;color:#fff;border:1px solid rgba(255,255,255,0.35)}
-.btn-outline-white:hover{border-color:#fff;background:rgba(255,255,255,0.06)}
-.btn-dark{background:var(--black);color:#fff;border:1px solid var(--black)}
-.btn-dark:hover{background:#222}
+.nav-links a::after{content:'';position:absolute;left:0;bottom:-6px;height:2px;width:0;background:var(--orange);transition:width .25s var(--ease);border-radius:2px}
+.nav-links a:hover::after{width:100%}
+.nav-right{display:flex;align-items:center;gap:.75rem}
+.nav-signin{font-size:.875rem;font-weight:600;color:var(--muted);padding:8px 14px;transition:color .2s;white-space:nowrap}
+.nav-signin:hover{color:var(--text)}
+.hamb{display:none;background:none;border:1px solid var(--border);border-radius:9px;padding:8px;color:var(--text);cursor:pointer}
+.hamb svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
 
-/* ── HERO ─────────────────────────────────────────────── */
-.hero{position:relative;min-height:72vh;display:flex;flex-direction:column;justify-content:flex-end;align-items:flex-start;padding:140px 4rem 5rem;overflow:hidden;background:linear-gradient(135deg,#FF4400 0%,#CC2200 35%,#9B0070 65%,#5C0090 100%)}
-.hero::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,transparent 50%,rgba(0,0,0,0.3));pointer-events:none}
-#hero-canvas{position:absolute;inset:0;z-index:0;opacity:0.25}
-.hero-content{position:relative;z-index:2;max-width:700px}
-.hero h1{font-family:'DM Sans',sans-serif;font-size:clamp(2.8rem,5.5vw,4.5rem);font-weight:700;line-height:1.05;letter-spacing:-0.03em;color:#fff;margin-bottom:1.5rem;text-transform:uppercase}
-.hero-sub{font-size:1.1rem;color:rgba(255,255,255,0.75);max-width:500px;margin-bottom:2.5rem;font-weight:400;line-height:1.65}
-.hero-cta{display:flex;gap:1rem;align-items:center;flex-wrap:wrap}
-.hero-scroll{position:absolute;bottom:2rem;right:4rem;z-index:2;color:rgba(255,255,255,0.4);font-size:0.75rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;display:flex;align-items:center;gap:8px}
-.hero-scroll::before{content:'';width:32px;height:1px;background:rgba(255,255,255,0.3)}
+/* ── HERO ── */
+.hero{position:relative;padding:11rem 0 5rem;overflow:hidden}
+#hero-canvas{position:absolute;inset:0;z-index:0;opacity:.5}
+.hero-glow{position:absolute;top:-10%;left:50%;transform:translateX(-50%);width:1100px;height:700px;background:radial-gradient(ellipse at center,rgba(255,107,0,0.16) 0%,rgba(255,107,0,0.04) 35%,transparent 65%);pointer-events:none;z-index:0;filter:blur(20px)}
+.hero .wrap{position:relative;z-index:2}
+.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:3.5rem;align-items:center}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:9px;background:var(--orange-dim);border:1px solid var(--orange-border);border-radius:100px;padding:6px 14px 6px 8px;font-size:.74rem;font-weight:700;color:var(--orange);letter-spacing:.02em;margin-bottom:1.75rem}
+.hero-eyebrow .pill{background:var(--orange);color:#fff;font-size:.6rem;font-weight:800;padding:3px 8px;border-radius:100px;letter-spacing:.06em;text-transform:uppercase}
+.hero h1{font-size:clamp(2.6rem,5vw,4.15rem);font-weight:800;line-height:1.05;letter-spacing:-0.04em;margin-bottom:1.9rem;padding-bottom:.1em}
+.hero h1 .grad{background:linear-gradient(120deg,var(--orange) 0%,var(--orange2) 55%,var(--gold) 130%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.hero-sub{font-size:1.12rem;color:var(--muted);max-width:520px;line-height:1.65;margin-bottom:2.25rem;font-weight:400}
+.hero-cta{display:flex;gap:1rem;align-items:center;flex-wrap:wrap;margin-bottom:2rem}
+.hero-trust{display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap;font-size:.8rem;color:var(--muted)}
+.hero-trust .ht{display:flex;align-items:center;gap:7px}
+.hero-trust svg{width:15px;height:15px;stroke:var(--green);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
 
-/* ── NEWS STRIP ───────────────────────────────────────── */
-.news-strip{background:var(--black);padding:3rem 4rem}
-.news-grid{max-width:1300px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
-.news-card{position:relative;border-radius:6px;overflow:hidden;aspect-ratio:16/9;cursor:pointer;background:var(--gray-800)}
-.news-card img{width:100%;height:100%;object-fit:cover;opacity:0.55;transition:opacity 0.4s,transform 0.4s}
-.news-card:hover img{opacity:0.7;transform:scale(1.03)}
-.news-card-content{position:absolute;inset:0;padding:1.5rem;display:flex;flex-direction:column;justify-content:flex-end}
-.news-tag{display:inline-flex;align-items:center;gap:6px;background:var(--orange);color:#fff;font-size:0.65rem;font-weight:700;padding:4px 10px;border-radius:2px;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.75rem;width:fit-content}
-.news-tag-dot{width:6px;height:6px;border-radius:50%;background:#fff;animation:pulse 2s ease-in-out infinite}
-.news-card h3{color:#fff;font-size:1rem;font-weight:600;line-height:1.4;letter-spacing:-0.01em}
+/* ── HERO PRODUCT MOCKUP ── */
+.hero-mock{position:relative;animation:floaty 7s ease-in-out infinite}
+.mock-shell{background-color:var(--bg2);background-image:linear-gradient(var(--grid-line) 1px,transparent 1px),linear-gradient(90deg,var(--grid-line) 1px,transparent 1px);background-size:26px 26px;border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:0 40px 90px rgba(0,0,0,0.6),0 0 0 1px rgba(255,255,255,0.03),0 1px 0 rgba(255,255,255,0.06) inset;position:relative}
+.mock-shell::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.14),transparent);z-index:5}
+.mock-top{background:rgba(6,8,14,0.9);padding:.7rem 1rem;display:flex;align-items:center;gap:.5rem;border-bottom:1px solid var(--border)}
+.mdot{width:9px;height:9px;border-radius:50%}
+.mock-top .mt-title{margin-left:auto;font-size:.66rem;color:var(--dim);font-weight:600;letter-spacing:.04em}
+.mock-body{padding:1.1rem}
+.mock-scorerow{display:flex;gap:1rem;align-items:center;margin-bottom:1rem}
+.mini-ring{width:84px;height:84px;flex-shrink:0;position:relative}
+.mini-ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.mini-ring-center .n{font-size:1.5rem;font-weight:900;letter-spacing:-0.04em;line-height:1}
+.mini-ring-center .l{font-size:.46rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--green);margin-top:2px}
+.mock-scoreinfo{flex:1}
+.mock-scoreinfo .big{font-size:.92rem;font-weight:800;letter-spacing:-0.02em;margin-bottom:7px}
+.mock-scoreinfo .blbl{display:flex;justify-content:space-between;font-size:.62rem;color:var(--muted);margin-bottom:4px;white-space:nowrap}
+.mbar{height:5px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden;margin-bottom:7px}
+.mbar i{display:block;height:100%;border-radius:4px}
+.mock-kpis{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.5rem;margin-bottom:1rem}
+.mkpi{background:rgba(255,255,255,0.025);border:1px solid var(--border2);border-radius:9px;padding:.65rem .55rem;text-align:center}
+.mkpi .v{font-size:1.05rem;font-weight:900;letter-spacing:-0.03em;line-height:1}
+.mkpi .k{font-size:.5rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-top:4px}
+.mock-feed{border:1px solid var(--border2);border-radius:9px;overflow:hidden}
+.mfeed-row{display:flex;align-items:center;gap:.6rem;padding:.5rem .7rem;border-bottom:1px solid var(--border2);font-size:.66rem}
+.mfeed-row:last-child{border-bottom:none}
+.mfeed-sev{width:3px;height:18px;border-radius:2px;flex-shrink:0}
+.mfeed-t{color:rgba(255,255,255,0.78);flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-weight:500}
+.mfeed-b{font-size:.48rem;font-weight:800;padding:2px 6px;border-radius:4px;text-transform:uppercase;letter-spacing:.06em;flex-shrink:0}
+.float-badge{position:absolute;background-color:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:.7rem .9rem;box-shadow:0 16px 40px rgba(0,0,0,0.5);display:flex;align-items:center;gap:.6rem;z-index:6}
+.fb-ico{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.fb-ico svg{width:15px;height:15px;stroke-width:2.2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.fb-t{font-size:.7rem;font-weight:800;line-height:1.1}
+.fb-s{font-size:.58rem;color:var(--muted);margin-top:1px}
+.float-1{top:-22px;right:-26px;animation:floaty 5s ease-in-out infinite}
+.float-2{bottom:-16px;left:-30px;animation:floaty 6s ease-in-out .8s infinite}
 
-/* ── SOCIAL PROOF ────────────────────────────────────── */
-.social-proof{background:var(--black);border-top:1px solid rgba(255,255,255,0.07);padding:2rem 4rem}
-.social-proof-inner{max-width:1300px;margin:0 auto;display:flex;align-items:center;gap:4rem;flex-wrap:wrap}
-.customer-count{display:flex;align-items:baseline;gap:6px}
-.customer-count .num{font-size:2rem;font-weight:700;color:#fff;letter-spacing:-0.04em}
-.customer-count .label{font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.3)}
-.client-logos{display:flex;align-items:center;gap:2.5rem;flex-wrap:wrap}
-.client-logo{font-size:0.825rem;font-weight:600;color:rgba(255,255,255,0.2);letter-spacing:0.02em;text-transform:uppercase;transition:color 0.3s;cursor:default}
-.client-logo:hover{color:rgba(255,255,255,0.5)}
-.divider-line{width:1px;height:40px;background:rgba(255,255,255,0.1);flex-shrink:0}
+/* ── TICKER ── */
+.ticker{border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:rgba(6,8,14,0.6);overflow:hidden;position:relative;z-index:2}
+.ticker-track{display:flex;gap:3rem;padding:.85rem 0;white-space:nowrap;width:max-content;animation:tickerScroll 38s linear infinite}
+.ticker:hover .ticker-track{animation-play-state:paused}
+.ti{display:inline-flex;align-items:center;gap:9px;font-size:.78rem;color:var(--muted);font-weight:600}
+.ti .dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.ti b{color:rgba(255,255,255,0.82);font-weight:700}
 
-/* ── PLATFORM SECTION ────────────────────────────────── */
-.platform-section{padding:8rem 4rem;background:#fff}
-.platform-inner{max-width:1300px;margin:0 auto}
-.section-label{font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.15em;color:var(--orange);margin-bottom:0.75rem;display:flex;align-items:center;gap:8px}
-.section-label::before{content:'■';font-size:0.45rem}
-.section-title{font-size:clamp(2rem,4vw,3rem);font-weight:700;letter-spacing:-0.03em;line-height:1.1;color:var(--black);margin-bottom:1.25rem}
-.section-sub{font-size:1rem;color:var(--muted);max-width:520px;line-height:1.7;margin-bottom:3rem}
-.platform-layout{display:grid;grid-template-columns:1fr 2fr;gap:0;border:1px solid var(--border);border-radius:8px;overflow:hidden}
-.platform-tabs{border-right:1px solid var(--border)}
-.platform-tab{display:flex;align-items:center;gap:12px;padding:1.25rem 1.5rem;cursor:pointer;border-bottom:1px solid var(--border);transition:all 0.2s;position:relative}
-.platform-tab:last-child{border-bottom:none}
-.platform-tab.active{background:var(--gray-100)}
-.platform-tab.active::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--orange)}
-.platform-tab-icon{width:32px;height:32px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:var(--gray-100);transition:all 0.2s}
-.platform-tab.active .platform-tab-icon{background:var(--orange-dim)}
-.platform-tab-icon svg{width:16px;height:16px;stroke:var(--gray-500);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:stroke 0.2s}
-.platform-tab.active .platform-tab-icon svg{stroke:var(--orange)}
-.platform-tab-label{font-size:0.875rem;font-weight:600;color:var(--muted);transition:color 0.2s}
-.platform-tab.active .platform-tab-label{color:var(--black)}
-.platform-panel{display:none;padding:2.5rem;flex-direction:column;gap:1.5rem}
-.platform-panel.active{display:flex}
-.platform-panel-title{font-size:1.3rem;font-weight:700;letter-spacing:-0.02em;color:var(--black)}
-.platform-panel-desc{font-size:0.9rem;color:var(--muted);line-height:1.7}
-.platform-panel-img{border-radius:6px;overflow:hidden;border:1px solid var(--border);background:var(--gray-100);min-height:200px;position:relative;display:flex;align-items:center;justify-content:center}
-.platform-panel-img-inner{width:100%;padding:2rem;display:flex;align-items:center;justify-content:center;min-height:220px}
-.panel-cta{display:flex;gap:1rem;align-items:center}
-.panel-explore{font-size:0.875rem;font-weight:600;color:var(--orange);display:flex;align-items:center;gap:6px;transition:gap 0.2s;cursor:pointer}
-.panel-explore:hover{gap:10px}
+/* ── SECTION SHELL ── */
+.sec{padding:7rem 0;position:relative;z-index:1}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.16em;color:var(--orange);margin-bottom:1rem}
+.eyebrow::before{content:'';width:18px;height:1px;background:var(--orange)}
+.eyebrow.center{justify-content:center}
+.sec-title{font-size:clamp(2rem,3.6vw,2.9rem);font-weight:800;letter-spacing:-0.035em;line-height:1.08}
+.sec-sub{font-size:1.05rem;color:var(--muted);max-width:560px;line-height:1.65;margin-top:1.1rem}
+.sec-head{margin-bottom:3.5rem}
+.sec-head.center{text-align:center;max-width:620px;margin-left:auto;margin-right:auto}
+.sec-head.center .sec-sub{margin-left:auto;margin-right:auto}
 
-/* ── PILLARS SECTION ─────────────────────────────────── */
-.pillars-section{padding:7rem 4rem;background:linear-gradient(135deg,#f8f8f8 0%,#fff 100%)}
-.pillars-inner{max-width:1300px;margin:0 auto}
-.pillars-header{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;margin-bottom:5rem}
-.pillars-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:8px;overflow:hidden}
-.pillar{background:#fff;padding:2.5rem;position:relative;transition:background 0.2s}
-.pillar:hover{background:#fafafa}
-.pillar-icon{width:44px;height:44px;border-radius:8px;background:var(--orange-dim);border:1px solid var(--orange-border);display:flex;align-items:center;justify-content:center;margin-bottom:1.5rem}
-.pillar-icon svg{width:20px;height:20px;stroke:var(--orange);fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
-.pillar h3{font-size:1rem;font-weight:700;color:var(--black);margin-bottom:0.5rem;letter-spacing:-0.01em}
-.pillar p{font-size:0.875rem;color:var(--muted);line-height:1.65}
-.pillars-screenshot{border-radius:8px;overflow:hidden;border:1px solid var(--border);background:var(--gray-100);min-height:280px;display:flex;align-items:center;justify-content:center;position:relative}
+/* ── LOGO STRIP ── */
+.proof{padding:3rem 0;border-bottom:1px solid var(--border)}
+.proof-label{text-align:center;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.16em;color:var(--dim);margin-bottom:1.75rem}
+.proof-logos{display:flex;align-items:center;justify-content:center;gap:3.5rem;flex-wrap:wrap}
+.proof-logo{display:flex;align-items:center;gap:9px;color:rgba(255,255,255,0.34);font-weight:800;font-size:1.05rem;letter-spacing:-0.02em;transition:color .3s;cursor:default}
+.proof-logo:hover{color:rgba(255,255,255,0.6)}
+.proof-logo svg{width:20px;height:20px;flex-shrink:0;opacity:.8}
 
-/* ── STATS SECTION ───────────────────────────────────── */
-.stats-section{padding:7rem 4rem;background:#fff;border-top:1px solid var(--border)}
-.stats-inner{max-width:1300px;margin:0 auto}
-.stats-header{margin-bottom:5rem}
-.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid var(--border)}
-.stat-item{padding:2.5rem 2rem;border-right:1px solid var(--border);position:relative}
-.stat-item:last-child{border-right:none}
-.stat-item::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--orange);transform:scaleX(0);transform-origin:left;transition:transform 0.4s}
-.stat-item:hover::after{transform:scaleX(1)}
-.stat-num{font-size:3.5rem;font-weight:700;color:var(--black);letter-spacing:-0.05em;line-height:1;margin-bottom:6px}
-.stat-label{font-size:0.8rem;color:var(--muted);font-weight:500}
-.stats-cta{margin-top:4rem;display:flex;gap:1rem;align-items:center}
+/* ── STATS BAND ── */
+.statband{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--border);border-radius:16px;overflow:hidden;background-color:var(--bg2);background-image:linear-gradient(var(--grid-line) 1px,transparent 1px),linear-gradient(90deg,var(--grid-line) 1px,transparent 1px);background-size:30px 30px}
+.statcell{padding:2.25rem 2rem;border-right:1px solid var(--border);position:relative}
+.statcell:last-child{border-right:none}
+.statcell::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--orange);transform:scaleX(0);transform-origin:left;transition:transform .5s var(--ease)}
+.statcell.in::after{transform:scaleX(1)}
+.statcell .num{font-size:3rem;font-weight:900;letter-spacing:-0.05em;line-height:1;margin-bottom:7px;font-variant-numeric:tabular-nums}
+.statcell .lbl{font-size:.82rem;color:var(--muted);font-weight:500;line-height:1.5}
 
-/* ── THREAT FEED ─────────────────────────────────────── */
-.threat-section{background:var(--black);padding:8rem 4rem}
-.threat-inner{max-width:1300px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:6rem;align-items:center}
-.threat-left .section-label{color:var(--orange)}
-.threat-left .section-title{color:#fff}
-.threat-left .section-sub{color:rgba(255,255,255,0.5)}
-.live-badge{display:flex;align-items:center;gap:8px;margin-bottom:2rem}
-.live-dot{width:8px;height:8px;border-radius:50%;background:#4ade80;animation:pulse 2s ease-in-out infinite}
-.live-text{font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35)}
-.threat-feed{border:1px solid rgba(255,255,255,0.08);border-radius:8px;overflow:hidden}
-.threat-item{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:1.1rem 1.25rem;border-bottom:1px solid rgba(255,255,255,0.06);cursor:pointer;transition:background 0.2s;position:relative;overflow:hidden}
-.threat-item:last-child{border-bottom:none}
-.threat-item::before{content:'';position:absolute;left:0;top:0;bottom:0;width:0;background:var(--orange);transition:width 0.2s}
-.threat-item:hover{background:rgba(255,255,255,0.03)}
-.threat-item:hover::before{width:3px}
-.threat-item:hover{padding-left:1.6rem}
-.threat-title{font-size:0.85rem;font-weight:600;color:#fff;margin-bottom:2px;line-height:1.4}
-.threat-src{font-size:0.72rem;color:rgba(255,255,255,0.3)}
-.badge{font-size:0.62rem;font-weight:800;padding:3px 10px;border-radius:2px;white-space:nowrap;text-transform:uppercase;letter-spacing:0.06em}
-.badge-critical{background:rgba(220,38,38,0.15);color:#f87171;border:1px solid rgba(248,113,113,0.2)}
-.badge-high{background:rgba(234,179,8,0.1);color:#fbbf24;border:1px solid rgba(251,191,36,0.2)}
-.badge-medium{background:var(--orange-dim);color:var(--orange);border:1px solid var(--orange-border)}
+/* ── FEATURE SHOWCASE ── */
+.show-layout{display:grid;grid-template-columns:.85fr 1.15fr;gap:2.5rem;align-items:stretch}
+.show-tabs{display:flex;flex-direction:column;gap:.75rem}
+.show-tab{display:flex;align-items:flex-start;gap:1rem;padding:1.4rem 1.5rem;border:1px solid var(--border);border-radius:14px;cursor:pointer;background:var(--bg2);transition:all .25s var(--ease);position:relative;overflow:hidden}
+.show-tab::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--orange);transform:scaleY(0);transform-origin:top;transition:transform .25s var(--ease)}
+.show-tab:hover{border-color:rgba(255,255,255,0.16);transform:translateX(3px)}
+.show-tab.active{border-color:var(--orange-border);background:linear-gradient(120deg,var(--orange-dim),var(--bg2))}
+.show-tab.active::before{transform:scaleY(1)}
+.show-tab-ico{width:42px;height:42px;border-radius:11px;background:rgba(255,255,255,0.04);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .25s var(--spring)}
+.show-tab.active .show-tab-ico{background:var(--orange-dim);border-color:var(--orange-border);transform:scale(1.05)}
+.show-tab-ico svg{width:19px;height:19px;stroke:var(--muted);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:stroke .25s}
+.show-tab.active .show-tab-ico svg{stroke:var(--orange)}
+.show-tab-txt h3{font-size:.98rem;font-weight:700;letter-spacing:-0.01em;margin-bottom:3px}
+.show-tab.active .show-tab-txt h3{color:#fff}
+.show-tab:not(.active) .show-tab-txt h3{color:rgba(255,255,255,0.78)}
+.show-tab-txt p{font-size:.82rem;color:var(--muted);line-height:1.55}
+.show-panel-wrap{border:1px solid var(--border);border-radius:16px;background-color:var(--bg2);background-image:linear-gradient(var(--grid-line) 1px,transparent 1px),linear-gradient(90deg,var(--grid-line) 1px,transparent 1px);background-size:28px 28px;overflow:hidden;position:relative;box-shadow:0 24px 60px rgba(0,0,0,0.4)}
+.show-panel-wrap::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.12),transparent);z-index:5}
+.show-panel{display:none;padding:1.6rem;animation:fadeUp .4s var(--ease)}
+.show-panel.active{display:block}
+.sp-head{display:flex;align-items:center;gap:.7rem;margin-bottom:1.2rem}
+.sp-head .ico{width:36px;height:36px;border-radius:10px;background:var(--orange-dim);border:1px solid var(--orange-border);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sp-head .ico svg{width:17px;height:17px;stroke:var(--orange);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.sp-head .t{font-size:.95rem;font-weight:800;letter-spacing:-0.01em}
+.sp-head .s{font-size:.7rem;color:var(--muted)}
+.sp-live{margin-left:auto;display:flex;align-items:center;gap:6px;font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--green)}
+.sp-live .d{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;box-shadow:0 0 8px var(--green)}
+.sp-rows{display:flex;flex-direction:column;gap:.55rem}
+.sp-row{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.8rem 1rem;background:rgba(255,255,255,0.025);border:1px solid var(--border2);border-radius:10px;transition:all .2s}
+.sp-row:hover{border-color:var(--border);background:rgba(255,255,255,0.04);transform:translateX(2px)}
+.sp-k{font-size:.82rem;color:rgba(255,255,255,0.72);font-weight:500;display:flex;align-items:center;gap:.6rem}
+.sp-k .qd{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.sp-v{font-size:.8rem;font-weight:800;font-variant-numeric:tabular-nums}
+.sp-prog{height:6px;background:rgba(255,255,255,0.05);border-radius:5px;overflow:hidden;margin-top:.3rem}
+.sp-prog i{display:block;height:100%;border-radius:5px;background:linear-gradient(90deg,var(--orange),var(--orange2))}
+.sp-modules{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+.sp-mod{background:rgba(255,255,255,0.025);border:1px solid var(--border2);border-radius:10px;padding:.9rem;transition:all .2s var(--spring)}
+.sp-mod:hover{border-color:var(--orange-border);transform:translateY(-2px)}
+.sp-mod .w{font-size:.52rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--orange);margin-bottom:.5rem}
+.sp-mod .ti{font-size:.78rem;font-weight:700;margin-bottom:.55rem;letter-spacing:-0.01em}
+.sp-mod .mt{display:flex;justify-content:space-between;font-size:.6rem;color:var(--muted);margin-top:.45rem}
 
-/* ── PRICING ─────────────────────────────────────────── */
-.pricing-section{padding:8rem 4rem;background:#fff}
-.pricing-inner{max-width:1300px;margin:0 auto}
-.pricing-header{text-align:center;margin-bottom:4rem}
-.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
-.plan-card{border:1px solid var(--border);border-radius:8px;padding:2.5rem;position:relative;transition:all 0.3s}
-.plan-card:hover{border-color:var(--orange-border);box-shadow:0 16px 50px rgba(0,0,0,0.08);transform:translateY(-4px)}
-.plan-card.featured{border-color:var(--orange);background:linear-gradient(135deg,rgba(255,85,0,0.03) 0%,#fff 100%)}
-.plan-badge{position:absolute;top:-1px;left:50%;transform:translateX(-50%);background:var(--orange);color:#fff;font-size:0.62rem;font-weight:800;padding:5px 16px;border-radius:0 0 6px 6px;text-transform:uppercase;letter-spacing:0.1em;white-space:nowrap}
-.plan-name{font-size:0.72rem;font-weight:800;text-transform:uppercase;letter-spacing:0.15em;color:var(--orange);margin-bottom:1rem}
-.plan-price{font-size:3rem;font-weight:700;color:var(--black);letter-spacing:-0.05em;line-height:1;margin-bottom:4px}
-.plan-price span{font-size:1rem;color:var(--muted);font-weight:400}
-.plan-desc{font-size:0.82rem;color:var(--muted);margin-bottom:1.75rem;padding-bottom:1.75rem;border-bottom:1px solid var(--border)}
-.plan-features{list-style:none;display:flex;flex-direction:column;gap:0.75rem;margin-bottom:2rem}
-.plan-features li{font-size:0.875rem;color:var(--muted);display:flex;align-items:center;gap:0.625rem}
-.check{width:16px;height:16px;flex-shrink:0;stroke:var(--orange);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.cross{width:16px;height:16px;flex-shrink:0;stroke:var(--gray-200);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.plan-features li.no{color:var(--gray-400)}
+/* ── THREAT FEED SECTION ── */
+.threat-layout{display:grid;grid-template-columns:1fr 1.1fr;gap:4rem;align-items:center}
+.live-badge{display:inline-flex;align-items:center;gap:9px;margin-bottom:1.5rem;background:var(--green-dim);border:1px solid rgba(16,185,129,0.22);border-radius:100px;padding:6px 14px}
+.live-badge .d{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;box-shadow:0 0 8px var(--green)}
+.live-badge span{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--green)}
+.feed{border:1px solid var(--border);border-radius:16px;overflow:hidden;background-color:var(--bg2);background-image:linear-gradient(var(--grid-line) 1px,transparent 1px),linear-gradient(90deg,var(--grid-line) 1px,transparent 1px);background-size:28px 28px;box-shadow:0 24px 60px rgba(0,0,0,0.4)}
+.feed-head{padding:1rem 1.4rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.feed-head .ft{font-size:.82rem;font-weight:800;letter-spacing:-0.01em;display:flex;align-items:center;gap:.6rem}
+.feed-head .src{font-size:.66rem;color:var(--muted)}
+.feed-item{display:flex;align-items:center;gap:1rem;padding:1.05rem 1.4rem;border-bottom:1px solid var(--border2);cursor:default;transition:all .2s var(--ease);position:relative}
+.feed-item:last-child{border-bottom:none}
+.feed-item::before{content:'';position:absolute;left:0;top:0;bottom:0;width:0;background:var(--orange);transition:width .2s var(--spring)}
+.feed-item:hover{background:rgba(255,255,255,0.022);padding-left:1.75rem}
+.feed-item:hover::before{width:3px}
+.feed-sev{width:3px;height:34px;border-radius:2px;flex-shrink:0}
+.feed-t{font-size:.82rem;font-weight:600;color:rgba(255,255,255,0.86);line-height:1.4;flex:1;min-width:0}
+.feed-s{font-size:.64rem;color:var(--muted);margin-top:2px}
+.badge{font-size:.55rem;font-weight:800;padding:3px 9px;border-radius:5px;white-space:nowrap;text-transform:uppercase;letter-spacing:.07em;flex-shrink:0}
+.bc{background:rgba(239,68,68,0.1);color:var(--red);border:1px solid rgba(239,68,68,0.22)}
+.bh{background:rgba(245,158,11,0.08);color:var(--yellow);border:1px solid rgba(245,158,11,0.22)}
+.bm{background:var(--orange-dim);color:var(--orange);border:1px solid var(--orange-border)}
 
-/* ── TESTIMONIALS ───────────────────────────────────── */
-.testimonials-section{padding:8rem 4rem;background:var(--gray-100)}
-.testimonials-inner{max-width:1300px;margin:0 auto}
-.testimonials-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:4rem}
-.testimonial{background:#fff;border:1px solid var(--border);border-radius:8px;padding:2rem;position:relative;transition:all 0.3s}
-.testimonial:hover{border-color:var(--orange-border);box-shadow:0 10px 40px rgba(0,0,0,0.06);transform:translateY(-2px)}
-.testimonial-quote{font-size:2.5rem;color:var(--orange);line-height:1;margin-bottom:1rem;font-family:'DM Serif Display',serif}
-.testimonial-text{font-size:0.9rem;color:var(--muted);line-height:1.75;margin-bottom:1.5rem}
-.testimonial-author{display:flex;align-items:center;gap:0.75rem}
-.author-avatar{width:38px;height:38px;border-radius:50%;background:var(--orange-dim);border:1px solid var(--orange-border);display:flex;align-items:center;justify-content:center;font-size:0.72rem;font-weight:800;color:var(--orange);flex-shrink:0}
-.author-name{font-size:0.875rem;font-weight:700;color:var(--black)}
-.author-role{font-size:0.75rem;color:var(--muted)}
+/* ── PRICING ── */
+.bill-toggle{display:inline-flex;align-items:center;gap:.4rem;background:var(--bg2);border:1px solid var(--border);border-radius:100px;padding:5px;margin-top:1.75rem}
+.bill-opt{padding:8px 20px;border-radius:100px;font-size:.82rem;font-weight:700;color:var(--muted);cursor:pointer;border:none;background:none;font-family:var(--font);transition:all .25s var(--ease)}
+.bill-opt.active{background:var(--orange);color:#fff;box-shadow:0 4px 16px rgba(255,107,0,0.3)}
+.bill-save{font-size:.6rem;font-weight:800;color:var(--green);background:var(--green-dim);border:1px solid rgba(16,185,129,0.25);padding:2px 7px;border-radius:100px;margin-left:4px}
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:3.5rem;align-items:stretch}
+.plan{border:1px solid var(--border);border-radius:18px;padding:2rem;position:relative;background-color:var(--bg2);background-image:linear-gradient(var(--grid-line) 1px,transparent 1px),linear-gradient(90deg,var(--grid-line) 1px,transparent 1px);background-size:28px 28px;display:flex;flex-direction:column;transition:all .3s var(--spring)}
+.plan:hover{border-color:rgba(255,255,255,0.18);transform:translateY(-5px);box-shadow:0 30px 70px rgba(0,0,0,0.5)}
+.plan.feat{border-color:var(--orange-border);box-shadow:0 0 0 1px var(--orange-border),0 24px 60px rgba(255,107,0,0.12)}
+.plan.feat:hover{box-shadow:0 0 0 1px var(--orange),0 34px 80px rgba(255,107,0,0.22)}
+.plan.ent{border-color:var(--gold-border)}
+.plan.ent:hover{box-shadow:0 0 0 1px var(--gold-border),0 30px 70px rgba(255,215,0,0.1)}
+.plan-tag{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--orange);color:#fff;font-size:.6rem;font-weight:800;padding:5px 16px;border-radius:100px;text-transform:uppercase;letter-spacing:.1em;white-space:nowrap;box-shadow:0 6px 18px rgba(255,107,0,0.4)}
+.plan.ent .plan-tag{background:linear-gradient(120deg,var(--gold),#e6a700);color:#1a1205;box-shadow:0 6px 18px rgba(255,215,0,0.32)}
+.plan-name{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.14em;color:var(--orange);margin-bottom:.6rem}
+.plan.ent .plan-name{color:var(--gold)}
+.plan-price{display:flex;align-items:baseline;gap:4px;margin-bottom:.3rem}
+.plan-price .amt{font-size:3rem;font-weight:900;letter-spacing:-0.05em;line-height:1;font-variant-numeric:tabular-nums}
+.plan-price .per{font-size:.92rem;color:var(--muted);font-weight:500}
+.plan-desc{font-size:.82rem;color:var(--muted);margin-bottom:1.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)}
+.plan-feats{list-style:none;display:flex;flex-direction:column;gap:.8rem;margin-bottom:1.75rem;flex:1}
+.plan-feats li{font-size:.85rem;color:rgba(255,255,255,0.74);display:flex;align-items:flex-start;gap:.65rem;line-height:1.4}
+.plan-feats svg{width:16px;height:16px;flex-shrink:0;margin-top:1px;stroke:var(--orange);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.plan.ent .plan-feats svg{stroke:var(--gold)}
+.plan-feats li.off{color:var(--dim)}
+.plan-feats li.off svg{stroke:var(--dim)}
+.plan .btn{width:100%}
 
-/* ── CTA SECTION ─────────────────────────────────────── */
-.cta-section{padding:8rem 4rem;background:var(--black);position:relative;overflow:hidden}
-.cta-mesh{position:absolute;inset:0;background:radial-gradient(ellipse at 20% 50%,rgba(255,85,0,0.15) 0%,transparent 60%),radial-gradient(ellipse at 80% 50%,rgba(140,0,180,0.1) 0%,transparent 60%);pointer-events:none}
-.cta-inner{position:relative;z-index:1;max-width:1300px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:6rem;align-items:center}
-.cta-left .section-title{color:#fff;font-size:clamp(2rem,4vw,3.2rem)}
-.cta-left .section-sub{color:rgba(255,255,255,0.5);margin-bottom:2.5rem}
-.cta-form{display:flex;gap:0.75rem;max-width:460px}
-.cta-form input{flex:1;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:4px;padding:14px 18px;color:#fff;font-size:0.9rem;font-family:'DM Sans',sans-serif;outline:none;transition:border 0.2s}
-.cta-form input:focus{border-color:var(--orange)}
-.cta-form input::placeholder{color:rgba(255,255,255,0.3)}
-.cta-note{font-size:0.78rem;color:rgba(255,255,255,0.3);margin-top:1rem}
-#form-response{font-size:0.85rem;margin-top:0.75rem;min-height:20px}
-.cta-right{display:flex;flex-direction:column;gap:1.5rem}
-.cta-stat{border-left:3px solid var(--orange);padding-left:1.5rem}
-.cta-stat-num{font-size:2.5rem;font-weight:700;color:#fff;letter-spacing:-0.04em;line-height:1;margin-bottom:4px}
-.cta-stat-label{font-size:0.82rem;color:rgba(255,255,255,0.4)}
+/* ── CERTS ── */
+.certs{border:1px solid var(--border);border-radius:18px;padding:2.5rem;background:linear-gradient(135deg,rgba(255,215,0,0.03),var(--bg2));position:relative;overflow:hidden}
+.certs::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold-border),transparent)}
+.certs-grid{display:grid;grid-template-columns:repeat(3,1fr) 1.1fr;gap:1.25rem;align-items:center}
+.cert{display:flex;align-items:center;gap:1rem;padding:1.25rem;border:1px solid var(--border);border-radius:14px;background:var(--bg);transition:all .25s var(--spring)}
+.cert:hover{border-color:var(--gold-border);transform:translateY(-3px);box-shadow:0 16px 40px rgba(255,215,0,0.08)}
+.cert-seal{width:48px;height:48px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:var(--gold-dim);border:1.5px solid var(--gold-border);position:relative}
+.cert-seal svg{width:22px;height:22px;stroke:var(--gold);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.cert-txt .ct{font-size:.86rem;font-weight:800;letter-spacing:-0.01em}
+.cert-txt .cs{font-size:.66rem;color:var(--muted);margin-top:2px}
+.certs-note{font-size:.84rem;color:var(--muted);line-height:1.6}
+.certs-note b{color:var(--text)}
 
-/* ── FOOTER ─────────────────────────────────────────── */
-footer{background:var(--black);border-top:1px solid rgba(255,255,255,0.07);padding:3rem 4rem}
-.footer-inner{max-width:1300px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1.5rem}
-.footer-logo{display:flex;align-items:center;gap:8px;font-weight:700;font-size:1rem;color:#fff}
-.footer-logo span{color:var(--orange)}
-.footer-links{display:flex;gap:2.5rem}
-.footer-links a{font-size:0.82rem;color:rgba(255,255,255,0.3);transition:color 0.2s}
-.footer-links a:hover{color:rgba(255,255,255,0.7)}
-.footer-copy{font-size:0.78rem;color:rgba(255,255,255,0.2)}
+/* ── TESTIMONIALS ── */
+.tgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
+.tcard{border:1px solid var(--border);border-radius:16px;padding:1.9rem;background-color:var(--bg2);background-image:linear-gradient(var(--grid-line) 1px,transparent 1px),linear-gradient(90deg,var(--grid-line) 1px,transparent 1px);background-size:26px 26px;display:flex;flex-direction:column;transition:all .3s var(--spring)}
+.tcard:hover{border-color:var(--orange-border);transform:translateY(-4px);box-shadow:0 24px 60px rgba(0,0,0,0.45)}
+.tstars{display:flex;gap:3px;margin-bottom:1.1rem}
+.tstars svg{width:15px;height:15px;fill:var(--gold);stroke:none}
+.tquote{font-size:.95rem;color:rgba(255,255,255,0.84);line-height:1.65;margin-bottom:1.5rem;flex:1;letter-spacing:-0.005em}
+.tauthor{display:flex;align-items:center;gap:.8rem}
+.tav{width:42px;height:42px;border-radius:50%;flex-shrink:0;overflow:hidden;border:1.5px solid var(--orange-border)}
+.tav image-slot{width:100%;height:100%}
+.tname{font-size:.85rem;font-weight:800;letter-spacing:-0.01em}
+.trole{font-size:.7rem;color:var(--muted)}
 
-/* ── ANIMATIONS ─────────────────────────────────────── */
-@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(1.5)}}
-.reveal{opacity:0;transform:translateY(28px);transition:all 0.7s cubic-bezier(0.4,0,0.2,1)}
-.reveal.visible{opacity:1;transform:translateY(0)}
-.reveal-delay-1{transition-delay:0.1s}
-.reveal-delay-2{transition-delay:0.2s}
-.reveal-delay-3{transition-delay:0.3s}
-.reveal-delay-4{transition-delay:0.4s}
-.hero-content h1{animation:fadeUp 0.9s ease both}
-.hero-content .hero-sub{animation:fadeUp 0.9s 0.1s ease both}
-.hero-content .hero-cta{animation:fadeUp 0.9s 0.2s ease both}
+/* ── FINAL CTA ── */
+.final{position:relative;overflow:hidden;border-top:1px solid var(--border)}
+.final-mesh{position:absolute;inset:0;background:radial-gradient(ellipse at 25% 40%,rgba(255,107,0,0.16),transparent 55%),radial-gradient(ellipse at 80% 60%,rgba(255,215,0,0.06),transparent 50%);pointer-events:none}
+.final-inner{position:relative;z-index:2;text-align:center;max-width:680px;margin:0 auto}
+.final h2{font-size:clamp(2.2rem,4vw,3.4rem);font-weight:900;letter-spacing:-0.04em;line-height:1.05;margin-bottom:1.25rem}
+.final p{font-size:1.1rem;color:var(--muted);margin-bottom:2.25rem;line-height:1.6}
+.final-cta{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-bottom:1.5rem}
+.final-note{font-size:.8rem;color:var(--dim)}
 
-/* ── MOCK DASHBOARD WIDGET ───────────────────────────── */
-.mock-dashboard{background:#111;border-radius:6px;overflow:hidden;border:1px solid rgba(255,255,255,0.08);font-family:'DM Sans',sans-serif}
-.mock-topbar{background:#0a0a0a;padding:0.65rem 1rem;display:flex;align-items:center;gap:0.5rem;border-bottom:1px solid rgba(255,255,255,0.06)}
-.mock-dot{width:8px;height:8px;border-radius:50%}
-.mock-content{padding:1rem;display:flex;flex-direction:column;gap:0.75rem}
-.mock-row{display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,0.04);border-radius:4px;padding:0.65rem 0.85rem}
-.mock-label{font-size:0.7rem;color:rgba(255,255,255,0.4)}
-.mock-val{font-size:0.7rem;font-weight:700}
-.mock-score-ring{display:flex;align-items:center;justify-content:center;padding:1.5rem}
-.mock-score-circle{width:80px;height:80px;border-radius:50%;border:3px solid var(--orange);display:flex;align-items:center;justify-content:center;position:relative}
-.mock-score-circle span{font-size:1.2rem;font-weight:700;color:#fff}
+/* ── FOOTER ── */
+footer{border-top:1px solid var(--border);padding:4rem 0 2rem;position:relative;z-index:1}
+.foot-grid{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:2.5rem;margin-bottom:3rem}
+.foot-brand .logo{margin-bottom:1rem}
+.foot-brand p{font-size:.85rem;color:var(--muted);line-height:1.65;max-width:280px;margin-bottom:1.25rem}
+.foot-social{display:flex;gap:.6rem}
+.foot-social a{width:34px;height:34px;border-radius:9px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--muted);transition:all .2s var(--spring)}
+.foot-social a:hover{color:var(--orange);border-color:var(--orange-border);transform:translateY(-2px)}
+.foot-social svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.foot-col h4{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:var(--dim);margin-bottom:1.1rem}
+.foot-col a{display:block;font-size:.85rem;color:var(--muted);margin-bottom:.7rem;transition:color .2s;width:fit-content}
+.foot-col a:hover{color:var(--text)}
+.foot-bottom{border-top:1px solid var(--border);padding-top:1.75rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+.foot-copy{font-size:.78rem;color:var(--dim)}
+.foot-badges{display:flex;gap:1rem;align-items:center}
+.foot-badge{display:flex;align-items:center;gap:6px;font-size:.7rem;font-weight:700;color:var(--muted)}
+.foot-badge svg{width:13px;height:13px;stroke:var(--green);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
 
-@media(max-width:900px){
-  .nav{padding:0 1.5rem}
-  .nav-links{display:none}
-  .hero{padding:120px 1.5rem 4rem}
-  .news-strip,.social-proof,.platform-section,.pillars-section,.stats-section,.threat-section,.pricing-section,.testimonials-section,.cta-section,footer{padding:4rem 1.5rem}
-  .platform-layout{grid-template-columns:1fr}
-  .platform-tabs{border-right:none;border-bottom:1px solid var(--border)}
-  .pillars-header{grid-template-columns:1fr}
-  .stats-grid{grid-template-columns:repeat(2,1fr)}
-  .threat-inner{grid-template-columns:1fr}
-  .pricing-grid{grid-template-columns:1fr}
-  .testimonials-grid{grid-template-columns:1fr}
-  .cta-inner{grid-template-columns:1fr}
-  .news-grid{grid-template-columns:1fr}
-  .cta-form{flex-direction:column}
-  .pillars-grid{grid-template-columns:1fr}
+/* ── MOBILE MENU ── */
+.mobile-menu{position:fixed;inset:0;z-index:99;background:rgba(8,11,18,0.98);backdrop-filter:blur(20px);display:none;flex-direction:column;padding:5.5rem 2.5rem 2rem;gap:.5rem}
+.mobile-menu.open{display:flex}
+.mobile-menu a{font-size:1.3rem;font-weight:700;padding:1rem 0;border-bottom:1px solid var(--border2);color:var(--text)}
+.mobile-menu .mm-cta{margin-top:1.5rem}
+.mm-close{position:absolute;top:1.4rem;right:2.5rem;background:none;border:1px solid var(--border);border-radius:9px;padding:8px;color:var(--text);cursor:pointer}
+.mm-close svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
+
+@media(max-width:1000px){
+  .hero-grid{grid-template-columns:1fr;gap:3rem}
+  .hero-mock{max-width:480px;margin:0 auto;width:100%}
+  .show-layout{grid-template-columns:1fr}
+  .threat-layout{grid-template-columns:1fr;gap:2.5rem}
+  .certs-grid{grid-template-columns:1fr 1fr}
+  .foot-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:820px){
+  .nav-links,.nav-right .nav-signin{display:none}
+  .hamb{display:flex}
+  .statband{grid-template-columns:1fr 1fr}
+  .statcell{border-right:none;border-bottom:1px solid var(--border)}
+  .statcell:nth-child(odd){border-right:1px solid var(--border)}
+  .pricing-grid{grid-template-columns:1fr;max-width:420px;margin-left:auto;margin-right:auto}
+  .tgrid{grid-template-columns:1fr}
+}
+@media(max-width:600px){
+  .wrap{padding:0 1.25rem}
+  .sec{padding:4.5rem 0}
+  .hero{padding:8.5rem 0 3.5rem}
+  .statband{grid-template-columns:1fr}
+  .statcell{border-right:none!important}
+  .certs-grid{grid-template-columns:1fr}
+  .foot-grid{grid-template-columns:1fr 1fr;gap:2rem}
+  .foot-brand{grid-column:1/-1}
+  .float-1,.float-2{display:none}
+  .certs{padding:1.5rem}
 }
 </style>
 </head>
 <body>
 
-<!-- NAV -->
+<!-- ═══════ NAV ═══════ -->
 <nav class="nav" id="nav">
-  <a href="index.html" class="nav-logo">
-    <svg viewBox="0 0 30 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M15 1L29 6.5V21C29 30 22 35.5 15 37.5C8 35.5 1 30 1 21V6.5L15 1Z" fill="rgba(255,85,0,0.08)" stroke="#FF5500" stroke-width="1.5"/>
-      <path d="M15 11L20 14L15 17L10 14Z" fill="rgba(255,85,0,0.15)" stroke="#FF5500" stroke-width="1.25" stroke-linejoin="round"/>
-      <path d="M10 14L15 17V23L10 20Z" stroke="#FF5500" stroke-width="1.25" stroke-linejoin="round"/>
-      <path d="M20 14L15 17V23L20 20Z" fill="rgba(255,85,0,0.08)" stroke="#FF5500" stroke-width="1.25" stroke-linejoin="round"/>
-    </svg>
-    <div class="brand">Cyber<span>Shield</span></div>
-  </a>
-  <div class="nav-links">
-    <a href="#platform">Platform</a>
-    <a href="#pricing">Pricing</a>
-    <a href="#threats">Threat feed</a>
-    <a href="about.html">About</a>
-  </div>
-  <div class="nav-right" id="nav-right">
-    <a href="auth.html" class="btn btn-ghost" id="nav-signin">Sign in</a>
-    <a href="auth.html?signup=true" class="btn btn-primary" id="nav-cta">Start free trial</a>
+  <div class="wrap">
+    <a href="#" class="logo">
+      <svg viewBox="0 0 30 36" fill="none">
+        <path d="M15 1L29 6.5V21C29 30 22 35.5 15 37.5C8 35.5 1 30 1 21V6.5L15 1Z" fill="rgba(255,107,0,0.08)" stroke="#FF6B00" stroke-width="1.5"/>
+        <path d="M15 11L20 14L15 17L10 14Z" fill="rgba(255,107,0,0.2)" stroke="#FF6B00" stroke-width="1.25" stroke-linejoin="round"/>
+        <path d="M10 14L15 17V23L10 20Z" stroke="#FF6B00" stroke-width="1.25" stroke-linejoin="round"/>
+        <path d="M20 14L15 17V23L20 20Z" fill="rgba(255,107,0,0.1)" stroke="#FF6B00" stroke-width="1.25" stroke-linejoin="round"/>
+      </svg>
+      <span>Cyber<span class="acc">Shield</span></span>
+    </a>
+    <div class="nav-links">
+      <a href="#platform">Platform</a>
+      <a href="#threats">Threat feed</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#trust">Trust</a>
+    </div>
+    <div class="nav-right">
+      <a href="CyberShield Dashboard.html" class="nav-signin">Sign in</a>
+      <a href="CyberShield Dashboard.html" class="btn btn-primary">Start free trial</a>
+      <button class="hamb" onclick="document.getElementById('mm').classList.add('open')" aria-label="Menu">
+        <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </div>
   </div>
 </nav>
 
-<!-- HERO -->
+<!-- mobile menu -->
+<div class="mobile-menu" id="mm">
+  <button class="mm-close" onclick="document.getElementById('mm').classList.remove('open')"><svg viewBox="0 0 24 24"><line x1="6" y1="6" x2="18" y2="18"/><line x1="6" y1="18" x2="18" y2="6"/></svg></button>
+  <a href="#platform" onclick="document.getElementById('mm').classList.remove('open')">Platform</a>
+  <a href="#threats" onclick="document.getElementById('mm').classList.remove('open')">Threat feed</a>
+  <a href="#pricing" onclick="document.getElementById('mm').classList.remove('open')">Pricing</a>
+  <a href="#trust" onclick="document.getElementById('mm').classList.remove('open')">Trust</a>
+  <a href="CyberShield Dashboard.html" class="btn btn-primary btn-lg mm-cta">Start free trial</a>
+</div>
+
+<!-- ═══════ HERO ═══════ -->
 <section class="hero">
   <canvas id="hero-canvas"></canvas>
-  <div class="hero-content">
-    <h1>One breach can<br>cost your business<br>everything</h1>
-    <p class="hero-sub">CyberShield detects security vulnerabilities, monitors for data breaches, and trains your team — before attackers strike. Built for small businesses. No IT team needed.</p>
-    <div class="hero-cta">
-      <a href="auth.html?signup=true" class="btn btn-primary btn-lg" id="hero-cta-primary">Start free 14-day trial →</a>
-      <a href="#platform" class="btn btn-outline-white btn-lg">See how it works</a>
-    </div>
-  </div>
-  <div class="hero-scroll">Scroll to explore</div>
-</section>
-
-<!-- NEWS STRIP -->
-<div class="news-strip">
-  <div class="news-grid">
-    <div class="news-card" onclick="window.open('auth.html?signup=true')">
-      <img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800&q=70&fit=crop" alt="AI Training"/>
-      <div class="news-card-content">
-        <div class="news-tag"><div class="news-tag-dot"></div>Platform launch</div>
-        <h3>AI Security Training powered by live CyberWire Daily threat intelligence</h3>
-      </div>
-    </div>
-    <div class="news-card" onclick="window.open('auth.html?signup=true')">
-      <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&q=70&fit=crop" alt="Breach Monitor"/>
-      <div class="news-card-content">
-        <div class="news-tag"><div class="news-tag-dot"></div>New feature</div>
-        <h3>Real-time Breach Monitoring across 12+ billion compromised credentials</h3>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- SOCIAL PROOF -->
-<div class="social-proof">
-  <div class="social-proof-inner">
-    <div class="customer-count">
-      <div class="num">14</div>
-      <div class="label">Day free trial — no credit card</div>
-    </div>
-    <div class="divider-line"></div>
-    <div class="client-logos">
-      <div class="client-logo">Law Firms</div>
-      <div class="client-logo">Medical Practices</div>
-      <div class="client-logo">Accounting CPA</div>
-      <div class="client-logo">Real Estate</div>
-      <div class="client-logo">Tech Startups</div>
-    </div>
-  </div>
-</div>
-
-<!-- PLATFORM SECTION -->
-<section class="platform-section" id="platform">
-  <div class="platform-inner">
-    <div class="reveal" style="max-width:600px;margin-bottom:3rem">
-      <div class="section-label">ActiveAI Security Platform</div>
-      <h2 class="section-title">Proactive cybersecurity<br>across your business</h2>
-      <p class="section-sub">CyberShield brings AI to your data, correlating threats across your entire organization and delivering real-time detection with autonomous response.</p>
-    </div>
-    <div class="platform-layout reveal">
-      <div class="platform-tabs">
-        <div class="platform-tab active" onclick="switchTab(this,'training')">
-          <div class="platform-tab-icon">
-            <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-          </div>
-          <span class="platform-tab-label">/ AI Training</span>
+  <div class="hero-glow"></div>
+  <div class="wrap">
+    <div class="hero-grid">
+      <div class="hero-copy">
+        <div class="hero-eyebrow reveal"><span class="pill">New</span>AI training from live threat intelligence</div>
+        <h1 class="reveal rd1">Enterprise security,<br><span class="grad">built for small business.</span></h1>
+        <p class="hero-sub reveal rd2">CyberShield scans for vulnerabilities, monitors 12B+ breached credentials, and trains your team on the exact attacks happening right now — no IT department required.</p>
+        <div class="hero-cta reveal rd3">
+          <a href="CyberShield Dashboard.html" class="btn btn-primary btn-lg">Start free 14-day trial →</a>
+          <a href="#platform" class="btn btn-ghost btn-lg">See how it works</a>
         </div>
-        <div class="platform-tab" onclick="switchTab(this,'breach')">
-          <div class="platform-tab-icon">
-            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-          </div>
-          <span class="platform-tab-label">/ Breach Monitor</span>
-        </div>
-        <div class="platform-tab" onclick="switchTab(this,'scanner')">
-          <div class="platform-tab-icon">
-            <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
-          </div>
-          <span class="platform-tab-label">/ Scanner</span>
-        </div>
-        <div class="platform-tab" onclick="switchTab(this,'identity')">
-          <div class="platform-tab-icon">
-            <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-          </div>
-          <span class="platform-tab-label">/ Team Management</span>
-        </div>
-        <div class="platform-tab" onclick="switchTab(this,'reports')">
-          <div class="platform-tab-icon">
-            <svg viewBox="0 0 24 24"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
-          </div>
-          <span class="platform-tab-label">/ Reports</span>
+        <div class="hero-trust reveal rd4">
+          <div class="ht"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>No credit card</div>
+          <div class="ht"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Setup in 60 seconds</div>
+          <div class="ht"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>SOC 2 Type II</div>
         </div>
       </div>
-      <div style="position:relative">
-        <div class="platform-panel active" id="panel-training">
-          <div>
-            <div class="platform-panel-title">Secure your cloud in real time</div>
-            <p class="platform-panel-desc">Weekly AI-generated security lessons from live CyberWire Daily threat intelligence. Your team learns the exact attack techniques being used right now — in 5 minutes per week.</p>
-          </div>
-          <div class="platform-panel-img">
-            <div class="platform-panel-img-inner">
-              <div class="mock-dashboard" style="width:100%;max-width:360px">
-                <div class="mock-topbar"><div class="mock-dot" style="background:#ff5f57"></div><div class="mock-dot" style="background:#ffbd2e"></div><div class="mock-dot" style="background:#28c840"></div></div>
-                <div class="mock-content">
-                  <div style="padding:0.5rem 0.25rem;border-bottom:1px solid rgba(255,255,255,0.06);margin-bottom:0.25rem"><div style="font-size:0.72rem;font-weight:700;color:rgba(255,255,255,0.6)">This Week's Training</div><div style="font-size:0.65rem;color:rgba(255,255,255,0.3);margin-top:2px">Phishing & Social Engineering · 5 min</div></div>
-                  <div class="mock-row"><span class="mock-label">Completion rate</span><span class="mock-val" style="color:#4ade80">87%</span></div>
-                  <div class="mock-row"><span class="mock-label">Avg quiz score</span><span class="mock-val" style="color:#FF5500">92/100</span></div>
-                  <div class="mock-row"><span class="mock-label">Team members trained</span><span class="mock-val" style="color:#fff">8/10</span></div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="panel-cta">
-            <a href="auth.html?signup=true" class="btn btn-dark">Explore AI training</a>
-            <span class="panel-explore" onclick="window.location='auth.html?signup=true'">Get a demo →</span>
-          </div>
+
+      <!-- product mockup -->
+      <div class="hero-mock reveal rd2">
+        <div class="float-badge float-1">
+          <div class="fb-ico" style="background:var(--green-dim);border:1px solid rgba(16,185,129,0.2)"><svg viewBox="0 0 24 24" stroke="var(--green)"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg></div>
+          <div><div class="fb-t" style="color:var(--green)">Protected</div><div class="fb-s">0 active threats</div></div>
         </div>
-        <div class="platform-panel" id="panel-breach">
-          <div>
-            <div class="platform-panel-title">Monitor breaches in real time</div>
-            <p class="platform-panel-desc">Continuously check all your company email addresses against HaveIBeenPwned's database of 12+ billion breached credentials. Get instant alerts the moment a breach is detected.</p>
-          </div>
-          <div class="platform-panel-img">
-            <div class="platform-panel-img-inner">
-              <div class="mock-dashboard" style="width:100%;max-width:360px">
-                <div class="mock-topbar"><div class="mock-dot" style="background:#ff5f57"></div><div class="mock-dot" style="background:#ffbd2e"></div><div class="mock-dot" style="background:#28c840"></div></div>
-                <div class="mock-content">
-                  <div class="mock-row"><span class="mock-label">john@acmelaw.com</span><span class="mock-val" style="color:#4ade80">✓ Secure</span></div>
-                  <div class="mock-row"><span class="mock-label">sarah@acmelaw.com</span><span class="mock-val" style="color:#f87171">⚠ 2 breaches</span></div>
-                  <div class="mock-row"><span class="mock-label">mike@acmelaw.com</span><span class="mock-val" style="color:#4ade80">✓ Secure</span></div>
-                  <div class="mock-row"><span class="mock-label">admin@acmelaw.com</span><span class="mock-val" style="color:#fbbf24">⚠ 1 breach</span></div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="panel-cta">
-            <a href="auth.html?signup=true" class="btn btn-dark">Explore breach monitor</a>
-            <span class="panel-explore" onclick="window.location='auth.html?signup=true'">Get a demo →</span>
-          </div>
+        <div class="float-badge float-2">
+          <div class="fb-ico" style="background:var(--orange-dim);border:1px solid var(--orange-border)"><svg viewBox="0 0 24 24" stroke="var(--orange)"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></div>
+          <div><div class="fb-t" style="color:var(--orange)">+18 pts</div><div class="fb-s">score this month</div></div>
         </div>
-        <div class="platform-panel" id="panel-scanner">
-          <div>
-            <div class="platform-panel-title">Vulnerability scanning that's actually real</div>
-            <p class="platform-panel-desc">Real HTTP checks for SSL certificates, missing security headers, DNS configuration (SPF/DMARC), and cookie flags. Not simulated — 100% accurate results with plain-English fix instructions.</p>
+        <div class="mock-shell">
+          <div class="mock-top">
+            <div class="mdot" style="background:#ff5f57"></div><div class="mdot" style="background:#febc2e"></div><div class="mdot" style="background:#28c840"></div>
+            <div class="mt-title">CyberShield · Security Operations</div>
           </div>
-          <div class="platform-panel-img">
-            <div class="platform-panel-img-inner">
-              <div class="mock-dashboard" style="width:100%;max-width:360px">
-                <div class="mock-topbar"><div class="mock-dot" style="background:#ff5f57"></div><div class="mock-dot" style="background:#ffbd2e"></div><div class="mock-dot" style="background:#28c840"></div></div>
-                <div class="mock-content">
-                  <div class="mock-row"><span class="mock-label">SSL Certificate</span><span class="mock-val" style="color:#4ade80">Valid · 180 days</span></div>
-                  <div class="mock-row"><span class="mock-label">HSTS Header</span><span class="mock-val" style="color:#f87171">Missing</span></div>
-                  <div class="mock-row"><span class="mock-label">SPF Record</span><span class="mock-val" style="color:#4ade80">Configured</span></div>
-                  <div class="mock-row"><span class="mock-label">DMARC Policy</span><span class="mock-val" style="color:#fbbf24">Weak (p=none)</span></div>
-                </div>
+          <div class="mock-body">
+            <div class="mock-scorerow">
+              <div class="mini-ring">
+                <svg viewBox="0 0 84 84" style="transform:rotate(-90deg)">
+                  <circle cx="42" cy="42" r="36" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="7"/>
+                  <circle id="mock-ring" cx="42" cy="42" r="36" fill="none" stroke="#10B981" stroke-width="7" stroke-linecap="round" stroke-dasharray="226" stroke-dashoffset="226"/>
+                </svg>
+                <div class="mini-ring-center"><div class="n" id="mock-score">0</div><div class="l">Secure</div></div>
+              </div>
+              <div class="mock-scoreinfo">
+                <div class="big">Security posture</div>
+                <div class="blbl"><span>Training</span><span>87%</span></div>
+                <div class="mbar"><i style="width:87%;background:linear-gradient(90deg,#10B981,#34d399)"></i></div>
+                <div class="blbl"><span>Scan coverage</span><span>92%</span></div>
+                <div class="mbar"><i style="width:92%;background:linear-gradient(90deg,var(--orange),var(--orange2))"></i></div>
               </div>
             </div>
-          </div>
-          <div class="panel-cta">
-            <a href="auth.html?signup=true" class="btn btn-dark">Explore scanner</a>
-            <span class="panel-explore" onclick="window.location='auth.html?signup=true'">Get a demo →</span>
-          </div>
-        </div>
-        <div class="platform-panel" id="panel-identity">
-          <div>
-            <div class="platform-panel-title">Manage your entire security team</div>
-            <p class="platform-panel-desc">Add team members, track their training progress, manage seat limits, and get full visibility into who's completed what — all from one dashboard.</p>
-          </div>
-          <div class="platform-panel-img">
-            <div class="platform-panel-img-inner">
-              <div class="mock-dashboard" style="width:100%;max-width:360px">
-                <div class="mock-topbar"><div class="mock-dot" style="background:#ff5f57"></div><div class="mock-dot" style="background:#ffbd2e"></div><div class="mock-dot" style="background:#28c840"></div></div>
-                <div class="mock-content">
-                  <div class="mock-row"><span class="mock-label">Team members</span><span class="mock-val" style="color:#fff">8 / 10 seats</span></div>
-                  <div class="mock-row"><span class="mock-label">Avg security score</span><span class="mock-val" style="color:#FF5500">74 / 100</span></div>
-                  <div class="mock-row"><span class="mock-label">Outstanding training</span><span class="mock-val" style="color:#fbbf24">2 members</span></div>
-                </div>
-              </div>
+            <div class="mock-kpis">
+              <div class="mkpi"><div class="v" style="color:var(--green)">A+</div><div class="k">SSL Grade</div></div>
+              <div class="mkpi"><div class="v" style="color:var(--orange)">24</div><div class="k">Emails</div></div>
+              <div class="mkpi"><div class="v" style="color:var(--gold)">12</div><div class="k">Trainings</div></div>
             </div>
-          </div>
-          <div class="panel-cta">
-            <a href="auth.html?signup=true" class="btn btn-dark">Explore team tools</a>
-            <span class="panel-explore" onclick="window.location='auth.html?signup=true'">Get a demo →</span>
-          </div>
-        </div>
-        <div class="platform-panel" id="panel-reports">
-          <div>
-            <div class="platform-panel-title">Security posture reports for leadership</div>
-            <p class="platform-panel-desc">Monthly PDF security reports ready for leadership reviews, insurance providers, and compliance requirements. Generated automatically from your real security data.</p>
-          </div>
-          <div class="platform-panel-img">
-            <div class="platform-panel-img-inner">
-              <div class="mock-dashboard" style="width:100%;max-width:360px">
-                <div class="mock-topbar"><div class="mock-dot" style="background:#ff5f57"></div><div class="mock-dot" style="background:#ffbd2e"></div><div class="mock-dot" style="background:#28c840"></div></div>
-                <div class="mock-content">
-                  <div class="mock-row"><span class="mock-label">May 2026 Report</span><span class="mock-val" style="color:#4ade80">Ready</span></div>
-                  <div class="mock-row"><span class="mock-label">Security score trend</span><span class="mock-val" style="color:#4ade80">↑ +12 pts</span></div>
-                  <div class="mock-row"><span class="mock-label">Next report</span><span class="mock-val" style="color:#fff">June 1, 2026</span></div>
-                </div>
-              </div>
+            <div class="mock-feed">
+              <div class="mfeed-row"><div class="mfeed-sev" style="background:var(--red)"></div><div class="mfeed-t">Chrome zero-day actively exploited</div><div class="mfeed-b bc">Crit</div></div>
+              <div class="mfeed-row"><div class="mfeed-sev" style="background:var(--yellow)"></div><div class="mfeed-t">OAuth phishing campaign detected</div><div class="mfeed-b bh">High</div></div>
+              <div class="mfeed-row"><div class="mfeed-sev" style="background:var(--orange)"></div><div class="mfeed-t">DMARC policy set to p=none</div><div class="mfeed-b bm">Med</div></div>
             </div>
-          </div>
-          <div class="panel-cta">
-            <a href="auth.html?signup=true" class="btn btn-dark">Explore reports</a>
-            <span class="panel-explore" onclick="window.location='auth.html?signup=true'">Get a demo →</span>
           </div>
         </div>
       </div>
@@ -523,383 +476,464 @@ footer{background:var(--black);border-top:1px solid rgba(255,255,255,0.07);paddi
   </div>
 </section>
 
-<!-- PILLARS SECTION -->
-<section class="pillars-section">
-  <div class="pillars-inner">
-    <div class="pillars-header">
+<!-- ═══════ TICKER ═══════ -->
+<div class="ticker">
+  <div class="ticker-track" id="ticker">
+    <!-- filled by JS (duplicated for seamless loop) -->
+  </div>
+</div>
+
+<!-- ═══════ LOGO STRIP ═══════ -->
+<section class="proof">
+  <div class="wrap">
+    <div class="proof-label reveal">Trusted by 2,400+ small businesses without IT teams</div>
+    <div class="proof-logos reveal rd1">
+      <div class="proof-logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-3"/></svg>Meridian Law</div>
+      <div class="proof-logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>NorthCare Clinic</div>
+      <div class="proof-logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>Brookfield CPA</div>
+      <div class="proof-logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20"/></svg>Vantage Realty</div>
+      <div class="proof-logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>Apex Startups</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ STATS BAND ═══════ -->
+<section class="sec" style="padding-top:5rem;padding-bottom:0">
+  <div class="wrap">
+    <div class="statband">
+      <div class="statcell reveal"><div class="num"><span data-count="43" data-suffix="%">0</span></div><div class="lbl">of cyberattacks target small businesses</div></div>
+      <div class="statcell reveal rd1"><div class="num">$<span data-count="200" data-suffix="K">0</span></div><div class="lbl">average cost of a single data breach</div></div>
+      <div class="statcell reveal rd2"><div class="num"><span data-count="60" data-suffix="%">0</span></div><div class="lbl">of breached small businesses close within 6 months</div></div>
+      <div class="statcell reveal rd3"><div class="num"><span data-count="60" data-suffix="s">0</span></div><div class="lbl">to run your first vulnerability scan</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ FEATURE SHOWCASE ═══════ -->
+<section class="sec" id="platform">
+  <div class="wrap">
+    <div class="sec-head center reveal">
+      <div class="eyebrow center">The platform</div>
+      <h2 class="sec-title">Four layers of defense,<br>one simple dashboard</h2>
+      <p class="sec-sub">Everything a Fortune 500 security team does — automated, prioritized, and explained in plain English.</p>
+    </div>
+    <div class="show-layout reveal rd1">
+      <div class="show-tabs">
+        <div class="show-tab active" data-panel="training" onclick="switchShow(this,'training')">
+          <div class="show-tab-ico"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
+          <div class="show-tab-txt"><h3>AI Security Training</h3><p>Weekly 5-minute lessons generated from live threat intelligence.</p></div>
+        </div>
+        <div class="show-tab" data-panel="breach" onclick="switchShow(this,'breach')">
+          <div class="show-tab-ico"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></div>
+          <div class="show-tab-txt"><h3>Breach Monitor</h3><p>Continuous checks against 12B+ compromised credentials.</p></div>
+        </div>
+        <div class="show-tab" data-panel="scanner" onclick="switchShow(this,'scanner')">
+          <div class="show-tab-ico"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg></div>
+          <div class="show-tab-txt"><h3>Vulnerability Scanner</h3><p>Real HTTP checks for SSL, headers, DNS — 100% accurate.</p></div>
+        </div>
+        <div class="show-tab" data-panel="team" onclick="switchShow(this,'team')">
+          <div class="show-tab-ico"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+          <div class="show-tab-txt"><h3>Team Management</h3><p>Track training, seats, and posture across your whole team.</p></div>
+        </div>
+      </div>
+
+      <div class="show-panel-wrap">
+        <!-- TRAINING -->
+        <div class="show-panel active" id="panel-training">
+          <div class="sp-head">
+            <div class="ico"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/></svg></div>
+            <div><div class="t">This week's training</div><div class="s">Phishing &amp; social engineering · 5 min</div></div>
+            <div class="sp-live"><div class="d"></div>Live intel</div>
+          </div>
+          <div class="sp-modules" style="margin-bottom:1rem">
+            <div class="sp-mod"><div class="w">Week 22</div><div class="ti">Spotting AI-crafted phishing</div><div class="sp-prog"><i style="width:100%"></i></div><div class="mt"><span>Completed</span><span style="color:var(--green)">100%</span></div></div>
+            <div class="sp-mod"><div class="w">Week 23</div><div class="ti">OAuth consent attacks</div><div class="sp-prog"><i style="width:60%"></i></div><div class="mt"><span>In progress</span><span style="color:var(--orange)">60%</span></div></div>
+          </div>
+          <div class="sp-rows">
+            <div class="sp-row"><span class="sp-k">Completion rate</span><span class="sp-v" style="color:var(--green)">87%</span></div>
+            <div class="sp-row"><span class="sp-k">Avg quiz score</span><span class="sp-v" style="color:var(--orange)">92/100</span></div>
+            <div class="sp-row"><span class="sp-k">Team members trained</span><span class="sp-v">8 / 10</span></div>
+          </div>
+        </div>
+        <!-- BREACH -->
+        <div class="show-panel" id="panel-breach">
+          <div class="sp-head">
+            <div class="ico"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></div>
+            <div><div class="t">Breach monitor</div><div class="s">12B+ credentials · 800+ breaches</div></div>
+            <div class="sp-live"><div class="d"></div>Monitoring</div>
+          </div>
+          <div class="sp-rows">
+            <div class="sp-row"><span class="sp-k"><span class="qd" style="background:var(--green)"></span><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="395356515779545c4b505d50585755584e175a5654">[email&#160;protected]</a></span><span class="sp-v" style="color:var(--green)">Secure</span></div>
+            <div class="sp-row"><span class="sp-k"><span class="qd" style="background:var(--red)"></span><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="d6a5b7a4b7be96bbb3a4bfb2bfb7b8bab7a1f8b5b9bb">[email&#160;protected]</a></span><span class="sp-v" style="color:var(--red)">2 breaches</span></div>
+            <div class="sp-row"><span class="sp-k"><span class="qd" style="background:var(--green)"></span><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="ed80848688ad80889f8489848c83818c9ac38e8280">[email&#160;protected]</a></span><span class="sp-v" style="color:var(--green)">Secure</span></div>
+            <div class="sp-row"><span class="sp-k"><span class="qd" style="background:var(--yellow)"></span><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="147570797d7a547971667d707d757a7875633a777b79">[email&#160;protected]</a></span><span class="sp-v" style="color:var(--yellow)">1 breach</span></div>
+            <div class="sp-row"><span class="sp-k"><span class="qd" style="background:var(--green)"></span><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="5032393c3c393e37103d3522393439313e3c31277e333f3d">[email&#160;protected]</a></span><span class="sp-v" style="color:var(--green)">Secure</span></div>
+          </div>
+        </div>
+        <!-- SCANNER -->
+        <div class="show-panel" id="panel-scanner">
+          <div class="sp-head">
+            <div class="ico"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg></div>
+            <div><div class="t">Vulnerability scan</div><div class="s">meridianlaw.com · 8 checks</div></div>
+            <div class="sp-live"><div class="d"></div>Real HTTP</div>
+          </div>
+          <div class="sp-rows">
+            <div class="sp-row"><span class="sp-k">SSL Certificate</span><span class="sp-v" style="color:var(--green)">Valid · 180d</span></div>
+            <div class="sp-row"><span class="sp-k">HSTS Header</span><span class="sp-v" style="color:var(--red)">Missing</span></div>
+            <div class="sp-row"><span class="sp-k">Content Security Policy</span><span class="sp-v" style="color:var(--green)">Configured</span></div>
+            <div class="sp-row"><span class="sp-k">SPF Record</span><span class="sp-v" style="color:var(--green)">Pass</span></div>
+            <div class="sp-row"><span class="sp-k">DMARC Policy</span><span class="sp-v" style="color:var(--yellow)">Weak (p=none)</span></div>
+          </div>
+        </div>
+        <!-- TEAM -->
+        <div class="show-panel" id="panel-team">
+          <div class="sp-head">
+            <div class="ico"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+            <div><div class="t">Team management</div><div class="s">Meridian Law · Business plan</div></div>
+            <div class="sp-live"><div class="d"></div>8 active</div>
+          </div>
+          <div class="sp-rows">
+            <div class="sp-row"><span class="sp-k">Team members</span><span class="sp-v">8 / 50 seats</span></div>
+            <div class="sp-row"><span class="sp-k">Avg security score</span><span class="sp-v" style="color:var(--orange)">74 / 100</span></div>
+            <div class="sp-row"><span class="sp-k">Outstanding training</span><span class="sp-v" style="color:var(--yellow)">2 members</span></div>
+            <div class="sp-row"><span class="sp-k">Last activity</span><span class="sp-v">12 min ago</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ THREAT FEED ═══════ -->
+<section class="sec" id="threats" style="background:linear-gradient(180deg,transparent,rgba(255,107,0,0.025),transparent)">
+  <div class="wrap">
+    <div class="threat-layout">
       <div class="reveal">
-        <div class="section-label">Why CyberShield</div>
-        <h2 class="section-title">Defend your business<br>with intelligence</h2>
+        <div class="live-badge"><div class="d"></div><span>Live feed — updated daily</span></div>
+        <h2 class="sec-title">Your team trains on<br>today's threats, today</h2>
+        <p class="sec-sub">CyberShield pulls from CyberWire Daily — the #1 cybersecurity source — and turns breaking threats into 5-minute lessons. No stale annual training videos.</p>
+        <a href="CyberShield Dashboard.html" class="btn btn-primary btn-lg" style="margin-top:1.75rem">Start monitoring threats →</a>
       </div>
-      <div class="reveal reveal-delay-1">
-        <p style="color:var(--muted);line-height:1.75;font-size:0.95rem">CyberShield gives small businesses the same defensive capability as Fortune 500 security teams — without the cost, complexity, or headcount.</p>
-        <a href="auth.html?signup=true" class="btn btn-dark" style="margin-top:1.5rem">Explore the platform →</a>
-      </div>
-    </div>
-    <div class="pillars-grid reveal">
-      <div class="pillar">
-        <div class="pillar-icon">
-          <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      <div class="feed reveal rd2">
+        <div class="feed-head">
+          <div class="ft"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>Threat intelligence</div>
+          <div class="src">CyberWire Daily · Ep. 2562</div>
         </div>
-        <h3>Defend intelligently</h3>
-        <p>AI that learns from and adapts to your unique business environment and threat profile.</p>
-      </div>
-      <div class="pillar">
-        <div class="pillar-icon">
-          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        </div>
-        <h3>Defend at speed</h3>
-        <p>Detecting and flagging threats faster, without disrupting your business operations.</p>
-      </div>
-      <div class="pillar">
-        <div class="pillar-icon">
-          <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-        </div>
-        <h3>Defend across boundaries</h3>
-        <p>Increasing visibility beyond business silos, tracking threats across email, web, and cloud.</p>
-      </div>
-      <div class="pillar">
-        <div class="pillar-icon">
-          <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-        </div>
-        <h3>Defend with ease</h3>
-        <p>Automating and prioritizing the security tasks that matter most for your team.</p>
+        <div class="feed-item"><div class="feed-sev" style="background:var(--red)"></div><div style="flex:1"><div class="feed-t">Chrome 22 critical vulnerabilities patched</div><div class="feed-s">Episode 2562 · May 29, 2026</div></div><span class="badge bc">Critical</span></div>
+        <div class="feed-item"><div class="feed-sev" style="background:var(--red)"></div><div style="flex:1"><div class="feed-t">Microsoft OAuth authentication abuse campaign</div><div class="feed-s">Episode 2559 · May 26, 2026</div></div><span class="badge bc">Critical</span></div>
+        <div class="feed-item"><div class="feed-sev" style="background:var(--yellow)"></div><div style="flex:1"><div class="feed-t">macOS malware targeting crypto developers</div><div class="feed-s">Episode 2561 · May 28, 2026</div></div><span class="badge bh">High</span></div>
+        <div class="feed-item"><div class="feed-sev" style="background:var(--yellow)"></div><div style="flex:1"><div class="feed-t">AI-powered phishing attacks at scale</div><div class="feed-s">Episode 2562 · May 29, 2026</div></div><span class="badge bh">High</span></div>
+        <div class="feed-item"><div class="feed-sev" style="background:var(--orange)"></div><div style="flex:1"><div class="feed-t">Ubiquiti UniFi security vulnerabilities</div><div class="feed-s">Episode 2558 · May 22, 2026</div></div><span class="badge bm">Medium</span></div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- THREAT FEED -->
-<section class="threat-section" id="threats">
-  <div class="threat-inner">
-    <div class="threat-left reveal">
-      <div class="section-label">Live threat intelligence</div>
-      <h2 class="section-title">Your training updates<br>every single day</h2>
-      <p class="section-sub">CyberShield pulls from CyberWire Daily — the #1 cybersecurity source — so your team always trains on threats happening right now.</p>
-      <div class="live-badge">
-        <div class="live-dot"></div>
-        <span class="live-text">Live feed — updated daily</span>
+<!-- ═══════ PRICING ═══════ -->
+<section class="sec" id="pricing">
+  <div class="wrap">
+    <div class="sec-head center reveal">
+      <div class="eyebrow center">Pricing</div>
+      <h2 class="sec-title">$49/month vs. a $200,000 breach</h2>
+      <p class="sec-sub">One avoided breach pays for 340 years of CyberShield. Every plan includes a 14-day free trial — no credit card.</p>
+      <div class="bill-toggle">
+        <button class="bill-opt active" id="bo-month" onclick="setBilling('month')">Monthly</button>
+        <button class="bill-opt" id="bo-year" onclick="setBilling('year')">Annual<span class="bill-save">−20%</span></button>
       </div>
-      <a href="auth.html?signup=true" class="btn btn-primary" id="threat-cta">Start monitoring →</a>
-    </div>
-    <div class="threat-feed reveal reveal-delay-2" id="landing-threats">
-      <div class="threat-item"><div><div class="threat-title">Chrome 22 critical vulnerabilities patched</div><div class="threat-src">Episode 2562 · May 29, 2026</div></div><span class="badge badge-critical">Critical</span></div>
-      <div class="threat-item"><div><div class="threat-title">Microsoft OAuth authentication abuse campaign</div><div class="threat-src">Episode 2559 · May 26, 2026</div></div><span class="badge badge-critical">Critical</span></div>
-      <div class="threat-item"><div><div class="threat-title">macOS malware targeting crypto developers</div><div class="threat-src">Episode 2561 · May 28, 2026</div></div><span class="badge badge-high">High</span></div>
-      <div class="threat-item"><div><div class="threat-title">AI-powered phishing attacks at scale</div><div class="threat-src">Episode 2562 · May 29, 2026</div></div><span class="badge badge-high">High</span></div>
-      <div class="threat-item"><div><div class="threat-title">Ubiquiti UniFi critical security vulnerabilities</div><div class="threat-src">Episode 2558 · May 22, 2026</div></div><span class="badge badge-medium">Medium</span></div>
-    </div>
-  </div>
-</section>
-
-<!-- STATS SECTION -->
-<section class="stats-section" id="defense-numbers">
-  <div class="stats-inner">
-    <div class="stats-header reveal">
-      <div class="section-label">Defense in numbers</div>
-      <h2 class="section-title">Transform your<br>security posture</h2>
-    </div>
-    <div class="stats-grid reveal">
-      <div class="stat-item">
-        <div class="stat-num"><span data-count="43">0</span>%</div>
-        <div class="stat-label">of cyberattacks target small businesses</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-num">$<span data-count="200">0</span>K</div>
-        <div class="stat-label">average cost of a single data breach</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-num"><span data-count="60">0</span>%</div>
-        <div class="stat-label">of small businesses close after a breach</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-num"><span data-count="14">0</span>d</div>
-        <div class="stat-label">free trial — no credit card required</div>
-      </div>
-    </div>
-    <div class="stats-cta reveal">
-      <a href="auth.html?signup=true" class="btn btn-primary btn-lg">Explore the platform</a>
-      <a href="auth.html?signup=true" class="btn btn-ghost btn-lg">Get a demo →</a>
-    </div>
-  </div>
-</section>
-
-<!-- PRICING -->
-<section class="pricing-section" id="pricing">
-  <div class="pricing-inner">
-    <div class="pricing-header reveal">
-      <div class="section-label" style="justify-content:center">Pricing</div>
-      <h2 class="section-title">$49/month vs. $200,000<br>average breach cost</h2>
-      <p style="color:var(--muted);margin-top:0.75rem">One avoided breach pays for 340 years of CyberShield. All plans include a 14-day free trial. No credit card required.</p>
     </div>
     <div class="pricing-grid">
-      <div class="plan-card reveal reveal-delay-1">
+      <div class="plan reveal rd1">
         <div class="plan-name">Starter</div>
-        <div class="plan-price">$49<span>/month</span></div>
-        <div class="plan-desc">Up to 10 employees</div>
-        <ul class="plan-features">
-          <li><svg class="check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>10 employee seats</li>
-          <li><svg class="check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>AI security training</li>
-          <li><svg class="check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Breach monitoring</li>
-          <li><svg class="check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>5 vulnerability scans/month</li>
-          <li><svg class="check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Email alerts</li>
-          <li class="no"><svg class="cross" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Bulk breach checking</li>
-          <li class="no"><svg class="cross" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Custom reports</li>
+        <div class="plan-price"><span class="amt">$<span class="price" data-month="49" data-year="39">49</span></span><span class="per">/mo</span></div>
+        <div class="plan-desc">For teams up to 10 — the essentials to stay protected.</div>
+        <ul class="plan-feats">
+          <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>10 employee seats</li>
+          <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>AI security training</li>
+          <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Breach monitoring</li>
+          <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>5 vulnerability scans/mo</li>
+          <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Email alerts</li>
         </ul>
-        <a href="auth.html?plan=starter" class="btn btn-outline-white" style="width:100%;justify-content:center;color:var(--black);border-color:var(--border)" id="plan-starter">Start free trial</a>
+        <a href="CyberShield Dashboard.html" class="btn btn-ghost">Start free trial</a>
       </div>
-      <div class="plan-card featured reveal reveal-delay-2">
-        <div class="plan-badge">Most popular</div>
+      <div class="plan feat reveal rd2">
+        <div class="plan-tag">Most popular</div>
         <div class="plan-name">Business</div>
-        <div class="plan-price">$199<span>/month</span></div>
-        <div class="plan-desc">Up to 50 employees</div>
-        <ul class="plan-features">
-          <li><svg class="check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>50 employee seats</li>
-          <li><svg class="check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>AI security training</li>
-          <li><svg class="check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Breach monitoring</li>
-          <li><svg class="check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Unlimited scans</li>
-          <li><svg class="check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Email + Slack alerts</li>
-          <li><svg class="check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Bulk breach checking</li>
-          <li><svg class="check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Monthly PDF reports</li>
+        <div class="plan-price"><span class="amt">$<span class="price" data-month="199" data-year="159">199</span></span><span class="per">/mo</span></div>
+        <div class="plan-desc">For growing teams up to 50 — full visibility and reporting.</div>
+        <ul class="plan-feats">
+          <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>50 employee seats</li>
+          <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Everything in Starter</li>
+          <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Unlimited scans</li>
+          <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Email + Slack alerts</li>
+          <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Bulk breach checking</li>
+          <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Monthly PDF reports</li>
         </ul>
-        <a href="auth.html?plan=business" class="btn btn-primary" style="width:100%;justify-content:center" id="plan-business">Start free trial</a>
+        <a href="CyberShield Dashboard.html" class="btn btn-primary">Start free trial</a>
       </div>
-      <div class="plan-card reveal reveal-delay-3">
+      <div class="plan ent reveal rd3">
+        <div class="plan-tag">White-glove</div>
         <div class="plan-name">Enterprise</div>
-        <div class="plan-price">$599<span>/month</span></div>
-        <div class="plan-desc">Unlimited employees</div>
-        <ul class="plan-features">
-          <li><svg class="check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Unlimited seats</li>
-          <li><svg class="check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Everything in Business</li>
-          <li><svg class="check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>White-label branding</li>
-          <li><svg class="check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Custom integrations</li>
-          <li><svg class="check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Priority support</li>
-          <li><svg class="check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Dedicated account manager</li>
-          <li><svg class="check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Custom training content</li>
+        <div class="plan-price"><span class="amt">$<span class="price" data-month="599" data-year="479">599</span></span><span class="per">/mo</span></div>
+        <div class="plan-desc">For larger orgs — unlimited seats and dedicated support.</div>
+        <ul class="plan-feats">
+          <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Unlimited seats</li>
+          <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Everything in Business</li>
+          <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>White-label branding</li>
+          <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Custom integrations</li>
+          <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Dedicated account manager</li>
+          <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Priority 24/7 support</li>
         </ul>
-        <a href="auth.html?plan=enterprise" class="btn btn-outline-white" style="width:100%;justify-content:center;color:var(--black);border-color:var(--border)" id="plan-enterprise">Start free trial</a>
+        <a href="CyberShield Dashboard.html" class="btn btn-ghost" style="border-color:var(--gold-border);color:var(--gold)">Talk to sales</a>
       </div>
     </div>
   </div>
 </section>
 
-<!-- TESTIMONIALS -->
-<section class="testimonials-section">
-  <div class="testimonials-inner">
-    <div class="reveal" style="text-align:center;max-width:560px;margin:0 auto">
-      <div class="section-label" style="justify-content:center">Why CyberShield</div>
-      <h2 class="section-title">Built for businesses<br>without IT teams</h2>
+<!-- ═══════ TRUST / CERTS ═══════ -->
+<section class="sec" id="trust">
+  <div class="wrap">
+    <div class="sec-head center reveal">
+      <div class="eyebrow center" style="color:var(--gold)">Compliance &amp; trust</div>
+      <h2 class="sec-title">Audited, certified, and<br>built to keep you compliant</h2>
+      <p class="sec-sub">Your data is protected by the same standards we help you meet. Independently audited and continuously monitored.</p>
     </div>
-    <div class="testimonials-grid">
-      <div class="testimonial reveal reveal-delay-1">
-        <div class="testimonial-quote">"</div>
-        <p class="testimonial-text">43% of cyberattacks target small businesses. Most don't have a dedicated IT team or security budget. CyberShield gives you enterprise-level protection at a price that makes sense.</p>
-        <div class="testimonial-author">
-          <div class="author-avatar">CS</div>
-          <div><div class="author-name">CyberShield</div><div class="author-role">Built in Brooklyn, NY</div></div>
+    <div class="certs reveal rd1">
+      <div class="certs-grid">
+        <div class="cert">
+          <div class="cert-seal"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg></div>
+          <div class="cert-txt"><div class="ct">SOC 2 Type II</div><div class="cs">Independently audited</div></div>
         </div>
-      </div>
-      <div class="testimonial reveal reveal-delay-2">
-        <div class="testimonial-quote">"</div>
-        <p class="testimonial-text">The average cost of a data breach for a small business is $200,000. Most businesses that experience a breach never recover. At $49/month, CyberShield costs less than one hour of incident response.</p>
-        <div class="testimonial-author">
-          <div class="author-avatar">CS</div>
-          <div><div class="author-name">CyberShield</div><div class="author-role">Why we built this</div></div>
+        <div class="cert">
+          <div class="cert-seal"><svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+          <div class="cert-txt"><div class="ct">HIPAA Compliant</div><div class="cs">PHI safeguards</div></div>
         </div>
-      </div>
-      <div class="testimonial reveal reveal-delay-3">
-        <div class="testimonial-quote">"</div>
-        <p class="testimonial-text">No technical knowledge required. Scan your website, check for breaches, and train your team in minutes. CyberShield was designed for business owners, not IT professionals.</p>
-        <div class="testimonial-author">
-          <div class="author-avatar">CS</div>
-          <div><div class="author-name">CyberShield</div><div class="author-role">Our promise</div></div>
+        <div class="cert">
+          <div class="cert-seal"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a15 15 0 0 1 0 20M2 12h20"/></svg></div>
+          <div class="cert-txt"><div class="ct">GDPR Compliant</div><div class="cs">EU data rights</div></div>
+        </div>
+        <div class="certs-note">
+          <b>Encrypted end to end.</b> All data is encrypted in transit (TLS 1.3) and at rest (AES-256). We never sell your data, and you can export or delete it anytime. <a href="#" style="color:var(--gold);font-weight:700">Read our security whitepaper →</a>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- CTA -->
-<section class="cta-section" id="signup">
-  <div class="cta-mesh"></div>
-  <div class="cta-inner">
-    <div class="cta-left reveal">
-      <div class="section-label" style="color:var(--orange)">Get started today</div>
-      <h2 class="section-title">Start protecting your<br>business now</h2>
-      <p class="section-sub">Start protecting your business today with a free 14-day trial. No credit card required. No IT team needed.</p>
-      <form class="cta-form" onsubmit="handleSignup(event)">
-        <input type="email" id="signup-email" placeholder="your@email.com" required/>
-        <button type="submit" class="btn btn-primary">Get early access</button>
-      </form>
-      <div id="form-response"></div>
-      <p class="cta-note">No credit card. 14-day free trial. Cancel anytime.</p>
+<!-- ═══════ TESTIMONIALS ═══════ -->
+<section class="sec" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head center reveal">
+      <div class="eyebrow center">Why teams choose us</div>
+      <h2 class="sec-title">Security that finally<br>makes sense</h2>
     </div>
-    <div class="cta-right reveal reveal-delay-2">
-      <div class="cta-stat">
-        <div class="cta-stat-num">$49</div>
-        <div class="cta-stat-label">Per month — Starter plan</div>
+    <div class="tgrid">
+      <div class="tcard reveal rd1">
+        <div class="tstars"><svg viewBox="0 0 24 24"><polygon points="12 2 15 9 22 9 17 14 19 21 12 17 5 21 7 14 2 9 9 9"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15 9 22 9 17 14 19 21 12 17 5 21 7 14 2 9 9 9"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15 9 22 9 17 14 19 21 12 17 5 21 7 14 2 9 9 9"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15 9 22 9 17 14 19 21 12 17 5 21 7 14 2 9 9 9"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15 9 22 9 17 14 19 21 12 17 5 21 7 14 2 9 9 9"/></svg></div>
+        <p class="tquote">"We don't have an IT person. CyberShield found two breached logins our first day and walked us through fixing them. It paid for itself before lunch."</p>
+        <div class="tauthor">
+          <div class="tav"><image-slot id="ava-1" shape="circle" placeholder="Photo"></image-slot></div>
+          <div><div class="tname">Dana Whitlock</div><div class="trole">Managing Partner · Meridian Law</div></div>
+        </div>
       </div>
-      <div class="cta-stat">
-        <div class="cta-stat-num">14d</div>
-        <div class="cta-stat-label">Free trial — no credit card</div>
+      <div class="tcard reveal rd2">
+        <div class="tstars"><svg viewBox="0 0 24 24"><polygon points="12 2 15 9 22 9 17 14 19 21 12 17 5 21 7 14 2 9 9 9"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15 9 22 9 17 14 19 21 12 17 5 21 7 14 2 9 9 9"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15 9 22 9 17 14 19 21 12 17 5 21 7 14 2 9 9 9"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15 9 22 9 17 14 19 21 12 17 5 21 7 14 2 9 9 9"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15 9 22 9 17 14 19 21 12 17 5 21 7 14 2 9 9 9"/></svg></div>
+        <p class="tquote">"The weekly trainings are short enough that my team actually does them. Our security score went from 51 to 84 in two months. Our cyber-insurance premium dropped."</p>
+        <div class="tauthor">
+          <div class="tav"><image-slot id="ava-2" shape="circle" placeholder="Photo"></image-slot></div>
+          <div><div class="tname">Marcus Reyes</div><div class="trole">Owner · Brookfield CPA</div></div>
+        </div>
       </div>
-      <div class="cta-stat">
-        <div class="cta-stat-num">60s</div>
-        <div class="cta-stat-label">To run your first scan</div>
-      </div>
-      <div class="cta-stat">
-        <div class="cta-stat-num">$0</div>
-        <div class="cta-stat-label">Cost to get started today</div>
+      <div class="tcard reveal rd3">
+        <div class="tstars"><svg viewBox="0 0 24 24"><polygon points="12 2 15 9 22 9 17 14 19 21 12 17 5 21 7 14 2 9 9 9"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15 9 22 9 17 14 19 21 12 17 5 21 7 14 2 9 9 9"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15 9 22 9 17 14 19 21 12 17 5 21 7 14 2 9 9 9"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15 9 22 9 17 14 19 21 12 17 5 21 7 14 2 9 9 9"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15 9 22 9 17 14 19 21 12 17 5 21 7 14 2 9 9 9"/></svg></div>
+        <p class="tquote">"As a clinic we need HIPAA covered. CyberShield's reports go straight to our compliance binder. The vulnerability scans are the real deal, not checkbox theater."</p>
+        <div class="tauthor">
+          <div class="tav"><image-slot id="ava-3" shape="circle" placeholder="Photo"></image-slot></div>
+          <div><div class="tname">Priya Nair</div><div class="trole">Practice Manager · NorthCare Clinic</div></div>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- FOOTER -->
+<!-- ═══════ FINAL CTA ═══════ -->
+<section class="sec final">
+  <div class="final-mesh"></div>
+  <div class="wrap">
+    <div class="final-inner reveal">
+      <h2>Your first scan is<br>60 seconds away</h2>
+      <p>Join 2,400+ small businesses defending themselves like the Fortune 500. Free for 14 days, no credit card, no IT team required.</p>
+      <div class="final-cta">
+        <a href="CyberShield Dashboard.html" class="btn btn-primary btn-lg">Start free 14-day trial →</a>
+        <a href="#platform" class="btn btn-ghost btn-lg">Book a demo</a>
+      </div>
+      <div class="final-note">Setup in 60 seconds · Cancel anytime · SOC 2 Type II certified</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ FOOTER ═══════ -->
 <footer>
-  <div class="footer-inner">
-    <div class="footer-logo">
-      <svg viewBox="0 0 30 36" fill="none" width="24" height="24">
-        <path d="M15 1L29 6.5V21C29 30 22 35.5 15 37.5C8 35.5 1 30 1 21V6.5L15 1Z" fill="rgba(255,85,0,0.08)" stroke="#FF5500" stroke-width="1.5"/>
-        <path d="M15 11L20 14L15 17L10 14Z" fill="rgba(255,85,0,0.15)" stroke="#FF5500" stroke-width="1.25" stroke-linejoin="round"/>
-        <path d="M10 14L15 17V23L10 20Z" stroke="#FF5500" stroke-width="1.25" stroke-linejoin="round"/>
-        <path d="M20 14L15 17V23L20 20Z" fill="rgba(255,85,0,0.08)" stroke="#FF5500" stroke-width="1.25" stroke-linejoin="round"/>
-      </svg><span style="display:inline-flex;gap:0">Cyber<span>Shield</span></span>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <a href="#" class="logo">
+          <svg viewBox="0 0 30 36" fill="none">
+            <path d="M15 1L29 6.5V21C29 30 22 35.5 15 37.5C8 35.5 1 30 1 21V6.5L15 1Z" fill="rgba(255,107,0,0.08)" stroke="#FF6B00" stroke-width="1.5"/>
+            <path d="M15 11L20 14L15 17L10 14Z" fill="rgba(255,107,0,0.2)" stroke="#FF6B00" stroke-width="1.25" stroke-linejoin="round"/>
+            <path d="M10 14L15 17V23L10 20Z" stroke="#FF6B00" stroke-width="1.25" stroke-linejoin="round"/>
+            <path d="M20 14L15 17V23L20 20Z" fill="rgba(255,107,0,0.1)" stroke="#FF6B00" stroke-width="1.25" stroke-linejoin="round"/>
+          </svg>
+          <span>Cyber<span class="acc">Shield</span></span>
+        </a>
+        <p>Enterprise-grade cybersecurity built for small businesses without IT teams. Built in Brooklyn, NY.</p>
+        <div class="foot-social">
+          <a href="#" aria-label="X"><svg viewBox="0 0 24 24"><path d="M4 4l16 16M20 4L4 20"/></svg></a>
+          <a href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24"><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/><path d="M10 9h4v2a4 4 0 0 1 8 0v8h-4v-7a2 2 0 0 0-4 0v7h-4z"/></svg></a>
+          <a href="#" aria-label="GitHub"><svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg></a>
+        </div>
+      </div>
+      <div class="foot-col">
+        <h4>Platform</h4>
+        <a href="#platform">AI Training</a>
+        <a href="#platform">Breach Monitor</a>
+        <a href="#platform">Vulnerability Scanner</a>
+        <a href="#threats">Threat Feed</a>
+        <a href="CyberShield Dashboard.html">Dashboard</a>
+      </div>
+      <div class="foot-col">
+        <h4>Company</h4>
+        <a href="#">About</a>
+        <a href="#">Security</a>
+        <a href="#trust">Compliance</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#">Contact</a>
+      </div>
+      <div class="foot-col">
+        <h4>Legal</h4>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        <a href="#">Cookie Policy</a>
+        <a href="#">Refund Policy</a>
+        <a href="#">DPA</a>
+      </div>
     </div>
-    <div class="footer-links">
-      <a href="#platform">Platform</a>
-      <a href="#pricing">Pricing</a>
-      <a href="contact.html">Contact</a>
-      <a href="privacy.html">Privacy</a>
-      <a href="terms.html">Terms</a>
-      <a href="refund-policy.html">Refunds</a>
-      <a href="cookie-policy.html">Cookies</a>
+    <div class="foot-bottom">
+      <div class="foot-copy">© 2026 CyberShield Inc. All rights reserved.</div>
+      <div class="foot-badges">
+        <div class="foot-badge"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>SOC 2 Type II</div>
+        <div class="foot-badge"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>HIPAA</div>
+        <div class="foot-badge"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>GDPR</div>
+      </div>
     </div>
-    <div class="footer-copy">© 2026 CyberShield. All rights reserved.</div>
   </div>
 </footer>
 
-<script>
-// ── Nav scroll dark/light ──────────────────────────────────────
-const nav = document.getElementById('nav');
-window.addEventListener('scroll', () => {
-  if(window.scrollY > window.innerHeight * 0.7){
-    nav.classList.remove('dark');
-  } else {
-    nav.classList.add('dark');
-  }
-});
-nav.classList.add('dark');
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+// ── nav scroll ──
+const nav=document.getElementById('nav');
+addEventListener('scroll',()=>{nav.classList.toggle('scrolled',scrollY>20)});
 
-// ── Hero canvas ────────────────────────────────────────────────
-const canvas = document.getElementById('hero-canvas');
-const ctx = canvas.getContext('2d');
-let dots = [], W, H;
-function resize(){W=canvas.width=canvas.offsetWidth;H=canvas.height=canvas.offsetHeight;}
-resize();
-window.addEventListener('resize', resize);
-for(let i=0;i<60;i++) dots.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,r:Math.random()*2+0.5,p:Math.random()*Math.PI*2});
-function drawCanvas(){
-  ctx.clearRect(0,0,W,H);
-  dots.forEach(d=>{d.x+=d.vx;d.y+=d.vy;d.p+=0.02;if(d.x<0||d.x>W)d.vx*=-1;if(d.y<0||d.y>H)d.vy*=-1;});
-  for(let i=0;i<dots.length;i++){
-    for(let j=i+1;j<dots.length;j++){
-      const dx=dots[i].x-dots[j].x,dy=dots[i].y-dots[j].y,d=Math.sqrt(dx*dx+dy*dy);
-      if(d<140){ctx.beginPath();ctx.moveTo(dots[i].x,dots[i].y);ctx.lineTo(dots[j].x,dots[j].y);ctx.strokeStyle=`rgba(255,255,255,${(1-d/140)*0.15})`;ctx.lineWidth=0.8;ctx.stroke();}
-    }
-    ctx.beginPath();ctx.arc(dots[i].x,dots[i].y,dots[i].r,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,0.4)';ctx.fill();
+// ── scroll reveals (rect-based, robust) ──
+const revealEls=[...document.querySelectorAll('.reveal,.statcell')];
+const countEls=[...document.querySelectorAll('[data-count]')];
+function checkReveals(){
+  const vh=window.innerHeight||document.documentElement.clientHeight;
+  for(const el of revealEls){
+    if(el.classList.contains('in'))continue;
+    const r=el.getBoundingClientRect();
+    if(r.top<vh-40&&r.bottom>0)el.classList.add('in');
   }
-  requestAnimationFrame(drawCanvas);
+  for(const el of countEls){
+    if(el.dataset.counted)continue;
+    const r=el.getBoundingClientRect();
+    if(r.top<vh*0.85&&r.bottom>0){el.dataset.counted='1';animCount(el);}
+  }
 }
-drawCanvas();
+addEventListener('scroll',checkReveals,{passive:true});
+addEventListener('resize',checkReveals);
+requestAnimationFrame(()=>{checkReveals();requestAnimationFrame(checkReveals);});
+setTimeout(checkReveals,200);
+// safety net: never leave content hidden
+setTimeout(()=>{revealEls.forEach(el=>el.classList.add('in'));},2500);
+function animCount(el){
+  const target=+el.dataset.count,suf=el.dataset.suffix||'';
+  const dur=1400,t0=performance.now();
+  function tick(now){
+    const p=Math.min((now-t0)/dur,1),e=1-Math.pow(1-p,3);
+    el.textContent=Math.round(target*e)+suf;
+    if(p<1)requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
 
-// ── Platform tabs ──────────────────────────────────────────────
-function switchTab(tab, panelId){
-  document.querySelectorAll('.platform-tab').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.platform-panel').forEach(p=>p.classList.remove('active'));
+// ── mock ring + score (animate when hero in view) ──
+setTimeout(()=>{
+  const ring=document.getElementById('mock-ring'),scoreEl=document.getElementById('mock-score');
+  const score=92,circ=226;
+  ring.style.transition='stroke-dashoffset 1.6s cubic-bezier(0.4,0,0.2,1)';
+  ring.style.strokeDashoffset=circ-(score/100)*circ;
+  let s=0;const iv=setInterval(()=>{s+=2;if(s>=score){s=score;clearInterval(iv)}scoreEl.textContent=s},28);
+},500);
+
+// ── feature showcase tabs ──
+function switchShow(tab,id){
+  document.querySelectorAll('.show-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.show-panel').forEach(p=>p.classList.remove('active'));
   tab.classList.add('active');
-  document.getElementById('panel-'+panelId).classList.add('active');
+  document.getElementById('panel-'+id).classList.add('active');
 }
 
-// ── Scroll reveal ──────────────────────────────────────────────
-const observer = new IntersectionObserver(entries=>{
-  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');observer.unobserve(e.target);}});
-},{threshold:0.1,rootMargin:'0px 0px -50px 0px'});
-document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
-
-// ── Animated counters ──────────────────────────────────────────
-function animateCounter(el){
-  const target=parseInt(el.dataset.count);let current=0;
-  const step=target/60;
-  const timer=setInterval(()=>{current=Math.min(current+step,target);el.textContent=Math.round(current);if(current>=target)clearInterval(timer);},16);
-}
-const counterObs=new IntersectionObserver(entries=>{
-  entries.forEach(e=>{if(e.isIntersecting){e.target.querySelectorAll('[data-count]').forEach(animateCounter);counterObs.unobserve(e.target);}});
-},{threshold:0.5});
-document.querySelectorAll('.stats-grid').forEach(el=>counterObs.observe(el));
-
-// ── Live threat feed ───────────────────────────────────────────
-async function loadLandingThreats(){
-  try{
-    const r=await fetch('https://cybershield-backend-production-492b.up.railway.app/dashboard/threats');
-    const data=await r.json();
-    if(!data.threats||!data.threats.length)return;
-    const el=document.getElementById('landing-threats');
-    const colors={critical:'badge-critical',high:'badge-high',medium:'badge-medium'};
-    el.innerHTML=data.threats.map(t=>`
-      <a href="${t.link}" target="_blank" rel="noopener" class="threat-item" style="text-decoration:none">
-        <div><div class="threat-title">${t.title}</div><div class="threat-src">${t.pubDate} · CyberWire Daily</div></div>
-        <span class="badge ${colors[t.severity]||colors.medium}">${t.severity}</span>
-      </a>`).join('');
-  }catch(e){}
-}
-loadLandingThreats();
-
-// ── Signup form ────────────────────────────────────────────────
-async function handleSignup(e){
-  e.preventDefault();
-  const email=document.getElementById('signup-email').value;
-  const res=document.getElementById('form-response');
-  const btn=e.target.querySelector('button');
-  btn.textContent='Joining...';btn.disabled=true;
-  try{
-    await fetch('https://cybershield-backend-production-492b.up.railway.app/waitlist',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email})});
-    res.style.color='#4ade80';res.textContent="You're on the list! We'll be in touch within 24 hours.";
-    document.getElementById('signup-email').value='';
-  }catch(err){res.style.color='#f87171';res.textContent='Connection error. Please try again.';}
-  btn.textContent='Get early access';btn.disabled=false;
-}
-
-// ── Logged-in detection ────────────────────────────────────────
-(function(){
-  const token=sessionStorage.getItem('cs_token');
-  const email=sessionStorage.getItem('cs_email');
-  if(!token)return;
-  const signin=document.getElementById('nav-signin');
-  const cta=document.getElementById('nav-cta');
-  if(signin){signin.textContent=email?email.split('@')[0]:'My account';signin.href='app.html';signin.style.color='#FF5500';}
-  if(cta){cta.textContent='Go to dashboard';cta.href='app.html';}
-  document.querySelectorAll('#hero-cta-primary,#threat-cta').forEach(b=>{if(b){b.textContent='Go to dashboard';b.href='app.html';}});
-  const pricing=document.getElementById('pricing');
-  if(pricing){
-    const banner=document.createElement('div');
-    banner.style.cssText='background:rgba(255,85,0,0.06);border:1px solid rgba(255,85,0,0.2);border-radius:6px;padding:12px 20px;margin-bottom:2rem;display:flex;align-items:center;gap:10px;font-size:0.875rem';
-    banner.innerHTML='<span style="color:#FF5500">ℹ</span><span style="color:#666">You already have an account. <strong style="color:#111">Free trials are one per account.</strong> Clicking Subscribe will charge you immediately.</span><a href="app.html" style="margin-left:auto;background:#FF5500;color:#fff;padding:6px 14px;border-radius:4px;font-size:0.8rem;font-weight:700;text-decoration:none;white-space:nowrap">Back to dashboard →</a>';
-    pricing.insertBefore(banner,pricing.firstChild);
-  }
-  document.querySelectorAll('#plan-starter,#plan-business,#plan-enterprise').forEach(function(btn){
-    const plan=btn.id.replace('plan-','');
-    btn.removeAttribute('href');btn.style.cursor='pointer';btn.textContent='Subscribe now — pay immediately';
-    btn.addEventListener('click',async function(ev){
-      ev.preventDefault();btn.textContent='Redirecting...';btn.style.pointerEvents='none';
-      try{
-        const resp=await fetch('https://cybershield-backend-production-492b.up.railway.app/billing/upgrade',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({plan})});
-        const data=await resp.json();
-        if(data.url)window.location.href=data.url;
-        else{btn.textContent='Subscribe now — pay immediately';btn.style.pointerEvents='';alert(data.error||'Something went wrong.');}
-      }catch(e){btn.textContent='Subscribe now — pay immediately';btn.style.pointerEvents='';}
-    });
+// ── billing toggle ──
+function setBilling(mode){
+  document.getElementById('bo-month').classList.toggle('active',mode==='month');
+  document.getElementById('bo-year').classList.toggle('active',mode==='year');
+  document.querySelectorAll('.price').forEach(el=>{
+    const target=+(mode==='year'?el.dataset.year:el.dataset.month);
+    const cur=parseInt(el.textContent)||target;
+    const dur=420,t0=performance.now();
+    function tick(now){const p=Math.min((now-t0)/dur,1);el.textContent=Math.round(cur+(target-cur)*p);if(p<1)requestAnimationFrame(tick)}
+    requestAnimationFrame(tick);
   });
+}
+
+// ── ticker ──
+const tickerData=[
+  ['#EF4444','Chrome zero-day','exploited in the wild'],
+  ['#F59E0B','OAuth phishing','targeting Microsoft 365'],
+  ['#FF6B00','New ransomware strain','hitting SMBs'],
+  ['#10B981','SOC 2 Type II','independently audited'],
+  ['#EF4444','12B+ credentials','monitored in real time'],
+  ['#F59E0B','DMARC misconfig','found in 61% of scans'],
+  ['#FF6B00','AI phishing','up 340% year over year'],
+  ['#10B981','60-second','vulnerability scans'],
+];
+const tk=document.getElementById('ticker');
+const tHTML=tickerData.map(([c,b,t])=>`<span class="ti"><span class="dot" style="background:${c}"></span><b>${b}</b> ${t}</span>`).join('');
+tk.innerHTML=tHTML+tHTML;
+
+// ── hero canvas: drifting node network ──
+(function(){
+  const cv=document.getElementById('hero-canvas');if(!cv)return;
+  if(matchMedia('(prefers-reduced-motion:reduce)').matches)return;
+  const ctx=cv.getContext('2d');let w,h,nodes,raf;
+  function size(){const r=cv.parentElement.getBoundingClientRect();w=cv.width=r.width;h=cv.height=r.height;init()}
+  function init(){
+    const count=Math.min(46,Math.round(w*h/26000));
+    nodes=Array.from({length:count},()=>({x:Math.random()*w,y:Math.random()*h,vx:(Math.random()-.5)*.28,vy:(Math.random()-.5)*.28}));
+  }
+  function draw(){
+    ctx.clearRect(0,0,w,h);
+    for(const n of nodes){n.x+=n.vx;n.y+=n.vy;if(n.x<0||n.x>w)n.vx*=-1;if(n.y<0||n.y>h)n.vy*=-1;}
+    for(let i=0;i<nodes.length;i++){
+      for(let j=i+1;j<nodes.length;j++){
+        const a=nodes[i],b=nodes[j],dx=a.x-b.x,dy=a.y-b.y,d=Math.hypot(dx,dy);
+        if(d<128){ctx.strokeStyle='rgba(255,107,0,'+(0.12*(1-d/128))+')';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();}
+      }
+    }
+    for(const n of nodes){ctx.fillStyle='rgba(255,140,40,0.5)';ctx.beginPath();ctx.arc(n.x,n.y,1.4,0,7);ctx.fill();}
+    raf=requestAnimationFrame(draw);
+  }
+  addEventListener('resize',size);size();draw();
 })();
 </script>
 </body>
