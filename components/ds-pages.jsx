@@ -98,8 +98,9 @@ function RiskWidget({score}){
 }
 
 /* ─────────── DASHBOARD HOME ─────────── */
-function DashboardHome({nav, toast}){
+function DashboardHome({nav, toast, threats}){
   const m=MOCK;
+  const threatData=threats||m.threats;
   const actIco={scan:I.search,training:I.grad,breach:I.shield,team:I.users,report:I.file};
   return (
     <div className="page">
@@ -154,7 +155,7 @@ function DashboardHome({nav, toast}){
               <div><div className="card-title">Live threat intelligence</div><div className="card-sub">From CyberWire Daily · updated today</div></div></div>
             <div className="card-act" onClick={()=>nav('training')}>View all{I.arrowR}</div>
           </div>
-          {m.threats.map((t,i)=>(
+          {threatData.map((t,i)=>(
             <div className="row hover" key={i}>
               <div style={{width:3,height:32,borderRadius:2,background:t.c,flexShrink:0}}></div>
               <div className="row-main"><div className="row-title">{t.t}</div><div className="row-sub">{t.s}</div></div>

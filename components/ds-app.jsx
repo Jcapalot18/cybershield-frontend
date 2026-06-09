@@ -1,5 +1,7 @@
 /* ═══════════ CyberShield Dashboard — app shell ═══════════ */
 
+const API = 'https://cybershield-backend-production-492b.up.railway.app';
+
 const NAV = [
   {id:'dashboard', label:'Dashboard', icon:I.grid, section:null},
   {id:'training', label:'AI Training', icon:I.grad, section:'Security tools'},
@@ -70,19 +72,39 @@ function App(){
   const [sbOpen,setSbOpen]=useState(false);
   const [upgrade,setUpgrade]=useState(false);
   const [toasts,toast]=useToasts();
+  const [liveThreats,setLiveThreats]=useState(null);
   const contentRef=useRef(null);
+
+  useEffect(()=>{
+    const bc={critical:'bc',high:'bh',medium:'bm'};
+    const sc={critical:'var(--red)',high:'var(--yellow)',medium:'var(--orange)'};
+    fetch(`${API}/dashboard/threats`)
+      .then(r=>r.json())
+      .then(d=>{
+        if(d.threats&&d.threats.length){
+          setLiveThreats(d.threats.map(t=>({
+            sev:t.severity.charAt(0).toUpperCase()+t.severity.slice(1),
+            t:t.title,
+            s:t.pubDate||'',
+            c:sc[t.severity]||'var(--orange)',
+            b:bc[t.severity]||'bm'
+          })));
+        }
+      })
+      .catch(()=>{});
+  },[]);
 
   const nav=(p)=>{ setPage(p); setSbOpen(false); try{localStorage.setItem('cs_page',p)}catch(e){} if(contentRef.current)contentRef.current.scrollTop=0; };
   const [title,sub]=TITLES[page];
 
   const Page = {dashboard:DashboardHome, training:TrainingPage, breach:BreachPage, scanner:ScannerPage, team:TeamPage, billing:BillingPage}[page];
-  const pageProps = page==='billing' ? {toast, openUpgrade:()=>setUpgrade(true)} : {nav, toast};
+  const pageProps = page==='billing' ? {toast, openUpgrade:()=>setUpgrade(true)} : {nav, toast, threats:liveThreats};
 
   return (
     <div className="app">
       <div className={cls('s-overlay', sbOpen&&'show')} onClick={()=>setSbOpen(false)}></div>
       <aside className={cls('sidebar', sbOpen&&'open')}>
-        <div className="s-brand"><a href="CyberShield Landing.html" className="lg"><Logo/><span>Cyber<span className="acc">Shield</span></span></a></div>
+        <div className="s-brand"><a href="index.html" className="lg"><Logo/><span>Cyber<span className="acc">Shield</span></span></a></div>
         <nav className="s-nav">
           {NAV.map(item=>(
             <React.Fragment key={item.id}>
@@ -99,7 +121,7 @@ function App(){
           <div className="s-user">
             <div className="s-av">{m.user.av}</div>
             <div style={{flex:1,minWidth:0}}><div className="s-uname">{m.user.name}</div><div className="s-urole">{m.user.role}</div></div>
-            <a href="CyberShield Landing.html" className="s-logout" title="Sign out">{I.logout}</a>
+            <a href="index.html" className="s-logout" title="Sign out">{I.logout}</a>
           </div>
         </div>
       </aside>

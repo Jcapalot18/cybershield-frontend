@@ -385,10 +385,11 @@ footer{border-top:1px solid var(--border);padding:4rem 0 2rem;position:relative;
       <a href="#threats">Threat feed</a>
       <a href="#pricing">Pricing</a>
       <a href="#trust">Trust</a>
+      <a href="about.html">About</a>
     </div>
     <div class="nav-right">
-      <a href="CyberShield Dashboard.html" class="nav-signin">Sign in</a>
-      <a href="CyberShield Dashboard.html" class="btn btn-primary">Start free trial</a>
+      <a href="auth.html" class="nav-signin">Sign in</a>
+      <a href="auth.html?signup=true" class="btn btn-primary">Start free trial</a>
       <button class="hamb" onclick="document.getElementById('mm').classList.add('open')" aria-label="Menu">
         <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
       </button>
@@ -403,7 +404,8 @@ footer{border-top:1px solid var(--border);padding:4rem 0 2rem;position:relative;
   <a href="#threats" onclick="document.getElementById('mm').classList.remove('open')">Threat feed</a>
   <a href="#pricing" onclick="document.getElementById('mm').classList.remove('open')">Pricing</a>
   <a href="#trust" onclick="document.getElementById('mm').classList.remove('open')">Trust</a>
-  <a href="CyberShield Dashboard.html" class="btn btn-primary btn-lg mm-cta">Start free trial</a>
+  <a href="about.html" onclick="document.getElementById('mm').classList.remove('open')">About</a>
+  <a href="auth.html?signup=true" class="btn btn-primary btn-lg mm-cta">Start free trial</a>
 </div>
 
 <!-- ═══════ HERO ═══════ -->
@@ -417,7 +419,7 @@ footer{border-top:1px solid var(--border);padding:4rem 0 2rem;position:relative;
         <h1 class="reveal rd1">Enterprise security,<br><span class="grad">built for small business.</span></h1>
         <p class="hero-sub reveal rd2">CyberShield scans for vulnerabilities, monitors 12B+ breached credentials, and trains your team on the exact attacks happening right now — no IT department required.</p>
         <div class="hero-cta reveal rd3">
-          <a href="CyberShield Dashboard.html" class="btn btn-primary btn-lg">Start free 14-day trial →</a>
+          <a href="auth.html?signup=true" class="btn btn-primary btn-lg">Start free 14-day trial →</a>
           <a href="#platform" class="btn btn-ghost btn-lg">See how it works</a>
         </div>
         <div class="hero-trust reveal rd4">
@@ -612,7 +614,7 @@ footer{border-top:1px solid var(--border);padding:4rem 0 2rem;position:relative;
         <div class="live-badge"><div class="d"></div><span>Live feed — updated daily</span></div>
         <h2 class="sec-title">Your team trains on<br>today's threats, today</h2>
         <p class="sec-sub">CyberShield pulls from CyberWire Daily — the #1 cybersecurity source — and turns breaking threats into 5-minute lessons. No stale annual training videos.</p>
-        <a href="CyberShield Dashboard.html" class="btn btn-primary btn-lg" style="margin-top:1.75rem">Start monitoring threats →</a>
+        <a href="auth.html?signup=true" class="btn btn-primary btn-lg" style="margin-top:1.75rem">Start monitoring threats →</a>
       </div>
       <div class="feed reveal rd2">
         <div class="feed-head">
@@ -653,7 +655,7 @@ footer{border-top:1px solid var(--border);padding:4rem 0 2rem;position:relative;
           <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>5 vulnerability scans/mo</li>
           <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Email alerts</li>
         </ul>
-        <a href="CyberShield Dashboard.html" class="btn btn-ghost">Start free trial</a>
+        <a href="auth.html?signup=true&plan=starter" class="btn btn-ghost">Start free trial</a>
       </div>
       <div class="plan feat reveal rd2">
         <div class="plan-tag">Most popular</div>
@@ -668,7 +670,7 @@ footer{border-top:1px solid var(--border);padding:4rem 0 2rem;position:relative;
           <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Bulk breach checking</li>
           <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Monthly PDF reports</li>
         </ul>
-        <a href="CyberShield Dashboard.html" class="btn btn-primary">Start free trial</a>
+        <a href="auth.html?signup=true&plan=business" class="btn btn-primary">Start free trial</a>
       </div>
       <div class="plan ent reveal rd3">
         <div class="plan-tag">White-glove</div>
@@ -683,7 +685,7 @@ footer{border-top:1px solid var(--border);padding:4rem 0 2rem;position:relative;
           <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Dedicated account manager</li>
           <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Priority 24/7 support</li>
         </ul>
-        <a href="CyberShield Dashboard.html" class="btn btn-ghost" style="border-color:var(--gold-border);color:var(--gold)">Talk to sales</a>
+        <a href="auth.html?signup=true&plan=enterprise" class="btn btn-ghost" style="border-color:var(--gold-border);color:var(--gold)">Talk to sales</a>
       </div>
     </div>
   </div>
@@ -719,42 +721,6 @@ footer{border-top:1px solid var(--border);padding:4rem 0 2rem;position:relative;
   </div>
 </section>
 
-<!-- ═══════ TESTIMONIALS ═══════ -->
-<section class="sec" style="padding-top:0">
-  <div class="wrap">
-    <div class="sec-head center reveal">
-      <div class="eyebrow center">Why teams choose us</div>
-      <h2 class="sec-title">Security that finally<br>makes sense</h2>
-    </div>
-    <div class="tgrid">
-      <div class="tcard reveal rd1">
-        <div class="tstars"><svg viewBox="0 0 24 24"><polygon points="12 2 15 9 22 9 17 14 19 21 12 17 5 21 7 14 2 9 9 9"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15 9 22 9 17 14 19 21 12 17 5 21 7 14 2 9 9 9"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15 9 22 9 17 14 19 21 12 17 5 21 7 14 2 9 9 9"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15 9 22 9 17 14 19 21 12 17 5 21 7 14 2 9 9 9"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15 9 22 9 17 14 19 21 12 17 5 21 7 14 2 9 9 9"/></svg></div>
-        <p class="tquote">"We don't have an IT person. CyberShield found two breached logins our first day and walked us through fixing them. It paid for itself before lunch."</p>
-        <div class="tauthor">
-          <div class="tav"><image-slot id="ava-1" shape="circle" placeholder="Photo"></image-slot></div>
-          <div><div class="tname">Dana Whitlock</div><div class="trole">Managing Partner · Meridian Law</div></div>
-        </div>
-      </div>
-      <div class="tcard reveal rd2">
-        <div class="tstars"><svg viewBox="0 0 24 24"><polygon points="12 2 15 9 22 9 17 14 19 21 12 17 5 21 7 14 2 9 9 9"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15 9 22 9 17 14 19 21 12 17 5 21 7 14 2 9 9 9"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15 9 22 9 17 14 19 21 12 17 5 21 7 14 2 9 9 9"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15 9 22 9 17 14 19 21 12 17 5 21 7 14 2 9 9 9"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15 9 22 9 17 14 19 21 12 17 5 21 7 14 2 9 9 9"/></svg></div>
-        <p class="tquote">"The weekly trainings are short enough that my team actually does them. Our security score went from 51 to 84 in two months. Our cyber-insurance premium dropped."</p>
-        <div class="tauthor">
-          <div class="tav"><image-slot id="ava-2" shape="circle" placeholder="Photo"></image-slot></div>
-          <div><div class="tname">Marcus Reyes</div><div class="trole">Owner · Brookfield CPA</div></div>
-        </div>
-      </div>
-      <div class="tcard reveal rd3">
-        <div class="tstars"><svg viewBox="0 0 24 24"><polygon points="12 2 15 9 22 9 17 14 19 21 12 17 5 21 7 14 2 9 9 9"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15 9 22 9 17 14 19 21 12 17 5 21 7 14 2 9 9 9"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15 9 22 9 17 14 19 21 12 17 5 21 7 14 2 9 9 9"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15 9 22 9 17 14 19 21 12 17 5 21 7 14 2 9 9 9"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15 9 22 9 17 14 19 21 12 17 5 21 7 14 2 9 9 9"/></svg></div>
-        <p class="tquote">"As a clinic we need HIPAA covered. CyberShield's reports go straight to our compliance binder. The vulnerability scans are the real deal, not checkbox theater."</p>
-        <div class="tauthor">
-          <div class="tav"><image-slot id="ava-3" shape="circle" placeholder="Photo"></image-slot></div>
-          <div><div class="tname">Priya Nair</div><div class="trole">Practice Manager · NorthCare Clinic</div></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- ═══════ FINAL CTA ═══════ -->
 <section class="sec final">
   <div class="final-mesh"></div>
@@ -763,7 +729,7 @@ footer{border-top:1px solid var(--border);padding:4rem 0 2rem;position:relative;
       <h2>Your first scan is<br>60 seconds away</h2>
       <p>Join 2,400+ small businesses defending themselves like the Fortune 500. Free for 14 days, no credit card, no IT team required.</p>
       <div class="final-cta">
-        <a href="CyberShield Dashboard.html" class="btn btn-primary btn-lg">Start free 14-day trial →</a>
+        <a href="auth.html?signup=true" class="btn btn-primary btn-lg">Start free 14-day trial →</a>
         <a href="#platform" class="btn btn-ghost btn-lg">Book a demo</a>
       </div>
       <div class="final-note">Setup in 60 seconds · Cancel anytime · SOC 2 Type II certified</div>
@@ -798,22 +764,22 @@ footer{border-top:1px solid var(--border);padding:4rem 0 2rem;position:relative;
         <a href="#platform">Breach Monitor</a>
         <a href="#platform">Vulnerability Scanner</a>
         <a href="#threats">Threat Feed</a>
-        <a href="CyberShield Dashboard.html">Dashboard</a>
+        <a href="app.html">Dashboard</a>
       </div>
       <div class="foot-col">
         <h4>Company</h4>
-        <a href="#">About</a>
-        <a href="#">Security</a>
+        <a href="about.html">About</a>
+        <a href="security.html">Security</a>
         <a href="#trust">Compliance</a>
         <a href="#pricing">Pricing</a>
-        <a href="#">Contact</a>
+        <a href="contact.html">Contact</a>
       </div>
       <div class="foot-col">
         <h4>Legal</h4>
-        <a href="#">Privacy Policy</a>
-        <a href="#">Terms of Service</a>
-        <a href="#">Cookie Policy</a>
-        <a href="#">Refund Policy</a>
+        <a href="privacy.html">Privacy Policy</a>
+        <a href="terms.html">Terms of Service</a>
+        <a href="cookie-policy.html">Cookie Policy</a>
+        <a href="refund-policy.html">Refund Policy</a>
         <a href="#">DPA</a>
       </div>
     </div>
