@@ -602,10 +602,10 @@ footer{border-top:1px solid var(--border);padding:4rem 0 2rem;position:relative;
         <p class="sec-sub">CyberShield pulls from CyberWire Daily — the #1 cybersecurity source — and turns breaking threats into 5-minute lessons. No stale annual training videos.</p>
         <a href="auth.html?signup=true" class="btn btn-primary btn-lg" style="margin-top:1.75rem">Start monitoring threats →</a>
       </div>
-      <div class="feed reveal rd2">
+      <div class="feed reveal rd2" id="threat-feed">
         <div class="feed-head">
           <div class="ft"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>Threat intelligence</div>
-          <div class="src">CyberWire Daily · Ep. 2562</div>
+          <div class="src" id="feed-src">CyberWire Daily · Live</div>
         </div>
         <div class="feed-item"><div class="feed-sev" style="background:var(--red)"></div><div style="flex:1"><div class="feed-t">Chrome 22 critical vulnerabilities patched</div><div class="feed-s">Episode 2562 · May 29, 2026</div></div><span class="badge bc">Critical</span></div>
         <div class="feed-item"><div class="feed-sev" style="background:var(--red)"></div><div style="flex:1"><div class="feed-t">Microsoft OAuth authentication abuse campaign</div><div class="feed-s">Episode 2559 · May 26, 2026</div></div><span class="badge bc">Critical</span></div>
@@ -861,6 +861,61 @@ const tickerData=[
 const tk=document.getElementById('ticker');
 const tHTML=tickerData.map(([c,b,t])=>`<span class="ti"><span class="dot" style="background:${c}"></span><b>${b}</b> ${t}</span>`).join('');
 tk.innerHTML=tHTML+tHTML;
+
+// ── live threat feed: CyberWire RSS via rss2json ──
+(function(){
+  const PROXY='https://api.rss2json.com/v1/api.json?rss_url=';
+  const RSS='https://feeds.feedburner.com/CyberWireDailyNews';
+  const feed=document.getElementById('threat-feed');
+  const srcEl=document.getElementById('feed-src');
+  if(!feed)return;
+
+  const SEV={
+    critical:{color:'var(--red)',label:'Critical',cls:'bc'},
+    high:{color:'var(--yellow)',label:'High',cls:'bh'},
+    medium:{color:'var(--orange)',label:'Medium',cls:'bm'},
+  };
+
+  function sev(title){
+    const t=title.toLowerCase();
+    if(/zero.?day|ransomware|breach|exploit|comprom|critical|backdoor|wiper|apt|spyware/.test(t))return SEV.critical;
+    if(/phish|malware|vulnerab|attack|hack|threat|inject|bypass|steal|credential|remote code|rce/.test(t))return SEV.high;
+    return SEV.medium;
+  }
+
+  function fmtDate(str){
+    const d=new Date(str);
+    return isNaN(d)?str:d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  }
+
+  function stripHtml(s){
+    return (s||'').replace(/<[^>]*>/g,'').replace(/&[a-z#0-9]+;/gi,' ').replace(/\s+/g,' ').trim();
+  }
+
+  function render(items){
+    const head=feed.querySelector('.feed-head');
+    if(!head)return;
+    const rows=items.slice(0,6).map(item=>{
+      const s=sev(item.title);
+      const desc=stripHtml(item.description).slice(0,88);
+      return `<div class="feed-item"><div class="feed-sev" style="background:${s.color}"></div>`+
+        `<div style="flex:1;min-width:0"><div class="feed-t">${item.title}</div>`+
+        `<div class="feed-s">CyberWire Daily · ${fmtDate(item.pubDate)}${desc?' — '+desc+'…':''}</div></div>`+
+        `<span class="badge ${s.cls}">${s.label}</span></div>`;
+    }).join('');
+    // rebuild: keep head, replace items
+    const headClone=head.cloneNode(true);
+    feed.innerHTML='';
+    feed.appendChild(headClone);
+    feed.insertAdjacentHTML('beforeend',rows);
+    if(srcEl)srcEl.textContent='CyberWire Daily · Live';
+  }
+
+  fetch(PROXY+encodeURIComponent(RSS))
+    .then(r=>r.json())
+    .then(d=>{if(d.status==='ok'&&d.items&&d.items.length)render(d.items);})
+    .catch(()=>{});/* silent fallback — static items stay visible */
+})();
 
 // ── hero canvas: drifting node network ──
 (function(){
