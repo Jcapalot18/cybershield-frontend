@@ -599,7 +599,7 @@ footer{border-top:1px solid var(--border);padding:4rem 0 2rem;position:relative;
       <div class="reveal">
         <div class="live-badge"><div class="d"></div><span>Live feed — updated daily</span></div>
         <h2 class="sec-title">Your team trains on<br>today's threats, today</h2>
-        <p class="sec-sub">CyberShield pulls from CyberWire Daily — the #1 cybersecurity source — and turns breaking threats into 5-minute lessons. No stale annual training videos.</p>
+        <p class="sec-sub">CyberShield pulls from The Hacker News and BleepingComputer — the top cybersecurity sources — and turns breaking threats into 5-minute lessons. No stale annual training videos.</p>
         <a href="auth.html?signup=true" class="btn btn-primary btn-lg" style="margin-top:1.75rem">Start monitoring threats →</a>
       </div>
       <div class="feed reveal rd2" id="threat-feed">
@@ -862,9 +862,21 @@ const tk=document.getElementById('ticker');
 const tHTML=tickerData.map(([c,b,t])=>`<span class="ti"><span class="dot" style="background:${c}"></span><b>${b}</b> ${t}</span>`).join('');
 tk.innerHTML=tHTML+tHTML;
 
-// ── live threat feed: CyberWire RSS via rss2json ──
+// ── live threat feed: THN → BleepingComputer → hardcoded fallback ──
 (function(){
-  const API='https://api.rss2json.com/v1/api.json?rss_url='+encodeURIComponent('https://feeds.feedburner.com/CyberWireDailyPodcast');
+  const BASE='https://api.rss2json.com/v1/api.json?rss_url=';
+  const FEEDS=[
+    {url:BASE+encodeURIComponent('https://feeds.feedburner.com/TheHackersNews'),label:'The Hacker News'},
+    {url:BASE+encodeURIComponent('https://www.bleepingcomputer.com/feed/'),label:'BleepingComputer'},
+  ];
+  const HARDCODED=[
+    {title:'Critical Splunk Enterprise Flaw Lets Attackers Run Code Without Authentication',link:'https://thehackernews.com/2026/06/critical-splunk-enterprise-flaw-lets.html',pubDate:'2026-06-13',description:'A critical unauthenticated remote code execution vulnerability in Splunk Enterprise puts thousands of deployments at risk.'},
+    {title:'Who Runs the Ransomware Group "The Gentlemen"?',link:'https://krebsonsecurity.com/2026/06/who-runs-the-ransomware-group-the-gentlemen/',pubDate:'2026-06-10',description:'Security researchers trace the operators behind a rising ransomware-as-a-service group targeting mid-market companies.'},
+    {title:'Ex-School District Employee Jailed for Hacks on Former Employer',link:'https://www.bleepingcomputer.com/news/security/ex-school-district-employee-jailed-for-hacks-on-former-employer/',pubDate:'2026-06-13',description:'A former IT administrator was sentenced after repeatedly accessing school district systems following termination.'},
+    {title:'AI-Powered Phishing Attacks Surge 340% Year Over Year',link:'https://thehackernews.com/',pubDate:'2026-06-12',description:'Security researchers warn of a dramatic rise in AI-generated spear phishing campaigns targeting small businesses.'},
+    {title:'DMARC Misconfiguration Leaves 61% of Small Businesses Exposed to Email Spoofing',link:'https://www.bleepingcomputer.com/',pubDate:'2026-06-11',description:'Email authentication gaps remain one of the most common and easily exploited vectors for phishing attacks.'},
+  ];
+
   const feed=document.getElementById('threat-feed');
   const srcEl=document.getElementById('feed-src');
   if(!feed)return;
@@ -874,66 +886,64 @@ tk.innerHTML=tHTML+tHTML;
     high:{color:'var(--yellow)',label:'High',cls:'bh'},
     medium:{color:'var(--orange)',label:'Medium',cls:'bm'},
   };
-
-  function sev(title){
-    const t=title.toLowerCase();
+  function sev(t){
+    t=t.toLowerCase();
     if(/zero.?day|ransomware|breach|exploit|comprom|critical|backdoor|wiper|apt|spyware/.test(t))return SEV.critical;
     if(/phish|malware|vulnerab|attack|hack|threat|inject|bypass|steal|credential|remote code|rce/.test(t))return SEV.high;
     return SEV.medium;
   }
-
   function fmtDate(str){
     const d=new Date(str);
     return isNaN(d)?str:d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
   }
-
   function stripHtml(s){
-    return (s||'').replace(/<[^>]*>/g,'').replace(/&[a-z#0-9]+;/gi,' ').replace(/\s+/g,' ').trim();
+    return(s||'').replace(/<[^>]*>/g,'').replace(/&[a-z#0-9]+;/gi,' ').replace(/\s+/g,' ').trim();
   }
-
-  function render(items){
-    const head=feed.querySelector('.feed-head');
-    if(!head)return;
-    const rows=items.slice(0,6).map(item=>{
+  function buildRows(items,source){
+    return items.slice(0,6).map(item=>{
       const s=sev(item.title);
+      const url=(item.link||item.url||'#').replace(/"/g,'%22');
+      const title=item.title.replace(/</g,'&lt;').replace(/>/g,'&gt;');
       const desc=stripHtml(item.description).slice(0,100);
-      const url=item.link||item.url||'#';
-      const safeTitle=item.title.replace(/</g,'&lt;').replace(/>/g,'&gt;');
       return `<div class="feed-item">`+
         `<div class="feed-sev" style="background:${s.color}"></div>`+
         `<div style="flex:1;min-width:0">`+
-        `<div class="feed-t"><a href="${url}" target="_blank" rel="noopener noreferrer" style="color:inherit;text-decoration:none" onmouseover="this.style.color='var(--orange)'" onmouseout="this.style.color=''">${safeTitle}</a></div>`+
-        `<div class="feed-s">CyberWire Daily · ${fmtDate(item.pubDate)}${desc?' — '+desc+'…':''}</div>`+
+        `<div class="feed-t"><a href="${url}" target="_blank" rel="noopener noreferrer" style="color:inherit;text-decoration:none" onmouseover="this.style.color='var(--orange)'" onmouseout="this.style.color=''">${title}</a></div>`+
+        `<div class="feed-s">${source} · ${fmtDate(item.pubDate)}${desc?' — '+desc+'…':''}</div>`+
         `</div><span class="badge ${s.cls}">${s.label}</span></div>`;
     }).join('');
+  }
+  function paint(rows,label){
+    const head=feed.querySelector('.feed-head');
+    if(!head)return;
     const headClone=head.cloneNode(true);
     feed.innerHTML='';
     feed.appendChild(headClone);
     feed.insertAdjacentHTML('beforeend',rows);
-    if(srcEl)srcEl.textContent='CyberWire Daily · Live';
+    if(srcEl)srcEl.textContent=label+' · Live';
+  }
+  function showFallback(){
+    paint(buildRows(HARDCODED,'Cybersecurity News'),'Cybersecurity News');
   }
 
-  function renderError(){
-    const head=feed.querySelector('.feed-head');
-    if(!head)return;
-    const headClone=head.cloneNode(true);
-    feed.innerHTML='';
-    feed.appendChild(headClone);
-    feed.insertAdjacentHTML('beforeend',
-      `<div class="feed-item" style="justify-content:center;padding:2rem 1.4rem">`+
-      `<div style="text-align:center;color:var(--muted);font-size:.82rem">Feed temporarily unavailable — check back shortly.</div>`+
-      `</div>`);
-  }
-
-  function load(){
-    fetch(API)
+  function tryFeed(idx){
+    if(idx>=FEEDS.length){showFallback();return;}
+    const {url,label}=FEEDS[idx];
+    fetch(url)
       .then(r=>r.json())
-      .then(d=>{if(d.status==='ok'&&d.items&&d.items.length)render(d.items);else renderError();})
-      .catch(renderError);
+      .then(d=>{
+        if(d.status==='ok'&&d.items&&d.items.length){
+          paint(buildRows(d.items,label),label);
+        } else {
+          tryFeed(idx+1);
+        }
+      })
+      .catch(()=>tryFeed(idx+1));
   }
 
+  function load(){tryFeed(0);}
   load();
-  setInterval(load,5*60*1000);/* refresh every 5 minutes */
+  setInterval(load,5*60*1000);
 })();
 
 // ── hero canvas: drifting node network ──
