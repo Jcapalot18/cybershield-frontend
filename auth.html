@@ -227,7 +227,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:4r
 
 /* ── RESPONSIVE ── */
 @media(max-width:900px){
-  .auth-grid{grid-template-columns:1fr;max-width:520px}
+  .auth-grid{grid-template-columns:1fr;max-width:520px;padding:0 1.25rem}
   .auth-left{display:none}
 }
 @media(max-width:768px){
@@ -235,12 +235,20 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:4r
   .hamb{display:flex}
   .foot-grid{grid-template-columns:1fr 1fr;gap:2rem}
   .foot-brand{grid-column:1/-1}
+  /* prevent any child element from blowing out the viewport */
+  .auth-section{overflow-x:hidden}
+  .card{min-width:0;overflow:hidden}
 }
 @media(max-width:480px){
   .wrap{padding:0 1.25rem}
-  .auth-section{padding:6rem 0 3rem}
-  .card{padding:1.75rem}
+  .auth-section{padding:5.5rem 0 3rem}
+  .auth-grid{padding:0 1rem}
+  .card{padding:1.5rem}
   .form-row{grid-template-columns:1fr}
+  /* 3-column plan selector → stack 2+1 on tiny screens */
+  .plan-selector{grid-template-columns:repeat(3,1fr);gap:.35rem}
+  .plan-option label{padding:.5rem .25rem;font-size:.66rem;letter-spacing:0}
+  .plan-option label .plan-price{font-size:.85rem}
   .foot-grid{grid-template-columns:1fr 1fr;gap:2rem}
 }
 </style>
