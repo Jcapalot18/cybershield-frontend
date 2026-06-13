@@ -112,7 +112,7 @@ function Spark({data,color,w=140,h=42}){
 /* ───────── MOCK DATA ───────── */
 const MOCK = {
   company:'Law Firm Client', plan:'Business', seats:50,
-  user:{name:'Dana Whitlock', role:'Owner', av:'DW'},
+  user:{name:'Demo User', role:'Owner', av:'DU'},
   score:84,
   scoreHistory:[
     {m:'Dec', score:51}, {m:'Jan', score:58}, {m:'Feb', score:63},
@@ -133,18 +133,18 @@ const MOCK = {
     {sev:'Medium', t:'Ubiquiti UniFi security vulnerabilities', s:'CyberWire Daily · Ep. 2558', c:'var(--orange)', b:'bm'},
   ],
   activity:[
-    {type:'scan', c:'var(--orange)', t:'Vulnerability scan completed on meridianlaw.com', time:'12 min ago'},
-    {type:'training', c:'var(--green)', t:'Sarah Chen completed "OAuth consent attacks"', time:'1h ago'},
-    {type:'breach', c:'var(--red)', t:'New breach detected for sarah@meridianlaw.com', time:'3h ago'},
-    {type:'team', c:'var(--blue)', t:'Mike Torres was added to the team', time:'Yesterday'},
+    {type:'scan', c:'var(--orange)', t:'Vulnerability scan completed on yourdomain.com', time:'12 min ago'},
+    {type:'training', c:'var(--green)', t:'Team member completed "OAuth consent attacks"', time:'1h ago'},
+    {type:'breach', c:'var(--red)', t:'New breach detected for user@yourdomain.com', time:'3h ago'},
+    {type:'team', c:'var(--blue)', t:'New team member was added', time:'Yesterday'},
     {type:'report', c:'var(--cyan)', t:'May 2026 security report generated', time:'2 days ago'},
   ],
   emails:[
-    {email:'dana@meridianlaw.com', status:'secure', breaches:0},
-    {email:'sarah@meridianlaw.com', status:'breached', breaches:2, detail:['LinkedIn (2021)','Dropbox (2016)']},
-    {email:'mike@meridianlaw.com', status:'secure', breaches:0},
-    {email:'admin@meridianlaw.com', status:'warn', breaches:1, detail:['Adobe (2013)']},
-    {email:'billing@meridianlaw.com', status:'secure', breaches:0},
+    {email:'owner@yourdomain.com', status:'secure', breaches:0},
+    {email:'user1@yourdomain.com', status:'breached', breaches:2, detail:['LinkedIn (2021)','Dropbox (2016)']},
+    {email:'user2@yourdomain.com', status:'secure', breaches:0},
+    {email:'admin@yourdomain.com', status:'warn', breaches:1, detail:['Adobe (2013)']},
+    {email:'billing@yourdomain.com', status:'secure', breaches:0},
   ],
   scanChecks:['SSL Certificate','HSTS Header','Content Security Policy','X-Frame-Options','SPF Record','DMARC Policy','Secure Cookies','HTTPS Redirect'],
   scanResults:[
@@ -166,12 +166,12 @@ const MOCK = {
     {week:'Week 20', title:'Safe remote work', desc:'VPNs, public Wi-Fi, and securing the home office without slowing down.', mins:5, prog:0, done:false, grad:'linear-gradient(135deg,#d97706,#451a03)'},
   ],
   team:[
-    {name:'Dana Whitlock', email:'dana@meridianlaw.com', role:'Owner', status:'active', training:100, last:'Online now', av:'DW'},
-    {name:'Sarah Chen', email:'sarah@meridianlaw.com', role:'Admin', status:'active', training:80, last:'12 min ago', av:'SC'},
-    {name:'Mike Torres', email:'mike@meridianlaw.com', role:'Member', status:'active', training:40, last:'2h ago', av:'MT'},
-    {name:'Priya Nair', email:'priya@meridianlaw.com', role:'Member', status:'active', training:100, last:'Yesterday', av:'PN'},
-    {name:'James Okafor', email:'james@meridianlaw.com', role:'Member', status:'pending', training:0, last:'Invited', av:'JO'},
-    {name:'Lena Vogt', email:'lena@meridianlaw.com', role:'Member', status:'active', training:60, last:'3 days ago', av:'LV'},
+    {name:'Demo User', email:'owner@yourdomain.com', role:'Owner', status:'active', training:100, last:'Online now', av:'DU'},
+    {name:'Team Member A', email:'member.a@yourdomain.com', role:'Admin', status:'active', training:80, last:'12 min ago', av:'MA'},
+    {name:'Team Member B', email:'member.b@yourdomain.com', role:'Member', status:'active', training:40, last:'2h ago', av:'MB'},
+    {name:'Team Member C', email:'member.c@yourdomain.com', role:'Member', status:'active', training:100, last:'Yesterday', av:'MC'},
+    {name:'Team Member D', email:'member.d@yourdomain.com', role:'Member', status:'pending', training:0, last:'Invited', av:'MD'},
+    {name:'Team Member E', email:'member.e@yourdomain.com', role:'Member', status:'active', training:60, last:'3 days ago', av:'ME'},
   ],
   invoices:[
     {date:'May 1, 2026', amt:'$199.00', plan:'Business · Monthly', status:'Paid'},

@@ -181,9 +181,9 @@ function DashboardHome({nav, toast, threats}){
           <div className="card-hd"><div className="card-hd-l"><div className="card-ico" style={{background:'var(--orange-dim)',border:'1px solid var(--orange-border)',color:'var(--orange)'}}>{I.check}</div>
             <div><div className="card-title">Recommended next steps</div><div className="card-sub">3 actions to raise your score</div></div></div></div>
           <div style={{padding:'1.25rem',display:'flex',flexDirection:'column',gap:'.75rem'}}>
-            <NextStep color="var(--red)" title="Fix missing HSTS header" sub="Detected on meridianlaw.com · +6 pts" cta="Fix" onClick={()=>nav('scanner')}/>
+            <NextStep color="var(--red)" title="Fix missing HSTS header" sub="Detected on yourdomain.com · +6 pts" cta="Fix" onClick={()=>nav('scanner')}/>
             <NextStep color="var(--yellow)" title="Strengthen DMARC policy" sub="Currently p=none · +5 pts" cta="Review" onClick={()=>nav('scanner')}/>
-            <NextStep color="var(--orange)" title="2 members owe training" sub="Mike & Lena · +4 pts" cta="Remind" onClick={()=>{toast('Reminders sent','Mike & Lena notified by email');}}/>
+            <NextStep color="var(--orange)" title="2 members owe training" sub="Team members · +4 pts" cta="Remind" onClick={()=>{toast('Reminders sent','Mike & Lena notified by email');}}/>
           </div>
         </div>
       </div>
