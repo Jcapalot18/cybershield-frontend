@@ -188,6 +188,16 @@ select option{background:var(--bg3);color:var(--text)}
 .oauth-btn:hover{border-color:rgba(255,255,255,0.2);color:var(--text);background:rgba(255,255,255,0.07);transform:translateY(-1px)}
 .oauth-btn svg{stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 
+/* BILLING TOGGLE (inside signup form) */
+.auth-bill-wrap{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap}
+.auth-bill-toggle{display:inline-flex;align-items:center;gap:.3rem;background:var(--bg);border:1px solid var(--border);border-radius:100px;padding:4px}
+.auth-bill-opt{padding:5px 15px;border-radius:100px;font-size:.75rem;font-weight:700;color:var(--muted);cursor:pointer;border:none;background:none;font-family:var(--font);transition:all .22s var(--spring);white-space:nowrap}
+.auth-bill-opt.active{background:var(--orange);color:#fff;box-shadow:0 3px 12px rgba(255,107,0,0.28)}
+.auth-bill-save{font-size:.58rem;font-weight:800;color:var(--green);background:var(--green-dim);border:1px solid rgba(16,185,129,0.25);padding:2px 6px;border-radius:100px;margin-left:3px}
+.auth-bill-badge{display:none;font-size:.65rem;font-weight:800;color:var(--gold);background:rgba(255,215,0,0.08);border:1px solid rgba(255,215,0,0.28);padding:3px 9px;border-radius:100px;white-space:nowrap}
+.auth-bill-badge.show{display:inline-flex;align-items:center;gap:4px}
+.auth-bill-badge::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--gold);flex-shrink:0}
+
 /* PLAN SELECTOR */
 .plan-selector{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem}
 .plan-option{position:relative}
@@ -196,6 +206,8 @@ select option{background:var(--bg3);color:var(--text)}
 .plan-option input:checked+label{border-color:var(--orange);background:var(--orange-dim);color:var(--orange)}
 .plan-option label .plan-price{font-size:.95rem;font-weight:800;margin-top:4px;color:rgba(255,255,255,0.45);font-variant-numeric:tabular-nums;letter-spacing:-0.03em}
 .plan-option input:checked+label .plan-price{color:var(--orange)}
+.plan-option label .plan-annual-note{font-size:.56rem;font-weight:600;color:rgba(255,255,255,0.3);letter-spacing:0;text-transform:none;margin-top:2px;display:none}
+.plan-option input:checked+label .plan-annual-note{color:var(--orange)}
 
 /* misc */
 .terms-note{font-size:.72rem;color:var(--dim);text-align:center;line-height:1.65}
@@ -405,6 +417,16 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:4r
               <label>Password</label>
               <input type="password" id="reg-password" placeholder="Min. 8 characters" autocomplete="new-password" required/>
             </div>
+            <div class="form-group" style="margin-bottom:.5rem">
+              <label>Billing</label>
+              <div class="auth-bill-wrap">
+                <div class="auth-bill-toggle">
+                  <button class="auth-bill-opt active" id="ab-month" onclick="setAuthBilling('monthly')">Monthly</button>
+                  <button class="auth-bill-opt" id="ab-year" onclick="setAuthBilling('annual')">Annual<span class="auth-bill-save">−20%</span></button>
+                </div>
+                <span class="auth-bill-badge" id="auth-bill-badge">Save $478/yr on Business</span>
+              </div>
+            </div>
             <div class="form-group">
               <label>Choose your plan</label>
               <div class="plan-selector">
@@ -413,6 +435,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:4r
                   <label for="plan-starter">
                     Starter
                     <span class="plan-price" id="auth-price-starter">$49<small style="font-size:.6em;font-weight:400">/mo</small></span>
+                    <span class="plan-annual-note" id="auth-note-starter">$468/yr</span>
                   </label>
                 </div>
                 <div class="plan-option">
@@ -420,6 +443,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:4r
                   <label for="plan-business">
                     Business
                     <span class="plan-price" id="auth-price-business">$199<small style="font-size:.6em;font-weight:400">/mo</small></span>
+                    <span class="plan-annual-note" id="auth-note-business">$1,910/yr</span>
                   </label>
                 </div>
                 <div class="plan-option">
@@ -427,6 +451,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:4r
                   <label for="plan-enterprise">
                     Enterprise
                     <span class="plan-price" id="auth-price-enterprise">$599<small style="font-size:.6em;font-weight:400">/mo</small></span>
+                    <span class="plan-annual-note" id="auth-note-enterprise">$5,750/yr</span>
                   </label>
                 </div>
               </div>
@@ -590,25 +615,56 @@ if (planParam) {
   if (radio) radio.checked = true;
 }
 
-// ── annual billing mode ──────────────────────────────────────
-const billingMode = params.get('billing') === 'annual' ? 'annual' : 'monthly';
-if (billingMode === 'annual') {
-  const ANNUAL_PRICES = { starter: '$39', business: '$159', enterprise: '$479' };
-  const ANNUAL_TOTALS = { starter: '$468/yr', business: '$1,910/yr', enterprise: '$5,750/yr' };
+// ── billing toggle ───────────────────────────────────────────
+let billingMode = 'monthly';
+
+const AUTH_PRICES = {
+  monthly:  { starter: '$49',  business: '$199', enterprise: '$599' },
+  annual:   { starter: '$39',  business: '$159', enterprise: '$479' },
+};
+const PRICE_SUFFIX = '<small style="font-size:.6em;font-weight:400">/mo</small>';
+
+function setAuthBilling(mode) {
+  billingMode = mode;
+  const isAnnual = mode === 'annual';
+
+  // toggle buttons
+  document.getElementById('ab-month').classList.toggle('active', !isAnnual);
+  document.getElementById('ab-year').classList.toggle('active',   isAnnual);
+
+  // save badge
+  const badge = document.getElementById('auth-bill-badge');
+  if (badge) badge.classList.toggle('show', isAnnual);
+
+  // plan prices + annual notes
   ['starter','business','enterprise'].forEach(plan => {
-    const el = document.getElementById('auth-price-' + plan);
-    if (el) el.innerHTML = ANNUAL_PRICES[plan] + '<small style="font-size:.6em;font-weight:400">/mo</small>'
-      + '<span style="display:block;font-size:.58em;color:rgba(255,255,255,0.35);font-weight:500;margin-top:2px">'+ANNUAL_TOTALS[plan]+'</span>';
+    const priceEl = document.getElementById('auth-price-' + plan);
+    const noteEl  = document.getElementById('auth-note-' + plan);
+    if (priceEl) priceEl.innerHTML = AUTH_PRICES[mode][plan] + PRICE_SUFFIX;
+    if (noteEl)  noteEl.style.display = isAnnual ? 'block' : 'none';
   });
-  const titleEl  = document.getElementById('signup-title');
-  const subEl    = document.getElementById('signup-sub');
-  const btnEl    = document.getElementById('signup-btn');
-  const termsEl  = document.getElementById('signup-terms');
-  if (titleEl)  titleEl.textContent  = 'Start your annual plan';
-  if (subEl)    subEl.innerHTML      = 'Billed annually &middot; Full year charged upfront &middot; No free trial';
-  if (btnEl)    btnEl.textContent    = 'Create account & pay annually →';
-  if (termsEl)  termsEl.innerHTML    = 'By creating an account you agree to our <a href="terms.html">Terms of Service</a> and <a href="privacy.html">Privacy Policy</a>. Your annual subscription begins immediately upon payment.';
+
+  // header, subtext, button, terms
+  const titleEl = document.getElementById('signup-title');
+  const subEl   = document.getElementById('signup-sub');
+  const btnEl   = document.getElementById('signup-btn');
+  const termsEl = document.getElementById('signup-terms');
+
+  if (isAnnual) {
+    if (titleEl)  titleEl.textContent = 'Start your annual plan';
+    if (subEl)    subEl.innerHTML     = 'Billed annually &middot; Full year charged upfront &middot; No free trial';
+    if (btnEl)    btnEl.textContent   = 'Create account & pay annually →';
+    if (termsEl)  termsEl.innerHTML   = 'By creating an account you agree to our <a href="terms.html">Terms of Service</a> and <a href="privacy.html">Privacy Policy</a>. Your annual subscription begins immediately upon payment.';
+  } else {
+    if (titleEl)  titleEl.textContent = 'Start your free trial';
+    if (subEl)    subEl.innerHTML     = 'No credit card required &middot; 14-day free trial';
+    if (btnEl)    btnEl.textContent   = 'Create account & start trial →';
+    if (termsEl)  termsEl.innerHTML   = 'By creating an account you agree to our <a href="terms.html">Terms of Service</a> and <a href="privacy.html">Privacy Policy</a>. You won’t be charged until after your 14-day trial ends.';
+  }
 }
+
+// initialise from URL param (coming from landing page CTA)
+if (params.get('billing') === 'annual') setAuthBilling('annual');
 
 // ── sign in ──────────────────────────────────────────────────
 async function handleSignin() {
