@@ -599,13 +599,13 @@ footer{border-top:1px solid var(--border);padding:4rem 0 2rem;position:relative;
       <div class="reveal">
         <div class="live-badge"><div class="d"></div><span>Live feed — updated daily</span></div>
         <h2 class="sec-title">Your team trains on<br>today's threats, today</h2>
-        <p class="sec-sub">CyberShield pulls from The Hacker News and BleepingComputer — the top cybersecurity sources — and turns breaking threats into 5-minute lessons. No stale annual training videos.</p>
+        <p class="sec-sub">CyberShield pulls from the top cybersecurity sources and turns breaking threats into 5-minute lessons your team can act on. No stale annual training videos.</p>
         <a href="auth.html?signup=true" class="btn btn-primary btn-lg" style="margin-top:1.75rem">Start monitoring threats →</a>
       </div>
       <div class="feed reveal rd2" id="threat-feed">
         <div class="feed-head">
           <div class="ft"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>Threat intelligence</div>
-          <div class="src" id="feed-src">CyberWire Daily · Live</div>
+          <div class="src" id="feed-src">Threat Intelligence Daily · Live</div>
         </div>
         <div class="feed-item"><div class="feed-sev" style="background:var(--red)"></div><div style="flex:1"><div class="feed-t">Chrome 22 critical vulnerabilities patched</div><div class="feed-s">Episode 2562 · May 29, 2026</div></div><span class="badge bc">Critical</span></div>
         <div class="feed-item"><div class="feed-sev" style="background:var(--red)"></div><div style="flex:1"><div class="feed-t">Microsoft OAuth authentication abuse campaign</div><div class="feed-s">Episode 2559 · May 26, 2026</div></div><span class="badge bc">Critical</span></div>
@@ -866,8 +866,8 @@ tk.innerHTML=tHTML+tHTML;
 (function(){
   const BASE='https://api.rss2json.com/v1/api.json?rss_url=';
   const FEEDS=[
-    {url:BASE+encodeURIComponent('https://feeds.feedburner.com/TheHackersNews'),label:'The Hacker News'},
-    {url:BASE+encodeURIComponent('https://www.bleepingcomputer.com/feed/'),label:'BleepingComputer'},
+    {url:BASE+encodeURIComponent('https://feeds.feedburner.com/TheHackersNews'),label:'Threat Intelligence Daily'},
+    {url:BASE+encodeURIComponent('https://www.bleepingcomputer.com/feed/'),label:'Threat Intelligence Daily'},
   ];
   const HARDCODED=[
     {title:'Critical Splunk Enterprise Flaw Lets Attackers Run Code Without Authentication',link:'https://thehackernews.com/2026/06/critical-splunk-enterprise-flaw-lets.html',pubDate:'2026-06-13',description:'A critical unauthenticated remote code execution vulnerability in Splunk Enterprise puts thousands of deployments at risk.'},
@@ -923,7 +923,7 @@ tk.innerHTML=tHTML+tHTML;
     if(srcEl)srcEl.textContent=label+' · Live';
   }
   function showFallback(){
-    paint(buildRows(HARDCODED,'Cybersecurity News'),'Cybersecurity News');
+    paint(buildRows(HARDCODED,'Threat Intelligence Daily'),'Threat Intelligence Daily');
   }
 
   function tryFeed(idx){
