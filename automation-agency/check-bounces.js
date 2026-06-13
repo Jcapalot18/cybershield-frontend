@@ -82,43 +82,35 @@ if (!API_KEY) {
 const since = new Date(Date.now() - DAYS * 24 * 60 * 60 * 1000);
 console.log(`\nFetching emails sent since ${since.toUTCString()} …\n`);
 
-// ── paginate through /emails ──────────────────────────────────────────────────
-let page        = 1;
+// ── fetch emails (Resend list endpoint returns most recent, max 100) ──────────
 let allEmails   = [];
-let keepGoing   = true;
 let apiSupported = true;
 
-while (keepGoing) {
-  let data;
-  try {
-    data = await resendGet(`/emails?limit=${LIMIT}&page=${page}`);
-  } catch (err) {
-    if (/404|not found|cannot get/i.test(err.message)) {
-      apiSupported = false;
-      break;
-    }
+let data;
+try {
+  data = await resendGet(`/emails?limit=${LIMIT}`);
+} catch (err) {
+  if (/404|not found|cannot get/i.test(err.message)) {
+    apiSupported = false;
+  } else {
     throw err;
   }
+}
 
-  // Resend may return { data: [...] } or { emails: [...] } or plain array
+if (apiSupported) {
+  // Resend returns { data: [...], has_more: bool }
   const emails = Array.isArray(data)
     ? data
     : (data.data ?? data.emails ?? []);
 
-  if (emails.length === 0) break;
-
   for (const email of emails) {
     const sent = new Date(email.created_at);
-    if (sent >= since) {
-      allEmails.push(email);
-    } else {
-      // emails are returned newest-first; once we're past the window, stop
-      keepGoing = false;
-    }
+    if (sent >= since) allEmails.push(email);
   }
 
-  if (emails.length < LIMIT) break; // last page
-  page++;
+  if (data.has_more) {
+    console.log(`  Note: Resend returned ${emails.length} emails (has_more=true). Reporting on the ${allEmails.length} within the 7-day window.\n`);
+  }
 }
 
 if (!apiSupported) {
