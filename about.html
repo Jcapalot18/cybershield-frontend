@@ -10,196 +10,582 @@
   gtag('config', 'G-KNS974VS3N');
 </script>
 <meta charset="UTF-8"/>
+<link rel="icon" type="image/svg+xml" href="favicon.svg"/>
+<script>document.documentElement.classList.add('js')</script>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
 <title>About — CyberShield</title>
-<meta name="description" content="The story behind CyberShield — built by a 20-year-old Information Systems student who saw small businesses getting destroyed by cyber threats and decided to build a solution."/>
+<meta name="description" content="The story behind CyberShield — built by a 20-year-old Information Systems student who saw small businesses getting destroyed by cyber threats and decided to build the solution."/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --orange:#FF5500;--orange-light:#FF7733;--orange-dim:rgba(255,85,0,0.12);
-  --orange-border:rgba(255,85,0,0.3);--black:#0a0a0a;--gray-900:#111;
-  --gray-800:#1a1a1a;--gray-100:#f2f2f2;--muted:#666;--border:#e5e5e5;
-  --text:#0a0a0a;
+  --bg:#080b12;
+  --bg2:#0d1220;
+  --bg3:#111827;
+  --bg4:#141d2e;
+  --orange:#FF6B00;
+  --orange2:#ff8c00;
+  --orange-dim:rgba(255,107,0,0.08);
+  --orange-border:rgba(255,107,0,0.25);
+  --gold:#FFD700;
+  --gold-dim:rgba(255,215,0,0.08);
+  --gold-border:rgba(255,215,0,0.28);
+  --border:rgba(255,255,255,0.08);
+  --border2:rgba(255,255,255,0.045);
+  --text:#ffffff;
+  --muted:rgba(255,255,255,0.52);
+  --dim:rgba(255,255,255,0.26);
+  --green:#10B981;
+  --green-dim:rgba(16,185,129,0.08);
+  --font:'Hanken Grotesk',sans-serif;
+  --grid-line:rgba(255,255,255,0.022);
+  --maxw:1280px;
+  --ease:cubic-bezier(0.4,0,0.2,1);
+  --spring:cubic-bezier(.34,1.56,.64,1);
+  --t:0.18s;
+  --t2:0.26s;
+  --radius:14px;
+  --shadow-card:0 2px 20px rgba(0,0,0,0.45),0 1px 0 rgba(255,255,255,0.04) inset;
+  --shadow-hover:0 12px 48px rgba(0,0,0,0.6),0 0 0 1px rgba(255,255,255,0.06),0 1px 0 rgba(255,255,255,0.07) inset;
 }
-body{background:#fff;color:var(--text);font-family:'DM Sans',sans-serif;font-size:16px;line-height:1.6;overflow-x:hidden}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;overflow-x:hidden}
 a{text-decoration:none;color:inherit}
+::-webkit-scrollbar{width:9px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:rgba(255,107,0,0.35);border-radius:6px}
+::-webkit-scrollbar-thumb:hover{background:var(--orange)}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 2.5rem}
 
-/* NAV */
-.nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 4rem;height:72px;display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,0.96);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
-.nav-logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:1.1rem;letter-spacing:-0.02em}
-.nav-logo svg{width:30px;height:30px}
-.nav-logo span{color:var(--orange)}
-.nav-right{display:flex;align-items:center;gap:0.75rem}
-.btn{display:inline-flex;align-items:center;padding:10px 22px;border-radius:4px;font-size:0.875rem;font-weight:600;cursor:pointer;border:none;transition:all 0.2s;font-family:'DM Sans',sans-serif}
-.btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border)}
-.btn-ghost:hover{color:var(--text)}
-.btn-primary{background:var(--orange);color:#fff;border:1px solid var(--orange)}
-.btn-primary:hover{background:var(--orange-light)}
+/* ── GLOBAL TEXTURE ── */
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(var(--grid-line) 1px,transparent 1px),linear-gradient(90deg,var(--grid-line) 1px,transparent 1px);background-size:38px 38px;pointer-events:none;z-index:0}
 
-/* HERO */
-.about-hero{padding:160px 4rem 80px;background:var(--black);position:relative;overflow:hidden}
-.about-hero::before{content:'';position:absolute;top:-200px;right:-200px;width:600px;height:600px;background:radial-gradient(circle,rgba(255,85,0,0.12) 0%,transparent 70%);pointer-events:none}
-.about-hero-inner{max-width:760px;margin:0 auto;text-align:center;position:relative;z-index:1}
-.about-label{display:inline-flex;align-items:center;gap:8px;background:var(--orange-dim);color:var(--orange);font-size:0.72rem;font-weight:700;padding:6px 14px;border-radius:2px;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:2rem;border:1px solid var(--orange-border)}
-.about-hero h1{font-size:clamp(2.2rem,4vw,3.5rem);font-weight:700;line-height:1.1;letter-spacing:-0.03em;color:#fff;margin-bottom:1.5rem}
-.about-hero h1 span{color:var(--orange)}
-.about-hero p{font-size:1.1rem;color:rgba(255,255,255,0.6);line-height:1.75;max-width:580px;margin:0 auto}
+/* ── ANIMATIONS ── */
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.7)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes glowPulse{0%,100%{box-shadow:0 0 24px rgba(255,107,0,0.18)}50%{box-shadow:0 0 48px rgba(255,107,0,0.4),0 0 90px rgba(255,107,0,0.08)}}
+@keyframes holoSweep{0%{transform:translateX(-140%) skewX(-20deg);opacity:0}15%{opacity:1}85%{opacity:0.8}100%{transform:translateX(220%) skewX(-20deg);opacity:0}}
+@keyframes scanLine{0%{top:0%;opacity:0}5%{opacity:1}80%{opacity:0.6}100%{top:100%;opacity:0}}
+@keyframes cornerFade{0%{opacity:0}100%{opacity:1}}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.js .reveal{opacity:0;transform:translateY(30px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+.js .reveal.in{opacity:1;transform:translateY(0)}
+.rd1{transition-delay:.08s}.rd2{transition-delay:.16s}.rd3{transition-delay:.24s}.rd4{transition-delay:.32s}
+@media(prefers-reduced-motion:reduce){.js .reveal,.reveal{opacity:1!important;transform:none!important;transition:none}*{animation:none!important}}
 
-/* CONTENT */
-.about-content{max-width:760px;margin:0 auto;padding:80px 4rem}
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 24px;border-radius:10px;font-size:.9rem;font-weight:700;cursor:pointer;border:1px solid transparent;font-family:var(--font);letter-spacing:-0.01em;transition:all .2s var(--spring);white-space:nowrap}
+.btn-primary{background:var(--orange);color:#fff;box-shadow:0 6px 24px rgba(255,107,0,0.34);position:relative;overflow:hidden}
+.btn-primary::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,rgba(255,255,255,0.14),transparent)}
+.btn-primary:hover{background:var(--orange2);transform:translateY(-2px) scale(1.02);box-shadow:0 12px 36px rgba(255,107,0,0.5)}
+.btn-primary:active{transform:translateY(0) scale(.99)}
+.btn-ghost{background:rgba(255,255,255,0.03);color:var(--text);border-color:var(--border)}
+.btn-ghost:hover{background:rgba(255,255,255,0.07);border-color:rgba(255,255,255,0.2);transform:translateY(-2px)}
+.btn-lg{padding:15px 30px;font-size:.98rem;border-radius:11px}
 
-.story-section{margin-bottom:4rem}
-.story-section h2{font-size:1.5rem;font-weight:700;letter-spacing:-0.02em;margin-bottom:1rem;color:var(--black)}
-.story-section p{font-size:1rem;color:var(--muted);line-height:1.85;margin-bottom:1rem}
-.story-section p strong{color:var(--black);font-weight:600}
+/* ── NAV ── */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;height:68px;display:flex;align-items:center;background:rgba(8,11,18,0.72);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border-bottom:1px solid transparent;transition:border-color .3s,background .3s}
+.nav.scrolled{border-bottom-color:var(--border);background:rgba(8,11,18,0.9)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;width:100%}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.08rem;letter-spacing:-0.03em}
+.logo svg{width:28px;height:28px;flex-shrink:0}
+.logo .acc{color:var(--orange)}
+.nav-links{display:flex;align-items:center;gap:2.25rem}
+.nav-links a{font-size:.875rem;font-weight:600;color:var(--muted);transition:color .2s;position:relative;white-space:nowrap}
+.nav-links a:hover,.nav-links a.active{color:var(--text)}
+.nav-links a::after{content:'';position:absolute;left:0;bottom:-6px;height:2px;width:0;background:var(--orange);transition:width .25s var(--ease);border-radius:2px}
+.nav-links a:hover::after,.nav-links a.active::after{width:100%}
+.nav-right{display:flex;align-items:center;gap:.75rem}
+.nav-signin{font-size:.875rem;font-weight:600;color:var(--muted);padding:8px 14px;transition:color .2s;white-space:nowrap}
+.nav-signin:hover{color:var(--text)}
+.hamb{display:none;background:none;border:1px solid var(--border);border-radius:9px;padding:8px;color:var(--text);cursor:pointer}
+.hamb svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
 
-.divider{height:1px;background:var(--border);margin:4rem 0}
+/* ── MOBILE MENU ── */
+.mobile-menu{position:fixed;inset:0;z-index:99;background:rgba(8,11,18,0.98);backdrop-filter:blur(20px);display:none;flex-direction:column;padding:5.5rem 2.5rem 2rem;gap:.5rem}
+.mobile-menu.open{display:flex}
+.mobile-menu a{font-size:1.3rem;font-weight:700;padding:1rem 0;border-bottom:1px solid var(--border2);color:var(--text)}
+.mobile-menu .mm-cta{margin-top:1.5rem}
+.mm-close{position:absolute;top:1.4rem;right:2.5rem;background:none;border:1px solid var(--border);border-radius:9px;padding:8px;color:var(--text);cursor:pointer}
+.mm-close svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
 
-/* FOUNDER CARD */
-.founder-card{background:var(--gray-100);border-radius:12px;padding:2.5rem;display:flex;gap:2rem;align-items:flex-start;margin-bottom:4rem}
-.founder-avatar{width:80px;height:80px;border-radius:50%;background:var(--orange);display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:800;color:#fff;flex-shrink:0;letter-spacing:-0.02em}
-.founder-info h3{font-size:1.2rem;font-weight:700;letter-spacing:-0.02em;margin-bottom:4px}
-.founder-info .role{font-size:0.82rem;color:var(--orange);font-weight:600;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:1rem}
-.founder-info p{font-size:0.9rem;color:var(--muted);line-height:1.75}
+/* ── CARDS ── */
+.card{
+  background-color:var(--bg2);
+  background-image:linear-gradient(var(--grid-line) 1px,transparent 1px),linear-gradient(90deg,var(--grid-line) 1px,transparent 1px);
+  background-size:28px 28px;
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  overflow:hidden;position:relative;
+  box-shadow:var(--shadow-card);
+  transition:border-color var(--t2) var(--ease),box-shadow var(--t2) var(--ease),transform var(--t2) var(--spring);
+}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.1),transparent);z-index:1}
+.card.hover:hover{border-color:rgba(255,255,255,0.13);box-shadow:var(--shadow-hover);transform:translateY(-2px)}
 
-/* MISSION */
-.mission-box{background:var(--black);border-radius:12px;padding:3rem;text-align:center;margin-bottom:4rem}
-.mission-box h2{font-size:1.75rem;font-weight:700;color:#fff;letter-spacing:-0.03em;margin-bottom:1rem}
-.mission-box p{font-size:1rem;color:rgba(255,255,255,0.6);line-height:1.85;max-width:520px;margin:0 auto}
-.mission-box .orange{color:var(--orange)}
+/* holographic shimmer */
+.card .holo{content:'';position:absolute;inset:0;overflow:hidden;border-radius:inherit;pointer-events:none;z-index:2}
+.card .holo::after{content:'';position:absolute;top:0;left:0;width:60%;height:100%;background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,0.04) 50%,rgba(255,107,0,0.06) 55%,rgba(255,255,255,0.03) 60%,transparent 70%);transform:translateX(-140%) skewX(-20deg);pointer-events:none}
+.card:hover .holo::after{animation:holoSweep 0.75s var(--ease) forwards}
+/* scan line */
+.card .scanl{position:absolute;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,107,0,0.25),transparent);pointer-events:none;z-index:3;opacity:0;top:0}
+.card:hover .scanl{animation:scanLine 0.9s var(--ease) forwards}
 
-/* VALUES */
-.values-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:4rem}
-.value-card{border:1px solid var(--border);border-radius:8px;padding:1.75rem}
-.value-card h3{font-size:1rem;font-weight:700;margin-bottom:0.5rem}
-.value-card p{font-size:0.875rem;color:var(--muted);line-height:1.7}
+/* corner accents */
+.card-corners{position:absolute;inset:0;pointer-events:none;z-index:4}
+.card-corners i{position:absolute;width:10px;height:10px;border-color:rgba(255,107,0,0.5);border-style:solid;border-width:0;animation:cornerFade 0.4s var(--ease) both}
+.card:hover .card-corners i{border-color:rgba(255,107,0,0.8)}
+.card-corners i:nth-child(1){top:6px;left:6px;border-top-width:1.5px;border-left-width:1.5px;border-radius:2px 0 0 0}
+.card-corners i:nth-child(2){top:6px;right:6px;border-top-width:1.5px;border-right-width:1.5px;border-radius:0 2px 0 0}
+.card-corners i:nth-child(3){bottom:6px;left:6px;border-bottom-width:1.5px;border-left-width:1.5px;border-radius:0 0 0 2px}
+.card-corners i:nth-child(4){bottom:6px;right:6px;border-bottom-width:1.5px;border-right-width:1.5px;border-radius:0 0 2px 0}
 
-/* CTA */
-.about-cta{background:var(--orange);border-radius:12px;padding:3rem;text-align:center}
-.about-cta h2{font-size:1.75rem;font-weight:700;color:#fff;letter-spacing:-0.03em;margin-bottom:0.75rem}
-.about-cta p{color:rgba(255,255,255,0.8);margin-bottom:2rem;font-size:0.95rem}
-.btn-white{background:#fff;color:var(--orange);border:none;padding:14px 32px;border-radius:4px;font-size:0.95rem;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s}
-.btn-white:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(0,0,0,0.15)}
+/* ── EYEBROW ── */
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.16em;color:var(--orange);margin-bottom:1rem}
+.eyebrow::before{content:'';width:18px;height:1px;background:var(--orange)}
+.eyebrow.center{justify-content:center}
 
-/* FOOTER */
-footer{background:var(--black);padding:2rem 4rem;text-align:center}
-footer p{font-size:0.8rem;color:rgba(255,255,255,0.3)}
-footer a{color:rgba(255,255,255,0.4)}
-footer a:hover{color:#fff}
+/* ── HERO ── */
+.hero{position:relative;padding:10rem 0 5rem;overflow:hidden;min-height:52vh;display:flex;align-items:center}
+#hero-canvas{position:absolute;inset:0;z-index:0;opacity:.45}
+.hero-glow{position:absolute;top:-10%;left:50%;transform:translateX(-50%);width:900px;height:600px;background:radial-gradient(ellipse at center,rgba(255,107,0,0.14) 0%,rgba(255,107,0,0.04) 35%,transparent 65%);pointer-events:none;z-index:0;filter:blur(20px)}
+.hero .wrap{position:relative;z-index:2;width:100%}
+.hero-inner{max-width:720px;margin:0 auto;text-align:center}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:9px;background:var(--orange-dim);border:1px solid var(--orange-border);border-radius:100px;padding:6px 14px 6px 8px;font-size:.74rem;font-weight:700;color:var(--orange);letter-spacing:.02em;margin-bottom:1.75rem}
+.hero-eyebrow .pill{background:var(--orange);color:#fff;font-size:.6rem;font-weight:800;padding:3px 8px;border-radius:100px;letter-spacing:.06em;text-transform:uppercase}
+.hero h1{font-size:clamp(2.4rem,5vw,3.75rem);font-weight:800;line-height:1.05;letter-spacing:-0.04em;margin-bottom:1.5rem}
+.hero h1 .grad{background:linear-gradient(120deg,var(--orange) 0%,var(--orange2) 55%,var(--gold) 130%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.hero-sub{font-size:1.1rem;color:var(--muted);line-height:1.65;margin-bottom:2rem}
 
-@media(max-width:768px){
-  .nav{padding:0 1.5rem}
-  .about-hero{padding:120px 1.5rem 60px}
-  .about-content{padding:60px 1.5rem}
-  .founder-card{flex-direction:column;gap:1.5rem}
+/* ── SECTION ── */
+.sec{padding:6rem 0;position:relative;z-index:1}
+.sec-title{font-size:clamp(1.8rem,3vw,2.6rem);font-weight:800;letter-spacing:-0.035em;line-height:1.1}
+.sec-sub{font-size:1rem;color:var(--muted);line-height:1.65;margin-top:.875rem}
+.about-wrap{max-width:900px;margin:0 auto}
+
+/* ── FOUNDER CARD ── */
+.founder-card{padding:2.5rem;margin-bottom:1.5rem}
+.founder-inner{display:flex;align-items:flex-start;gap:2rem}
+.founder-av{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--orange),var(--orange2));display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:900;color:#fff;flex-shrink:0;letter-spacing:-0.02em;box-shadow:0 0 32px rgba(255,107,0,0.4),0 0 0 3px rgba(255,107,0,0.15);position:relative;font-variant-numeric:tabular-nums}
+.founder-av::after{content:'';position:absolute;inset:-3px;border-radius:50%;border:1px solid rgba(255,107,0,0.3);animation:glowPulse 3s ease-in-out infinite}
+.founder-details{flex:1;min-width:0}
+.founder-name{font-size:1.35rem;font-weight:800;letter-spacing:-0.03em;margin-bottom:3px}
+.founder-role{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.14em;color:var(--orange);margin-bottom:.875rem}
+.founder-bio{font-size:.9rem;color:var(--muted);line-height:1.75;margin-bottom:1.25rem}
+.founder-links{display:flex;gap:.75rem}
+.founder-link{display:inline-flex;align-items:center;gap:6px;font-size:.78rem;font-weight:600;color:var(--muted);background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:8px;padding:7px 14px;transition:all var(--t2) var(--spring)}
+.founder-link svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.founder-link:hover{color:var(--orange);border-color:var(--orange-border);background:var(--orange-dim);transform:translateY(-2px)}
+
+/* ── STORY SECTIONS ── */
+.story-card{padding:2.5rem;margin-bottom:1.5rem}
+.story-card-hd{display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem}
+.story-ico{width:44px;height:44px;border-radius:12px;background:var(--orange-dim);border:1px solid var(--orange-border);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.story-ico svg{width:20px;height:20px;stroke:var(--orange);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.story-title{font-size:1.2rem;font-weight:800;letter-spacing:-0.025em}
+.story-body p{font-size:.93rem;color:var(--muted);line-height:1.85;margin-bottom:.875rem}
+.story-body p:last-child{margin-bottom:0}
+.story-body strong{color:var(--text);font-weight:700}
+
+/* highlight pull-quote */
+.pull-quote{border-left:2px solid var(--orange);padding-left:1.25rem;margin:1.5rem 0}
+.pull-quote p{font-size:1.05rem;font-style:italic;color:rgba(255,255,255,0.78);line-height:1.7;margin-bottom:0}
+
+/* ── STAT STRIP ── */
+.stat-strip{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;background-color:var(--bg2);background-image:linear-gradient(var(--grid-line) 1px,transparent 1px),linear-gradient(90deg,var(--grid-line) 1px,transparent 1px);background-size:28px 28px;margin-bottom:1.5rem}
+.stat-cell{padding:2rem 1.75rem;border-right:1px solid var(--border);position:relative}
+.stat-cell:last-child{border-right:none}
+.stat-cell::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--orange);transform:scaleX(0);transform-origin:left;transition:transform .5s var(--ease)}
+.stat-cell.in::after{transform:scaleX(1)}
+.stat-num{font-size:2.6rem;font-weight:900;letter-spacing:-0.05em;line-height:1;margin-bottom:6px;font-variant-numeric:tabular-nums;color:var(--text)}
+.stat-num .acc{color:var(--orange)}
+.stat-lbl{font-size:.8rem;color:var(--muted);font-weight:500;line-height:1.5}
+
+/* ── MISSION ── */
+.mission-card{padding:3.5rem;text-align:center;border-color:var(--gold-border);background:linear-gradient(135deg,rgba(255,215,0,0.04),var(--bg2))}
+.mission-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold) 40%,rgba(255,200,100,0.8) 50%,var(--gold) 60%,transparent);border-radius:var(--radius) var(--radius) 0 0}
+.mission-title{font-size:clamp(1.8rem,3vw,2.4rem);font-weight:900;letter-spacing:-0.04em;margin-bottom:1.25rem;line-height:1.05}
+.mission-title .gold{color:var(--gold)}
+.mission-body{font-size:1rem;color:var(--muted);line-height:1.8;max-width:540px;margin:0 auto 2rem}
+.mission-badge{display:inline-flex;align-items:center;gap:8px;background:var(--gold-dim);border:1px solid var(--gold-border);border-radius:100px;padding:7px 18px;font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:var(--gold)}
+.mission-badge .d{width:6px;height:6px;border-radius:50%;background:var(--gold);animation:pulse 2.5s infinite;box-shadow:0 0 8px var(--gold)}
+
+/* ── VALUES ── */
+.values-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.5rem}
+.value-card{padding:2rem}
+.value-ico{width:40px;height:40px;border-radius:11px;background:var(--orange-dim);border:1px solid var(--orange-border);display:flex;align-items:center;justify-content:center;margin-bottom:1.25rem;flex-shrink:0;transition:all var(--t2) var(--spring)}
+.value-ico svg{width:18px;height:18px;stroke:var(--orange);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.card.hover:hover .value-ico{transform:scale(1.08);background:rgba(255,107,0,0.14);box-shadow:0 0 20px rgba(255,107,0,0.2)}
+.value-title{font-size:1rem;font-weight:800;letter-spacing:-0.015em;margin-bottom:.5rem}
+.value-body{font-size:.84rem;color:var(--muted);line-height:1.7}
+
+/* ── FINAL CTA ── */
+.cta-card{padding:3.5rem;text-align:center;overflow:hidden}
+.cta-mesh{position:absolute;inset:0;background:radial-gradient(ellipse at 30% 50%,rgba(255,107,0,0.12),transparent 55%),radial-gradient(ellipse at 75% 40%,rgba(255,215,0,0.05),transparent 50%);pointer-events:none}
+.cta-card h2{font-size:clamp(1.8rem,3vw,2.4rem);font-weight:900;letter-spacing:-0.04em;line-height:1.05;margin-bottom:1rem;position:relative;z-index:1}
+.cta-card p{font-size:1rem;color:var(--muted);margin-bottom:2rem;line-height:1.6;position:relative;z-index:1}
+.cta-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;position:relative;z-index:1}
+.cta-note{font-size:.78rem;color:var(--dim);margin-top:1rem;position:relative;z-index:1}
+
+/* ── FOOTER ── */
+footer{border-top:1px solid var(--border);padding:4rem 0 2rem;position:relative;z-index:1}
+.foot-grid{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:2.5rem;margin-bottom:3rem}
+.foot-brand .logo{margin-bottom:1rem}
+.foot-brand p{font-size:.85rem;color:var(--muted);line-height:1.65;max-width:280px;margin-bottom:1.25rem}
+.foot-social{display:flex;gap:.6rem}
+.foot-social a{width:34px;height:34px;border-radius:9px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--muted);transition:all .2s var(--spring)}
+.foot-social a:hover{color:var(--orange);border-color:var(--orange-border);transform:translateY(-2px)}
+.foot-social svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.foot-col h4{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:var(--dim);margin-bottom:1.1rem}
+.foot-col a{display:block;font-size:.85rem;color:var(--muted);margin-bottom:.7rem;transition:color .2s;width:fit-content}
+.foot-col a:hover{color:var(--text)}
+.foot-bottom{border-top:1px solid var(--border);padding-top:1.75rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+.foot-copy{font-size:.78rem;color:var(--dim)}
+.foot-badges{display:flex;gap:1rem;align-items:center}
+.foot-badge{display:flex;align-items:center;gap:6px;font-size:.7rem;font-weight:700;color:var(--muted)}
+.foot-badge svg{width:13px;height:13px;stroke:var(--green);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
   .values-grid{grid-template-columns:1fr}
-  footer{padding:2rem 1.5rem}
+  .stat-strip{grid-template-columns:1fr}
+  .stat-cell{border-right:none;border-bottom:1px solid var(--border)}
+  .stat-cell:last-child{border-bottom:none}
+  .foot-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:820px){
+  .nav-links,.nav-right .nav-signin{display:none}
+  .hamb{display:flex}
+}
+@media(max-width:640px){
+  .wrap{padding:0 1.25rem}
+  .sec{padding:4rem 0}
+  .hero{padding:8rem 0 3.5rem;min-height:auto}
+  .founder-inner{flex-direction:column;gap:1.5rem}
+  .founder-av{width:64px;height:64px;font-size:1.2rem}
+  .foot-grid{grid-template-columns:1fr 1fr;gap:2rem}
+  .foot-brand{grid-column:1/-1}
+  .story-card,.founder-card,.mission-card,.cta-card{padding:1.75rem}
 }
 </style>
 </head>
 <body>
 
-<!-- NAV -->
-<nav class="nav">
-  <a href="index.html" class="nav-logo">
-    <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect width="32" height="32" rx="8" fill="#080b12"/>
-      <path d="M16 3L28 7.5V18C28 25 22 29.5 16 31C10 29.5 4 25 4 18V7.5L16 3Z" fill="rgba(255,107,0,0.15)" stroke="#FF6B00" stroke-width="1.5"/>
-      <path d="M16 11L20 13.5L16 16L12 13.5Z" fill="rgba(255,107,0,0.3)" stroke="#FF6B00" stroke-width="1" stroke-linejoin="round"/>
-      <path d="M12 13.5L16 16V21L12 18.5Z" stroke="#FF6B00" stroke-width="1" stroke-linejoin="round"/>
-      <path d="M20 13.5L16 16V21L20 18.5Z" fill="rgba(255,107,0,0.15)" stroke="#FF6B00" stroke-width="1" stroke-linejoin="round"/>
-    </svg><span style="display:inline-flex;gap:0;letter-spacing:-0.02em">Cyber<span>Shield</span></span>
-  </a>
-  <div class="nav-right">
-    <a href="index.html" class="btn btn-ghost">Home</a>
-    <a href="auth.html?signup=true" class="btn btn-primary">Start free trial</a>
+<!-- ═══════ NAV ═══════ -->
+<nav class="nav" id="nav">
+  <div class="wrap">
+    <a href="index.html" class="logo">
+      <svg viewBox="0 0 30 36" fill="none">
+        <path d="M15 1L29 6.5V21C29 30 22 35.5 15 37.5C8 35.5 1 30 1 21V6.5L15 1Z" fill="rgba(255,107,0,0.08)" stroke="#FF6B00" stroke-width="1.5"/>
+        <path d="M15 11L20 14L15 17L10 14Z" fill="rgba(255,107,0,0.2)" stroke="#FF6B00" stroke-width="1.25" stroke-linejoin="round"/>
+        <path d="M10 14L15 17V23L10 20Z" stroke="#FF6B00" stroke-width="1.25" stroke-linejoin="round"/>
+        <path d="M20 14L15 17V23L20 20Z" fill="rgba(255,107,0,0.1)" stroke="#FF6B00" stroke-width="1.25" stroke-linejoin="round"/>
+      </svg>
+      <span>Cyber<span class="acc">Shield</span></span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html#platform">Platform</a>
+      <a href="index.html#threats">Threat feed</a>
+      <a href="index.html#pricing">Pricing</a>
+      <a href="index.html#trust">Trust</a>
+      <a href="about.html" class="active">About</a>
+    </div>
+    <div class="nav-right">
+      <a href="auth.html" class="nav-signin">Sign in</a>
+      <a href="auth.html?signup=true" class="btn btn-primary">Start free trial</a>
+      <button class="hamb" onclick="document.getElementById('mm').classList.add('open')" aria-label="Menu">
+        <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </div>
   </div>
 </nav>
 
-<!-- HERO -->
-<section class="about-hero">
-  <div class="about-hero-inner">
-    <div class="about-label">Our Story</div>
-    <h1>Built by someone who saw <span>the problem firsthand</span></h1>
-    <p>CyberShield was built by a 20-year-old founder who believed small businesses deserved the same protection as enterprise companies — without the enterprise price tag.</p>
+<!-- mobile menu -->
+<div class="mobile-menu" id="mm">
+  <button class="mm-close" onclick="document.getElementById('mm').classList.remove('open')"><svg viewBox="0 0 24 24"><line x1="6" y1="6" x2="18" y2="18"/><line x1="6" y1="18" x2="18" y2="6"/></svg></button>
+  <a href="index.html#platform" onclick="document.getElementById('mm').classList.remove('open')">Platform</a>
+  <a href="index.html#threats" onclick="document.getElementById('mm').classList.remove('open')">Threat feed</a>
+  <a href="index.html#pricing" onclick="document.getElementById('mm').classList.remove('open')">Pricing</a>
+  <a href="index.html#trust" onclick="document.getElementById('mm').classList.remove('open')">Trust</a>
+  <a href="about.html" onclick="document.getElementById('mm').classList.remove('open')" style="color:var(--orange)">About</a>
+  <a href="auth.html?signup=true" class="btn btn-primary btn-lg mm-cta">Start free trial</a>
+</div>
+
+<!-- ═══════ HERO ═══════ -->
+<section class="hero">
+  <canvas id="hero-canvas"></canvas>
+  <div class="hero-glow"></div>
+  <div class="wrap">
+    <div class="hero-inner">
+      <div class="hero-eyebrow reveal"><span class="pill">Founder</span>Our story</div>
+      <h1 class="reveal rd1">Built by someone who saw<br><span class="grad">the problem firsthand.</span></h1>
+      <p class="hero-sub reveal rd2">CyberShield was built by a 20-year-old founder who believed every small business deserves the same protection as a Fortune 500 — without the Fortune 500 price tag.</p>
+    </div>
   </div>
 </section>
 
-<!-- CONTENT -->
-<div class="about-content">
+<!-- ═══════ CONTENT ═══════ -->
+<section class="sec">
+  <div class="wrap">
+    <div class="about-wrap">
 
-  <!-- FOUNDER CARD -->
-  <div class="founder-card">
-    <div class="founder-avatar">NS</div>
-    <div class="founder-info">
-      <h3>Njiru Sankar</h3>
-      <div class="role">Founder & CEO, CyberShield</div>
-      <p>Information Systems student, cybersecurity specialist, and self-taught developer based in the New York area. Built CyberShield from scratch at 20 years old — vulnerability scanner, breach monitor, AI training, billing system, and everything in between.</p>
+      <!-- STATS -->
+      <div class="stat-strip reveal">
+        <div class="stat-cell">
+          <div class="stat-num">20<span class="acc">yrs</span></div>
+          <div class="stat-lbl">old when CyberShield launched</div>
+        </div>
+        <div class="stat-cell">
+          <div class="stat-num"><span class="acc">$49</span></div>
+          <div class="stat-lbl">starting price vs. $200K breach cost</div>
+        </div>
+        <div class="stat-cell">
+          <div class="stat-num">12<span class="acc">B+</span></div>
+          <div class="stat-lbl">compromised credentials monitored</div>
+        </div>
+      </div>
+
+      <!-- FOUNDER -->
+      <div class="card hover founder-card reveal rd1">
+        <div class="holo"></div><div class="scanl"></div>
+        <div class="founder-inner">
+          <div class="founder-av">NS</div>
+          <div class="founder-details">
+            <div class="founder-name">Njiru Sankar</div>
+            <div class="founder-role">Founder &amp; CEO · CyberShield</div>
+            <p class="founder-bio">Information Systems student, cybersecurity specialist, and self-taught developer based in the New York area. Built CyberShield from scratch at 20 years old — vulnerability scanner, breach monitor, AI security training, billing system, and everything in between.</p>
+            <div class="founder-links">
+              <a href="https://www.linkedin.com/in/njiru-sankar/" class="founder-link" target="_blank" rel="noopener">
+                <svg viewBox="0 0 24 24"><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/><path d="M10 9h4v2a4 4 0 0 1 8 0v8h-4v-7a2 2 0 0 0-4 0v7h-4z"/></svg>
+                LinkedIn
+              </a>
+              <a href="https://github.com/Jcapalot18" class="founder-link" target="_blank" rel="noopener">
+                <svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                GitHub
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- WHY I BUILT THIS -->
+      <div class="card hover story-card reveal rd2">
+        <div class="holo"></div><div class="scanl"></div>
+        <div class="story-card-hd">
+          <div class="story-ico">
+            <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          </div>
+          <div class="story-title">Why I built this</div>
+        </div>
+        <div class="story-body">
+          <p>I've always been drawn to cybersecurity — following outlets like CyberWire, reading about breaches, watching how attackers operate. What I kept seeing was a pattern: <strong>small businesses were getting destroyed</strong> while the tools to protect them were priced for Fortune 500 companies.</p>
+          <div class="pull-quote">
+            <p>A dental office, a law firm, an accounting practice — these businesses handle some of the most sensitive data imaginable. Patient records. Financial information. Confidential legal documents. But they have no IT team, no security budget, and no way to know if they've already been compromised.</p>
+          </div>
+          <p>I decided to build the solution. Not because it was easy — it wasn't — but because the problem was real and nobody was solving it at the right price point for small businesses.</p>
+        </div>
+      </div>
+
+      <!-- WHAT DRIVES ME -->
+      <div class="card hover story-card reveal rd3">
+        <div class="holo"></div><div class="scanl"></div>
+        <div class="story-card-hd">
+          <div class="story-ico">
+            <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+          </div>
+          <div class="story-title">What drives me</div>
+        </div>
+        <div class="story-body">
+          <p>Since I was young I wanted to build something that actually mattered. Not just a successful business in terms of revenue — but a business that's successful because of <strong>what it does for people</strong>.</p>
+          <p>The world is advancing at a rapid pace. Cyber threats are evolving faster than most small businesses can keep up with. I built CyberShield to close that gap — to give a Brooklyn law firm the same level of protection that a major corporation has, for $49 a month.</p>
+          <div class="pull-quote">
+            <p>That's the mission. That's what gets me up every day.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- MISSION -->
+      <div class="card mission-card reveal">
+        <div class="holo"></div><div class="scanl"></div>
+        <div class="mission-badge reveal"><div class="d"></div>Our mission</div>
+        <h2 class="mission-title reveal rd1">Make security <span class="gold">accessible</span><br>to every small business</h2>
+        <p class="mission-body reveal rd2">Enterprise-grade cybersecurity for every small business — regardless of their size, budget, or technical expertise. Every business deserves to know if they've been compromised before it's too late.</p>
+      </div>
+
+      <!-- VALUES -->
+      <div style="margin-top:1.5rem">
+        <div class="eyebrow reveal" style="margin-bottom:1.5rem">Core values</div>
+        <div class="values-grid">
+          <div class="card hover value-card reveal rd1">
+            <div class="holo"></div><div class="scanl"></div>
+            <div class="value-ico">
+              <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            </div>
+            <div class="value-title">Transparency</div>
+            <p class="value-body">No jargon. No hidden fees. No fake metrics. We show you exactly what's wrong and exactly how to fix it — in plain English.</p>
+          </div>
+          <div class="card hover value-card reveal rd2">
+            <div class="holo"></div><div class="scanl"></div>
+            <div class="value-ico">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+            </div>
+            <div class="value-title">Accessibility</div>
+            <p class="value-body">Built for business owners, not IT professionals. If you can use email, you can use CyberShield. No technical expertise required.</p>
+          </div>
+          <div class="card hover value-card reveal rd3">
+            <div class="holo"></div><div class="scanl"></div>
+            <div class="value-ico">
+              <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+            <div class="value-title">Real protection</div>
+            <p class="value-body">We don't sell fear. We sell actual security — scans that find real vulnerabilities, breach monitoring that catches real exposures.</p>
+          </div>
+          <div class="card hover value-card reveal rd4">
+            <div class="holo"></div><div class="scanl"></div>
+            <div class="value-ico">
+              <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </div>
+            <div class="value-title">Small business first</div>
+            <p class="value-body">Every feature, every price point, every decision is made with small business owners in mind. Not enterprise clients. You.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- FINAL CTA -->
+      <div class="card cta-card reveal" style="margin-top:1.5rem">
+        <div class="holo"></div><div class="scanl"></div>
+        <div class="cta-mesh"></div>
+        <h2>Ready to protect<br>your business?</h2>
+        <p>Start your free 14-day trial. No credit card required. No IT team needed.</p>
+        <div class="cta-btns">
+          <a href="auth.html?signup=true" class="btn btn-primary btn-lg">Start free trial →</a>
+          <a href="index.html#pricing" class="btn btn-ghost btn-lg">View pricing</a>
+        </div>
+        <div class="cta-note">Setup in 60 seconds · Cancel anytime · SOC 2 Type II</div>
+      </div>
+
     </div>
   </div>
+</section>
 
-  <!-- STORY -->
-  <div class="story-section">
-    <h2>Why I built this</h2>
-    <p>I've always been drawn to news about cybersecurity — following outlets like CyberWire, reading about breaches, watching how attackers operate. What I kept seeing was a pattern: <strong>small businesses were getting destroyed</strong> while the tools to protect them were priced for Fortune 500 companies.</p>
-    <p>A dental office, a law firm, an accounting practice — these businesses handle some of the most sensitive data imaginable. Patient records. Financial information. Confidential legal documents. But they have no IT team, no security budget, and no way to know if they've already been compromised.</p>
-    <p>I decided to build the solution. Not because it was easy — it wasn't — but because the problem was real and nobody was solving it at the right price point for small businesses.</p>
-  </div>
-
-  <div class="divider"></div>
-
-  <div class="story-section">
-    <h2>What drives me</h2>
-    <p>Since I was young I wanted to build something that actually mattered. Not just a successful business in terms of revenue — but a business that's successful because of <strong>what it does for people</strong>.</p>
-    <p>The world is advancing at a rapid pace. Cyber threats are evolving faster than most small businesses can keep up with. I built CyberShield to close that gap — to give a Brooklyn law firm the same level of protection that a major corporation has, for $49 a month.</p>
-    <p>That's the mission. That's what gets me up every day.</p>
-  </div>
-
-  <div class="divider"></div>
-
-  <!-- MISSION BOX -->
-  <div class="mission-box">
-    <h2>Our <span class="orange">mission</span></h2>
-    <p>Make enterprise-grade cybersecurity accessible to every small business — regardless of their size, budget, or technical expertise. Every business deserves to know if they've been compromised before it's too late.</p>
-  </div>
-
-  <!-- VALUES -->
-  <div class="values-grid">
-    <div class="value-card">
-      <h3>Transparency</h3>
-      <p>No jargon. No hidden fees. No fake metrics. We show you exactly what's wrong and exactly how to fix it.</p>
-    </div>
-    <div class="value-card">
-      <h3>Accessibility</h3>
-      <p>Built for business owners, not IT professionals. If you can use email, you can use CyberShield.</p>
-    </div>
-    <div class="value-card">
-      <h3>Real protection</h3>
-      <p>We don't sell fear. We sell actual security — scans that find real vulnerabilities, breach monitoring that catches real exposures.</p>
-    </div>
-    <div class="value-card">
-      <h3>Small business first</h3>
-      <p>Every feature, every price point, every decision is made with small business owners in mind. Not enterprise clients. You.</p>
-    </div>
-  </div>
-
-  <!-- CTA -->
-  <div class="about-cta">
-    <h2>Ready to protect your business?</h2>
-    <p>Start your free 14-day trial. No credit card required. No IT team needed.</p>
-    <a href="auth.html?signup=true" class="btn-white">Start free trial →</a>
-  </div>
-
-</div>
-
-<!-- FOOTER -->
+<!-- ═══════ FOOTER ═══════ -->
 <footer>
-  <p>© 2026 CyberShield · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="contact.html">Contact</a> · 30 Prospect Ave, Asbury Park, NJ 07712</p>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <a href="index.html" class="logo">
+          <svg viewBox="0 0 30 36" fill="none">
+            <path d="M15 1L29 6.5V21C29 30 22 35.5 15 37.5C8 35.5 1 30 1 21V6.5L15 1Z" fill="rgba(255,107,0,0.08)" stroke="#FF6B00" stroke-width="1.5"/>
+            <path d="M15 11L20 14L15 17L10 14Z" fill="rgba(255,107,0,0.2)" stroke="#FF6B00" stroke-width="1.25" stroke-linejoin="round"/>
+            <path d="M10 14L15 17V23L10 20Z" stroke="#FF6B00" stroke-width="1.25" stroke-linejoin="round"/>
+            <path d="M20 14L15 17V23L20 20Z" fill="rgba(255,107,0,0.1)" stroke="#FF6B00" stroke-width="1.25" stroke-linejoin="round"/>
+          </svg>
+          <span>Cyber<span class="acc">Shield</span></span>
+        </a>
+        <p>Enterprise-grade cybersecurity built for small businesses without IT teams. Built in Brooklyn, NY.</p>
+        <div class="foot-social">
+          <a href="#" aria-label="X"><svg viewBox="0 0 24 24"><path d="M4 4l16 16M20 4L4 20"/></svg></a>
+          <a href="https://www.linkedin.com/in/njiru-sankar/" aria-label="LinkedIn" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/><path d="M10 9h4v2a4 4 0 0 1 8 0v8h-4v-7a2 2 0 0 0-4 0v7h-4z"/></svg></a>
+          <a href="https://github.com/Jcapalot18" aria-label="GitHub" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg></a>
+        </div>
+      </div>
+      <div class="foot-col">
+        <h4>Platform</h4>
+        <a href="index.html#platform">AI Training</a>
+        <a href="index.html#platform">Breach Monitor</a>
+        <a href="index.html#platform">Vulnerability Scanner</a>
+        <a href="index.html#threats">Threat Feed</a>
+        <a href="app.html">Dashboard</a>
+      </div>
+      <div class="foot-col">
+        <h4>Company</h4>
+        <a href="about.html" style="color:var(--text)">About</a>
+        <a href="security.html">Security</a>
+        <a href="index.html#trust">Compliance</a>
+        <a href="index.html#pricing">Pricing</a>
+        <a href="contact.html">Contact</a>
+      </div>
+      <div class="foot-col">
+        <h4>Legal</h4>
+        <a href="privacy.html">Privacy Policy</a>
+        <a href="terms.html">Terms of Service</a>
+        <a href="cookie-policy.html">Cookie Policy</a>
+        <a href="refund-policy.html">Refund Policy</a>
+        <a href="#">DPA</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <div class="foot-copy">© 2026 CyberShield Inc. All rights reserved.</div>
+      <div class="foot-badges">
+        <div class="foot-badge"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>SOC 2 Type II</div>
+        <div class="foot-badge"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>HIPAA</div>
+        <div class="foot-badge"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>GDPR</div>
+      </div>
+    </div>
+  </div>
 </footer>
 
+<script>
+// ── nav scroll ──
+const nav=document.getElementById('nav');
+addEventListener('scroll',()=>{nav.classList.toggle('scrolled',scrollY>20)});
+
+// ── scroll reveals ──
+const revealEls=[...document.querySelectorAll('.reveal')];
+const statCells=[...document.querySelectorAll('.stat-cell')];
+function checkReveals(){
+  const vh=window.innerHeight||document.documentElement.clientHeight;
+  for(const el of revealEls){
+    if(el.classList.contains('in'))continue;
+    const r=el.getBoundingClientRect();
+    if(r.top<vh-40&&r.bottom>0)el.classList.add('in');
+  }
+  for(const el of statCells){
+    const r=el.getBoundingClientRect();
+    if(r.top<vh*0.85&&r.bottom>0)el.classList.add('in');
+  }
+}
+addEventListener('scroll',checkReveals,{passive:true});
+addEventListener('resize',checkReveals);
+requestAnimationFrame(()=>{checkReveals();requestAnimationFrame(checkReveals);});
+setTimeout(()=>{revealEls.forEach(el=>el.classList.add('in'));},2500);
+
+// ── inject card corners ──
+document.querySelectorAll('.card').forEach(c=>{
+  const cc=document.createElement('div');
+  cc.className='card-corners';
+  cc.innerHTML='<i></i><i></i><i></i><i></i>';
+  c.appendChild(cc);
+});
+
+// ── hero canvas: drifting node network ──
+(function(){
+  const cv=document.getElementById('hero-canvas');if(!cv)return;
+  if(matchMedia('(prefers-reduced-motion:reduce)').matches)return;
+  const ctx=cv.getContext('2d');let w,h,nodes,raf;
+  function size(){const r=cv.parentElement.getBoundingClientRect();w=cv.width=r.width;h=cv.height=r.height;init()}
+  function init(){
+    const count=Math.min(38,Math.round(w*h/28000));
+    nodes=Array.from({length:count},()=>({x:Math.random()*w,y:Math.random()*h,vx:(Math.random()-.5)*.26,vy:(Math.random()-.5)*.26}));
+  }
+  function draw(){
+    ctx.clearRect(0,0,w,h);
+    for(const n of nodes){n.x+=n.vx;n.y+=n.vy;if(n.x<0||n.x>w)n.vx*=-1;if(n.y<0||n.y>h)n.vy*=-1;}
+    for(let i=0;i<nodes.length;i++){
+      for(let j=i+1;j<nodes.length;j++){
+        const a=nodes[i],b=nodes[j],dx=a.x-b.x,dy=a.y-b.y,d=Math.hypot(dx,dy);
+        if(d<120){ctx.strokeStyle='rgba(255,107,0,'+(0.11*(1-d/120))+')';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();}
+      }
+    }
+    for(const n of nodes){ctx.fillStyle='rgba(255,140,40,0.5)';ctx.beginPath();ctx.arc(n.x,n.y,1.4,0,7);ctx.fill();}
+    raf=requestAnimationFrame(draw);
+  }
+  addEventListener('resize',size);size();draw();
+})();
+</script>
 </body>
 </html>
