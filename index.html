@@ -852,8 +852,15 @@ async function handleAnnualCta(plan){
   try{
     const r=await fetch(API_BASE+'/checkout/annual-session',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plan,billing:'annual'})});
     const d=await r.json();
-    if(d.url){window.location.href=d.url;}else{alert('Could not start checkout. Please try again.');}
-  }catch(e){alert('Connection error. Please try again.');}
+    if(d.url){
+      window.location.href=d.url;
+      return;
+    }
+    alert(d.error||'Could not start checkout. Please try again.');
+  }catch(e){
+    console.error('Annual checkout error:',e);
+    alert('Connection error. Please check your internet and try again.');
+  }
   btn.textContent=orig;btn.style.pointerEvents='';
 }
 
