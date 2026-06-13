@@ -111,7 +111,7 @@ function Spark({data,color,w=140,h=42}){
 
 /* ───────── MOCK DATA ───────── */
 const MOCK = {
-  company:'Meridian Law', plan:'Business', seats:50,
+  company:'Your Business', plan:'Business', seats:50,
   user:{name:'Dana Whitlock', role:'Owner', av:'DW'},
   score:84,
   scoreHistory:[
