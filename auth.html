@@ -384,8 +384,8 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:4r
           <!-- SIGN UP -->
           <div class="auth-form" id="form-signup">
             <div>
-              <div class="auth-box-title">Start your free trial</div>
-              <div class="auth-box-sub">No credit card required &middot; 14-day free trial</div>
+              <div class="auth-box-title" id="signup-title">Start your free trial</div>
+              <div class="auth-box-sub" id="signup-sub">No credit card required &middot; 14-day free trial</div>
             </div>
             <div class="form-row">
               <div class="form-group">
@@ -412,28 +412,28 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:4r
                   <input type="radio" name="plan" id="plan-starter" value="starter" checked/>
                   <label for="plan-starter">
                     Starter
-                    <span class="plan-price">$49<small style="font-size:.6em;font-weight:400">/mo</small></span>
+                    <span class="plan-price" id="auth-price-starter">$49<small style="font-size:.6em;font-weight:400">/mo</small></span>
                   </label>
                 </div>
                 <div class="plan-option">
                   <input type="radio" name="plan" id="plan-business" value="business"/>
                   <label for="plan-business">
                     Business
-                    <span class="plan-price">$199<small style="font-size:.6em;font-weight:400">/mo</small></span>
+                    <span class="plan-price" id="auth-price-business">$199<small style="font-size:.6em;font-weight:400">/mo</small></span>
                   </label>
                 </div>
                 <div class="plan-option">
                   <input type="radio" name="plan" id="plan-enterprise" value="enterprise"/>
                   <label for="plan-enterprise">
                     Enterprise
-                    <span class="plan-price">$599<small style="font-size:.6em;font-weight:400">/mo</small></span>
+                    <span class="plan-price" id="auth-price-enterprise">$599<small style="font-size:.6em;font-weight:400">/mo</small></span>
                   </label>
                 </div>
               </div>
             </div>
             <div class="form-message" id="signup-msg"></div>
             <button class="btn-submit" id="signup-btn" onclick="handleSignup()">Create account &amp; start trial →</button>
-            <p class="terms-note">By creating an account you agree to our <a href="terms.html">Terms of Service</a> and <a href="privacy.html">Privacy Policy</a>. You won't be charged until after your 14-day trial ends.</p>
+            <p class="terms-note" id="signup-terms">By creating an account you agree to our <a href="terms.html">Terms of Service</a> and <a href="privacy.html">Privacy Policy</a>. You won't be charged until after your 14-day trial ends.</p>
           </div>
         </div>
       </div>
@@ -590,6 +590,26 @@ if (planParam) {
   if (radio) radio.checked = true;
 }
 
+// ── annual billing mode ──────────────────────────────────────
+const billingMode = params.get('billing') === 'annual' ? 'annual' : 'monthly';
+if (billingMode === 'annual') {
+  const ANNUAL_PRICES = { starter: '$39', business: '$159', enterprise: '$479' };
+  const ANNUAL_TOTALS = { starter: '$468/yr', business: '$1,910/yr', enterprise: '$5,750/yr' };
+  ['starter','business','enterprise'].forEach(plan => {
+    const el = document.getElementById('auth-price-' + plan);
+    if (el) el.innerHTML = ANNUAL_PRICES[plan] + '<small style="font-size:.6em;font-weight:400">/mo</small>'
+      + '<span style="display:block;font-size:.58em;color:rgba(255,255,255,0.35);font-weight:500;margin-top:2px">'+ANNUAL_TOTALS[plan]+'</span>';
+  });
+  const titleEl  = document.getElementById('signup-title');
+  const subEl    = document.getElementById('signup-sub');
+  const btnEl    = document.getElementById('signup-btn');
+  const termsEl  = document.getElementById('signup-terms');
+  if (titleEl)  titleEl.textContent  = 'Start your annual plan';
+  if (subEl)    subEl.innerHTML      = 'Billed annually &middot; Full year charged upfront &middot; No free trial';
+  if (btnEl)    btnEl.textContent    = 'Create account & pay annually →';
+  if (termsEl)  termsEl.innerHTML    = 'By creating an account you agree to our <a href="terms.html">Terms of Service</a> and <a href="privacy.html">Privacy Policy</a>. Your annual subscription begins immediately upon payment.';
+}
+
 // ── sign in ──────────────────────────────────────────────────
 async function handleSignin() {
   const email    = document.getElementById('login-email').value.trim();
@@ -628,7 +648,7 @@ async function handleSignup() {
   if (password.length < 8) { showMsg('signup-msg', 'error', 'Password must be at least 8 characters.'); return; }
   btn.textContent = 'Creating account…'; btn.disabled = true;
   try {
-    const r    = await fetch(`${API}/auth/register`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ fullName, companyName, email, password, plan }) });
+    const r    = await fetch(`${API}/auth/register`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ fullName, companyName, email, password, plan, billing: billingMode }) });
     const data = await r.json();
     if (!r.ok) { showMsg('signup-msg', 'error', data.error || 'Registration failed. Please try again.'); btn.textContent = 'Create account & start trial →'; btn.disabled = false; return; }
     sessionStorage.setItem('cs_token',   data.accessToken);
