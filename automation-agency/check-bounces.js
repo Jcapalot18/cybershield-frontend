@@ -45,6 +45,15 @@ async function resendGet(path) {
   const body = await res.json();
   if (!res.ok) {
     const detail = body?.message || body?.name || JSON.stringify(body);
+    if (res.status === 401 && /restricted/i.test(detail)) {
+      abort(
+        'This Resend API key is restricted to sending only and cannot read email data.\n\n' +
+        '  Fix: create a full-access API key in the Resend dashboard:\n' +
+        '  https://resend.com/api-keys  →  New API Key  →  Permission: Full Access\n\n' +
+        '  Then set the new key:\n' +
+        '    RESEND_API_KEY=re_newkey node automation-agency/check-bounces.js'
+      );
+    }
     throw new Error(`Resend ${res.status} on ${path}: ${detail}`);
   }
   return body;
