@@ -286,6 +286,95 @@ body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(
 .certs-note{font-size:.84rem;color:var(--muted);line-height:1.6}
 .certs-note b{color:var(--text)}
 
+/* ── CASE STUDY ── */
+.cs-eyebrow{display:inline-flex;align-items:center;gap:9px;background:var(--gold-dim);border:1px solid var(--gold-border);border-radius:100px;padding:5px 14px 5px 8px;font-size:.72rem;font-weight:700;color:var(--gold);letter-spacing:.06em;text-transform:uppercase;margin-bottom:1.75rem}
+.cs-eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--gold);flex-shrink:0}
+.cs-title{font-size:clamp(2rem,3.8vw,3.2rem);font-weight:900;letter-spacing:-0.04em;line-height:1.08;margin-bottom:1rem}
+.cs-title .og{background:linear-gradient(120deg,var(--orange),var(--orange2));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.cs-title .gd{background:linear-gradient(120deg,var(--gold),#ffec6e);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.cs-sub{font-size:1rem;color:var(--muted);max-width:560px;line-height:1.7;margin-bottom:3rem}
+
+/* metrics strip */
+.cs-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:3rem;background:var(--bg2)}
+.cs-metric{padding:1.5rem 1.25rem;text-align:center;border-right:1px solid var(--border);position:relative}
+.cs-metric:last-child{border-right:none}
+.cs-metric::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--orange),transparent);opacity:0;transition:opacity .3s}
+.cs-metric:hover::before{opacity:1}
+.cs-mn{font-size:2.2rem;font-weight:900;letter-spacing:-0.05em;line-height:1;font-variant-numeric:tabular-nums;background:linear-gradient(135deg,var(--orange),var(--gold));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.cs-ml{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--dim);margin-top:6px}
+
+/* before/after */
+.cs-ba{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:3rem}
+.ba-card{border-radius:16px;padding:1.75rem;border:1px solid var(--border);position:relative;overflow:hidden}
+.ba-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.1),transparent)}
+.ba-before{background:var(--bg3)}
+.ba-after{background:linear-gradient(135deg,rgba(255,107,0,0.06),rgba(255,215,0,0.04));border-color:var(--orange-border)}
+.ba-after::before{background:linear-gradient(90deg,transparent,rgba(255,107,0,0.3),transparent)}
+.ba-label{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.12em;margin-bottom:1.1rem;display:flex;align-items:center;gap:7px}
+.ba-before .ba-label{color:var(--dim)}
+.ba-after .ba-label{color:var(--orange)}
+.ba-label svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.ba-item{display:flex;align-items:flex-start;gap:9px;font-size:.86rem;color:var(--muted);margin-bottom:.7rem;line-height:1.45}
+.ba-item svg{width:15px;height:15px;flex-shrink:0;margin-top:1px}
+.ba-before .ba-item svg{stroke:var(--dim);fill:none;stroke-width:2;stroke-linecap:round}
+.ba-after .ba-item svg{stroke:var(--green);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.ba-after .ba-item{color:var(--text)}
+
+/* feature list */
+.cs-features{display:grid;grid-template-columns:1fr 1fr;gap:.65rem;margin-bottom:3rem}
+.cs-feat{display:flex;align-items:center;gap:10px;font-size:.875rem;color:var(--muted);padding:.7rem 1rem;border:1px solid var(--border);border-radius:10px;background:var(--bg2);transition:all .2s var(--spring)}
+.cs-feat:hover{border-color:var(--orange-border);color:var(--text);transform:translateX(3px)}
+.cs-feat svg{width:15px;height:15px;stroke:var(--orange);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+
+/* screenshot placeholders */
+.cs-screens{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-bottom:2rem}
+.cs-screen{border-radius:14px;border:1px solid var(--border);overflow:hidden;background:var(--bg2);position:relative;transition:all .3s var(--spring)}
+.cs-screen:hover{border-color:var(--orange-border);transform:translateY(-4px);box-shadow:0 20px 50px rgba(255,107,0,0.12)}
+.cs-screen-top{background:rgba(6,8,14,0.9);padding:.55rem .8rem;display:flex;align-items:center;gap:.4rem;border-bottom:1px solid var(--border)}
+.cs-screen-top .dot3{width:8px;height:8px;border-radius:50%}
+.cs-screen-label{font-size:.62rem;color:var(--dim);margin-left:auto;font-weight:600;letter-spacing:.04em}
+.cs-screen-body{padding:1.25rem;min-height:140px;display:flex;flex-direction:column;gap:.6rem;position:relative}
+.cs-screen-body::after{content:'Screenshot coming soon';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:600;color:var(--dim);letter-spacing:.06em;text-transform:uppercase;background:repeating-linear-gradient(45deg,transparent,transparent 10px,rgba(255,255,255,0.012) 10px,rgba(255,255,255,0.012) 20px)}
+/* mock UI lines inside placeholder */
+.cs-mock-line{height:8px;border-radius:4px;background:rgba(255,255,255,0.06)}
+.cs-mock-line.accent{background:rgba(255,107,0,0.2);width:40%}
+.cs-mock-line.short{width:60%}
+.cs-mock-line.xshort{width:35%}
+.cs-screen-cap{padding:.75rem 1rem;font-size:.75rem;font-weight:700;color:var(--muted);border-top:1px solid var(--border);letter-spacing:.01em}
+
+/* holo card wrapper */
+.cs-card{position:relative;border:1px solid var(--border);border-radius:20px;background:var(--bg2);padding:3rem;overflow:hidden}
+.cs-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,215,0,0.2),rgba(255,107,0,0.3),transparent)}
+.cs-holo{position:absolute;inset:0;pointer-events:none;overflow:hidden;border-radius:inherit}
+.cs-holo::after{content:'';position:absolute;top:0;left:0;width:45%;height:100%;background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,0.03) 50%,rgba(255,107,0,0.04) 55%,rgba(255,215,0,0.02) 60%,transparent 65%);transform:translateX(-140%) skewX(-20deg);opacity:0}
+.cs-card:hover .cs-holo::after{animation:holoSweep .85s var(--spring) forwards}
+/* corner accents */
+.cs-corners{position:absolute;inset:0;pointer-events:none}
+.cs-corners i{position:absolute;width:12px;height:12px;border-style:solid;opacity:.35;transition:opacity .3s}
+.cs-card:hover .cs-corners i{opacity:.85}
+.cs-corners i:nth-child(1){top:12px;left:12px;border-color:var(--gold);border-width:2px 0 0 2px}
+.cs-corners i:nth-child(2){top:12px;right:12px;border-color:var(--gold);border-width:2px 2px 0 0}
+.cs-corners i:nth-child(3){bottom:12px;left:12px;border-color:var(--gold);border-width:0 0 2px 2px}
+.cs-corners i:nth-child(4){bottom:12px;right:12px;border-color:var(--gold);border-width:0 2px 2px 0}
+.cs-inner{position:relative;z-index:1}
+
+/* built-in badge */
+.cs-badge{display:inline-flex;align-items:center;gap:8px;background:var(--gold-dim);border:1px solid var(--gold-border);border-radius:9px;padding:6px 12px;font-size:.75rem;font-weight:700;color:var(--gold);margin-bottom:2.5rem}
+.cs-badge svg{width:14px;height:14px;stroke:var(--gold);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+
+@media(max-width:820px){
+  .cs-ba{grid-template-columns:1fr}
+  .cs-metrics{grid-template-columns:repeat(2,1fr)}
+  .cs-metric:nth-child(2){border-right:none}
+  .cs-metric:nth-child(1),.cs-metric:nth-child(2){border-bottom:1px solid var(--border)}
+  .cs-screens{grid-template-columns:1fr 1fr}
+  .cs-features{grid-template-columns:1fr}
+}
+@media(max-width:600px){
+  .cs-card{padding:1.75rem}
+  .cs-screens{grid-template-columns:1fr}
+}
+
 /* ── FINAL CTA ── */
 .final{position:relative;overflow:hidden;border-top:1px solid var(--border)}
 .final-mesh{position:absolute;inset:0;background:radial-gradient(ellipse at 25% 40%,rgba(255,107,0,0.16),transparent 55%),radial-gradient(ellipse at 80% 60%,rgba(255,215,0,0.06),transparent 50%);pointer-events:none}
@@ -702,6 +791,204 @@ footer{border-top:1px solid var(--border);padding:4rem 0 2rem;position:relative;
         <div class="certs-note">
           <b>Encrypted end to end.</b> All data is encrypted in transit (TLS 1.3) and at rest (AES-256). We never sell your data, and you can export or delete it anytime. <a href="#" style="color:var(--gold);font-weight:700">Read our security whitepaper →</a>
         </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ CASE STUDY ═══════ -->
+<section class="sec" id="case-study" style="background:linear-gradient(180deg,transparent,rgba(255,215,0,0.02),transparent)">
+  <div class="wrap">
+    <div class="cs-card reveal">
+      <div class="cs-holo"></div>
+      <div class="cs-corners"><i></i><i></i><i></i><i></i></div>
+      <div class="cs-inner">
+
+        <div class="cs-badge">
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          Proof of work — built by the founder
+        </div>
+
+        <div class="cs-eyebrow"><span class="dot"></span>Case Study</div>
+        <h2 class="cs-title">Built <span class="og">CyberShield</span> from zero<br>to production in <span class="gd">14 days</span></h2>
+        <p class="cs-sub">A complete cybersecurity SaaS — real-time scanner, breach monitor, AI training, 7 automated outreach agents, and a full analytics dashboard. Designed, built, and deployed solo.</p>
+
+        <!-- metrics -->
+        <div class="cs-metrics reveal">
+          <div class="cs-metric">
+            <div class="cs-mn">100+</div>
+            <div class="cs-ml">Emails sent daily</div>
+          </div>
+          <div class="cs-metric">
+            <div class="cs-mn">7</div>
+            <div class="cs-ml">AI agents running 24/7</div>
+          </div>
+          <div class="cs-metric">
+            <div class="cs-mn">14d</div>
+            <div class="cs-ml">0 → production</div>
+          </div>
+          <div class="cs-metric">
+            <div class="cs-mn">$0</div>
+            <div class="cs-ml">Spent on ads</div>
+          </div>
+        </div>
+
+        <!-- before / after -->
+        <div class="cs-ba reveal rd2">
+          <div class="ba-card ba-before">
+            <div class="ba-label">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              Before
+            </div>
+            <div class="ba-item">
+              <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              Manual outreach — hours per day, zero scale
+            </div>
+            <div class="ba-item">
+              <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              No automation, no follow-up sequences
+            </div>
+            <div class="ba-item">
+              <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              0 leads, 0 pipeline
+            </div>
+            <div class="ba-item">
+              <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              No visibility into who opened or replied
+            </div>
+            <div class="ba-item">
+              <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              Spreadsheet tracking, constant manual work
+            </div>
+          </div>
+          <div class="ba-card ba-after">
+            <div class="ba-label">
+              <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              After
+            </div>
+            <div class="ba-item">
+              <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              100+ personalized cold emails sent daily, automatically
+            </div>
+            <div class="ba-item">
+              <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              AI replies to interested leads within minutes
+            </div>
+            <div class="ba-item">
+              <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              7 niche agents: law firms, dental, CPA, restaurants, insurance &amp; more
+            </div>
+            <div class="ba-item">
+              <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              Real-time dashboard — open rates, replies, conversions
+            </div>
+            <div class="ba-item">
+              <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              Unsubscribes handled automatically, suppression list maintained
+            </div>
+          </div>
+        </div>
+
+        <!-- what was built -->
+        <h3 class="reveal" style="font-size:1rem;font-weight:800;letter-spacing:-0.01em;color:var(--dim);text-transform:uppercase;letter-spacing:.1em;margin-bottom:1rem;font-size:.72rem">What was built</h3>
+        <div class="cs-features reveal rd1">
+          <div class="cs-feat">
+            <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Real-time vulnerability scanner
+          </div>
+          <div class="cs-feat">
+            <svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+            Breach monitoring against 12B+ credentials
+          </div>
+          <div class="cs-feat">
+            <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            AI security training from live threat feed
+          </div>
+          <div class="cs-feat">
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+            Sankar Cosmos analytics dashboard
+          </div>
+          <div class="cs-feat">
+            <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            7 AI outreach agents by niche
+          </div>
+          <div class="cs-feat">
+            <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            Automated reply handler + suppression
+          </div>
+          <div class="cs-feat">
+            <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            Full auth system — sign in, sign up, billing
+          </div>
+          <div class="cs-feat">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            Deployed on Railway + Cloudflare
+          </div>
+        </div>
+
+        <!-- screenshot placeholders -->
+        <h3 class="reveal" style="font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--dim);margin-bottom:1rem">Screenshots</h3>
+        <div class="cs-screens reveal rd2">
+          <div class="cs-screen">
+            <div class="cs-screen-top">
+              <div class="dot3" style="background:#ff5f57"></div>
+              <div class="dot3" style="background:#ffbd2e"></div>
+              <div class="dot3" style="background:#28ca41"></div>
+              <div class="cs-screen-label">cybrshieldtech.com</div>
+            </div>
+            <div class="cs-screen-body">
+              <div class="cs-mock-line accent"></div>
+              <div class="cs-mock-line" style="width:80%"></div>
+              <div class="cs-mock-line short"></div>
+              <div class="cs-mock-line" style="width:90%"></div>
+              <div class="cs-mock-line xshort"></div>
+            </div>
+            <div class="cs-screen-cap">Landing page</div>
+          </div>
+          <div class="cs-screen">
+            <div class="cs-screen-top">
+              <div class="dot3" style="background:#ff5f57"></div>
+              <div class="dot3" style="background:#ffbd2e"></div>
+              <div class="dot3" style="background:#28ca41"></div>
+              <div class="cs-screen-label">Dashboard — app.html</div>
+            </div>
+            <div class="cs-screen-body">
+              <div class="cs-mock-line accent"></div>
+              <div class="cs-mock-line" style="width:75%"></div>
+              <div class="cs-mock-line" style="width:55%;background:rgba(255,215,0,0.15)"></div>
+              <div class="cs-mock-line short"></div>
+              <div class="cs-mock-line xshort"></div>
+            </div>
+            <div class="cs-screen-cap">Analytics dashboard</div>
+          </div>
+          <div class="cs-screen">
+            <div class="cs-screen-top">
+              <div class="dot3" style="background:#ff5f57"></div>
+              <div class="dot3" style="background:#ffbd2e"></div>
+              <div class="dot3" style="background:#28ca41"></div>
+              <div class="cs-screen-label">Outreach email</div>
+            </div>
+            <div class="cs-screen-body">
+              <div class="cs-mock-line" style="width:45%"></div>
+              <div class="cs-mock-line accent"></div>
+              <div class="cs-mock-line" style="width:85%"></div>
+              <div class="cs-mock-line short"></div>
+              <div class="cs-mock-line" style="width:70%"></div>
+            </div>
+            <div class="cs-screen-cap">AI-generated cold email</div>
+          </div>
+        </div>
+
+        <div class="reveal rd3" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1.5rem;padding-top:1.5rem;border-top:1px solid var(--border)">
+          <div style="font-size:.9rem;color:var(--muted);max-width:420px;line-height:1.6">
+            Want this built for your business? CyberShield is the proof it works — from cold idea to paying customers on autopilot.
+          </div>
+          <div style="display:flex;gap:.75rem;flex-wrap:wrap">
+            <a href="about.html" class="btn btn-ghost">Meet the founder</a>
+            <a href="auth.html?signup=true" class="btn btn-primary">Start free trial →</a>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
