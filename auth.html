@@ -616,55 +616,66 @@ if (planParam) {
 }
 
 // ── billing toggle ───────────────────────────────────────────
-let billingMode = 'monthly';
+let billingMode = ‘monthly’;
 
 const AUTH_PRICES = {
-  monthly:  { starter: '$49',  business: '$199', enterprise: '$599' },
-  annual:   { starter: '$39',  business: '$159', enterprise: '$479' },
+  monthly: { starter: ‘$49’,    business: ‘$199’,   enterprise: ‘$599’ },
+  annual:  { starter: ‘$470’,   business: ‘$1,910’, enterprise: ‘$5,750’ },
 };
-const PRICE_SUFFIX = '<small style="font-size:.6em;font-weight:400">/mo</small>';
+const PRICE_SUFFIXES = {
+  monthly: ‘<small style="font-size:.6em;font-weight:400">/mo</small>’,
+  annual:  ‘<small style="font-size:.6em;font-weight:400">/yr</small>’,
+};
 
 function setAuthBilling(mode) {
   billingMode = mode;
-  const isAnnual = mode === 'annual';
+  const isAnnual = mode === ‘annual’;
 
-  // toggle buttons
-  document.getElementById('ab-month').classList.toggle('active', !isAnnual);
-  document.getElementById('ab-year').classList.toggle('active',   isAnnual);
+  document.getElementById(‘ab-month’).classList.toggle(‘active’, !isAnnual);
+  document.getElementById(‘ab-year’).classList.toggle(‘active’,   isAnnual);
 
-  // save badge
-  const badge = document.getElementById('auth-bill-badge');
-  if (badge) badge.classList.toggle('show', isAnnual);
+  const badge = document.getElementById(‘auth-bill-badge’);
+  if (badge) badge.classList.toggle(‘show’, isAnnual);
 
-  // plan prices + annual notes
-  ['starter','business','enterprise'].forEach(plan => {
-    const priceEl = document.getElementById('auth-price-' + plan);
-    const noteEl  = document.getElementById('auth-note-' + plan);
-    if (priceEl) priceEl.innerHTML = AUTH_PRICES[mode][plan] + PRICE_SUFFIX;
-    if (noteEl)  noteEl.style.display = isAnnual ? 'block' : 'none';
+  [‘starter’,’business’,’enterprise’].forEach(plan => {
+    const priceEl = document.getElementById(‘auth-price-’ + plan);
+    const noteEl  = document.getElementById(‘auth-note-’ + plan);
+    if (priceEl) priceEl.innerHTML = AUTH_PRICES[mode][plan] + PRICE_SUFFIXES[mode];
+    if (noteEl)  noteEl.style.display = ‘none’;
   });
 
-  // header, subtext, button, terms
-  const titleEl = document.getElementById('signup-title');
-  const subEl   = document.getElementById('signup-sub');
-  const btnEl   = document.getElementById('signup-btn');
-  const termsEl = document.getElementById('signup-terms');
+  const titleEl = document.getElementById(‘signup-title’);
+  const subEl   = document.getElementById(‘signup-sub’);
+  const btnEl   = document.getElementById(‘signup-btn’);
+  const termsEl = document.getElementById(‘signup-terms’);
 
   if (isAnnual) {
-    if (titleEl)  titleEl.textContent = 'Start your annual plan';
-    if (subEl)    subEl.innerHTML     = 'Billed annually &middot; Full year charged upfront &middot; No free trial';
-    if (btnEl)    btnEl.textContent   = 'Create account & pay annually →';
-    if (termsEl)  termsEl.innerHTML   = 'By creating an account you agree to our <a href="terms.html">Terms of Service</a> and <a href="privacy.html">Privacy Policy</a>. Your annual subscription begins immediately upon payment.';
+    if (titleEl)  titleEl.textContent = ‘Annual Plan — billed once today’;
+    if (subEl)    subEl.innerHTML     = ‘Full year charged upfront &middot; No free trial’;
+    if (btnEl)    btnEl.textContent   = ‘Create account & pay now →’;
+    if (termsEl)  termsEl.innerHTML   = ‘By creating an account you agree to our <a href="terms.html">Terms of Service</a> and <a href="privacy.html">Privacy Policy</a>. Your annual subscription begins immediately upon payment.’;
   } else {
-    if (titleEl)  titleEl.textContent = 'Start your free trial';
-    if (subEl)    subEl.innerHTML     = 'No credit card required &middot; 14-day free trial';
-    if (btnEl)    btnEl.textContent   = 'Create account & start trial →';
-    if (termsEl)  termsEl.innerHTML   = 'By creating an account you agree to our <a href="terms.html">Terms of Service</a> and <a href="privacy.html">Privacy Policy</a>. You won’t be charged until after your 14-day trial ends.';
+    if (titleEl)  titleEl.textContent = ‘Start your free trial’;
+    if (subEl)    subEl.innerHTML     = ‘No credit card required &middot; 14-day free trial’;
+    if (btnEl)    btnEl.textContent   = ‘Create account & start trial →’;
+    if (termsEl)  termsEl.innerHTML   = ‘By creating an account you agree to our <a href="terms.html">Terms of Service</a> and <a href="privacy.html">Privacy Policy</a>. You won\’t be charged until after your 14-day trial ends.’;
   }
 }
 
-// initialise from URL param (coming from landing page CTA)
-if (params.get('billing') === 'annual') setAuthBilling('annual');
+// Initialise from URL params
+const csSid = params.get(‘cs_sid’); // Stripe session ID from direct annual checkout
+if (params.get(‘billing’) === ‘annual’) {
+  setAuthBilling(‘annual’);
+  if (csSid) {
+    // Payment already complete — just need account creation
+    const titleEl = document.getElementById(‘signup-title’);
+    const subEl   = document.getElementById(‘signup-sub’);
+    const btnEl   = document.getElementById(‘signup-btn’);
+    if (titleEl) titleEl.textContent = ‘Payment complete — create your account’;
+    if (subEl)   subEl.innerHTML     = ‘Your annual plan is paid. Set up your account to get started.’;
+    if (btnEl)   btnEl.textContent   = ‘Create account →’;
+  }
+}
 
 // ── sign in ──────────────────────────────────────────────────
 async function handleSignin() {
@@ -704,7 +715,9 @@ async function handleSignup() {
   if (password.length < 8) { showMsg('signup-msg', 'error', 'Password must be at least 8 characters.'); return; }
   btn.textContent = 'Creating account…'; btn.disabled = true;
   try {
-    const r    = await fetch(`${API}/auth/register`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ fullName, companyName, email, password, plan, billing: billingMode }) });
+    const body = { fullName, companyName, email, password, plan, billing: billingMode };
+    if (csSid) body.checkoutSessionId = csSid;
+    const r    = await fetch(`${API}/auth/register`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
     const data = await r.json();
     if (!r.ok) { showMsg('signup-msg', 'error', data.error || 'Registration failed. Please try again.'); btn.textContent = 'Create account & start trial →'; btn.disabled = false; return; }
     sessionStorage.setItem('cs_token',   data.accessToken);

@@ -626,7 +626,7 @@ footer{border-top:1px solid var(--border);padding:4rem 0 2rem;position:relative;
     <div class="sec-head center reveal">
       <div class="eyebrow center">Pricing</div>
       <h2 class="sec-title">$49/month vs. a $200,000 breach</h2>
-      <p class="sec-sub">One avoided breach pays for 340 years of CyberShield. Every plan includes a 14-day free trial — no credit card.</p>
+      <p class="sec-sub">One avoided breach pays for 340 years of CyberShield. Monthly plans include a 14-day free trial — no credit card. Save up to 20% with annual billing.</p>
       <div class="bill-toggle">
         <button class="bill-opt active" id="bo-month" onclick="setBilling('month')">Monthly</button>
         <button class="bill-opt" id="bo-year" onclick="setBilling('year')">Annual<span class="bill-save">−20%</span><span class="bill-save-yr">Save $478/yr</span></button>
@@ -635,8 +635,8 @@ footer{border-top:1px solid var(--border);padding:4rem 0 2rem;position:relative;
     <div class="pricing-grid">
       <div class="plan reveal rd1">
         <div class="plan-name">Starter</div>
-        <div class="plan-price"><span class="amt">$<span class="price" data-month="49" data-year="39">49</span></span><span class="per">/mo</span></div>
-        <div class="plan-billing">billed $468/year &nbsp;·&nbsp; <span style="color:var(--green)">save $120/yr</span></div>
+        <div class="plan-price"><span class="amt">$<span class="price" data-month="49" data-year="470">49</span></span><span class="per" id="per-starter">/mo</span></div>
+        <div class="plan-billing">Save <span style="color:var(--green);font-weight:800">$118/yr</span></div>
         <div class="plan-desc">For teams up to 10 — the essentials to stay protected.</div>
         <ul class="plan-feats">
           <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>10 employee seats</li>
@@ -650,8 +650,8 @@ footer{border-top:1px solid var(--border);padding:4rem 0 2rem;position:relative;
       <div class="plan feat reveal rd2">
         <div class="plan-tag">Most popular</div>
         <div class="plan-name">Business</div>
-        <div class="plan-price"><span class="amt">$<span class="price" data-month="199" data-year="159">199</span></span><span class="per">/mo</span></div>
-        <div class="plan-billing">billed $1,910/year &nbsp;·&nbsp; <span style="color:var(--green)">save $478/yr</span></div>
+        <div class="plan-price"><span class="amt">$<span class="price" data-month="199" data-year="1910">199</span></span><span class="per" id="per-business">/mo</span></div>
+        <div class="plan-billing">Save <span style="color:var(--green);font-weight:800">$478/yr</span></div>
         <div class="plan-desc">For growing teams up to 50 — full visibility and reporting.</div>
         <ul class="plan-feats">
           <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>50 employee seats</li>
@@ -666,8 +666,8 @@ footer{border-top:1px solid var(--border);padding:4rem 0 2rem;position:relative;
       <div class="plan ent reveal rd3">
         <div class="plan-tag">White-glove</div>
         <div class="plan-name">Enterprise</div>
-        <div class="plan-price"><span class="amt">$<span class="price" data-month="599" data-year="479">599</span></span><span class="per">/mo</span></div>
-        <div class="plan-billing">billed $5,750/year &nbsp;·&nbsp; <span style="color:var(--green)">save $1,438/yr</span></div>
+        <div class="plan-price"><span class="amt">$<span class="price" data-month="599" data-year="5750">599</span></span><span class="per" id="per-enterprise">/mo</span></div>
+        <div class="plan-billing">Save <span style="color:var(--green);font-weight:800">$1,438/yr</span></div>
         <div class="plan-desc">For larger orgs — unlimited seats and dedicated support.</div>
         <ul class="plan-feats">
           <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Unlimited seats</li>
@@ -677,7 +677,7 @@ footer{border-top:1px solid var(--border);padding:4rem 0 2rem;position:relative;
           <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Dedicated account manager</li>
           <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Priority 24/7 support</li>
         </ul>
-        <a href="auth.html?signup=true&plan=enterprise" class="btn btn-ghost" style="border-color:var(--gold-border);color:var(--gold)" id="cta-enterprise">Talk to sales</a>
+        <a href="auth.html?signup=true&plan=enterprise" class="btn btn-ghost" style="border-color:var(--gold-border);color:var(--gold)" id="cta-enterprise">Start free trial</a>
       </div>
     </div>
   </div>
@@ -841,11 +841,22 @@ function switchShow(tab,id){
 }
 
 // ── billing toggle ──
-const PLAN_CTAS={
-  starter: {monthHref:'auth.html?signup=true&plan=starter',           monthTxt:'Start free trial',   yearHref:'auth.html?signup=true&plan=starter&billing=annual',   yearTxt:'Start annual plan'},
-  business:{monthHref:'auth.html?signup=true&plan=business',          monthTxt:'Start free trial',   yearHref:'auth.html?signup=true&plan=business&billing=annual',  yearTxt:'Start annual plan'},
-  enterprise:{monthHref:'auth.html?signup=true&plan=enterprise',      monthTxt:'Talk to sales',      yearHref:'auth.html?signup=true&plan=enterprise&billing=annual', yearTxt:'Talk to sales'},
-};
+const API_BASE='https://cybershield-backend-production-492b.up.railway.app';
+const MONTH_HREFS={starter:'auth.html?signup=true&plan=starter',business:'auth.html?signup=true&plan=business',enterprise:'auth.html?signup=true&plan=enterprise'};
+
+async function handleAnnualCta(plan){
+  const btn=document.getElementById('cta-'+plan);
+  if(!btn)return;
+  const orig=btn.textContent;
+  btn.textContent='Loading…';btn.style.pointerEvents='none';
+  try{
+    const r=await fetch(API_BASE+'/checkout/annual-session',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plan,billing:'annual'})});
+    const d=await r.json();
+    if(d.url){window.location.href=d.url;}else{alert('Could not start checkout. Please try again.');}
+  }catch(e){alert('Connection error. Please try again.');}
+  btn.textContent=orig;btn.style.pointerEvents='';
+}
+
 function setBilling(mode){
   document.getElementById('bo-month').classList.toggle('active',mode==='month');
   document.getElementById('bo-year').classList.toggle('active',mode==='year');
@@ -856,14 +867,25 @@ function setBilling(mode){
     function tick(now){const p=Math.min((now-t0)/dur,1);el.textContent=Math.round(cur+(target-cur)*p);if(p<1)requestAnimationFrame(tick)}
     requestAnimationFrame(tick);
   });
+  ['starter','business','enterprise'].forEach(id=>{
+    const el=document.getElementById('per-'+id);
+    if(el)el.textContent=mode==='year'?'/yr':'/mo';
+  });
   document.querySelectorAll('.plan-billing').forEach(el=>{
     el.style.display=mode==='year'?'block':'none';
   });
-  Object.entries(PLAN_CTAS).forEach(([plan,cfg])=>{
+  ['starter','business','enterprise'].forEach(plan=>{
     const el=document.getElementById('cta-'+plan);
     if(!el)return;
-    el.href=mode==='year'?cfg.yearHref:cfg.monthHref;
-    el.textContent=mode==='year'?cfg.yearTxt:cfg.monthTxt;
+    if(mode==='year'){
+      el.removeAttribute('href');
+      el.onclick=function(e){e.preventDefault();handleAnnualCta(plan);};
+      el.textContent='Pay now';
+    }else{
+      el.href=MONTH_HREFS[plan];
+      el.onclick=null;
+      el.textContent='Start free trial';
+    }
   });
 }
 
