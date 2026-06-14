@@ -711,43 +711,47 @@ async function startAnnualCheckout() {
 }
 
 // Initialise from URL params
-const csSid = params.get('cs_sid'); // Stripe session ID returned after annual payment
-if (params.get('billing') === 'annual') {
-  if (csSid) {
-    // ── Payment confirmed: show account-creation-only UI ──────
-    switchTab('signup');
-    billingMode = 'annual';
-    document.getElementById('ab-month').classList.remove('active');
-    document.getElementById('ab-year').classList.add('active');
-    const sel = document.querySelector('.plan-selector');
-    if (sel) sel.dataset.billing = 'annual';
-    // Pre-select plan from URL
-    const urlPlan  = params.get('plan') || 'starter';
-    const planRadio = document.querySelector(`input[value="${urlPlan}"]`);
-    if (planRadio) planRadio.checked = true;
-    // Show paid banner, hide plan selector, show account fields
-    const paidBanner = document.getElementById('annual-paid-banner');
-    const planSelEl  = document.getElementById('signup-plan-selector');
-    const planText   = document.getElementById('annual-paid-plan-text');
-    const fieldsEl   = document.getElementById('signup-account-fields');
-    const capPlan    = urlPlan.charAt(0).toUpperCase() + urlPlan.slice(1);
-    if (paidBanner) paidBanner.style.display = 'block';
-    if (planText)   planText.textContent = capPlan + ' plan · Annual · Payment confirmed';
-    if (planSelEl)  planSelEl.style.display = 'none';
-    if (fieldsEl)   fieldsEl.style.display  = '';
-    // Update title / sub / button / terms
-    const titleEl = document.getElementById('signup-title');
-    const subEl   = document.getElementById('signup-sub');
-    const btnEl   = document.getElementById('signup-btn');
-    const termsEl = document.getElementById('signup-terms');
-    if (titleEl) titleEl.textContent = 'Payment confirmed — create your account';
-    if (subEl)   subEl.innerHTML     = 'Your annual plan is paid and ready. Fill in your details below to get started.';
-    if (btnEl) { btnEl.textContent = 'Create account →'; btnEl.onclick = handleSignup; }
-    if (termsEl) termsEl.innerHTML  = 'By creating an account you agree to our <a href="terms.html">Terms of Service</a> and <a href="privacy.html">Privacy Policy</a>.';
-  } else {
-    // ── No payment yet: show plan selector, hide account fields ─
-    setAuthBilling('annual');
-  }
+const csSid = params.get('cs_sid'); // Stripe session ID returned after payment
+if (csSid) {
+  // ── Returning from Stripe — show account creation form ──────
+  switchTab('signup');
+  const savedBilling = sessionStorage.getItem('cs_signup_billing') || params.get('billing') || 'monthly';
+  billingMode = savedBilling;
+  const urlPlan = sessionStorage.getItem('cs_signup_plan') || params.get('plan') || 'starter';
+
+  // Restore saved form data
+  const savedName = sessionStorage.getItem('cs_signup_name');
+  const savedCompany = sessionStorage.getItem('cs_signup_company');
+  const savedEmail = sessionStorage.getItem('cs_signup_email');
+  if (savedName) document.getElementById('reg-name').value = savedName;
+  if (savedCompany) document.getElementById('reg-company').value = savedCompany;
+  if (savedEmail) document.getElementById('reg-email').value = savedEmail;
+
+  const planRadio = document.querySelector(`input[value="${urlPlan}"]`);
+  if (planRadio) planRadio.checked = true;
+
+  // UI: show paid banner, hide plan selector, show account fields
+  const paidBanner = document.getElementById('annual-paid-banner');
+  const planSelEl  = document.getElementById('signup-plan-selector');
+  const planText   = document.getElementById('annual-paid-plan-text');
+  const fieldsEl   = document.getElementById('signup-account-fields');
+  const titleEl    = document.getElementById('signup-title');
+  const subEl      = document.getElementById('signup-sub');
+  const btnEl      = document.getElementById('signup-btn');
+  const termsEl    = document.getElementById('signup-terms');
+  const capPlan    = urlPlan.charAt(0).toUpperCase() + urlPlan.slice(1);
+  const billingLbl = savedBilling === 'annual' ? 'Annual' : 'Monthly';
+
+  if (paidBanner) paidBanner.style.display = 'block';
+  if (planText)   planText.textContent = capPlan + ' plan · ' + billingLbl + ' · Payment confirmed';
+  if (planSelEl)  planSelEl.style.display = 'none';
+  if (fieldsEl)   fieldsEl.style.display  = '';
+  if (titleEl) titleEl.textContent = 'Payment confirmed — create your account';
+  if (subEl)   subEl.innerHTML     = 'Your plan is paid and ready. Fill in your details below to get started.';
+  if (btnEl) { btnEl.textContent = 'Create account →'; btnEl.onclick = handleSignup; }
+  if (termsEl) termsEl.innerHTML  = 'By creating an account you agree to our <a href="terms.html">Terms of Service</a> and <a href="privacy.html">Privacy Policy</a>.';
+} else if (params.get('billing') === 'annual') {
+  setAuthBilling('annual');
 }
 
 // ── sign in ──────────────────────────────────────────────────
@@ -786,74 +790,61 @@ async function handleSignup() {
   clearMessages();
   if (!fullName || !companyName || !email || !password) { showMsg('signup-msg', 'error', 'Please fill in all fields.'); return; }
   if (password.length < 8) { showMsg('signup-msg', 'error', 'Password must be at least 8 characters.'); return; }
-  btn.textContent = 'Creating account…'; btn.disabled = true;
-  try {
-    const body = { fullName, companyName, email, password, plan, billing: billingMode };
-    if (csSid) body.checkoutSessionId = csSid;
-    const r    = await fetch(`${API}/auth/register`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
-    const data = await r.json();
-    if (!r.ok) {
-      showMsg('signup-msg', 'error', data.error || 'Registration failed. Please try again.');
-      btn.textContent = billingMode === 'annual' ? 'Create account & pay annually →' : csSid ? 'Create account →' : 'Create account & start trial →';
-      btn.disabled = false;
-      return;
-    }
-    // Determine if Stripe checkout is needed before granting dashboard access
-    const needsStripe = (billingMode === 'annual' && !csSid) || !!data.checkoutUrl;
+  btn.disabled = true;
 
-    if (needsStripe) {
-      // Save auth to sessionStorage only — not localStorage
-      // Dashboard will verify payment before activating these
-      sessionStorage.setItem('cs_pending_token',   data.accessToken);
-      sessionStorage.setItem('cs_pending_refresh', data.refreshToken);
-      sessionStorage.setItem('cs_pending_email',   data.user.email);
-      sessionStorage.setItem('cs_pending_user',    JSON.stringify(data.user));
-      sessionStorage.setItem('cs_pending_company', JSON.stringify(data.company));
-      sessionStorage.setItem('cs_pending_plan',    data.company.plan||'starter');
-    } else {
-      // Payment already confirmed (csSid) or no Stripe needed — save directly
+  if (csSid) {
+    // ── Returning from Stripe — NOW create the account ─────────
+    btn.textContent = 'Creating account…';
+    try {
+      const body = { fullName, companyName, email, password, plan, billing: billingMode, checkoutSessionId: csSid };
+      const r    = await fetch(`${API}/auth/register`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+      const data = await r.json();
+      if (!r.ok) {
+        showMsg('signup-msg', 'error', data.error || 'Registration failed. Please try again.');
+        btn.textContent = 'Create account →'; btn.disabled = false;
+        return;
+      }
       localStorage.setItem('cs_token',   data.accessToken);
       localStorage.setItem('cs_refresh', data.refreshToken);
       localStorage.setItem('cs_email',   data.user.email);
       localStorage.setItem('cs_user',    JSON.stringify(data.user));
       localStorage.setItem('cs_company', JSON.stringify(data.company));
       localStorage.setItem('cs_plan',    data.company.plan||'starter');
+      ['cs_signup_name','cs_signup_company','cs_signup_email','cs_signup_password','cs_signup_plan','cs_signup_billing'].forEach(k => sessionStorage.removeItem(k));
+      window.location.href = 'app.html';
+    } catch (e) {
+      showMsg('signup-msg', 'error', 'Connection error. Please try again.');
+      btn.textContent = 'Create account →'; btn.disabled = false;
     }
+    return;
+  }
 
-    if (billingMode === 'annual' && !csSid) {
-      // ── Annual: account created, now go to Stripe ──────────────
-      btn.textContent = 'Redirecting to Stripe…';
-      try {
-        const cr = await fetch(`${API}/checkout/annual-session`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ plan, companyId: data.company.id })
-        });
-        const cd = await cr.json();
-        if (cd.url) {
-          window.location.href = cd.url;
-        } else {
-          showMsg('signup-msg', 'error', cd.error || 'Account created but payment setup failed. Please email support@cybrshieldtech.com');
-          btn.textContent = 'Create account & pay annually →'; btn.disabled = false;
-        }
-      } catch (e) {
-        showMsg('signup-msg', 'error', 'Account created but payment redirect failed. Please email support@cybrshieldtech.com');
-        btn.textContent = 'Create account & pay annually →'; btn.disabled = false;
-      }
-      return;
+  // ── No payment yet — save form data, go to Stripe first ─────
+  sessionStorage.setItem('cs_signup_name', fullName);
+  sessionStorage.setItem('cs_signup_company', companyName);
+  sessionStorage.setItem('cs_signup_email', email);
+  sessionStorage.setItem('cs_signup_password', password);
+  sessionStorage.setItem('cs_signup_plan', plan);
+  sessionStorage.setItem('cs_signup_billing', billingMode);
+
+  btn.textContent = 'Redirecting to Stripe…';
+  try {
+    const r = await fetch(`${API}/checkout/annual-session`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ plan, billing: billingMode })
+    });
+    const d = await r.json();
+    if (d.url) {
+      window.location.href = d.url;
+    } else {
+      showMsg('signup-msg', 'error', d.error || 'Could not start checkout. Please try again.');
+      btn.textContent = billingMode === 'annual' ? 'Create account & pay annually →' : 'Create account & start trial →';
+      btn.disabled = false;
     }
-
-    if (data.checkoutUrl) {
-      // ── Monthly with Stripe checkout — redirect to payment ────
-      window.location.href = data.checkoutUrl;
-      return;
-    }
-
-    // ── No Stripe needed (post-payment annual with csSid) ──────
-    window.location.href = 'app.html';
   } catch (e) {
     showMsg('signup-msg', 'error', 'Connection error. Please try again.');
-    btn.textContent = billingMode === 'annual' ? 'Create account & pay annually →' : csSid ? 'Create account →' : 'Create account & start trial →';
+    btn.textContent = billingMode === 'annual' ? 'Create account & pay annually →' : 'Create account & start trial →';
     btn.disabled = false;
   }
 }
@@ -881,8 +872,7 @@ async function showForgot() {
 }
 
 // ── already logged in ────────────────────────────────────────
-// Only redirect if real tokens exist in localStorage (not pending in sessionStorage)
-if (localStorage.getItem('cs_token') && !sessionStorage.getItem('cs_pending_token')) { window.location.href = 'app.html'; }
+if (localStorage.getItem('cs_token')) { window.location.href = 'app.html'; }
 </script>
 </body>
 </html>
