@@ -1309,12 +1309,19 @@ function getPlan(){
 }
 
 // ── Scan counter (localStorage-backed, resets monthly) ─────────
-const SCAN_LIMIT=5;
+const PLAN_SCAN_LIMITS={starter:5,business:Infinity,enterprise:Infinity};
+function getPlanScanLimit(){return PLAN_SCAN_LIMITS[getPlan()]??Infinity;}
 function _scanKey(){const d=new Date();return`cs_scans_${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;}
 function getLocalScanCount(){return parseInt(localStorage.getItem(_scanKey())||'0',10);}
 function setLocalScanCount(n){localStorage.setItem(_scanKey(),String(n));}
 function syncScanCount(backendCount){
-  const n=Math.max(getLocalScanCount(),backendCount);
+  // Local is the authoritative monthly count (month-keyed key auto-resets).
+  // Backend may return total or cross-month data; only use it when local is
+  // genuinely empty (0) AND the backend value is within the plan limit.
+  const local=getLocalScanCount();
+  const limit=getPlanScanLimit();
+  const plausible=limit===Infinity?backendCount:Math.min(backendCount,limit);
+  const n=local>0?local:plausible;
   setLocalScanCount(n);
   return n;
 }
@@ -1322,24 +1329,25 @@ function syncScanCount(backendCount){
 function applyPlanLimits(){
   const plan=getPlan();
   const isStarter=plan==='starter';
+  const limit=getPlanScanLimit();
+  const unlimited=limit===Infinity;
+  const planLabel=plan.charAt(0).toUpperCase()+plan.slice(1);
 
-  // Scan counter bar for Starter — inserted above scan-limit-area, survives runScan() clearing
-  if(isStarter){
-    const limitArea=document.getElementById('scan-limit-area');
-    if(limitArea&&!document.getElementById('starter-scan-bar')){
-      const bar=document.createElement('div');
-      bar.id='starter-scan-bar';
-      bar.style.cssText='margin:0 1.25rem 0.5rem;padding:0.625rem 0.875rem;background:rgba(255,107,0,0.04);border:1px solid var(--orange-border);border-radius:8px';
-      bar.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">
-        <span style="font-size:0.7rem;font-weight:700;color:var(--text)">Scans this month</span>
-        <span id="scan-counter-text" style="font-size:0.7rem;color:var(--muted)">— / 5</span>
-      </div>
-      <div style="height:4px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden">
-        <div id="scan-counter-bar" style="height:100%;background:var(--orange);border-radius:3px;width:0%;transition:width 0.4s ease"></div>
-      </div>
-      <div style="font-size:0.61rem;color:var(--dim);margin-top:4px">Starter plan: 5 scans/month · <span style="color:var(--orange);cursor:pointer;font-weight:700" onclick="openUpgradeModal()">Upgrade for unlimited →</span></div>`;
-      limitArea.parentNode.insertBefore(bar,limitArea);
-    }
+  // Scan counter bar — all plans, inserted once above scan-limit-area
+  const limitArea=document.getElementById('scan-limit-area');
+  if(limitArea&&!document.getElementById('plan-scan-bar')){
+    const bar=document.createElement('div');
+    bar.id='plan-scan-bar';
+    bar.style.cssText=`margin:0 1.25rem 0.5rem;padding:0.625rem 0.875rem;background:${unlimited?'rgba(16,185,129,0.04)':'rgba(255,107,0,0.04)'};border:1px solid ${unlimited?'rgba(16,185,129,0.18)':'var(--orange-border)'};border-radius:8px`;
+    bar.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;${unlimited?'':'margin-bottom:5px'}">
+      <span style="font-size:0.7rem;font-weight:700;color:var(--text)">Scans this month</span>
+      <span id="scan-counter-text" style="font-size:0.7rem;color:var(--muted)">— / ${unlimited?'∞':limit}</span>
+    </div>
+    ${unlimited?'':`<div style="height:4px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;margin-top:5px">
+      <div id="scan-counter-bar" style="height:100%;background:var(--orange);border-radius:3px;width:0%;transition:width 0.4s ease"></div>
+    </div>`}
+    <div style="font-size:0.61rem;color:var(--dim);margin-top:4px">${planLabel} plan: ${unlimited?'unlimited scans':`${limit} scans/month · <span style="color:var(--orange);cursor:pointer;font-weight:700" onclick="openUpgradeModal()">Upgrade for unlimited →</span>`}</div>`;
+    limitArea.parentNode.insertBefore(bar,limitArea);
   }
 
   // PDF buttons — dim and gate for Starter (onclick gating handled in the PDF functions)
@@ -1356,25 +1364,30 @@ function applyPlanLimits(){
 }
 
 function updateScanCounter(n){
-  if(getPlan()!=='starter')return;
-  const limit=SCAN_LIMIT;
-  const pct=Math.min((n/limit)*100,100);
+  const limit=getPlanScanLimit();
+  const unlimited=limit===Infinity;
   const t=document.getElementById('scan-counter-text');
   const b=document.getElementById('scan-counter-bar');
-  if(t)t.textContent=n+' / '+limit;
-  if(b){b.style.width=pct+'%';b.style.background=n>=limit?'var(--red)':n>=4?'var(--yellow)':'var(--orange)';}
-
-  const scanBtn=document.getElementById('scan-btn');
-  const limitArea=document.getElementById('scan-limit-area');
-  if(n>=limit){
-    if(scanBtn){scanBtn.disabled=true;scanBtn.style.opacity='0.45';scanBtn.style.cursor='not-allowed';}
-    if(limitArea&&!limitArea.querySelector('.limit-box')){
-      limitArea.innerHTML=`<div class="limit-box"><div style="color:var(--orange);flex-shrink:0;font-size:1.1rem">⚠</div><div class="limit-txt"><strong>You've used all 5 scans this month.</strong> Upgrade to Business for unlimited scans.<div class="up-link" onclick="openUpgradeModal()">Upgrade to Business →</div></div></div>`;
-    }
-  } else {
-    if(scanBtn&&scanBtn.dataset.limitLocked){scanBtn.disabled=false;scanBtn.style.opacity='';scanBtn.style.cursor='';}
+  if(t)t.textContent=unlimited?n+' / ∞':n+' / '+limit;
+  if(!unlimited&&b){
+    const pct=Math.min((n/limit)*100,100);
+    b.style.width=pct+'%';
+    b.style.background=n>=limit?'var(--red)':n>=limit-1?'var(--yellow)':'var(--orange)';
   }
-  if(scanBtn)scanBtn.dataset.limitLocked=n>=limit?'1':'';
+
+  if(!unlimited){
+    const scanBtn=document.getElementById('scan-btn');
+    const limitArea=document.getElementById('scan-limit-area');
+    if(n>=limit){
+      if(scanBtn){scanBtn.disabled=true;scanBtn.style.opacity='0.45';scanBtn.style.cursor='not-allowed';}
+      if(limitArea&&!limitArea.querySelector('.limit-box')){
+        limitArea.innerHTML=`<div class="limit-box"><div style="color:var(--orange);flex-shrink:0;font-size:1.1rem">⚠</div><div class="limit-txt"><strong>You've used all ${limit} scans this month.</strong> Upgrade to Business for unlimited scans.<div class="up-link" onclick="openUpgradeModal()">Upgrade to Business →</div></div></div>`;
+      }
+    } else {
+      if(scanBtn&&scanBtn.dataset.limitLocked){scanBtn.disabled=false;scanBtn.style.opacity='';scanBtn.style.cursor='';}
+    }
+    if(scanBtn)scanBtn.dataset.limitLocked=n>=limit?'1':'';
+  }
 }
 
 function buildChecksGrid(){
@@ -1751,7 +1764,7 @@ async function loadDashboard(){
     document.getElementById('scans-foot').textContent='of '+scanLimit+' scans this month';
     const scanStatEl=document.getElementById('scan-stat-scans');
     if(scanStatEl)scanStatEl.textContent=scans;
-    updateScanCounter(syncScanCount(scans));
+    updateScanCounter(getLocalScanCount());
 
     // Ring
     const circ=289.03;
@@ -2404,9 +2417,10 @@ async function runScan(){
   const limitArea=document.getElementById('scan-limit-area');
   const pdfBtn=document.getElementById('pdf-btn');
 
-  // Frontend limit gate — blocks before hitting the API
-  if(getPlan()==='starter'&&getLocalScanCount()>=SCAN_LIMIT){
-    limitArea.innerHTML=`<div class="limit-box"><div style="color:var(--orange);flex-shrink:0;font-size:1.1rem">⚠</div><div class="limit-txt"><strong>You've used all 5 scans this month.</strong> Upgrade to Business for unlimited scans.<div class="up-link" onclick="openUpgradeModal()">Upgrade to Business →</div></div></div>`;
+  // Frontend limit gate — blocks before hitting the API (for plans with finite limits)
+  const _planLimit=getPlanScanLimit();
+  if(_planLimit!==Infinity&&getLocalScanCount()>=_planLimit){
+    limitArea.innerHTML=`<div class="limit-box"><div style="color:var(--orange);flex-shrink:0;font-size:1.1rem">⚠</div><div class="limit-txt"><strong>You've used all ${_planLimit} scans this month.</strong> Upgrade to Business for unlimited scans.<div class="up-link" onclick="openUpgradeModal()">Upgrade to Business →</div></div></div>`;
     return;
   }
 
@@ -2439,18 +2453,17 @@ async function runScan(){
     const isLimit=r.status===402||d.code==='SCAN_LIMIT_REACHED'||d.limitReached||(d.error&&d.error.toLowerCase().includes('limit'));
     if(isLimit){
       stepsArea.style.display='none';
-      const newCount=syncScanCount(SCAN_LIMIT);
-      updateScanCounter(newCount);
+      const hitLimit=getPlanScanLimit()!==Infinity?getPlanScanLimit():getLocalScanCount();
+      setLocalScanCount(hitLimit);
+      updateScanCounter(hitLimit);
       btn.textContent='Run vulnerability scan';return;
     }
     if(d.error&&!isLimit){results.innerHTML=`<div style="color:var(--red);font-size:0.78rem;padding:0.875rem">${d.error}</div>`;btn.textContent='Run vulnerability scan';btn.disabled=false;return;}
 
-    // Scan succeeded — increment local counter for Starter
-    if(getPlan()==='starter'){
-      const newCount=getLocalScanCount()+1;
-      setLocalScanCount(newCount);
-      updateScanCounter(newCount);
-    }
+    // Scan succeeded — increment local counter for all plans
+    const newCount=getLocalScanCount()+1;
+    setLocalScanCount(newCount);
+    updateScanCounter(newCount);
 
     const raw=d.results||d;
     const skip=new Set(['error','code','message','url','scannedAt','scanId','id','domain']);
