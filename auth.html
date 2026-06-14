@@ -204,8 +204,10 @@ select option{background:var(--bg3);color:var(--text)}
 .plan-option input[type="radio"]{position:absolute;opacity:0;width:0;height:0}
 .plan-option label{display:flex;flex-direction:column;align-items:center;padding:.65rem .4rem;border:1px solid var(--border);border-radius:9px;cursor:pointer;transition:all .2s var(--spring);text-align:center;font-size:.72rem;font-weight:700;color:var(--muted);background:var(--input-bg);text-transform:uppercase;letter-spacing:.03em}
 .plan-option input:checked+label{border-color:var(--orange);background:var(--orange-dim);color:var(--orange)}
-.plan-option label .plan-price{font-size:.95rem;font-weight:800;margin-top:4px;color:rgba(255,255,255,0.45);font-variant-numeric:tabular-nums;letter-spacing:-0.03em}
+.plan-option label .plan-price{font-size:.95rem;font-weight:800;margin-top:4px;color:rgba(255,255,255,0.55);font-variant-numeric:tabular-nums;letter-spacing:-0.03em}
 .plan-option input:checked+label .plan-price{color:var(--orange)}
+.plan-selector[data-billing="annual"] .plan-option label .plan-price{color:rgba(255,255,255,0.8)}
+.plan-selector[data-billing="annual"] .plan-option input:checked+label .plan-price{color:var(--orange)}
 .plan-option label .plan-annual-note{font-size:.56rem;font-weight:700;color:#10b981;letter-spacing:0;text-transform:none;margin-top:2px;display:none}
 
 /* misc */
@@ -635,6 +637,9 @@ function setAuthBilling(mode) {
 
   const badge = document.getElementById('auth-bill-badge');
   if (badge) badge.classList.toggle('show', isAnnual);
+
+  const selector = document.querySelector('.plan-selector');
+  if (selector) selector.dataset.billing = mode;
 
   ['starter','business','enterprise'].forEach(plan => {
     const priceEl = document.getElementById('auth-price-' + plan);
