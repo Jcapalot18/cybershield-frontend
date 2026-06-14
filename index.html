@@ -943,7 +943,8 @@ async function doUpgradeFromIndex(plan){
   const orig=btn?btn.textContent:'';
   if(btn){btn.textContent='Loading…';btn.style.pointerEvents='none';}
   try{
-    const r=await fetch(API_BASE+'/billing/upgrade',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({plan})});
+    const billing=currentBilling==='year'?'annual':'monthly';
+    const r=await fetch(API_BASE+'/billing/upgrade',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({plan,billing})});
     const d=await r.json();
     if(d.url){window.location.href=d.url;return;}
     alert(d.error||'Could not start checkout. Please try again.');
