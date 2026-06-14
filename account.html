@@ -906,7 +906,7 @@ async function switchToAnnual(){
   const btn = document.querySelector('#annual-savings-banner button');
   if(btn){ btn.textContent='Redirecting...'; btn.disabled=true; }
   try{
-    const r = await fetch(`${API}/billing/upgrade`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+authToken},body:JSON.stringify({plan,billing:'annual'})});
+    const r = await fetch(`${API}/billing/upgrade`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+authToken},body:JSON.stringify({plan,billing:'annual',returnUrl:'account.html'})});
     const d = await r.json();
     if(d.url){ window.location.href=d.url; }
     else{ alert(d.error||'Could not start checkout. Try again.'); if(btn){btn.textContent='Switch to annual →';btn.disabled=false;} }
