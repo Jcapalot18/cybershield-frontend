@@ -689,11 +689,11 @@ async function handleSignin() {
     const r    = await fetch(`${API}/auth/login`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password }) });
     const data = await r.json();
     if (!r.ok) { showMsg('signin-msg', 'error', data.error || 'Sign in failed. Please try again.'); btn.textContent = 'Sign in →'; btn.disabled = false; return; }
-    sessionStorage.setItem('cs_token',   data.accessToken);
-    sessionStorage.setItem('cs_refresh', data.refreshToken);
-    sessionStorage.setItem('cs_email',   data.user.email);
-    sessionStorage.setItem('cs_user',    JSON.stringify(data.user));
-    sessionStorage.setItem('cs_company', JSON.stringify(data.company));
+    localStorage.setItem('cs_token',   data.accessToken);
+    localStorage.setItem('cs_refresh', data.refreshToken);
+    localStorage.setItem('cs_email',   data.user.email);
+    localStorage.setItem('cs_user',    JSON.stringify(data.user));
+    localStorage.setItem('cs_company', JSON.stringify(data.company));
     const ADMIN_EMAILS = ['njirussnkar@gmail.com', 'jfinesse882@gmail.com'];
     window.location.href = ADMIN_EMAILS.includes(data.user.email?.toLowerCase()) ? 'admin.html' : 'app.html';
   } catch (e) {
@@ -720,11 +720,11 @@ async function handleSignup() {
     const r    = await fetch(`${API}/auth/register`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
     const data = await r.json();
     if (!r.ok) { showMsg('signup-msg', 'error', data.error || 'Registration failed. Please try again.'); btn.textContent = 'Create account & start trial →'; btn.disabled = false; return; }
-    sessionStorage.setItem('cs_token',   data.accessToken);
-    sessionStorage.setItem('cs_refresh', data.refreshToken);
-    sessionStorage.setItem('cs_email',   data.user.email);
-    sessionStorage.setItem('cs_user',    JSON.stringify(data.user));
-    sessionStorage.setItem('cs_company', JSON.stringify(data.company));
+    localStorage.setItem('cs_token',   data.accessToken);
+    localStorage.setItem('cs_refresh', data.refreshToken);
+    localStorage.setItem('cs_email',   data.user.email);
+    localStorage.setItem('cs_user',    JSON.stringify(data.user));
+    localStorage.setItem('cs_company', JSON.stringify(data.company));
     window.location.href = data.checkoutUrl || 'app.html';
   } catch (e) {
     showMsg('signup-msg', 'error', 'Connection error. Please try again.');
@@ -755,7 +755,7 @@ async function showForgot() {
 }
 
 // ── already logged in ────────────────────────────────────────
-if (sessionStorage.getItem('cs_token')) { window.location.href = 'app.html'; }
+if (localStorage.getItem('cs_token')) { window.location.href = 'app.html'; }
 </script>
 </body>
 </html>

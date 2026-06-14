@@ -1262,10 +1262,10 @@ let authToken=null,userData=null,companyData=null,lastScanResults=null,lastScanU
 
 // ── Auth guard ─────────────────────────────────────────────────
 (function(){
-  authToken=sessionStorage.getItem('cs_token');
+  authToken=localStorage.getItem('cs_token');
   if(!authToken){window.location.href='auth.html';return;}
-  userData=JSON.parse(sessionStorage.getItem('cs_user')||'{}');
-  companyData=JSON.parse(sessionStorage.getItem('cs_company')||'{}');
+  userData=JSON.parse(localStorage.getItem('cs_user')||'{}');
+  companyData=JSON.parse(localStorage.getItem('cs_company')||'{}');
   const p=new URLSearchParams(window.location.search);
   if(p.get('upgraded')==='true')history.replaceState({},'',location.pathname);
   initApp();
@@ -1274,7 +1274,7 @@ let authToken=null,userData=null,companyData=null,lastScanResults=null,lastScanU
 function cap(s){return s?s.charAt(0).toUpperCase()+s.slice(1):'';}
 
 function initApp(){
-  const email=sessionStorage.getItem('cs_email')||'';
+  const email=localStorage.getItem('cs_email')||'';
   document.getElementById('sidebar-name').textContent=userData.fullName||email.split('@')[0]||'User';
   document.getElementById('sidebar-role').textContent=cap(userData.role||'member');
   document.getElementById('sidebar-avatar').textContent=(userData.fullName||email).slice(0,2).toUpperCase();
@@ -2865,7 +2865,7 @@ async function openBillingPortal(){
   if(btn){btn.textContent='Manage or cancel subscription →';btn.disabled=false;}
 }
 
-function doLogout(){sessionStorage.clear();window.location.href='auth.html';}
+function doLogout(){['cs_token','cs_refresh','cs_user','cs_company','cs_email'].forEach(k=>localStorage.removeItem(k));window.location.href='auth.html';}
 
 // ── Mobile sidebar toggle ──────────────────────────────────────
 function toggleSidebar(){
