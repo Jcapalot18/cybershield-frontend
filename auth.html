@@ -794,20 +794,46 @@ async function handleSignup() {
     const data = await r.json();
     if (!r.ok) {
       showMsg('signup-msg', 'error', data.error || 'Registration failed. Please try again.');
-      btn.textContent = csSid ? 'Create account →' : 'Create account & start trial →';
+      btn.textContent = billingMode === 'annual' ? 'Create account & pay annually →' : csSid ? 'Create account →' : 'Create account & start trial →';
       btn.disabled = false;
       return;
     }
+    // Store auth credentials immediately
     localStorage.setItem('cs_token',   data.accessToken);
     localStorage.setItem('cs_refresh', data.refreshToken);
     localStorage.setItem('cs_email',   data.user.email);
     localStorage.setItem('cs_user',    JSON.stringify(data.user));
     localStorage.setItem('cs_company', JSON.stringify(data.company));
     localStorage.setItem('cs_plan',    data.company.plan||'starter');
+
+    if (billingMode === 'annual' && !csSid) {
+      // ── Annual: account created, now go to Stripe ──────────────
+      btn.textContent = 'Redirecting to Stripe…';
+      try {
+        const cr = await fetch(`${API}/checkout/annual-session`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ plan, companyId: data.company.id })
+        });
+        const cd = await cr.json();
+        if (cd.url) {
+          window.location.href = cd.url;
+        } else {
+          showMsg('signup-msg', 'error', cd.error || 'Account created but payment setup failed. Please email support@cybrshieldtech.com');
+          btn.textContent = 'Create account & pay annually →'; btn.disabled = false;
+        }
+      } catch (e) {
+        showMsg('signup-msg', 'error', 'Account created but payment redirect failed. Please email support@cybrshieldtech.com');
+        btn.textContent = 'Create account & pay annually →'; btn.disabled = false;
+      }
+      return;
+    }
+
+    // ── Monthly (or post-payment annual with csSid) ────────────
     window.location.href = data.checkoutUrl || 'app.html';
   } catch (e) {
     showMsg('signup-msg', 'error', 'Connection error. Please try again.');
-    btn.textContent = csSid ? 'Create account →' : 'Create account & start trial →';
+    btn.textContent = billingMode === 'annual' ? 'Create account & pay annually →' : csSid ? 'Create account →' : 'Create account & start trial →';
     btn.disabled = false;
   }
 }
