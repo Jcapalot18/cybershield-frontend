@@ -377,8 +377,8 @@ footer{border-top:1px solid var(--border);padding:4rem 0 2rem;position:relative;
       <a href="about.html">About</a>
     </div>
     <div class="nav-right">
-      <a href="auth.html" class="nav-signin">Sign in</a>
-      <a href="auth.html?signup=true" class="btn btn-primary">Start free trial</a>
+      <a href="auth.html" class="nav-signin" id="nav-auth-btn">Sign in</a>
+      <a href="auth.html?signup=true" class="btn btn-primary" id="nav-trial-btn">Start free trial</a>
       <button class="hamb" onclick="document.getElementById('mm').classList.add('open')" aria-label="Menu">
         <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
       </button>
@@ -394,7 +394,7 @@ footer{border-top:1px solid var(--border);padding:4rem 0 2rem;position:relative;
   <a href="#pricing" onclick="document.getElementById('mm').classList.remove('open')">Pricing</a>
   <a href="#trust" onclick="document.getElementById('mm').classList.remove('open')">Trust</a>
   <a href="about.html" onclick="document.getElementById('mm').classList.remove('open')">About</a>
-  <a href="auth.html?signup=true" class="btn btn-primary btn-lg mm-cta">Start free trial</a>
+  <a href="auth.html?signup=true" class="btn btn-primary btn-lg mm-cta" id="mobile-cta">Start free trial</a>
 </div>
 
 <!-- ═══════ HERO ═══════ -->
@@ -408,7 +408,7 @@ footer{border-top:1px solid var(--border);padding:4rem 0 2rem;position:relative;
         <h1 class="reveal rd1">Enterprise security,<br><span class="grad">built for small business.</span></h1>
         <p class="hero-sub reveal rd2">CyberShield scans for vulnerabilities, monitors 12B+ breached credentials, and trains your team on the exact attacks happening right now — no IT department required.</p>
         <div class="hero-cta reveal rd3">
-          <a href="auth.html?signup=true" class="btn btn-primary btn-lg">Start free 14-day trial →</a>
+          <a href="auth.html?signup=true" class="btn btn-primary btn-lg" id="hero-cta">Start free 14-day trial →</a>
           <a href="#platform" class="btn btn-ghost btn-lg">See how it works</a>
         </div>
         <div class="hero-trust reveal rd4">
@@ -899,6 +899,18 @@ const PLAN_ORDER={starter:0,business:1,enterprise:2};
 const PLAN_LABELS={starter:'Starter',business:'Business',enterprise:'Enterprise'};
 const isLoggedIn=!!localStorage.getItem('cs_token');
 let loggedInPlan=null,loggedInTrialing=false;
+
+// ── nav / hero: swap CTAs for logged-in users ──
+if(isLoggedIn){
+  const navBtn=document.getElementById('nav-auth-btn');
+  const navTrial=document.getElementById('nav-trial-btn');
+  const heroCta=document.getElementById('hero-cta');
+  const mobileCta=document.getElementById('mobile-cta');
+  if(navBtn){navBtn.textContent='Go to Dashboard';navBtn.href='app.html';}
+  if(navTrial)navTrial.style.display='none';
+  if(heroCta){heroCta.textContent='Go to Dashboard →';heroCta.href='app.html';}
+  if(mobileCta){mobileCta.textContent='Go to Dashboard';mobileCta.href='app.html';}
+}
 
 function applyLoggedInPricingState(plan,trialing){
   const curRank=PLAN_ORDER[plan]??0;
