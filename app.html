@@ -1104,6 +1104,7 @@ a{text-decoration:none;color:inherit}
             Check for breaches
           </button>
         </div>
+        <div id="breach-limit-area"></div>
         <div class="results-wrap" id="breach-results" style="max-height:600px;overflow-y:auto;scrollbar-width:thin;padding-bottom:1rem"></div>
       </div>
       <div class="card">
@@ -1261,6 +1262,10 @@ a{text-decoration:none;color:inherit}
 const API='https://cybershield-backend-production-492b.up.railway.app';
 let authToken=null,userData=null,companyData=null,lastScanResults=null,lastScanUrl='';
 
+// ── Plan limits (must be before the auth IIFE so getPlanScanLimit is usable on init) ──
+const PLAN_SCAN_LIMITS={starter:5,business:Infinity,enterprise:Infinity};
+const PLAN_BREACH_LIMITS={starter:5,business:Infinity,enterprise:Infinity};
+
 // ── Auth guard ─────────────────────────────────────────────────
 (function(){
   authToken=localStorage.getItem('cs_token');
@@ -1308,8 +1313,7 @@ function getPlan(){
   return(localStorage.getItem('cs_plan')||companyData.plan||'starter').toLowerCase();
 }
 
-// ── Scan counter (localStorage-backed, resets monthly) ─────────
-const PLAN_SCAN_LIMITS={starter:5,business:Infinity,enterprise:Infinity};
+// ── Scan + Breach counters (localStorage-backed, reset monthly) ──
 function getPlanScanLimit(){return PLAN_SCAN_LIMITS[getPlan()]??Infinity;}
 function _scanKey(){const d=new Date();return`cs_scans_${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;}
 function getLocalScanCount(){return parseInt(localStorage.getItem(_scanKey())||'0',10);}
@@ -1325,6 +1329,10 @@ function syncScanCount(backendCount){
   setLocalScanCount(n);
   return n;
 }
+function getPlanBreachLimit(){return PLAN_BREACH_LIMITS[getPlan()]??Infinity;}
+function _breachKey(){const d=new Date();return`cs_breaches_${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;}
+function getLocalBreachCount(){return parseInt(localStorage.getItem(_breachKey())||'0',10);}
+function setLocalBreachCount(n){localStorage.setItem(_breachKey(),String(n));}
 
 function applyPlanLimits(){
   const plan=getPlan();
@@ -1350,6 +1358,25 @@ function applyPlanLimits(){
     limitArea.parentNode.insertBefore(bar,limitArea);
   }
 
+  // Breach counter bar — all plans
+  const breachLimitArea=document.getElementById('breach-limit-area');
+  if(breachLimitArea&&!document.getElementById('plan-breach-bar')){
+    const bLimit=getPlanBreachLimit();
+    const bUnlimited=bLimit===Infinity;
+    const bBar=document.createElement('div');
+    bBar.id='plan-breach-bar';
+    bBar.style.cssText=`margin-top:0.75rem;padding:0.625rem 0.875rem;background:${bUnlimited?'rgba(16,185,129,0.04)':'rgba(239,68,68,0.04)'};border:1px solid ${bUnlimited?'rgba(16,185,129,0.18)':'rgba(239,68,68,0.18)'};border-radius:8px`;
+    bBar.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;${bUnlimited?'':'margin-bottom:5px'}">
+      <span style="font-size:0.7rem;font-weight:700;color:var(--text)">Checks this month</span>
+      <span id="breach-counter-text" style="font-size:0.7rem;color:var(--muted)">— / ${bUnlimited?'∞':bLimit}</span>
+    </div>
+    ${bUnlimited?'':`<div style="height:4px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;margin-top:5px">
+      <div id="breach-counter-bar" style="height:100%;background:var(--red);border-radius:3px;width:0%;transition:width 0.4s ease"></div>
+    </div>`}
+    <div style="font-size:0.61rem;color:var(--dim);margin-top:4px">${planLabel} plan: ${bUnlimited?'unlimited checks':`${bLimit} checks/month · <span style="color:var(--orange);cursor:pointer;font-weight:700" onclick="openUpgradeModal()">Upgrade for unlimited →</span>`}</div>`;
+    breachLimitArea.appendChild(bBar);
+  }
+
   // PDF buttons — dim and gate for Starter (onclick gating handled in the PDF functions)
   if(isStarter){
     ['pdf-btn','breach-pdf-btn'].forEach(id=>{
@@ -1360,6 +1387,37 @@ function applyPlanLimits(){
       btn.style.filter='grayscale(0.6)';
       btn.title='PDF reports — Business plan and above';
     });
+  }
+}
+
+function updateBreachCounter(n){
+  const limit=getPlanBreachLimit();
+  const unlimited=limit===Infinity;
+  const t=document.getElementById('breach-counter-text');
+  const b=document.getElementById('breach-counter-bar');
+  if(t)t.textContent=unlimited?n+' / ∞':n+' / '+limit;
+  if(!unlimited&&b){
+    const pct=Math.min((n/limit)*100,100);
+    b.style.width=pct+'%';
+    b.style.background=n>=limit?'var(--red)':n>=limit-1?'#f59e0b':'var(--red)';
+  }
+  if(!unlimited){
+    const breachBtn=document.getElementById('breach-btn');
+    const bArea=document.getElementById('breach-limit-area');
+    if(n>=limit){
+      if(breachBtn){breachBtn.disabled=true;breachBtn.style.opacity='0.45';breachBtn.style.cursor='not-allowed';}
+      if(bArea&&!bArea.querySelector('.breach-limit-msg')){
+        const msg=document.createElement('div');
+        msg.className='breach-limit-msg';
+        msg.innerHTML=`<div class="limit-box" style="margin-top:0.75rem"><div style="color:var(--red);flex-shrink:0;font-size:1.1rem">⚠</div><div class="limit-txt"><strong>You've used all ${limit} breach checks this month.</strong> Upgrade to Business for unlimited checks.<div class="up-link" onclick="openUpgradeModal()">Upgrade to Business →</div></div></div>`;
+        bArea.appendChild(msg);
+      }
+    } else {
+      if(breachBtn&&breachBtn.dataset.breachLimitLocked){breachBtn.disabled=false;breachBtn.style.opacity='';breachBtn.style.cursor='';}
+      const existing=document.querySelector('.breach-limit-msg');
+      if(existing)existing.remove();
+    }
+    if(breachBtn)breachBtn.dataset.breachLimitLocked=n>=limit?'1':'';
   }
 }
 
@@ -1765,6 +1823,7 @@ async function loadDashboard(){
     const scanStatEl=document.getElementById('scan-stat-scans');
     if(scanStatEl)scanStatEl.textContent=scans;
     updateScanCounter(getLocalScanCount());
+    updateBreachCounter(getLocalBreachCount());
 
     // Ring
     const circ=289.03;
@@ -2277,11 +2336,20 @@ async function runBreach(){
   if(!email)return;
   const btn=document.getElementById('breach-btn');
   const results=document.getElementById('breach-results');
+
+  // Frontend limit gate
+  const _breachPlanLimit=getPlanBreachLimit();
+  if(_breachPlanLimit!==Infinity&&getLocalBreachCount()>=_breachPlanLimit){
+    results.innerHTML=`<div class="limit-box"><div style="color:var(--red);flex-shrink:0;font-size:1.1rem">⚠</div><div class="limit-txt"><strong>You've used all ${_breachPlanLimit} breach checks this month.</strong> Upgrade to Business for unlimited checks.<div class="up-link" onclick="openUpgradeModal()">Upgrade to Business →</div></div></div>`;
+    return;
+  }
+
   btn.textContent='Checking...';btn.disabled=true;results.innerHTML='';
   try{
     const r=await fetch(`${API}/breach/check`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+authToken},body:JSON.stringify({email})});
     const d=await r.json();
     if(r.status===402||d.limitReached){
+      const hLimit=getLocalBreachCount();setLocalBreachCount(Math.max(hLimit,_breachPlanLimit!==Infinity?_breachPlanLimit:hLimit));updateBreachCounter(getLocalBreachCount());
       results.innerHTML=`<div class="limit-box"><div style="color:var(--orange);flex-shrink:0;font-size:1.1rem">⚠</div><div class="limit-txt"><strong>Limit reached.</strong> Upgrade for unlimited checks.<div class="up-link" onclick="openUpgradeModal()">Upgrade now →</div></div></div>`;
     }else if(d.breaches&&d.breaches.length>0){
       const dataTypes = {
@@ -2377,6 +2445,7 @@ document.getElementById('breach-stat-found').textContent = d.breaches?.length ||
       addBreachHistory(email,'⚠ '+d.breaches.length+' breach'+(d.breaches.length>1?'es':''),'var(--red)');
       document.getElementById('breach-pdf-btn').style.display='block';
       lastBreachData = { email, breaches: d.breaches, date: new Date().toISOString(), status: 'breached' };
+      const _bc1=getLocalBreachCount()+1;setLocalBreachCount(_bc1);updateBreachCounter(_bc1);
     }else{
       results.innerHTML=`
         <div style="background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.2);border-radius:8px;padding:1.25rem">
@@ -2389,6 +2458,7 @@ document.getElementById('breach-stat-found').textContent = d.breaches?.length ||
       addBreachHistory(email,'✓ Secure','var(--green)');
       document.getElementById('breach-pdf-btn').style.display='block';
       lastBreachData = { email, breaches: [], date: new Date().toISOString(), status: 'clean' };
+      const _bc2=getLocalBreachCount()+1;setLocalBreachCount(_bc2);updateBreachCounter(_bc2);
     }
   }catch(e){results.innerHTML=`<div style="color:var(--red);font-size:0.75rem;padding:0.5rem">Error. Please try again.</div>`;}
   btn.textContent='Check for breaches';btn.disabled=false;
