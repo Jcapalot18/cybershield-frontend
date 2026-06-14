@@ -1267,9 +1267,38 @@ const PLAN_SCAN_LIMITS={starter:5,business:Infinity,enterprise:Infinity};
 const PLAN_BREACH_LIMITS={starter:5,business:Infinity,enterprise:Infinity};
 
 // ── Auth guard ─────────────────────────────────────────────────
-(function(){
+(async function(){
   authToken=localStorage.getItem('cs_token');
-  if(!authToken){window.location.href='auth.html';return;}
+
+  // Handle pending auth from Stripe checkout redirect
+  if(!authToken){
+    const pendingToken=sessionStorage.getItem('cs_pending_token');
+    if(pendingToken){
+      try{
+        const sr=await fetch(`${API}/billing/subscription`,{headers:{'Authorization':'Bearer '+pendingToken}});
+        const sd=await sr.json();
+        if(sr.ok&&sd.status&&sd.status!=='incomplete'&&sd.status!=='incomplete_expired'){
+          localStorage.setItem('cs_token',pendingToken);
+          localStorage.setItem('cs_refresh',sessionStorage.getItem('cs_pending_refresh')||'');
+          localStorage.setItem('cs_email',sessionStorage.getItem('cs_pending_email')||'');
+          localStorage.setItem('cs_user',sessionStorage.getItem('cs_pending_user')||'{}');
+          localStorage.setItem('cs_company',sessionStorage.getItem('cs_pending_company')||'{}');
+          localStorage.setItem('cs_plan',sessionStorage.getItem('cs_pending_plan')||'starter');
+          ['cs_pending_token','cs_pending_refresh','cs_pending_email','cs_pending_user','cs_pending_company','cs_pending_plan'].forEach(k=>sessionStorage.removeItem(k));
+          authToken=pendingToken;
+        }else{
+          ['cs_pending_token','cs_pending_refresh','cs_pending_email','cs_pending_user','cs_pending_company','cs_pending_plan'].forEach(k=>sessionStorage.removeItem(k));
+          window.location.href='auth.html';return;
+        }
+      }catch(e){
+        ['cs_pending_token','cs_pending_refresh','cs_pending_email','cs_pending_user','cs_pending_company','cs_pending_plan'].forEach(k=>sessionStorage.removeItem(k));
+        window.location.href='auth.html';return;
+      }
+    }else{
+      window.location.href='auth.html';return;
+    }
+  }
+
   userData=JSON.parse(localStorage.getItem('cs_user')||'{}');
   companyData=JSON.parse(localStorage.getItem('cs_company')||'{}');
   const p=new URLSearchParams(window.location.search);
@@ -1783,6 +1812,7 @@ async function loadDashboard(){
       stats.securityScore = null; // calculate below
       stats.trainingsCompleted = Number(d.stats.trainings?.total||d.stats.trainings||0);
       stats.breachesFound = Number(d.stats.breachChecks||0);
+      stats.breachChecks = stats.breachesFound;
       stats.scansThisMonth = Number(d.stats.scans||0);
       stats.emailsMonitored = Number(d.stats.emailsMonitored||0);
     } else if(d.securityScore !== undefined || d.trainingsCompleted !== undefined){

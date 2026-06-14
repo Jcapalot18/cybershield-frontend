@@ -798,13 +798,27 @@ async function handleSignup() {
       btn.disabled = false;
       return;
     }
-    // Store auth credentials immediately
-    localStorage.setItem('cs_token',   data.accessToken);
-    localStorage.setItem('cs_refresh', data.refreshToken);
-    localStorage.setItem('cs_email',   data.user.email);
-    localStorage.setItem('cs_user',    JSON.stringify(data.user));
-    localStorage.setItem('cs_company', JSON.stringify(data.company));
-    localStorage.setItem('cs_plan',    data.company.plan||'starter');
+    // Determine if Stripe checkout is needed before granting dashboard access
+    const needsStripe = (billingMode === 'annual' && !csSid) || !!data.checkoutUrl;
+
+    if (needsStripe) {
+      // Save auth to sessionStorage only — not localStorage
+      // Dashboard will verify payment before activating these
+      sessionStorage.setItem('cs_pending_token',   data.accessToken);
+      sessionStorage.setItem('cs_pending_refresh', data.refreshToken);
+      sessionStorage.setItem('cs_pending_email',   data.user.email);
+      sessionStorage.setItem('cs_pending_user',    JSON.stringify(data.user));
+      sessionStorage.setItem('cs_pending_company', JSON.stringify(data.company));
+      sessionStorage.setItem('cs_pending_plan',    data.company.plan||'starter');
+    } else {
+      // Payment already confirmed (csSid) or no Stripe needed — save directly
+      localStorage.setItem('cs_token',   data.accessToken);
+      localStorage.setItem('cs_refresh', data.refreshToken);
+      localStorage.setItem('cs_email',   data.user.email);
+      localStorage.setItem('cs_user',    JSON.stringify(data.user));
+      localStorage.setItem('cs_company', JSON.stringify(data.company));
+      localStorage.setItem('cs_plan',    data.company.plan||'starter');
+    }
 
     if (billingMode === 'annual' && !csSid) {
       // ── Annual: account created, now go to Stripe ──────────────
@@ -829,8 +843,14 @@ async function handleSignup() {
       return;
     }
 
-    // ── Monthly (or post-payment annual with csSid) ────────────
-    window.location.href = data.checkoutUrl || 'app.html';
+    if (data.checkoutUrl) {
+      // ── Monthly with Stripe checkout — redirect to payment ────
+      window.location.href = data.checkoutUrl;
+      return;
+    }
+
+    // ── No Stripe needed (post-payment annual with csSid) ──────
+    window.location.href = 'app.html';
   } catch (e) {
     showMsg('signup-msg', 'error', 'Connection error. Please try again.');
     btn.textContent = billingMode === 'annual' ? 'Create account & pay annually →' : csSid ? 'Create account →' : 'Create account & start trial →';
@@ -861,7 +881,8 @@ async function showForgot() {
 }
 
 // ── already logged in ────────────────────────────────────────
-if (localStorage.getItem('cs_token')) { window.location.href = 'app.html'; }
+// Only redirect if real tokens exist in localStorage (not pending in sessionStorage)
+if (localStorage.getItem('cs_token') && !sessionStorage.getItem('cs_pending_token')) { window.location.href = 'app.html'; }
 </script>
 </body>
 </html>
