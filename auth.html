@@ -400,6 +400,16 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:4r
               <div class="auth-box-title" id="signup-title">Start your free trial</div>
               <div class="auth-box-sub" id="signup-sub">No credit card required &middot; 14-day free trial</div>
             </div>
+            <div id="annual-paid-banner" style="display:none;background:rgba(16,185,129,0.07);border:1px solid rgba(16,185,129,0.2);border-radius:10px;padding:.875rem 1rem;margin-bottom:.875rem">
+              <div style="display:flex;align-items:center;gap:.625rem">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                <div>
+                  <div style="font-size:.82rem;font-weight:700;color:#10b981">Payment confirmed</div>
+                  <div style="font-size:.7rem;color:rgba(255,255,255,0.45);margin-top:1px" id="annual-paid-plan-text">Your annual plan is active.</div>
+                </div>
+              </div>
+            </div>
+            <div id="signup-account-fields">
             <div class="form-row">
               <div class="form-group">
                 <label>Full name</label>
@@ -418,6 +428,8 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:4r
               <label>Password</label>
               <input type="password" id="reg-password" placeholder="Min. 8 characters" autocomplete="new-password" required/>
             </div>
+            </div>
+            <div id="signup-plan-selector">
             <div class="form-group" style="margin-bottom:.5rem">
               <label>Billing</label>
               <div class="auth-bill-wrap">
@@ -456,6 +468,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:4r
                   </label>
                 </div>
               </div>
+            </div>
             </div>
             <div class="form-message" id="signup-msg"></div>
             <button class="btn-submit" id="signup-btn" onclick="handleSignup()">Create account &amp; start trial →</button>
@@ -648,36 +661,92 @@ function setAuthBilling(mode) {
     if (noteEl)  noteEl.style.display = isAnnual ? 'block' : 'none';
   });
 
-  const titleEl = document.getElementById('signup-title');
-  const subEl   = document.getElementById('signup-sub');
-  const btnEl   = document.getElementById('signup-btn');
-  const termsEl = document.getElementById('signup-terms');
+  const titleEl   = document.getElementById('signup-title');
+  const subEl     = document.getElementById('signup-sub');
+  const btnEl     = document.getElementById('signup-btn');
+  const termsEl   = document.getElementById('signup-terms');
+  const fieldsEl  = document.getElementById('signup-account-fields');
+  const planSelEl = document.getElementById('signup-plan-selector');
 
   if (isAnnual) {
-    if (titleEl)  titleEl.textContent = 'Annual Plan — billed once today';
-    if (subEl)    subEl.innerHTML     = 'Full year charged upfront &middot; No free trial';
-    if (btnEl)    btnEl.textContent   = 'Create account & pay now →';
-    if (termsEl)  termsEl.innerHTML   = 'By creating an account you agree to our <a href="terms.html">Terms of Service</a> and <a href="privacy.html">Privacy Policy</a>. Your annual subscription begins immediately upon payment.';
+    if (fieldsEl)  fieldsEl.style.display  = 'none';
+    if (planSelEl) planSelEl.style.display = '';
+    if (titleEl)   titleEl.textContent = 'Annual Plan — pay now, save 20%';
+    if (subEl)     subEl.innerHTML     = 'Full year billed upfront &middot; No free trial &middot; Cancel anytime';
+    if (btnEl)   { btnEl.textContent   = 'Continue to payment →'; btnEl.onclick = startAnnualCheckout; }
+    if (termsEl)   termsEl.innerHTML   = 'You\'ll be taken to Stripe to complete payment. Your account is created after payment is confirmed. By continuing you agree to our <a href="terms.html">Terms of Service</a> and <a href="privacy.html">Privacy Policy</a>.';
   } else {
-    if (titleEl)  titleEl.textContent = 'Start your free trial';
-    if (subEl)    subEl.innerHTML     = 'No credit card required &middot; 14-day free trial';
-    if (btnEl)    btnEl.textContent   = 'Create account & start trial →';
-    if (termsEl)  termsEl.innerHTML   = 'By creating an account you agree to our <a href="terms.html">Terms of Service</a> and <a href="privacy.html">Privacy Policy</a>. You won\'t be charged until after your 14-day trial ends.';
+    if (fieldsEl)  fieldsEl.style.display  = '';
+    if (planSelEl) planSelEl.style.display = '';
+    if (titleEl)   titleEl.textContent = 'Start your free trial';
+    if (subEl)     subEl.innerHTML     = 'No credit card required &middot; 14-day free trial';
+    if (btnEl)   { btnEl.textContent   = 'Create account & start trial →'; btnEl.onclick = handleSignup; }
+    if (termsEl)   termsEl.innerHTML   = 'By creating an account you agree to our <a href="terms.html">Terms of Service</a> and <a href="privacy.html">Privacy Policy</a>. You won\'t be charged until after your 14-day trial ends.';
+  }
+}
+
+// ── annual checkout (pre-account) ────────────────────────────
+async function startAnnualCheckout() {
+  const plan = document.querySelector('input[name="plan"]:checked')?.value || 'starter';
+  const btn  = document.getElementById('signup-btn');
+  clearMessages();
+  btn.textContent = 'Redirecting to Stripe…'; btn.disabled = true;
+  try {
+    const r = await fetch(`${API}/checkout/annual-session`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ plan })
+    });
+    const d = await r.json();
+    if (d.url) {
+      window.location.href = d.url;
+    } else {
+      showMsg('signup-msg', 'error', d.error || 'Could not start checkout. Please try again.');
+      btn.textContent = 'Continue to payment →'; btn.disabled = false;
+    }
+  } catch (e) {
+    showMsg('signup-msg', 'error', 'Connection error. Please try again.');
+    btn.textContent = 'Continue to payment →'; btn.disabled = false;
   }
 }
 
 // Initialise from URL params
-const csSid = params.get('cs_sid'); // Stripe session ID from direct annual checkout
+const csSid = params.get('cs_sid'); // Stripe session ID returned after annual payment
 if (params.get('billing') === 'annual') {
-  setAuthBilling('annual');
   if (csSid) {
-    // Payment already complete — just need account creation
+    // ── Payment confirmed: show account-creation-only UI ──────
+    switchTab('signup');
+    billingMode = 'annual';
+    document.getElementById('ab-month').classList.remove('active');
+    document.getElementById('ab-year').classList.add('active');
+    const sel = document.querySelector('.plan-selector');
+    if (sel) sel.dataset.billing = 'annual';
+    // Pre-select plan from URL
+    const urlPlan  = params.get('plan') || 'starter';
+    const planRadio = document.querySelector(`input[value="${urlPlan}"]`);
+    if (planRadio) planRadio.checked = true;
+    // Show paid banner, hide plan selector, show account fields
+    const paidBanner = document.getElementById('annual-paid-banner');
+    const planSelEl  = document.getElementById('signup-plan-selector');
+    const planText   = document.getElementById('annual-paid-plan-text');
+    const fieldsEl   = document.getElementById('signup-account-fields');
+    const capPlan    = urlPlan.charAt(0).toUpperCase() + urlPlan.slice(1);
+    if (paidBanner) paidBanner.style.display = 'block';
+    if (planText)   planText.textContent = capPlan + ' plan · Annual · Payment confirmed';
+    if (planSelEl)  planSelEl.style.display = 'none';
+    if (fieldsEl)   fieldsEl.style.display  = '';
+    // Update title / sub / button / terms
     const titleEl = document.getElementById('signup-title');
     const subEl   = document.getElementById('signup-sub');
     const btnEl   = document.getElementById('signup-btn');
-    if (titleEl) titleEl.textContent = 'Payment complete — create your account';
-    if (subEl)   subEl.innerHTML     = 'Your annual plan is paid. Set up your account to get started.';
-    if (btnEl)   btnEl.textContent   = 'Create account →';
+    const termsEl = document.getElementById('signup-terms');
+    if (titleEl) titleEl.textContent = 'Payment confirmed — create your account';
+    if (subEl)   subEl.innerHTML     = 'Your annual plan is paid and ready. Fill in your details below to get started.';
+    if (btnEl) { btnEl.textContent = 'Create account →'; btnEl.onclick = handleSignup; }
+    if (termsEl) termsEl.innerHTML  = 'By creating an account you agree to our <a href="terms.html">Terms of Service</a> and <a href="privacy.html">Privacy Policy</a>.';
+  } else {
+    // ── No payment yet: show plan selector, hide account fields ─
+    setAuthBilling('annual');
   }
 }
 
@@ -708,6 +777,9 @@ async function handleSignin() {
 
 // ── sign up ──────────────────────────────────────────────────
 async function handleSignup() {
+  // Safety net: if annual billing without confirmed payment, go to Stripe first
+  if (billingMode === 'annual' && !csSid) { startAnnualCheckout(); return; }
+
   const fullName    = document.getElementById('reg-name').value.trim();
   const companyName = document.getElementById('reg-company').value.trim();
   const email       = document.getElementById('reg-email').value.trim();
@@ -723,7 +795,12 @@ async function handleSignup() {
     if (csSid) body.checkoutSessionId = csSid;
     const r    = await fetch(`${API}/auth/register`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
     const data = await r.json();
-    if (!r.ok) { showMsg('signup-msg', 'error', data.error || 'Registration failed. Please try again.'); btn.textContent = 'Create account & start trial →'; btn.disabled = false; return; }
+    if (!r.ok) {
+      showMsg('signup-msg', 'error', data.error || 'Registration failed. Please try again.');
+      btn.textContent = csSid ? 'Create account →' : 'Create account & start trial →';
+      btn.disabled = false;
+      return;
+    }
     localStorage.setItem('cs_token',   data.accessToken);
     localStorage.setItem('cs_refresh', data.refreshToken);
     localStorage.setItem('cs_email',   data.user.email);
@@ -733,7 +810,8 @@ async function handleSignup() {
     window.location.href = data.checkoutUrl || 'app.html';
   } catch (e) {
     showMsg('signup-msg', 'error', 'Connection error. Please try again.');
-    btn.textContent = 'Create account & start trial →'; btn.disabled = false;
+    btn.textContent = csSid ? 'Create account →' : 'Create account & start trial →';
+    btn.disabled = false;
   }
 }
 
