@@ -1268,8 +1268,21 @@ let authToken=null,userData=null,companyData=null,lastScanResults=null,lastScanU
   userData=JSON.parse(localStorage.getItem('cs_user')||'{}');
   companyData=JSON.parse(localStorage.getItem('cs_company')||'{}');
   const p=new URLSearchParams(window.location.search);
-  if(p.get('upgraded')==='true')history.replaceState({},'',location.pathname);
-  initApp();
+  if(p.get('upgraded')==='true'){
+    history.replaceState({},'',location.pathname);
+    // Refresh company data so plan gates reflect the new subscription
+    fetch(`${API}/auth/me`,{headers:{'Authorization':'Bearer '+authToken}})
+      .then(r=>r.ok?r.json():null)
+      .then(d=>{
+        if(d&&d.company){
+          companyData=d.company;
+          localStorage.setItem('cs_company',JSON.stringify(d.company));
+          localStorage.setItem('cs_plan',d.company.plan||'starter');
+        }
+      }).catch(()=>{}).finally(()=>{ initApp(); });
+  } else {
+    initApp();
+  }
 })();
 
 function cap(s){return s?s.charAt(0).toUpperCase()+s.slice(1):'';}
@@ -2616,7 +2629,16 @@ function getClass(v){
 async function downloadScanPDF(){
   if(getPlan()==='starter'){openUpgradeModal();return;}
   if(!lastScanResults||!lastScanResults.length){alert('No scan results to export.');return;}
-  
+
+  if(!window.jspdf){
+    await new Promise((resolve,reject)=>{
+      const s=document.createElement('script');
+      s.src='https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+      s.onload=resolve; s.onerror=reject;
+      document.head.appendChild(s);
+    });
+  }
+
   // Normalize results to [[label, value]] format
   let rows = [];
   if(Array.isArray(lastScanResults) && lastScanResults[0] && Array.isArray(lastScanResults[0])){
