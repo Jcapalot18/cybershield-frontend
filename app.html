@@ -1308,6 +1308,17 @@ function getPlan(){
   return(localStorage.getItem('cs_plan')||companyData.plan||'starter').toLowerCase();
 }
 
+// ── Scan counter (localStorage-backed, resets monthly) ─────────
+const SCAN_LIMIT=5;
+function _scanKey(){const d=new Date();return`cs_scans_${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;}
+function getLocalScanCount(){return parseInt(localStorage.getItem(_scanKey())||'0',10);}
+function setLocalScanCount(n){localStorage.setItem(_scanKey(),String(n));}
+function syncScanCount(backendCount){
+  const n=Math.max(getLocalScanCount(),backendCount);
+  setLocalScanCount(n);
+  return n;
+}
+
 function applyPlanLimits(){
   const plan=getPlan();
   const isStarter=plan==='starter';
@@ -1346,12 +1357,24 @@ function applyPlanLimits(){
 
 function updateScanCounter(n){
   if(getPlan()!=='starter')return;
-  const limit=5;
+  const limit=SCAN_LIMIT;
   const pct=Math.min((n/limit)*100,100);
   const t=document.getElementById('scan-counter-text');
   const b=document.getElementById('scan-counter-bar');
   if(t)t.textContent=n+' / '+limit;
   if(b){b.style.width=pct+'%';b.style.background=n>=limit?'var(--red)':n>=4?'var(--yellow)':'var(--orange)';}
+
+  const scanBtn=document.getElementById('scan-btn');
+  const limitArea=document.getElementById('scan-limit-area');
+  if(n>=limit){
+    if(scanBtn){scanBtn.disabled=true;scanBtn.style.opacity='0.45';scanBtn.style.cursor='not-allowed';}
+    if(limitArea&&!limitArea.querySelector('.limit-box')){
+      limitArea.innerHTML=`<div class="limit-box"><div style="color:var(--orange);flex-shrink:0;font-size:1.1rem">⚠</div><div class="limit-txt"><strong>You've used all 5 scans this month.</strong> Upgrade to Business for unlimited scans.<div class="up-link" onclick="openUpgradeModal()">Upgrade to Business →</div></div></div>`;
+    }
+  } else {
+    if(scanBtn&&scanBtn.dataset.limitLocked){scanBtn.disabled=false;scanBtn.style.opacity='';scanBtn.style.cursor='';}
+  }
+  if(scanBtn)scanBtn.dataset.limitLocked=n>=limit?'1':'';
 }
 
 function buildChecksGrid(){
@@ -1728,7 +1751,7 @@ async function loadDashboard(){
     document.getElementById('scans-foot').textContent='of '+scanLimit+' scans this month';
     const scanStatEl=document.getElementById('scan-stat-scans');
     if(scanStatEl)scanStatEl.textContent=scans;
-    updateScanCounter(scans);
+    updateScanCounter(syncScanCount(scans));
 
     // Ring
     const circ=289.03;
@@ -2380,6 +2403,13 @@ async function runScan(){
   const results=document.getElementById('scan-results');
   const limitArea=document.getElementById('scan-limit-area');
   const pdfBtn=document.getElementById('pdf-btn');
+
+  // Frontend limit gate — blocks before hitting the API
+  if(getPlan()==='starter'&&getLocalScanCount()>=SCAN_LIMIT){
+    limitArea.innerHTML=`<div class="limit-box"><div style="color:var(--orange);flex-shrink:0;font-size:1.1rem">⚠</div><div class="limit-txt"><strong>You've used all 5 scans this month.</strong> Upgrade to Business for unlimited scans.<div class="up-link" onclick="openUpgradeModal()">Upgrade to Business →</div></div></div>`;
+    return;
+  }
+
   btn.textContent='Scanning...';btn.disabled=true;
   stepsArea.style.display='block';limitArea.innerHTML='';results.innerHTML='';pdfBtn.style.display='none';
   document.getElementById('scan-result-url').textContent='';
@@ -2409,10 +2439,18 @@ async function runScan(){
     const isLimit=r.status===402||d.code==='SCAN_LIMIT_REACHED'||d.limitReached||(d.error&&d.error.toLowerCase().includes('limit'));
     if(isLimit){
       stepsArea.style.display='none';
-      limitArea.innerHTML=`<div class="limit-box"><div style="color:var(--orange);flex-shrink:0;font-size:1.1rem">⚠</div><div class="limit-txt"><strong>Monthly limit reached.</strong> 5 scans/month on Starter.<div class="up-link" onclick="openUpgradeModal()">Upgrade for unlimited →</div></div></div>`;
-      btn.textContent='Run vulnerability scan';btn.disabled=false;return;
+      const newCount=syncScanCount(SCAN_LIMIT);
+      updateScanCounter(newCount);
+      btn.textContent='Run vulnerability scan';return;
     }
     if(d.error&&!isLimit){results.innerHTML=`<div style="color:var(--red);font-size:0.78rem;padding:0.875rem">${d.error}</div>`;btn.textContent='Run vulnerability scan';btn.disabled=false;return;}
+
+    // Scan succeeded — increment local counter for Starter
+    if(getPlan()==='starter'){
+      const newCount=getLocalScanCount()+1;
+      setLocalScanCount(newCount);
+      updateScanCounter(newCount);
+    }
 
     const raw=d.results||d;
     const skip=new Set(['error','code','message','url','scannedAt','scanId','id','domain']);
