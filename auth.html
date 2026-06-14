@@ -206,8 +206,7 @@ select option{background:var(--bg3);color:var(--text)}
 .plan-option input:checked+label{border-color:var(--orange);background:var(--orange-dim);color:var(--orange)}
 .plan-option label .plan-price{font-size:.95rem;font-weight:800;margin-top:4px;color:rgba(255,255,255,0.45);font-variant-numeric:tabular-nums;letter-spacing:-0.03em}
 .plan-option input:checked+label .plan-price{color:var(--orange)}
-.plan-option label .plan-annual-note{font-size:.56rem;font-weight:600;color:rgba(255,255,255,0.3);letter-spacing:0;text-transform:none;margin-top:2px;display:none}
-.plan-option input:checked+label .plan-annual-note{color:var(--orange)}
+.plan-option label .plan-annual-note{font-size:.56rem;font-weight:700;color:#10b981;letter-spacing:0;text-transform:none;margin-top:2px;display:none}
 
 /* misc */
 .terms-note{font-size:.72rem;color:var(--dim);text-align:center;line-height:1.65}
@@ -435,7 +434,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:4r
                   <label for="plan-starter">
                     Starter
                     <span class="plan-price" id="auth-price-starter">$49<small style="font-size:.6em;font-weight:400">/mo</small></span>
-                    <span class="plan-annual-note" id="auth-note-starter">$468/yr</span>
+                    <span class="plan-annual-note" id="auth-note-starter">Save $118/yr</span>
                   </label>
                 </div>
                 <div class="plan-option">
@@ -443,7 +442,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:4r
                   <label for="plan-business">
                     Business
                     <span class="plan-price" id="auth-price-business">$199<small style="font-size:.6em;font-weight:400">/mo</small></span>
-                    <span class="plan-annual-note" id="auth-note-business">$1,910/yr</span>
+                    <span class="plan-annual-note" id="auth-note-business">Save $478/yr</span>
                   </label>
                 </div>
                 <div class="plan-option">
@@ -451,7 +450,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:4r
                   <label for="plan-enterprise">
                     Enterprise
                     <span class="plan-price" id="auth-price-enterprise">$599<small style="font-size:.6em;font-weight:400">/mo</small></span>
-                    <span class="plan-annual-note" id="auth-note-enterprise">$5,750/yr</span>
+                    <span class="plan-annual-note" id="auth-note-enterprise">Save $1,438/yr</span>
                   </label>
                 </div>
               </div>
@@ -641,7 +640,7 @@ function setAuthBilling(mode) {
     const priceEl = document.getElementById('auth-price-' + plan);
     const noteEl  = document.getElementById('auth-note-' + plan);
     if (priceEl) priceEl.innerHTML = AUTH_PRICES[mode][plan] + PRICE_SUFFIXES[mode];
-    if (noteEl)  noteEl.style.display = 'none';
+    if (noteEl)  noteEl.style.display = isAnnual ? 'block' : 'none';
   });
 
   const titleEl = document.getElementById('signup-title');
