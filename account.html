@@ -401,6 +401,14 @@ textarea.f-input{resize:none;height:120px;font-family:'Hanken Grotesk',sans-seri
             </div>
           </div>
 
+          <div id="annual-savings-banner" style="display:none;background:rgba(16,185,129,0.07);border:1px solid rgba(16,185,129,0.2);border-radius:10px;padding:16px 20px;margin-bottom:16px;display:none;align-items:center;justify-content:space-between;gap:12px">
+            <div>
+              <div style="font-size:0.78rem;font-weight:700;color:var(--green)" id="banner-save-text">Switch to annual and save</div>
+              <div style="font-size:0.68rem;color:var(--muted);margin-top:2px" id="banner-sub-text"></div>
+            </div>
+            <button onclick="switchToAnnual()" style="background:var(--green);color:#000;border:none;border-radius:6px;padding:8px 16px;font-size:0.72rem;font-weight:700;cursor:pointer;white-space:nowrap">Switch to annual →</button>
+          </div>
+
           <div class="card">
             <div class="card-hd"><div class="card-title">Plan comparison</div></div>
             <div class="card-body" style="padding:0">
@@ -712,6 +720,20 @@ async function loadBillingInfo(){
     if(d.status==='trialing'&&d.trialEndsAt){ const days=Math.max(0,Math.floor((new Date(d.trialEndsAt)-Date.now())/(1000*60*60*24))); document.getElementById('billing-next').textContent=`Trial ends in ${days} day${days!==1?'s':''}`; }
     const features = { starter:['10 seats','5 scans/month','Breach monitoring','AI training'], business:['50 seats','Unlimited scans','Breach monitoring','AI training','PDF reports','Slack alerts'], enterprise:['Unlimited seats','Everything in Business','Custom integrations','Dedicated support'] };
     document.getElementById('billing-features').innerHTML = (features[plan]||features.starter).map(f=>`<span class="plan-tag">${f}</span>`).join('');
+
+    // Show annual savings banner if on monthly billing (period end < ~300 days away)
+    const banner = document.getElementById('annual-savings-banner');
+    if(banner && d.currentPeriodEnd && !d.isTrial){
+      const daysLeft = (new Date(d.currentPeriodEnd) - Date.now()) / (1000*60*60*24);
+      const isMonthly = daysLeft < 300;
+      if(isMonthly){
+        const savingsMap = {starter:{save:118,annual:470,monthly:49},business:{save:478,annual:1910,monthly:199},enterprise:{save:1438,annual:5750,monthly:599}};
+        const s = savingsMap[plan] || savingsMap.starter;
+        document.getElementById('banner-save-text').textContent = `Switch to annual and save $${s.save}/year`;
+        document.getElementById('banner-sub-text').textContent = `$${s.annual}/yr vs $${s.monthly}/mo × 12 = $${s.monthly*12}`;
+        banner.style.display = 'flex';
+      }
+    }
   }catch(e){}
 }
 
@@ -879,6 +901,17 @@ function closeGS(){ document.getElementById('gs-modal').style.display='none'; }
 function openSecurityModal(){ const m=document.getElementById('sec-modal'); m.style.display='flex'; m.style.alignItems='center'; m.style.justifyContent='center'; }
 function closeSec(){ document.getElementById('sec-modal').style.display='none'; }
 function openUpgradeModal(){ document.getElementById('upgrade-modal').style.display='flex'; }
+async function switchToAnnual(){
+  const plan = (companyData.plan||'starter').toLowerCase();
+  const btn = document.querySelector('#annual-savings-banner button');
+  if(btn){ btn.textContent='Redirecting...'; btn.disabled=true; }
+  try{
+    const r = await fetch(`${API}/billing/upgrade`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+authToken},body:JSON.stringify({plan,billing:'annual'})});
+    const d = await r.json();
+    if(d.url){ window.location.href=d.url; }
+    else{ alert(d.error||'Could not start checkout. Try again.'); if(btn){btn.textContent='Switch to annual →';btn.disabled=false;} }
+  }catch(e){ alert('Connection error. Please try again.'); if(btn){btn.textContent='Switch to annual →';btn.disabled=false;} }
+}
 async function doUpgrade(plan){
   const msg = document.getElementById('upgrade-msg');
   msg.innerHTML = '<div style="font-size:0.72rem;color:var(--muted);text-align:center;padding:0.5rem">Redirecting to Stripe checkout...</div>';
