@@ -645,7 +645,7 @@ footer{border-top:1px solid var(--border);padding:4rem 0 2rem;position:relative;
           <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>5 vulnerability scans/mo</li>
           <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Email alerts</li>
         </ul>
-        <a href="auth.html?signup=true&plan=starter" class="btn btn-ghost" id="cta-starter">Start free trial</a>
+        <a class="btn btn-ghost" id="cta-starter" onclick="ctaClick('starter')">Start free trial</a>
       </div>
       <div class="plan feat reveal rd2">
         <div class="plan-tag">Most popular</div>
@@ -661,7 +661,7 @@ footer{border-top:1px solid var(--border);padding:4rem 0 2rem;position:relative;
           <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Bulk breach checking</li>
           <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Monthly PDF reports</li>
         </ul>
-        <a href="auth.html?signup=true&plan=business" class="btn btn-primary" id="cta-business">Start free trial</a>
+        <a class="btn btn-primary" id="cta-business" onclick="ctaClick('business')">Start free trial</a>
       </div>
       <div class="plan ent reveal rd3">
         <div class="plan-tag">White-glove</div>
@@ -677,7 +677,7 @@ footer{border-top:1px solid var(--border);padding:4rem 0 2rem;position:relative;
           <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Dedicated account manager</li>
           <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Priority 24/7 support</li>
         </ul>
-        <a href="auth.html?signup=true&plan=enterprise" class="btn btn-ghost" style="border-color:var(--gold-border);color:var(--gold)" id="cta-enterprise">Start free trial</a>
+        <a class="btn btn-ghost" style="border-color:var(--gold-border);color:var(--gold)" id="cta-enterprise" onclick="ctaClick('enterprise')">Start free trial</a>
       </div>
     </div>
   </div>
@@ -843,6 +843,14 @@ function switchShow(tab,id){
 // ── billing toggle ──
 const API_BASE='https://cybershield-backend-production-492b.up.railway.app';
 const MONTH_HREFS={starter:'auth.html?signup=true&plan=starter',business:'auth.html?signup=true&plan=business',enterprise:'auth.html?signup=true&plan=enterprise'};
+let currentBilling='month';
+
+// Single dispatcher — always routes based on current billing mode.
+// Avoids fragile href/onclick swapping on the <a> elements.
+function ctaClick(plan){
+  if(currentBilling==='year'){handleAnnualCta(plan);}
+  else{window.location.href=MONTH_HREFS[plan];}
+}
 
 async function handleAnnualCta(plan){
   const btn=document.getElementById('cta-'+plan);
@@ -852,10 +860,7 @@ async function handleAnnualCta(plan){
   try{
     const r=await fetch(API_BASE+'/checkout/annual-session',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plan,billing:'annual'})});
     const d=await r.json();
-    if(d.url){
-      window.location.href=d.url;
-      return;
-    }
+    if(d.url){window.location.href=d.url;return;}
     alert(d.error||'Could not start checkout. Please try again.');
   }catch(e){
     console.error('Annual checkout error:',e);
@@ -865,6 +870,7 @@ async function handleAnnualCta(plan){
 }
 
 function setBilling(mode){
+  currentBilling=mode;
   document.getElementById('bo-month').classList.toggle('active',mode==='month');
   document.getElementById('bo-year').classList.toggle('active',mode==='year');
   document.querySelectorAll('.price').forEach(el=>{
@@ -883,16 +889,7 @@ function setBilling(mode){
   });
   ['starter','business','enterprise'].forEach(plan=>{
     const el=document.getElementById('cta-'+plan);
-    if(!el)return;
-    if(mode==='year'){
-      el.removeAttribute('href');
-      el.onclick=function(e){e.preventDefault();handleAnnualCta(plan);};
-      el.textContent='Pay now';
-    }else{
-      el.href=MONTH_HREFS[plan];
-      el.onclick=null;
-      el.textContent='Start free trial';
-    }
+    if(el)el.textContent=mode==='year'?'Pay now':'Start free trial';
   });
 }
 
