@@ -669,12 +669,12 @@ function setAuthBilling(mode) {
   const planSelEl = document.getElementById('signup-plan-selector');
 
   if (isAnnual) {
-    if (fieldsEl)  fieldsEl.style.display  = 'none';
+    if (fieldsEl)  fieldsEl.style.display  = '';
     if (planSelEl) planSelEl.style.display = '';
-    if (titleEl)   titleEl.textContent = 'Annual Plan — pay now, save 20%';
+    if (titleEl)   titleEl.textContent = 'Annual Plan — save 20%';
     if (subEl)     subEl.innerHTML     = 'Full year billed upfront &middot; No free trial &middot; Cancel anytime';
-    if (btnEl)   { btnEl.textContent   = 'Continue to payment →'; btnEl.onclick = startAnnualCheckout; }
-    if (termsEl)   termsEl.innerHTML   = 'You\'ll be taken to Stripe to complete payment. Your account is created after payment is confirmed. By continuing you agree to our <a href="terms.html">Terms of Service</a> and <a href="privacy.html">Privacy Policy</a>.';
+    if (btnEl)   { btnEl.textContent   = 'Create account & pay annually →'; btnEl.onclick = handleSignup; }
+    if (termsEl)   termsEl.innerHTML   = 'By creating an account you agree to our <a href="terms.html">Terms of Service</a> and <a href="privacy.html">Privacy Policy</a>. You\'ll be redirected to Stripe to complete payment.';
   } else {
     if (fieldsEl)  fieldsEl.style.display  = '';
     if (planSelEl) planSelEl.style.display = '';
@@ -777,9 +777,6 @@ async function handleSignin() {
 
 // ── sign up ──────────────────────────────────────────────────
 async function handleSignup() {
-  // Safety net: if annual billing without confirmed payment, go to Stripe first
-  if (billingMode === 'annual' && !csSid) { startAnnualCheckout(); return; }
-
   const fullName    = document.getElementById('reg-name').value.trim();
   const companyName = document.getElementById('reg-company').value.trim();
   const email       = document.getElementById('reg-email').value.trim();

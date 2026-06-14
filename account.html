@@ -743,29 +743,30 @@ async function loadStats(){
     let r = await fetch(`${API}/dashboard/stats`, { headers:{'Authorization':'Bearer '+authToken} });
     let d = await r.json();
 
-    let trainings = 0, scans = 0, breaches = 0;
+    let trainings = 0, scans = 0, breachChecks = 0;
     if(d.stats){
       // Handle nested stats object with various field formats
       const s = d.stats;
-      trainings = Number(s.trainings?.total ?? s.trainings ?? s.trainingsCompleted ?? 0) || 0;
-      scans     = Number(s.scans?.total ?? s.scans ?? s.scansThisMonth ?? 0) || 0;
-      breaches  = Number(s.breachChecks?.total ?? s.breachChecks ?? s.breachesFound ?? 0) || 0;
+      trainings   = Number(s.trainings?.total ?? s.trainings ?? s.trainingsCompleted ?? 0) || 0;
+      scans       = Number(s.scans?.total ?? s.scans ?? s.scansThisMonth ?? 0) || 0;
+      breachChecks = Number(s.breachChecks?.total ?? s.breachChecks ?? s.breachesFound ?? 0) || 0;
     } else {
       const s = d;
-      trainings = Number(s.trainingsCompleted ?? s.trainings?.total ?? s.trainings ?? 0) || 0;
-      scans     = Number(s.scansThisMonth ?? s.scans?.total ?? s.scans ?? 0) || 0;
-      breaches  = Number(s.breachesFound ?? s.breachChecks ?? 0) || 0;
+      trainings   = Number(s.trainingsCompleted ?? s.trainings?.total ?? s.trainings ?? 0) || 0;
+      scans       = Number(s.scansThisMonth ?? s.scans?.total ?? s.scans ?? 0) || 0;
+      breachChecks = Number(s.breachChecks ?? s.breachesFound ?? 0) || 0;
     }
 
-    // Calculate score same way as dashboard
-    const trainPts  = Math.min(trainings*4,20);
-    const scanPts   = scans>0?(scans>=3?20:15):-10;
-    const breachPts = -Math.min(breaches*3,25);
-    const score     = Math.max(10,Math.min(100,Math.round(50+trainPts+scanPts+breachPts)));
+    // Same formula as dashboard (app.html) — must stay in sync
+    const trainPts      = Math.min(trainings * 5, 25);
+    const scanPts       = Math.min(scans * 3, 30);
+    const breachCheckPts = Math.min(breachChecks, 10);
+    const score         = Math.max(10, Math.min(95, Math.round(30 + trainPts + scanPts + breachCheckPts)));
 
     document.getElementById('acc-score').textContent = score;
     document.getElementById('acc-trainings').textContent = trainings;
     document.getElementById('acc-scans').textContent = scans;
+
     const color = score>=80?'#10B981':score>=65?'#F59E0B':score>=45?'#FF6B00':'#EF4444';
     const label = score>=80?'EXCELLENT':score>=65?'GOOD':score>=45?'FAIR':'AT RISK';
     const scoreEl = document.getElementById('acc-score');
