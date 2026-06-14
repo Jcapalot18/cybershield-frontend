@@ -819,37 +819,7 @@ async function handleSignup() {
     return;
   }
 
-  if (billingMode === 'monthly') {
-    // ── Monthly = free trial — create account directly, no Stripe ──
-    btn.textContent = 'Creating account…';
-    try {
-      const body = { fullName, companyName, email, password, plan };
-      const r = await fetch(`${API}/auth/register`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
-      });
-      const data = await r.json();
-      if (!r.ok) {
-        showMsg('signup-msg', 'error', data.error || 'Registration failed. Please try again.');
-        btn.textContent = 'Create account & start trial →'; btn.disabled = false;
-        return;
-      }
-      localStorage.setItem('cs_token',   data.accessToken);
-      localStorage.setItem('cs_refresh', data.refreshToken);
-      localStorage.setItem('cs_email',   data.user.email);
-      localStorage.setItem('cs_user',    JSON.stringify(data.user));
-      localStorage.setItem('cs_company', JSON.stringify(data.company));
-      localStorage.setItem('cs_plan',    data.company.plan || 'starter');
-      window.location.href = 'app.html';
-    } catch (e) {
-      showMsg('signup-msg', 'error', 'Connection error. Please try again.');
-      btn.textContent = 'Create account & start trial →'; btn.disabled = false;
-    }
-    return;
-  }
-
-  // ── Annual = pay first via Stripe, then create account ─────
+  // ── No payment yet — save form data, go to Stripe first ─────
   sessionStorage.setItem('cs_signup_name', fullName);
   sessionStorage.setItem('cs_signup_company', companyName);
   sessionStorage.setItem('cs_signup_email', email);
@@ -857,9 +827,13 @@ async function handleSignup() {
   sessionStorage.setItem('cs_signup_plan', plan);
   sessionStorage.setItem('cs_signup_billing', billingMode);
 
+  const checkoutEndpoint = billingMode === 'annual'
+    ? `${API}/checkout/annual-session`
+    : `${API}/checkout/monthly-session`;
+
   btn.textContent = 'Redirecting to Stripe…';
   try {
-    const r = await fetch(`${API}/checkout/annual-session`, {
+    const r = await fetch(checkoutEndpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ plan })
@@ -869,11 +843,13 @@ async function handleSignup() {
       window.location.href = d.url;
     } else {
       showMsg('signup-msg', 'error', d.error || 'Could not start checkout. Please try again.');
-      btn.textContent = 'Create account & pay annually →'; btn.disabled = false;
+      btn.textContent = billingMode === 'annual' ? 'Create account & pay annually →' : 'Create account & start trial →';
+      btn.disabled = false;
     }
   } catch (e) {
     showMsg('signup-msg', 'error', 'Connection error. Please try again.');
-    btn.textContent = 'Create account & pay annually →'; btn.disabled = false;
+    btn.textContent = billingMode === 'annual' ? 'Create account & pay annually →' : 'Create account & start trial →';
+    btn.disabled = false;
   }
 }
 
