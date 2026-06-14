@@ -626,7 +626,7 @@ footer{border-top:1px solid var(--border);padding:4rem 0 2rem;position:relative;
     <div class="sec-head center reveal">
       <div class="eyebrow center">Pricing</div>
       <h2 class="sec-title">$49/month vs. a $200,000 breach</h2>
-      <p class="sec-sub">One avoided breach pays for 340 years of CyberShield. Monthly plans include a 14-day free trial — no credit card. Save up to 20% with annual billing.</p>
+      <p class="sec-sub" id="pricing-sub">One avoided breach pays for 340 years of CyberShield. Monthly plans include a 14-day free trial — no credit card. Save up to 20% with annual billing.</p>
       <div class="bill-toggle">
         <button class="bill-opt active" id="bo-month" onclick="setBilling('month')">Monthly</button>
         <button class="bill-opt" id="bo-year" onclick="setBilling('year')">Annual<span class="bill-save">−20%</span></button>
@@ -891,7 +891,69 @@ function setBilling(mode){
     const el=document.getElementById('cta-'+plan);
     if(el)el.textContent=mode==='year'?'Pay now':'Start free trial';
   });
+  if(isLoggedIn&&loggedInPlan)applyLoggedInPricingState(loggedInPlan,loggedInTrialing);
 }
+
+// ── logged-in pricing state ──
+const PLAN_ORDER={starter:0,business:1,enterprise:2};
+const PLAN_LABELS={starter:'Starter',business:'Business',enterprise:'Enterprise'};
+const isLoggedIn=!!localStorage.getItem('cs_token');
+let loggedInPlan=null,loggedInTrialing=false;
+
+function applyLoggedInPricingState(plan,trialing){
+  const curRank=PLAN_ORDER[plan]??0;
+  ['starter','business','enterprise'].forEach(p=>{
+    const btn=document.getElementById('cta-'+p);
+    if(!btn)return;
+    const rank=PLAN_ORDER[p]??0;
+    btn.style.opacity='';btn.style.cursor='';btn.style.pointerEvents='';
+    if(p===plan){
+      btn.textContent=trialing?'Subscribe now':'Current Plan';
+      btn.onclick=trialing
+        ?function(e){e.preventDefault();doUpgradeFromIndex(p);}
+        :function(e){e.preventDefault();};
+      if(!trialing){btn.style.opacity='0.5';btn.style.cursor='default';}
+    }else if(rank>curRank){
+      btn.textContent='Upgrade to '+PLAN_LABELS[p];
+      btn.onclick=function(e){e.preventDefault();doUpgradeFromIndex(p);};
+    }else{
+      btn.textContent='Downgrade';
+      btn.onclick=function(e){e.preventDefault();doUpgradeFromIndex(p);};
+    }
+  });
+  const sub=document.getElementById('pricing-sub');
+  if(sub)sub.textContent='One avoided breach pays for 340 years of CyberShield. Save up to 20% with annual billing.';
+}
+
+async function initLoggedInPricing(){
+  if(!isLoggedIn)return;
+  const company=JSON.parse(localStorage.getItem('cs_company')||'{}');
+  loggedInPlan=(company.plan||'starter').toLowerCase();
+  try{
+    const r=await fetch(API_BASE+'/billing/subscription',{headers:{'Authorization':'Bearer '+localStorage.getItem('cs_token')}});
+    if(r.ok){const d=await r.json();loggedInTrialing=d.status==='trialing';}
+  }catch(e){}
+  applyLoggedInPricingState(loggedInPlan,loggedInTrialing);
+}
+
+async function doUpgradeFromIndex(plan){
+  const token=localStorage.getItem('cs_token');
+  if(!token){window.location.href=MONTH_HREFS[plan];return;}
+  const btn=document.getElementById('cta-'+plan);
+  const orig=btn?btn.textContent:'';
+  if(btn){btn.textContent='Loading…';btn.style.pointerEvents='none';}
+  try{
+    const r=await fetch(API_BASE+'/billing/upgrade',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({plan})});
+    const d=await r.json();
+    if(d.url){window.location.href=d.url;return;}
+    alert(d.error||'Could not start checkout. Please try again.');
+  }catch(e){
+    alert('Connection error. Please try again.');
+  }
+  if(btn){btn.textContent=orig;btn.style.pointerEvents='';}
+}
+
+initLoggedInPricing();
 
 // ── ticker ──
 const tickerData=[
