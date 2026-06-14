@@ -793,7 +793,7 @@ async function sendSupportMessage(){
   btn.textContent='Send message'; btn.disabled=false;
 }
 
-function signOutAll(){ ['cs_token','cs_refresh','cs_user','cs_company','cs_email'].forEach(k=>localStorage.removeItem(k)); window.location.href='auth.html'; }
+function signOutAll(){ ['cs_token','cs_refresh','cs_user','cs_company','cs_email','cs_plan'].forEach(k=>localStorage.removeItem(k)); window.location.href='auth.html'; }
 
 async function confirmDeleteAccount(){
   const first = confirm('Are you sure you want to delete your account?\n\nThis will permanently delete:\n• All your scan history\n• All team members\n• All your data\n\nThis cannot be undone.');
@@ -807,7 +807,7 @@ async function confirmDeleteAccount(){
     const d = await r.json();
     if(r.ok){
       alert('Your account has been deleted. You will now be signed out.');
-      ['cs_token','cs_refresh','cs_user','cs_company','cs_email'].forEach(k=>localStorage.removeItem(k));
+      ['cs_token','cs_refresh','cs_user','cs_company','cs_email','cs_plan'].forEach(k=>localStorage.removeItem(k));
       window.location.href = 'index.html';
     } else {
       alert(d.error||'Failed to delete account. Please contact support@cybrshieldtech.com');

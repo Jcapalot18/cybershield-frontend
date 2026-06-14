@@ -694,6 +694,7 @@ async function handleSignin() {
     localStorage.setItem('cs_email',   data.user.email);
     localStorage.setItem('cs_user',    JSON.stringify(data.user));
     localStorage.setItem('cs_company', JSON.stringify(data.company));
+    localStorage.setItem('cs_plan',    data.company.plan||'starter');
     const ADMIN_EMAILS = ['njirussnkar@gmail.com', 'jfinesse882@gmail.com'];
     window.location.href = ADMIN_EMAILS.includes(data.user.email?.toLowerCase()) ? 'admin.html' : 'app.html';
   } catch (e) {
@@ -725,6 +726,7 @@ async function handleSignup() {
     localStorage.setItem('cs_email',   data.user.email);
     localStorage.setItem('cs_user',    JSON.stringify(data.user));
     localStorage.setItem('cs_company', JSON.stringify(data.company));
+    localStorage.setItem('cs_plan',    data.company.plan||'starter');
     window.location.href = data.checkoutUrl || 'app.html';
   } catch (e) {
     showMsg('signup-msg', 'error', 'Connection error. Please try again.');

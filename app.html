@@ -1287,6 +1287,58 @@ function initApp(){
   loadValidTopics();
   loadDashboard();
   loadThreats();
+  applyPlanLimits();
+}
+
+// ── Plan helpers ───────────────────────────────────────────────
+function getPlan(){
+  return(localStorage.getItem('cs_plan')||companyData.plan||'starter').toLowerCase();
+}
+
+function applyPlanLimits(){
+  const plan=getPlan();
+  const isStarter=plan==='starter';
+
+  // Scan counter bar for Starter — inserted above scan-limit-area, survives runScan() clearing
+  if(isStarter){
+    const limitArea=document.getElementById('scan-limit-area');
+    if(limitArea&&!document.getElementById('starter-scan-bar')){
+      const bar=document.createElement('div');
+      bar.id='starter-scan-bar';
+      bar.style.cssText='margin:0 1.25rem 0.5rem;padding:0.625rem 0.875rem;background:rgba(255,107,0,0.04);border:1px solid var(--orange-border);border-radius:8px';
+      bar.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">
+        <span style="font-size:0.7rem;font-weight:700;color:var(--text)">Scans this month</span>
+        <span id="scan-counter-text" style="font-size:0.7rem;color:var(--muted)">— / 5</span>
+      </div>
+      <div style="height:4px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden">
+        <div id="scan-counter-bar" style="height:100%;background:var(--orange);border-radius:3px;width:0%;transition:width 0.4s ease"></div>
+      </div>
+      <div style="font-size:0.61rem;color:var(--dim);margin-top:4px">Starter plan: 5 scans/month · <span style="color:var(--orange);cursor:pointer;font-weight:700" onclick="openUpgradeModal()">Upgrade for unlimited →</span></div>`;
+      limitArea.parentNode.insertBefore(bar,limitArea);
+    }
+  }
+
+  // PDF buttons — dim and gate for Starter (onclick gating handled in the PDF functions)
+  if(isStarter){
+    ['pdf-btn','breach-pdf-btn'].forEach(id=>{
+      const btn=document.getElementById(id);
+      if(!btn||btn.dataset.planGated)return;
+      btn.dataset.planGated='1';
+      btn.style.opacity='0.5';
+      btn.style.filter='grayscale(0.6)';
+      btn.title='PDF reports — Business plan and above';
+    });
+  }
+}
+
+function updateScanCounter(n){
+  if(getPlan()!=='starter')return;
+  const limit=5;
+  const pct=Math.min((n/limit)*100,100);
+  const t=document.getElementById('scan-counter-text');
+  const b=document.getElementById('scan-counter-bar');
+  if(t)t.textContent=n+' / '+limit;
+  if(b){b.style.width=pct+'%';b.style.background=n>=limit?'var(--red)':n>=4?'var(--yellow)':'var(--orange)';}
 }
 
 function buildChecksGrid(){
@@ -1661,6 +1713,9 @@ async function loadDashboard(){
 
     const scanLimit=plan==='business'||plan==='enterprise'?'∞':'5';
     document.getElementById('scans-foot').textContent='of '+scanLimit+' scans this month';
+    const scanStatEl=document.getElementById('scan-stat-scans');
+    if(scanStatEl)scanStatEl.textContent=scans;
+    updateScanCounter(scans);
 
     // Ring
     const circ=289.03;
@@ -1951,6 +2006,7 @@ async function loadScanHistory(){
 let lastBreachData = null;
 
 async function downloadBreachPDF(){
+  if(getPlan()==='starter'){openUpgradeModal();return;}
   if(!lastBreachData){ alert('Run a breach check first.'); return; }
 
   if(!window.jspdf){
@@ -2558,6 +2614,7 @@ function getClass(v){
 }
 
 async function downloadScanPDF(){
+  if(getPlan()==='starter'){openUpgradeModal();return;}
   if(!lastScanResults||!lastScanResults.length){alert('No scan results to export.');return;}
   
   // Normalize results to [[label, value]] format
@@ -2888,7 +2945,7 @@ async function openBillingPortal(){
   if(btn){btn.textContent='Manage or cancel subscription →';btn.disabled=false;}
 }
 
-function doLogout(){['cs_token','cs_refresh','cs_user','cs_company','cs_email'].forEach(k=>localStorage.removeItem(k));window.location.href='auth.html';}
+function doLogout(){['cs_token','cs_refresh','cs_user','cs_company','cs_email','cs_plan'].forEach(k=>localStorage.removeItem(k));window.location.href='auth.html';}
 
 // ── Mobile sidebar toggle ──────────────────────────────────────
 function toggleSidebar(){
