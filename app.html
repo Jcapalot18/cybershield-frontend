@@ -651,6 +651,12 @@ a{text-decoration:none;color:inherit}
 
 <!-- ═══════ MAIN ═══════ -->
 <div class="main">
+  <!-- Checkout completion banner (hidden by default) -->
+  <div id="checkout-banner" style="display:none;background:linear-gradient(90deg,#FF6B00,#e05500);color:#fff;padding:14px 24px;font-size:15px;font-weight:600;text-align:center;position:relative;z-index:50;">
+    <span>You're almost there! Complete your registration to unlock your 14-day free trial.</span>
+    <button onclick="resumeCheckout()" style="margin-left:16px;background:#fff;color:#FF6B00;border:none;padding:8px 20px;border-radius:6px;font-weight:700;cursor:pointer;font-size:14px;">Complete Setup</button>
+    <button onclick="document.getElementById('checkout-banner').style.display='none'" style="position:absolute;right:16px;top:50%;transform:translateY(-50%);background:none;border:none;color:#fff;font-size:20px;cursor:pointer;opacity:.7">&times;</button>
+  </div>
   <div class="topbar">
     <button class="hamburger" onclick="toggleSidebar()" aria-label="Menu">
       <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
@@ -1306,6 +1312,29 @@ function initApp(){
   loadDashboard();
   loadThreats();
   applyPlanLimits();
+  checkSubscriptionStatus();
+}
+
+function checkSubscriptionStatus(){
+  const status=companyData.subscription_status;
+  if(status==='active'||status==='trialing') return;
+  document.getElementById('checkout-banner').style.display='block';
+}
+
+async function resumeCheckout(){
+  const btn=event.target;
+  btn.textContent='Loading...';btn.disabled=true;
+  try{
+    const plan=getPlan()||'starter';
+    const companyId=companyData.id;
+    const r=await fetch(`${API}/checkout/monthly-session`,{
+      method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+authToken},
+      body:JSON.stringify({plan,companyId})
+    });
+    const d=await r.json();
+    if(d.url) window.location.href=d.url;
+    else{ btn.textContent='Complete Setup';btn.disabled=false; alert('Could not create checkout session. Please try again.'); }
+  }catch(e){ btn.textContent='Complete Setup';btn.disabled=false; alert('Something went wrong. Please try again.'); }
 }
 
 // ── Plan helpers ───────────────────────────────────────────────
