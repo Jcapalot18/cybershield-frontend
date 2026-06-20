@@ -326,7 +326,7 @@ footer{border-top:1px solid var(--border);padding:4rem 0 2rem;position:relative;
 
 /* ── LIVE DEMO ── */
 .demo-frame{position:relative;border:1px solid var(--border);border-radius:16px;overflow:hidden;background:var(--bg2);box-shadow:0 40px 90px rgba(0,0,0,0.5),0 0 0 1px rgba(255,255,255,0.03)}
-.demo-chrome{display:flex;align-items:center;gap:.75rem;padding:.7rem 1rem;background:rgba(6,8,14,0.9);border-bottom:1px solid var(--border)}
+.demo-chrome{display:flex;align-items:center;gap:.75rem;padding:.55rem 1rem;background:rgba(6,8,14,0.9);border-bottom:1px solid var(--border)}
 .demo-dots{display:flex;gap:6px}
 .demo-dots span{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,0.08)}
 .demo-dots span:first-child{background:rgba(239,68,68,0.5)}
@@ -335,51 +335,119 @@ footer{border-top:1px solid var(--border);padding:4rem 0 2rem;position:relative;
 .demo-url{flex:1;text-align:center;font-size:.72rem;color:var(--dim);font-weight:600;letter-spacing:.02em}
 .demo-live{display:flex;align-items:center;gap:6px;font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--green)}
 .demo-live .d{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;box-shadow:0 0 8px var(--green)}
-.demo-body{padding:2rem 2.5rem;min-height:340px;position:relative}
-.demo-step{width:100%}
-
-/* input */
-.demo-input-label{font-size:.78rem;font-weight:700;color:var(--muted);margin-bottom:.75rem;text-transform:uppercase;letter-spacing:.08em}
-.demo-input-row{display:flex;gap:.75rem;align-items:center;max-width:520px}
-.demo-input-field{flex:1;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:10px;padding:.85rem 1.1rem;font-size:1rem;font-family:var(--font);color:var(--text);font-weight:600;letter-spacing:-0.01em;min-height:50px;display:flex;align-items:center}
-.demo-input-field .cursor{display:inline-block;width:2px;height:1.1em;background:var(--orange);animation:blink 1s step-end infinite;margin-left:1px;vertical-align:text-bottom}
+/* tabs */
+.demo-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);background:rgba(6,8,14,0.5)}
+.demo-tab{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:.7rem .5rem;font-size:.74rem;font-weight:700;color:var(--dim);cursor:pointer;border-bottom:2px solid transparent;transition:all .25s var(--ease);white-space:nowrap;position:relative}
+.demo-tab svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.demo-tab:hover{color:var(--muted);background:rgba(255,255,255,0.02)}
+.demo-tab.active{color:var(--orange);border-bottom-color:var(--orange);background:rgba(255,107,0,0.04)}
+/* body */
+.demo-body{padding:1.5rem 2rem;min-height:360px;position:relative;overflow:hidden}
+.demo-screen{position:absolute;inset:0;padding:1.5rem 2rem;opacity:0;transform:translateX(30px);transition:opacity .45s var(--ease),transform .45s var(--ease);pointer-events:none}
+.demo-screen.active{opacity:1;transform:translateX(0);pointer-events:auto;position:relative}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
-.demo-scan-btn{background:var(--orange);color:#fff;border:none;padding:.85rem 1.5rem;border-radius:10px;font-size:.9rem;font-weight:700;font-family:var(--font);cursor:default;white-space:nowrap;box-shadow:0 4px 16px rgba(255,107,0,0.3);transition:all .2s}
-
-/* scanning */
-.demo-scan-status{display:flex;align-items:center;gap:.75rem;margin-bottom:1.5rem}
-.demo-spinner{width:22px;height:22px;border:2.5px solid rgba(255,107,0,0.15);border-top-color:var(--orange);border-radius:50%;animation:spin .8s linear infinite}
-.demo-scan-txt{font-size:1rem;font-weight:600;color:var(--muted)}
-.demo-scan-txt b{color:var(--text)}
-.demo-checks{display:flex;flex-direction:column;gap:.6rem;margin-bottom:1.5rem}
-.demo-check{display:flex;align-items:center;gap:.6rem;font-size:.85rem;color:var(--muted);font-weight:500;opacity:0.3;transition:all .4s var(--ease)}
-.demo-check.done{opacity:1;color:var(--green)}
-.demo-check.done .demo-check-dot{background:var(--green);box-shadow:0 0 8px rgba(16,185,129,0.4)}
-.demo-check-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.1);transition:all .3s;flex-shrink:0}
-.demo-progress{height:4px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden}
-.demo-progress-bar{height:100%;width:0;background:linear-gradient(90deg,var(--orange),var(--orange2));border-radius:4px;transition:width .3s linear}
-
-/* results */
-.demo-results-grid{display:grid;grid-template-columns:auto 1fr;gap:2rem;align-items:center;margin-bottom:1.5rem}
-.demo-gauge-wrap{text-align:center;position:relative;width:160px}
-.demo-gauge{width:100%;display:block}
-.demo-gauge-num{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);font-size:2.2rem;font-weight:900;letter-spacing:-0.04em;line-height:1}
-.demo-gauge-num small{font-size:.9rem;font-weight:600;color:var(--muted)}
-.demo-gauge-label{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-top:-.25rem}
-.demo-stats{display:flex;flex-direction:column;gap:.75rem}
-.demo-stat{display:flex;align-items:center;gap:1rem;padding:.85rem 1rem;background:rgba(255,255,255,0.025);border:1px solid var(--border2);border-radius:10px}
-.demo-stat-num{font-size:1.5rem;font-weight:900;letter-spacing:-0.03em;min-width:36px;text-align:center}
-.demo-stat-lbl{font-size:.85rem;color:var(--muted);font-weight:500}
-.demo-risks{display:flex;flex-direction:column;gap:.5rem;margin-bottom:1.5rem}
-.demo-risk{display:flex;align-items:center;gap:.75rem;padding:.75rem 1rem;background:rgba(255,255,255,0.02);border:1px solid var(--border2);border-radius:10px;opacity:0;transform:translateY(10px);transition:all .4s var(--ease)}
-.demo-risk.in{opacity:1;transform:translateY(0)}
-.demo-risk-sev{width:4px;height:22px;border-radius:3px;flex-shrink:0}
-.demo-risk-name{flex:1;font-size:.88rem;font-weight:600}
-.demo-risk-badge{font-size:.62rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;padding:3px 8px;border-radius:5px}
-.demo-report{display:flex;align-items:center;gap:1rem;flex-wrap:wrap;transition:opacity .5s var(--ease)}
-.demo-report-note{font-size:.78rem;color:var(--muted);font-weight:500}
-.demo-replay{position:absolute;bottom:.75rem;right:1rem;display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-size:.72rem;font-weight:700;color:var(--muted);cursor:pointer;font-family:var(--font);transition:all .2s}
+/* indicators */
+.demo-indicators{display:flex;align-items:center;justify-content:center;gap:8px;padding:.6rem 0;background:rgba(6,8,14,0.5);border-top:1px solid var(--border)}
+.demo-dot-ind{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.1);transition:all .3s;cursor:pointer}
+.demo-dot-ind.active{background:var(--orange);box-shadow:0 0 8px rgba(255,107,0,0.4)}
+.demo-replay{position:absolute;bottom:2rem;right:1rem;display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-size:.72rem;font-weight:700;color:var(--muted);cursor:pointer;font-family:var(--font);transition:all .2s;z-index:5}
 .demo-replay:hover{background:rgba(255,255,255,0.08);color:var(--text);border-color:rgba(255,255,255,0.15)}
+
+/* ── screen 1: dashboard ── */
+.ds-topbar{display:flex;align-items:center;gap:.75rem;margin-bottom:1.25rem}
+.ds-avatar{width:32px;height:32px;border-radius:9px;background:var(--orange-dim);border:1px solid var(--orange-border);display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:800;color:var(--orange)}
+.ds-welcome{flex:1}
+.ds-welcome .t{font-size:.9rem;font-weight:700}
+.ds-welcome .s{font-size:.7rem;color:var(--muted)}
+.ds-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:.6rem;margin-bottom:1.25rem}
+.ds-kpi{background:rgba(255,255,255,0.025);border:1px solid var(--border2);border-radius:10px;padding:.75rem .6rem;text-align:center;opacity:0;transform:translateY(8px);transition:all .4s var(--ease)}
+.ds-kpi.in{opacity:1;transform:translateY(0)}
+.ds-kpi .v{font-size:1.3rem;font-weight:900;letter-spacing:-0.03em;line-height:1}
+.ds-kpi .k{font-size:.52rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-top:5px}
+.ds-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.ds-card{background:rgba(255,255,255,0.02);border:1px solid var(--border2);border-radius:10px;padding:.85rem;opacity:0;transform:translateY(8px);transition:all .4s var(--ease)}
+.ds-card.in{opacity:1;transform:translateY(0)}
+.ds-card-head{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:.6rem}
+.ds-score-row{display:flex;align-items:center;gap:.75rem}
+.ds-ring{width:56px;height:56px;flex-shrink:0}
+.ds-ring-num{font-size:1.15rem;font-weight:900;line-height:1}
+.ds-ring-lbl{font-size:.42rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--green);margin-top:1px}
+.ds-bars{flex:1;display:flex;flex-direction:column;gap:5px}
+.ds-bar-row{display:flex;align-items:center;gap:6px;font-size:.6rem;color:var(--muted)}
+.ds-bar-row .lbl{width:52px;text-align:right;font-weight:600;flex-shrink:0}
+.ds-bar{flex:1;height:4px;background:rgba(255,255,255,0.05);border-radius:3px;overflow:hidden}
+.ds-bar i{display:block;height:100%;border-radius:3px;width:0;transition:width 1.2s var(--ease)}
+.ds-activity .ds-arow{display:flex;align-items:center;gap:.5rem;padding:.4rem 0;border-bottom:1px solid var(--border2);font-size:.7rem}
+.ds-activity .ds-arow:last-child{border-bottom:none}
+.ds-arow .dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.ds-arow .txt{flex:1;color:rgba(255,255,255,0.7);font-weight:500}
+.ds-arow .time{color:var(--dim);font-size:.6rem;font-weight:600}
+
+/* ── screen 2: scanner ── */
+.demo-input-row{display:flex;gap:.75rem;align-items:center}
+.demo-input-field{flex:1;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:10px;padding:.7rem 1rem;font-size:.92rem;font-family:var(--font);color:var(--text);font-weight:600;letter-spacing:-0.01em;min-height:44px;display:flex;align-items:center}
+.demo-input-field .cursor{display:inline-block;width:2px;height:1.1em;background:var(--orange);animation:blink 1s step-end infinite;margin-left:1px;vertical-align:text-bottom}
+.demo-scan-btn{background:var(--orange);color:#fff;border:none;padding:.7rem 1.3rem;border-radius:10px;font-size:.82rem;font-weight:700;font-family:var(--font);cursor:default;white-space:nowrap;box-shadow:0 4px 16px rgba(255,107,0,0.3)}
+.scan-phase{margin-top:1rem}
+.demo-scan-status{display:flex;align-items:center;gap:.6rem;margin-bottom:1rem}
+.demo-spinner{width:18px;height:18px;border:2.5px solid rgba(255,107,0,0.15);border-top-color:var(--orange);border-radius:50%;animation:spin .8s linear infinite}
+.demo-scan-txt{font-size:.88rem;font-weight:600;color:var(--muted)}
+.demo-scan-txt b{color:var(--text)}
+.demo-checks{display:flex;flex-direction:column;gap:.45rem;margin-bottom:1rem}
+.demo-check{display:flex;align-items:center;gap:.5rem;font-size:.78rem;color:var(--muted);font-weight:500;opacity:0.3;transition:all .35s var(--ease)}
+.demo-check.done{opacity:1;color:var(--green)}
+.demo-check.done .demo-check-dot{background:var(--green);box-shadow:0 0 6px rgba(16,185,129,0.4)}
+.demo-check-dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,0.1);transition:all .3s;flex-shrink:0}
+.demo-progress{height:3px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden}
+.demo-progress-bar{height:100%;width:0;background:linear-gradient(90deg,var(--orange),var(--orange2));border-radius:3px;transition:width .3s linear}
+.scan-results{margin-top:1rem}
+.scan-results-head{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:.5rem}
+.demo-vuln{display:flex;align-items:center;gap:.6rem;padding:.5rem .7rem;background:rgba(255,255,255,0.02);border:1px solid var(--border2);border-radius:8px;margin-bottom:.4rem;opacity:0;transform:translateY(6px);transition:all .35s var(--ease)}
+.demo-vuln.in{opacity:1;transform:translateY(0)}
+.demo-vuln-sev{width:3px;height:18px;border-radius:2px;flex-shrink:0}
+.demo-vuln-name{flex:1;font-size:.78rem;font-weight:600}
+.demo-vuln-badge{font-size:.56rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;padding:2px 7px;border-radius:4px}
+
+/* ── screen 3: breach ── */
+.breach-search{display:flex;align-items:center;gap:.6rem;margin-bottom:1rem}
+.breach-search-bar{flex:1;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:10px;padding:.65rem 1rem;font-size:.82rem;color:var(--text);font-weight:600;display:flex;align-items:center;gap:.5rem}
+.breach-search-bar svg{width:14px;height:14px;stroke:var(--dim);flex-shrink:0}
+.breach-status{font-size:.75rem;font-weight:700;display:flex;align-items:center;gap:.4rem;margin-bottom:1rem}
+.breach-cred{display:flex;align-items:center;gap:.75rem;padding:.6rem .8rem;background:rgba(239,68,68,0.04);border:1px solid rgba(239,68,68,0.12);border-radius:8px;margin-bottom:.4rem;opacity:0;transform:translateX(-10px);transition:all .4s var(--ease)}
+.breach-cred.in{opacity:1;transform:translateX(0)}
+.breach-cred-icon{width:28px;height:28px;border-radius:7px;background:rgba(239,68,68,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.breach-cred-icon svg{width:13px;height:13px;stroke:var(--red)}
+.breach-cred-info{flex:1;min-width:0}
+.breach-cred-email{font-size:.78rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.breach-cred-meta{font-size:.6rem;color:var(--muted);margin-top:1px}
+.breach-cred-tag{font-size:.56rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;padding:2px 7px;border-radius:4px;background:rgba(239,68,68,0.12);color:var(--red);flex-shrink:0}
+.breach-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin-top:.75rem}
+.breach-summary-item{text-align:center;padding:.6rem;background:rgba(255,255,255,0.02);border:1px solid var(--border2);border-radius:8px;opacity:0;transition:opacity .4s var(--ease)}
+.breach-summary-item.in{opacity:1}
+.breach-summary-item .v{font-size:1.2rem;font-weight:900;letter-spacing:-0.03em}
+.breach-summary-item .k{font-size:.5rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-top:3px}
+
+/* ── screen 4: training ── */
+.train-header{display:flex;align-items:center;gap:.6rem;margin-bottom:1rem}
+.train-header .ico{width:32px;height:32px;border-radius:9px;background:var(--orange-dim);border:1px solid var(--orange-border);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.train-header .ico svg{width:15px;height:15px;stroke:var(--orange)}
+.train-header .t{font-size:.88rem;font-weight:700}
+.train-header .s{font-size:.68rem;color:var(--muted)}
+.train-modules{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:1rem}
+.train-mod{background:rgba(255,255,255,0.025);border:1px solid var(--border2);border-radius:10px;padding:.8rem;opacity:0;transform:translateY(8px);transition:all .4s var(--ease)}
+.train-mod.in{opacity:1;transform:translateY(0)}
+.train-mod .week{font-size:.5rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--orange);margin-bottom:.4rem}
+.train-mod .title{font-size:.78rem;font-weight:700;margin-bottom:.45rem;letter-spacing:-0.01em}
+.train-prog{height:5px;background:rgba(255,255,255,0.05);border-radius:4px;overflow:hidden;margin-bottom:.35rem}
+.train-prog i{display:block;height:100%;border-radius:4px;background:linear-gradient(90deg,var(--orange),var(--orange2));width:0;transition:width 1s var(--ease)}
+.train-mod .meta{display:flex;justify-content:space-between;font-size:.58rem;color:var(--muted)}
+.train-notifs{display:flex;flex-direction:column;gap:.4rem}
+.train-notif{display:flex;align-items:center;gap:.6rem;padding:.55rem .7rem;background:rgba(16,185,129,0.04);border:1px solid rgba(16,185,129,0.12);border-radius:8px;font-size:.72rem;opacity:0;transform:translateX(-10px);transition:all .4s var(--ease)}
+.train-notif.in{opacity:1;transform:translateX(0)}
+.train-notif .ni{width:24px;height:24px;border-radius:7px;background:rgba(16,185,129,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.train-notif .ni svg{width:12px;height:12px;stroke:var(--green)}
+.train-notif .nt{flex:1;color:rgba(255,255,255,0.75);font-weight:500}
+.train-notif .ntime{font-size:.58rem;color:var(--dim);font-weight:600;flex-shrink:0}
 
 @media(max-width:1000px){
   .hero-grid{grid-template-columns:1fr;gap:3rem}
@@ -392,8 +460,6 @@ footer{border-top:1px solid var(--border);padding:4rem 0 2rem;position:relative;
 @media(max-width:820px){
   .nav-links,.nav-right .nav-signin{display:none}
   .hamb{display:flex}
-  .demo-results-grid{grid-template-columns:1fr}
-  .demo-gauge-wrap{margin:0 auto}
   .statband{grid-template-columns:1fr 1fr}
   .statcell{border-right:none;border-bottom:1px solid var(--border)}
   .statcell:nth-child(odd){border-right:1px solid var(--border)}
@@ -411,12 +477,17 @@ footer{border-top:1px solid var(--border);padding:4rem 0 2rem;position:relative;
   .foot-brand{grid-column:1/-1}
   .float-1,.float-2{display:none}
   .certs{padding:1.5rem}
-  .demo-body{padding:1.5rem 1.25rem;min-height:auto}
+  .demo-body{padding:1.25rem 1rem;min-height:280px}
+  .demo-screen{padding:1.25rem 1rem}
+  .demo-tab span{display:none}
+  .demo-tab svg{width:16px;height:16px}
+  .ds-kpis{grid-template-columns:1fr 1fr}
+  .ds-grid{grid-template-columns:1fr}
   .demo-input-row{flex-direction:column}
   .demo-input-field{width:100%}
-  .demo-scan-btn{width:100%}
-  .demo-gauge-wrap{width:130px}
-  .demo-gauge-num{font-size:1.6rem}
+  .demo-scan-btn{width:100%;text-align:center;justify-content:center}
+  .train-modules{grid-template-columns:1fr}
+  .breach-summary{grid-template-columns:1fr 1fr 1fr}
 }
 </style>
 </head>
@@ -637,108 +708,200 @@ footer{border-top:1px solid var(--border);padding:4rem 0 2rem;position:relative;
   <div class="wrap">
     <div class="sec-head center reveal">
       <div class="eyebrow center">See it in action</div>
-      <h2 class="sec-title">Watch a scan run<br>in real time</h2>
-      <p class="sec-sub">This is exactly what happens when you sign up. One URL, 60 seconds, instant clarity.</p>
+      <h2 class="sec-title">Your dashboard,<br>in real time</h2>
+      <p class="sec-sub">Click through the actual product. This is what you get on day one.</p>
     </div>
     <div class="demo-frame reveal rd1" id="demo-frame">
       <!-- browser chrome -->
       <div class="demo-chrome">
         <div class="demo-dots"><span></span><span></span><span></span></div>
-        <div class="demo-url">cybrshieldtech.com/scan</div>
+        <div class="demo-url">app.cybrshieldtech.com</div>
         <div class="demo-live"><div class="d"></div>Live</div>
       </div>
+      <!-- tabs -->
+      <div class="demo-tabs" id="demo-tabs">
+        <div class="demo-tab active" data-screen="0" onclick="demoGoTo(0)">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          <span>Dashboard</span>
+        </div>
+        <div class="demo-tab" data-screen="1" onclick="demoGoTo(1)">
+          <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+          <span>Scanner</span>
+        </div>
+        <div class="demo-tab" data-screen="2" onclick="demoGoTo(2)">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <span>Breach Monitor</span>
+        </div>
+        <div class="demo-tab" data-screen="3" onclick="demoGoTo(3)">
+          <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+          <span>AI Training</span>
+        </div>
+      </div>
 
-      <!-- scan input step -->
       <div class="demo-body">
-        <div class="demo-step demo-step-input" id="ds-input">
-          <div class="demo-input-label">Enter your domain to scan</div>
+        <!-- SCREEN 0: Dashboard -->
+        <div class="demo-screen active" id="dscr-0">
+          <div class="ds-topbar">
+            <div class="ds-avatar">NS</div>
+            <div class="ds-welcome"><div class="t">Welcome back, Njiru</div><div class="s">Last login: 2 hours ago</div></div>
+            <div class="demo-live" style="font-size:.58rem"><div class="d"></div>All systems normal</div>
+          </div>
+          <div class="ds-kpis">
+            <div class="ds-kpi" id="dk-0"><div class="v" style="color:var(--green)" id="dk-score">0</div><div class="k">Security Score</div></div>
+            <div class="ds-kpi" id="dk-1"><div class="v" style="color:var(--red)" id="dk-exposed">0</div><div class="k">Exposed Creds</div></div>
+            <div class="ds-kpi" id="dk-2"><div class="v" style="color:var(--yellow)" id="dk-vulns">0</div><div class="k">Vulnerabilities</div></div>
+            <div class="ds-kpi" id="dk-3"><div class="v" style="color:var(--cyan)" id="dk-trained">0<small style="font-size:.6rem;color:var(--muted)">/10</small></div><div class="k">Team Trained</div></div>
+          </div>
+          <div class="ds-grid">
+            <div class="ds-card" id="dk-card0">
+              <div class="ds-card-head">Security Posture</div>
+              <div class="ds-score-row">
+                <div class="ds-ring">
+                  <svg viewBox="0 0 56 56" width="56" height="56">
+                    <circle cx="28" cy="28" r="24" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="5"/>
+                    <circle cx="28" cy="28" r="24" fill="none" stroke="var(--green)" stroke-width="5" stroke-linecap="round" stroke-dasharray="150.8" stroke-dashoffset="150.8" transform="rotate(-90 28 28)" id="dk-ring"/>
+                  </svg>
+                  <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center">
+                    <div class="ds-ring-num" id="dk-ring-num">0</div>
+                    <div class="ds-ring-lbl">GOOD</div>
+                  </div>
+                </div>
+                <div class="ds-bars">
+                  <div class="ds-bar-row"><span class="lbl">Headers</span><div class="ds-bar"><i style="background:var(--green)" id="dbar-h"></i></div></div>
+                  <div class="ds-bar-row"><span class="lbl">SSL/TLS</span><div class="ds-bar"><i style="background:var(--green)" id="dbar-s"></i></div></div>
+                  <div class="ds-bar-row"><span class="lbl">DNS</span><div class="ds-bar"><i style="background:var(--yellow)" id="dbar-d"></i></div></div>
+                </div>
+              </div>
+            </div>
+            <div class="ds-card" id="dk-card1">
+              <div class="ds-card-head">Recent Activity</div>
+              <div class="ds-activity">
+                <div class="ds-arow"><span class="dot" style="background:var(--green)"></span><span class="txt">Vulnerability scan completed</span><span class="time">2m ago</span></div>
+                <div class="ds-arow"><span class="dot" style="background:var(--red)"></span><span class="txt">3 new breached credentials</span><span class="time">1h ago</span></div>
+                <div class="ds-arow"><span class="dot" style="background:var(--orange)"></span><span class="txt">Sarah completed phishing training</span><span class="time">3h ago</span></div>
+                <div class="ds-arow"><span class="dot" style="background:var(--cyan)"></span><span class="txt">Weekly report generated</span><span class="time">1d ago</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SCREEN 1: Scanner -->
+        <div class="demo-screen" id="dscr-1">
           <div class="demo-input-row">
-            <div class="demo-input-field" id="demo-type"></div>
-            <button class="demo-scan-btn" id="demo-btn">Scan Now</button>
+            <div class="demo-input-field" id="scan-type"></div>
+            <button class="demo-scan-btn">Scan Now</button>
+          </div>
+          <div class="scan-phase" id="scan-phase" style="display:none">
+            <div class="demo-scan-status">
+              <div class="demo-spinner"></div>
+              <div class="demo-scan-txt">Scanning <b>example-law-firm.com</b></div>
+            </div>
+            <div class="demo-checks">
+              <div class="demo-check" id="sc-0"><span class="demo-check-dot"></span>SSL &amp; TLS configuration</div>
+              <div class="demo-check" id="sc-1"><span class="demo-check-dot"></span>HTTP security headers</div>
+              <div class="demo-check" id="sc-2"><span class="demo-check-dot"></span>DNS &amp; email authentication</div>
+              <div class="demo-check" id="sc-3"><span class="demo-check-dot"></span>Open ports &amp; services</div>
+              <div class="demo-check" id="sc-4"><span class="demo-check-dot"></span>Dark web credential check</div>
+            </div>
+            <div class="demo-progress"><div class="demo-progress-bar" id="scan-pbar"></div></div>
+          </div>
+          <div class="scan-results" id="scan-results" style="display:none">
+            <div class="scan-results-head">Vulnerabilities Found</div>
+            <div class="demo-vuln" id="sv-0"><span class="demo-vuln-sev" style="background:var(--red)"></span><span class="demo-vuln-name">Dark Web Exposure — 7 credentials</span><span class="demo-vuln-badge" style="background:rgba(239,68,68,0.12);color:var(--red)">Critical</span></div>
+            <div class="demo-vuln" id="sv-1"><span class="demo-vuln-sev" style="background:var(--yellow)"></span><span class="demo-vuln-name">Missing X-Frame-Options header</span><span class="demo-vuln-badge" style="background:rgba(245,158,11,0.12);color:var(--yellow)">Medium</span></div>
+            <div class="demo-vuln" id="sv-2"><span class="demo-vuln-sev" style="background:var(--yellow)"></span><span class="demo-vuln-name">SSL: weak cipher suite detected</span><span class="demo-vuln-badge" style="background:rgba(245,158,11,0.12);color:var(--yellow)">Medium</span></div>
+            <div class="demo-vuln" id="sv-3"><span class="demo-vuln-sev" style="background:var(--orange)"></span><span class="demo-vuln-name">Port 8080 exposed to internet</span><span class="demo-vuln-badge" style="background:var(--orange-dim);color:var(--orange)">Low</span></div>
           </div>
         </div>
 
-        <!-- scanning step -->
-        <div class="demo-step demo-step-scan" id="ds-scan" style="display:none">
-          <div class="demo-scan-status">
-            <div class="demo-spinner"></div>
-            <div class="demo-scan-txt">Scanning <b>example-law-firm.com</b></div>
+        <!-- SCREEN 2: Breach Monitor -->
+        <div class="demo-screen" id="dscr-2">
+          <div class="breach-search">
+            <div class="breach-search-bar">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+              <span id="breach-domain" style="color:var(--text);font-weight:600"></span>
+            </div>
           </div>
-          <div class="demo-checks">
-            <div class="demo-check" id="dc-ssl"><span class="demo-check-dot"></span>SSL &amp; TLS configuration</div>
-            <div class="demo-check" id="dc-headers"><span class="demo-check-dot"></span>HTTP security headers</div>
-            <div class="demo-check" id="dc-dns"><span class="demo-check-dot"></span>DNS &amp; email authentication</div>
-            <div class="demo-check" id="dc-ports"><span class="demo-check-dot"></span>Open ports &amp; services</div>
-            <div class="demo-check" id="dc-breach"><span class="demo-check-dot"></span>Dark web credential check</div>
+          <div class="breach-status" id="breach-status" style="display:none">
+            <span style="color:var(--red)">&#9679;</span> <span id="breach-count">0</span> exposed credentials found across <span id="breach-sources">0</span> breach databases
           </div>
-          <div class="demo-progress"><div class="demo-progress-bar" id="demo-pbar"></div></div>
+          <div id="breach-list">
+            <div class="breach-cred" id="bc-0">
+              <div class="breach-cred-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+              <div class="breach-cred-info"><div class="breach-cred-email">j.martinez@example-law-firm.com</div><div class="breach-cred-meta">LinkedIn breach &middot; Jun 2024 &middot; Password exposed</div></div>
+              <div class="breach-cred-tag">Leaked</div>
+            </div>
+            <div class="breach-cred" id="bc-1">
+              <div class="breach-cred-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+              <div class="breach-cred-info"><div class="breach-cred-email">admin@example-law-firm.com</div><div class="breach-cred-meta">Collection #1 &middot; Jan 2024 &middot; Email + password</div></div>
+              <div class="breach-cred-tag">Leaked</div>
+            </div>
+            <div class="breach-cred" id="bc-2">
+              <div class="breach-cred-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+              <div class="breach-cred-info"><div class="breach-cred-email">receptionist@example-law-firm.com</div><div class="breach-cred-meta">Adobe breach &middot; Oct 2023 &middot; Password hash</div></div>
+              <div class="breach-cred-tag">Leaked</div>
+            </div>
+            <div class="breach-cred" id="bc-3">
+              <div class="breach-cred-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+              <div class="breach-cred-info"><div class="breach-cred-email">billing@example-law-firm.com</div><div class="breach-cred-meta">Dropbox breach &middot; Aug 2023 &middot; Email + password</div></div>
+              <div class="breach-cred-tag">Leaked</div>
+            </div>
+          </div>
+          <div class="breach-summary" id="breach-summary">
+            <div class="breach-summary-item" id="bs-0"><div class="v" style="color:var(--red)">7</div><div class="k">Credentials</div></div>
+            <div class="breach-summary-item" id="bs-1"><div class="v" style="color:var(--yellow)">4</div><div class="k">Breach Sources</div></div>
+            <div class="breach-summary-item" id="bs-2"><div class="v" style="color:var(--green)">3</div><div class="k">Unique Passwords</div></div>
+          </div>
         </div>
 
-        <!-- results step -->
-        <div class="demo-step demo-step-results" id="ds-results" style="display:none">
-          <div class="demo-results-grid">
-            <!-- risk gauge -->
-            <div class="demo-gauge-wrap">
-              <svg class="demo-gauge" viewBox="0 0 120 80">
-                <path d="M10 70 A50 50 0 0 1 110 70" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="10" stroke-linecap="round"/>
-                <path d="M10 70 A50 50 0 0 1 110 70" fill="none" stroke="url(#gauge-grad)" stroke-width="10" stroke-linecap="round" id="demo-arc" stroke-dasharray="157" stroke-dashoffset="157"/>
-                <defs><linearGradient id="gauge-grad" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#10B981"/><stop offset="50%" stop-color="#F59E0B"/><stop offset="100%" stop-color="#EF4444"/></linearGradient></defs>
-              </svg>
-              <div class="demo-gauge-num"><span id="demo-score">0</span><small>/100</small></div>
-              <div class="demo-gauge-label">Risk Score</div>
+        <!-- SCREEN 3: AI Training -->
+        <div class="demo-screen" id="dscr-3">
+          <div class="train-header">
+            <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/></svg></div>
+            <div><div class="t">This week's training</div><div class="s">Phishing &amp; social engineering &middot; 5 min</div></div>
+          </div>
+          <div class="train-modules">
+            <div class="train-mod" id="tm-0">
+              <div class="week">Week 24</div>
+              <div class="title">Spotting AI-crafted phishing emails</div>
+              <div class="train-prog"><i id="tp-0"></i></div>
+              <div class="meta"><span>Completed</span><span style="color:var(--green)">100%</span></div>
             </div>
-            <!-- stats -->
-            <div class="demo-stats">
-              <div class="demo-stat">
-                <div class="demo-stat-num" style="color:var(--red)"><span id="demo-creds">0</span></div>
-                <div class="demo-stat-lbl">Exposed credentials found</div>
-              </div>
-              <div class="demo-stat">
-                <div class="demo-stat-num" style="color:var(--yellow)">3</div>
-                <div class="demo-stat-lbl">Vulnerabilities detected</div>
-              </div>
-              <div class="demo-stat">
-                <div class="demo-stat-num" style="color:var(--green)">2</div>
-                <div class="demo-stat-lbl">Checks passed</div>
-              </div>
+            <div class="train-mod" id="tm-1">
+              <div class="week">Week 25</div>
+              <div class="title">OAuth consent screen attacks</div>
+              <div class="train-prog"><i id="tp-1"></i></div>
+              <div class="meta"><span>In progress</span><span style="color:var(--orange)">60%</span></div>
             </div>
           </div>
-          <!-- risk items -->
-          <div class="demo-risks" id="demo-risks">
-            <div class="demo-risk" data-delay="0">
-              <span class="demo-risk-sev" style="background:var(--red)"></span>
-              <span class="demo-risk-name">Dark Web Exposure</span>
-              <span class="demo-risk-badge" style="background:rgba(239,68,68,0.12);color:var(--red)">Critical</span>
+          <div class="train-notifs">
+            <div class="train-notif" id="tn-0">
+              <div class="ni"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+              <div class="nt">Sarah M. passed phishing simulation (scored 95%)</div>
+              <div class="ntime">2h ago</div>
             </div>
-            <div class="demo-risk" data-delay="120">
-              <span class="demo-risk-sev" style="background:var(--yellow)"></span>
-              <span class="demo-risk-name">Missing Security Headers</span>
-              <span class="demo-risk-badge" style="background:rgba(245,158,11,0.12);color:var(--yellow)">Medium</span>
+            <div class="train-notif" id="tn-1">
+              <div class="ni"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+              <div class="nt">Mike R. completed Week 24 training module</div>
+              <div class="ntime">5h ago</div>
             </div>
-            <div class="demo-risk" data-delay="240">
-              <span class="demo-risk-sev" style="background:var(--yellow)"></span>
-              <span class="demo-risk-name">SSL Certificate Weak Cipher</span>
-              <span class="demo-risk-badge" style="background:rgba(245,158,11,0.12);color:var(--yellow)">Medium</span>
+            <div class="train-notif" id="tn-2">
+              <div class="ni"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+              <div class="nt">Team average quiz score: 88/100 (+4 from last week)</div>
+              <div class="ntime">1d ago</div>
             </div>
-            <div class="demo-risk" data-delay="360">
-              <span class="demo-risk-sev" style="background:var(--orange)"></span>
-              <span class="demo-risk-name">Open Port 8080</span>
-              <span class="demo-risk-badge" style="background:var(--orange-dim);color:var(--orange)">Low</span>
-            </div>
-          </div>
-          <!-- report button -->
-          <div class="demo-report" id="demo-report" style="opacity:0">
-            <button class="btn btn-primary" style="gap:10px" onclick="return false">
-              <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><polyline points="9 15 12 18 15 15"/></svg>
-              Download Full Report
-            </button>
-            <span class="demo-report-note">PDF with prioritized fixes &amp; remediation steps</span>
           </div>
         </div>
       </div>
 
-      <!-- replay -->
-      <button class="demo-replay" id="demo-replay" onclick="runDemo()">
+      <!-- indicators + replay -->
+      <div class="demo-indicators">
+        <div class="demo-dot-ind active" onclick="demoGoTo(0)"></div>
+        <div class="demo-dot-ind" onclick="demoGoTo(1)"></div>
+        <div class="demo-dot-ind" onclick="demoGoTo(2)"></div>
+        <div class="demo-dot-ind" onclick="demoGoTo(3)"></div>
+      </div>
+      <button class="demo-replay" id="demo-replay" onclick="demoGoTo(0)">
         <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
         Replay
       </button>
@@ -1338,92 +1501,196 @@ tk.innerHTML=tHTML+tHTML;
   addEventListener('resize',size);size();draw();
 })();
 
-// ── LIVE DEMO ANIMATION ──
+// ── LIVE DEMO — MULTI-SCREEN WALKTHROUGH ──
 (function(){
-  const DOMAIN='example-law-firm.com';
-  const CHECKS=['dc-ssl','dc-headers','dc-dns','dc-ports','dc-breach'];
-  const TARGET_SCORE=68, TARGET_CREDS=7;
-  let demoTimer=null, demoStarted=false, loopTimer=null;
+  const SCREENS=4, INTERVAL=5000, DOMAIN='example-law-firm.com';
+  let cur=0, timer=null, started=false, animTimers=[];
 
-  function show(id){document.getElementById(id).style.display='block'}
-  function hide(id){document.getElementById(id).style.display='none'}
-  function sleep(ms){return new Promise(r=>demoTimer=setTimeout(r,ms))}
+  function $(id){return document.getElementById(id)}
+  function sleep(ms){return new Promise(r=>{const t=setTimeout(r,ms);animTimers.push(t)})}
 
-  window.runDemo=async function(){
-    if(loopTimer){clearTimeout(loopTimer);loopTimer=null;}
-    if(demoTimer){clearTimeout(demoTimer);demoTimer=null;}
+  function clearAnims(){animTimers.forEach(clearTimeout);animTimers=[];}
 
-    // reset
-    const typeEl=document.getElementById('demo-type');
-    const pbar=document.getElementById('demo-pbar');
-    const arc=document.getElementById('demo-arc');
-    const scoreEl=document.getElementById('demo-score');
-    const credsEl=document.getElementById('demo-creds');
-    const reportEl=document.getElementById('demo-report');
+  function activate(idx){
+    clearAnims();
+    cur=idx;
+    document.querySelectorAll('.demo-screen').forEach((s,i)=>{
+      s.classList.toggle('active',i===idx);
+    });
+    document.querySelectorAll('.demo-tab').forEach((t,i)=>{
+      t.classList.toggle('active',i===idx);
+    });
+    document.querySelectorAll('.demo-dot-ind').forEach((d,i)=>{
+      d.classList.toggle('active',i===idx);
+    });
+    resetScreen(idx);
+    animateScreen(idx);
+  }
 
-    typeEl.innerHTML='<span class="cursor"></span>';
-    pbar.style.width='0';
-    arc.style.transition='none';arc.style.strokeDashoffset='157';
-    scoreEl.textContent='0';credsEl.textContent='0';
-    reportEl.style.opacity='0';
-    CHECKS.forEach(id=>document.getElementById(id).classList.remove('done'));
-    document.querySelectorAll('.demo-risk').forEach(r=>r.classList.remove('in'));
-
-    show('ds-input');hide('ds-scan');hide('ds-results');
-
-    // step 1: typing
-    await sleep(600);
-    for(let i=0;i<DOMAIN.length;i++){
-      typeEl.innerHTML=DOMAIN.slice(0,i+1)+'<span class="cursor"></span>';
-      await sleep(55+Math.random()*45);
-    }
-    await sleep(500);
-
-    // step 2: scanning
-    hide('ds-input');show('ds-scan');
-    const checkDelay=400;
-    for(let i=0;i<CHECKS.length;i++){
-      await sleep(checkDelay);
-      document.getElementById(CHECKS[i]).classList.add('done');
-      pbar.style.width=((i+1)/CHECKS.length*100)+'%';
-    }
-    await sleep(400);
-
-    // step 3: results
-    hide('ds-scan');show('ds-results');
-
-    // animate score gauge
-    void arc.offsetWidth;
-    arc.style.transition='stroke-dashoffset 1.4s cubic-bezier(0.4,0,0.2,1)';
-    arc.style.strokeDashoffset=157-(TARGET_SCORE/100)*157;
-    let s=0;
-    const si=setInterval(()=>{s+=2;if(s>=TARGET_SCORE){s=TARGET_SCORE;clearInterval(si)}scoreEl.textContent=s},24);
-
-    // animate creds count
-    let c=0;
-    const ci=setInterval(()=>{c++;if(c>=TARGET_CREDS){c=TARGET_CREDS;clearInterval(ci)}credsEl.textContent=c},120);
-
-    // risks appear one by one
-    const risks=document.querySelectorAll('.demo-risk');
-    risks.forEach((r,i)=>setTimeout(()=>r.classList.add('in'),300+i*180));
-
-    // report button
-    await sleep(1400);
-    reportEl.style.opacity='1';
-
-    // loop after 18s
-    loopTimer=setTimeout(()=>runDemo(),18000);
+  window.demoGoTo=function(idx){
+    if(timer){clearInterval(timer);timer=null;}
+    activate(idx);
+    timer=setInterval(()=>activate((cur+1)%SCREENS),INTERVAL);
   };
 
-  // start on scroll into view
-  const frame=document.getElementById('demo-frame');
+  function resetScreen(idx){
+    if(idx===0){
+      $('dk-score').textContent='0';
+      $('dk-exposed').textContent='0';
+      $('dk-vulns').textContent='0';
+      $('dk-trained').innerHTML='0<small style="font-size:.6rem;color:var(--muted)">/10</small>';
+      $('dk-ring').style.strokeDashoffset='150.8';
+      $('dk-ring-num').textContent='0';
+      ['dbar-h','dbar-s','dbar-d'].forEach(id=>$(id).style.width='0');
+      document.querySelectorAll('.ds-arow').forEach(r=>r.style.opacity='0');
+    }
+    if(idx===1){
+      $('scan-type').innerHTML='<span class="cursor"></span>';
+      $('scan-phase').style.display='none';
+      $('scan-results').style.display='none';
+      $('scan-pbar').style.width='0';
+      for(let i=0;i<5;i++) $('sc-'+i).classList.remove('done');
+      for(let i=0;i<4;i++){$('sv-'+i).style.opacity='0';$('sv-'+i).style.transform='translateY(8px)';}
+    }
+    if(idx===2){
+      $('breach-domain').textContent='';
+      $('breach-status').style.display='none';
+      for(let i=0;i<4;i++){$('bc-'+i).style.opacity='0';$('bc-'+i).style.transform='translateY(8px)';}
+      for(let i=0;i<3;i++){$('bs-'+i).style.opacity='0';}
+    }
+    if(idx===3){
+      ['tm-0','tm-1'].forEach(id=>{$(id).style.opacity='0';$(id).style.transform='translateY(8px)';});
+      $('tp-0').style.width='0';
+      $('tp-1').style.width='0';
+      ['tn-0','tn-1','tn-2'].forEach(id=>{$(id).style.opacity='0';$(id).style.transform='translateX(20px)';});
+    }
+  }
+
+  async function animateScreen(idx){
+    if(idx===0) await animDashboard();
+    if(idx===1) await animScanner();
+    if(idx===2) await animBreach();
+    if(idx===3) await animTraining();
+  }
+
+  async function animDashboard(){
+    await sleep(200);
+    animCount('dk-score',82,24);
+    animCount('dk-exposed',7,100);
+    animCount('dk-vulns',3,200);
+    await sleep(100);
+    $('dk-trained').innerHTML='8<small style="font-size:.6rem;color:var(--muted)">/10</small>';
+    const ring=$('dk-ring');
+    ring.style.transition='stroke-dashoffset 1.2s var(--ease)';
+    ring.style.strokeDashoffset=150.8-(82/100)*150.8;
+    animCount('dk-ring-num',82,20);
+    await sleep(300);
+    $('dbar-h').style.transition='width .8s var(--ease)';$('dbar-h').style.width='92%';
+    await sleep(100);
+    $('dbar-s').style.transition='width .8s var(--ease)';$('dbar-s').style.width='88%';
+    await sleep(100);
+    $('dbar-d').style.transition='width .8s var(--ease)';$('dbar-d').style.width='65%';
+    const rows=document.querySelectorAll('.ds-arow');
+    for(let i=0;i<rows.length;i++){
+      await sleep(200);
+      rows[i].style.transition='opacity .4s var(--ease)';
+      rows[i].style.opacity='1';
+    }
+  }
+
+  async function animScanner(){
+    const typeEl=$('scan-type');
+    await sleep(400);
+    for(let i=0;i<DOMAIN.length;i++){
+      typeEl.innerHTML=DOMAIN.slice(0,i+1)+'<span class="cursor"></span>';
+      await sleep(45+Math.random()*35);
+    }
+    await sleep(300);
+    $('scan-phase').style.display='block';
+    const pbar=$('scan-pbar');
+    for(let i=0;i<5;i++){
+      await sleep(350);
+      $('sc-'+i).classList.add('done');
+      pbar.style.width=((i+1)/5*100)+'%';
+    }
+    await sleep(300);
+    $('scan-phase').style.display='none';
+    $('scan-results').style.display='block';
+    for(let i=0;i<4;i++){
+      await sleep(150);
+      const v=$('sv-'+i);
+      v.style.transition='opacity .3s var(--ease),transform .3s var(--ease)';
+      v.style.opacity='1';v.style.transform='translateY(0)';
+    }
+  }
+
+  async function animBreach(){
+    const domEl=$('breach-domain');
+    await sleep(300);
+    const d=DOMAIN;
+    for(let i=0;i<d.length;i++){
+      domEl.textContent=d.slice(0,i+1);
+      await sleep(40+Math.random()*30);
+    }
+    await sleep(400);
+    $('breach-status').style.display='block';
+    animCount('breach-count',7,80);
+    animCount('breach-sources',4,150);
+    for(let i=0;i<4;i++){
+      await sleep(250);
+      const c=$('bc-'+i);
+      c.style.transition='opacity .35s var(--ease),transform .35s var(--ease)';
+      c.style.opacity='1';c.style.transform='translateY(0)';
+    }
+    await sleep(200);
+    for(let i=0;i<3;i++){
+      $('bs-'+i).style.transition='opacity .3s var(--ease)';
+      $('bs-'+i).style.opacity='1';
+    }
+  }
+
+  async function animTraining(){
+    await sleep(300);
+    for(let i=0;i<2;i++){
+      const m=$('tm-'+i);
+      m.style.transition='opacity .4s var(--ease),transform .4s var(--ease)';
+      m.style.opacity='1';m.style.transform='translateY(0)';
+      await sleep(250);
+    }
+    await sleep(200);
+    $('tp-0').style.transition='width 1s var(--ease)';$('tp-0').style.width='100%';
+    $('tp-1').style.transition='width 1s var(--ease)';$('tp-1').style.width='60%';
+    await sleep(400);
+    const notifs=['tn-0','tn-1','tn-2'];
+    for(const id of notifs){
+      await sleep(300);
+      const n=$(id);
+      n.style.transition='opacity .35s var(--ease),transform .35s var(--ease)';
+      n.style.opacity='1';n.style.transform='translateX(0)';
+    }
+  }
+
+  function animCount(id,target,interval){
+    const el=$(id);
+    let v=0;
+    const step=Math.max(1,Math.ceil(target/20));
+    const t=setInterval(()=>{
+      v+=step;
+      if(v>=target){v=target;clearInterval(t);}
+      el.textContent=v;
+    },interval);
+    animTimers.push(t);
+  }
+
+  const frame=$('demo-frame');
   const obs=new IntersectionObserver(entries=>{
-    if(entries[0].isIntersecting&&!demoStarted){
-      demoStarted=true;
-      runDemo();
+    if(entries[0].isIntersecting&&!started){
+      started=true;
+      activate(0);
+      timer=setInterval(()=>activate((cur+1)%SCREENS),INTERVAL);
       obs.disconnect();
     }
-  },{threshold:0.3});
+  },{threshold:0.25});
   obs.observe(frame);
 })();
 </script>
