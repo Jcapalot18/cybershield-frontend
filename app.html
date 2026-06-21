@@ -1342,31 +1342,23 @@ function getPlan(){
   return(localStorage.getItem('cs_plan')||companyData.plan||'starter').toLowerCase();
 }
 
-// ── Scan + Breach counters (localStorage-backed, reset monthly) ──
+// ── Scan + Breach counters (localStorage-backed, reset monthly, account-scoped) ──
 function getPlanScanLimit(){return PLAN_SCAN_LIMITS[getPlan()]??Infinity;}
-function _scanKey(){const d=new Date();return`cs_scans_${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;}
+function _companySlug(){return companyData?.id||'default';}
+function _scanKey(){const d=new Date();return`cs_scans_${_companySlug()}_${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;}
 function getLocalScanCount(){return parseInt(localStorage.getItem(_scanKey())||'0',10);}
 function setLocalScanCount(n){localStorage.setItem(_scanKey(),String(n));}
 function syncScanCount(backendCount){
-  // Local is the authoritative monthly count (month-keyed key auto-resets).
-  // Backend may return total or cross-month data; only use it when local is
-  // genuinely empty (0) AND the backend value is within the plan limit.
-  const local=getLocalScanCount();
-  const limit=getPlanScanLimit();
-  const plausible=limit===Infinity?backendCount:Math.min(backendCount,limit);
-  const n=local>0?local:plausible;
+  const n=Math.max(0,backendCount||0);
   setLocalScanCount(n);
   return n;
 }
 function getPlanBreachLimit(){return PLAN_BREACH_LIMITS[getPlan()]??Infinity;}
-function _breachKey(){const d=new Date();return`cs_breaches_${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;}
+function _breachKey(){const d=new Date();return`cs_breaches_${_companySlug()}_${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;}
 function getLocalBreachCount(){return parseInt(localStorage.getItem(_breachKey())||'0',10);}
 function setLocalBreachCount(n){localStorage.setItem(_breachKey(),String(n));}
 function syncBreachCount(backendCount){
-  const local=getLocalBreachCount();
-  const limit=getPlanBreachLimit();
-  const plausible=limit===Infinity?backendCount:Math.min(backendCount,limit);
-  const n=local>0?local:plausible;
+  const n=Math.max(0,backendCount||0);
   setLocalBreachCount(n);
   return n;
 }
