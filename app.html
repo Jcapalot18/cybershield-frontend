@@ -1279,9 +1279,9 @@ const PLAN_BREACH_LIMITS={starter:5,business:Infinity,enterprise:Infinity};
   userData=JSON.parse(localStorage.getItem('cs_user')||'{}');
   companyData=JSON.parse(localStorage.getItem('cs_company')||'{}');
   const p=new URLSearchParams(window.location.search);
-  if(p.get('upgraded')==='true'){
+  if(p.get('upgraded')==='true'||p.get('payment')==='success'){
     history.replaceState({},'',location.pathname);
-    // Refresh company data so plan gates reflect the new subscription
+    // Refresh company data so plan gates and subscription status are current
     fetch(`${API}/auth/me`,{headers:{'Authorization':'Bearer '+authToken}})
       .then(r=>r.ok?r.json():null)
       .then(d=>{
@@ -1317,7 +1317,8 @@ function initApp(){
 
 function checkSubscriptionStatus(){
   const status=companyData.subscription_status;
-  if(status==='active'||status==='trialing') return;
+  if(status==='active') return;
+  if(status==='trialing'&&companyData.stripe_subscription_id) return;
   document.getElementById('checkout-banner').style.display='block';
 }
 
