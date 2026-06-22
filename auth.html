@@ -864,14 +864,23 @@ document.addEventListener('keydown', function(e) {
 
 // ── forgot password ──────────────────────────────────────────
 async function showForgot() {
+  console.log('[forgot] showForgot() called');
   const email = document.getElementById('login-email').value.trim();
+  console.log('[forgot] email:', email);
   if (!email) { showMsg('signin-msg', 'error', 'Enter your email address first, then click "Forgot password".'); return; }
   document.getElementById('tab-signin').textContent = 'Sending…';
   try {
-    const r = await fetch(`${API}/auth/forgot-password`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email }) });
+    const url = `${API}/auth/forgot-password`;
+    console.log('[forgot] Fetching:', url);
+    const r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email }) });
+    console.log('[forgot] Response status:', r.status);
     const d = await r.json();
+    console.log('[forgot] Response data:', d);
     showMsg('signin-msg', 'success', d.message || 'If an account exists, a reset link has been sent.');
-  } catch (e) { showMsg('signin-msg', 'error', 'Connection error. Please try again.'); }
+  } catch (e) {
+    console.error('[forgot] Fetch error:', e);
+    showMsg('signin-msg', 'error', 'Connection error. Please try again.');
+  }
   document.getElementById('tab-signin').textContent = 'Sign in';
 }
 
