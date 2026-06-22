@@ -793,7 +793,7 @@ async function handleSignup() {
   btn.disabled = true;
 
   if (csSid) {
-    // ── Returning from Stripe — NOW create the account ─────────
+    // ── Legacy: returning from Stripe with a session ID ────────
     btn.textContent = 'Creating account…';
     try {
       const body = { fullName, companyName, email, password, plan, billing: billingMode, checkoutSessionId: csSid };
@@ -819,32 +819,46 @@ async function handleSignup() {
     return;
   }
 
-  // ── No payment yet — save form data, go to Stripe first ─────
-  sessionStorage.setItem('cs_signup_name', fullName);
-  sessionStorage.setItem('cs_signup_company', companyName);
-  sessionStorage.setItem('cs_signup_email', email);
-  sessionStorage.setItem('cs_signup_password', password);
-  sessionStorage.setItem('cs_signup_plan', plan);
-  sessionStorage.setItem('cs_signup_billing', billingMode);
-
-  const checkoutEndpoint = billingMode === 'annual'
-    ? `${API}/checkout/annual-session`
-    : `${API}/checkout/monthly-session`;
-
-  btn.textContent = 'Redirecting to Stripe…';
+  // ── Create account FIRST, then redirect to Stripe ───────────
+  btn.textContent = 'Creating account…';
   try {
-    const r = await fetch(checkoutEndpoint, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ plan })
-    });
-    const d = await r.json();
-    if (d.url) {
-      window.location.href = d.url;
-    } else {
-      showMsg('signup-msg', 'error', d.error || 'Could not start checkout. Please try again.');
+    const body = { fullName, companyName, email, password, plan, billing: billingMode };
+    const r    = await fetch(`${API}/auth/register`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+    const data = await r.json();
+    if (!r.ok) {
+      showMsg('signup-msg', 'error', data.error || 'Registration failed. Please try again.');
       btn.textContent = billingMode === 'annual' ? 'Create account & pay annually →' : 'Create account & start trial →';
       btn.disabled = false;
+      return;
+    }
+
+    // Account exists in Supabase — save auth tokens immediately
+    localStorage.setItem('cs_token',   data.accessToken);
+    localStorage.setItem('cs_refresh', data.refreshToken);
+    localStorage.setItem('cs_email',   data.user.email);
+    localStorage.setItem('cs_user',    JSON.stringify(data.user));
+    localStorage.setItem('cs_company', JSON.stringify(data.company));
+    localStorage.setItem('cs_plan',    data.company.plan||'starter');
+
+    if (data.checkoutUrl) {
+      // Monthly: backend created Stripe checkout session, redirect to it
+      window.location.href = data.checkoutUrl;
+    } else if (billingMode === 'annual') {
+      // Annual: create checkout session with companyId so success goes to dashboard
+      btn.textContent = 'Redirecting to payment…';
+      const cr = await fetch(`${API}/checkout/annual-session`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ plan, companyId: data.company.id })
+      });
+      const cd = await cr.json();
+      if (cd.url) {
+        window.location.href = cd.url;
+      } else {
+        window.location.href = 'app.html';
+      }
+    } else {
+      window.location.href = 'app.html';
     }
   } catch (e) {
     showMsg('signup-msg', 'error', 'Connection error. Please try again.');
