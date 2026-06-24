@@ -386,7 +386,7 @@ textarea.f-input{resize:none;height:120px;font-family:'Hanken Grotesk',sans-seri
               <div class="plan-box">
                 <div>
                   <div class="plan-name" id="billing-plan">Starter</div>
-                  <div class="plan-price" id="billing-price">$49/month</div>
+                  <div class="plan-price" id="billing-price">$97/month</div>
                 </div>
                 <div style="text-align:right">
                   <div style="font-size:0.68rem;font-weight:700;margin-bottom:4px" id="billing-status"></div>
@@ -866,7 +866,7 @@ function buildPlanTable(){
     ['Slack alerts','—','✓','✓'],
     ['White-label','—','—','✓'],
     ['Priority support','—','—','✓'],
-    ['Price','$49/mo','$199/mo','$599/mo']
+    ['Price','$97/mo','$297/mo','$797/mo']
   ];
   const tbody = document.getElementById('plan-compare-tbody');
   if(!tbody) return;
@@ -898,14 +898,14 @@ function showMsg(id, type, text){
     <div style="font-size:0.78rem;color:var(--muted);margin-bottom:1.5rem">Choose the plan that fits your business</div>
     <div style="display:flex;flex-direction:column;gap:0.625rem">
       <div onclick="doUpgrade('starter')" style="display:flex;align-items:center;justify-content:space-between;padding:0.875rem 1rem;border:1px solid var(--border);border-radius:10px;cursor:pointer;transition:all 0.15s;background:rgba(255,255,255,0.02)" onmouseover="this.style.borderColor='rgba(255,107,0,0.4)';this.style.background='rgba(255,107,0,0.08)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='rgba(255,255,255,0.02)'">
-        <div><div style="font-size:0.875rem;font-weight:700;color:var(--text)">Starter</div><div style="font-size:0.68rem;color:var(--muted);margin-top:2px">$49/month · 10 seats · 5 scans/month</div></div>
+        <div><div style="font-size:0.875rem;font-weight:700;color:var(--text)">Starter</div><div style="font-size:0.68rem;color:var(--muted);margin-top:2px">$97/month · 10 seats · 5 scans/month</div></div>
       </div>
       <div onclick="doUpgrade('business')" style="display:flex;align-items:center;justify-content:space-between;padding:0.875rem 1rem;border:1px solid var(--border);border-radius:10px;cursor:pointer;transition:all 0.15s;background:rgba(255,255,255,0.02)" onmouseover="this.style.borderColor='rgba(255,107,0,0.4)';this.style.background='rgba(255,107,0,0.08)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='rgba(255,255,255,0.02)'">
-        <div><div style="font-size:0.875rem;font-weight:700;color:var(--text)">Business</div><div style="font-size:0.68rem;color:var(--muted);margin-top:2px">$199/month · 50 seats · Unlimited scans</div></div>
+        <div><div style="font-size:0.875rem;font-weight:700;color:var(--text)">Business</div><div style="font-size:0.68rem;color:var(--muted);margin-top:2px">$297/month · 50 seats · Unlimited scans</div></div>
         <div style="font-size:0.58rem;font-weight:800;padding:2px 9px;background:var(--orange);color:#fff;border-radius:4px;text-transform:uppercase;letter-spacing:0.08em">Popular</div>
       </div>
       <div onclick="doUpgrade('enterprise')" style="display:flex;align-items:center;justify-content:space-between;padding:0.875rem 1rem;border:1px solid var(--border);border-radius:10px;cursor:pointer;transition:all 0.15s;background:rgba(255,255,255,0.02)" onmouseover="this.style.borderColor='rgba(255,107,0,0.4)';this.style.background='rgba(255,107,0,0.08)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='rgba(255,255,255,0.02)'">
-        <div><div style="font-size:0.875rem;font-weight:700;color:var(--text)">Enterprise</div><div style="font-size:0.68rem;color:var(--muted);margin-top:2px">$599/month · Unlimited seats · Everything</div></div>
+        <div><div style="font-size:0.875rem;font-weight:700;color:var(--text)">Enterprise</div><div style="font-size:0.68rem;color:var(--muted);margin-top:2px">$797/month · Unlimited seats · Everything</div></div>
       </div>
     </div>
     <div id="upgrade-msg" style="margin-top:0.75rem"></div>

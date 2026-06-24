@@ -327,7 +327,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:4r
             <div class="auth-stat-label">Free trial</div>
           </div>
           <div>
-            <div class="auth-stat-num">$49</div>
+            <div class="auth-stat-num">$97</div>
             <div class="auth-stat-label">Per month</div>
           </div>
           <div>
@@ -437,7 +437,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:4r
                   <button class="auth-bill-opt active" id="ab-month" onclick="setAuthBilling('monthly')">Monthly</button>
                   <button class="auth-bill-opt" id="ab-year" onclick="setAuthBilling('annual')">Annual<span class="auth-bill-save">−20%</span></button>
                 </div>
-                <span class="auth-bill-badge" id="auth-bill-badge">Save up to $1,438/yr</span>
+                <span class="auth-bill-badge" id="auth-bill-badge">Save up to $1,914/yr</span>
               </div>
             </div>
             <div class="form-group">
@@ -447,24 +447,24 @@ footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:4r
                   <input type="radio" name="plan" id="plan-starter" value="starter" checked/>
                   <label for="plan-starter">
                     Starter
-                    <span class="plan-price" id="auth-price-starter">$49<small style="font-size:.6em;font-weight:400">/mo</small></span>
-                    <span class="plan-annual-note" id="auth-note-starter">Save $118/yr</span>
+                    <span class="plan-price" id="auth-price-starter">$97<small style="font-size:.6em;font-weight:400">/mo</small></span>
+                    <span class="plan-annual-note" id="auth-note-starter">Save $224/yr</span>
                   </label>
                 </div>
                 <div class="plan-option">
                   <input type="radio" name="plan" id="plan-business" value="business"/>
                   <label for="plan-business">
                     Business
-                    <span class="plan-price" id="auth-price-business">$199<small style="font-size:.6em;font-weight:400">/mo</small></span>
-                    <span class="plan-annual-note" id="auth-note-business">Save $478/yr</span>
+                    <span class="plan-price" id="auth-price-business">$297<small style="font-size:.6em;font-weight:400">/mo</small></span>
+                    <span class="plan-annual-note" id="auth-note-business">Save $714/yr</span>
                   </label>
                 </div>
                 <div class="plan-option">
                   <input type="radio" name="plan" id="plan-enterprise" value="enterprise"/>
                   <label for="plan-enterprise">
                     Enterprise
-                    <span class="plan-price" id="auth-price-enterprise">$599<small style="font-size:.6em;font-weight:400">/mo</small></span>
-                    <span class="plan-annual-note" id="auth-note-enterprise">Save $1,438/yr</span>
+                    <span class="plan-price" id="auth-price-enterprise">$797<small style="font-size:.6em;font-weight:400">/mo</small></span>
+                    <span class="plan-annual-note" id="auth-note-enterprise">Save $1,914/yr</span>
                   </label>
                 </div>
               </div>
@@ -633,8 +633,8 @@ if (planParam) {
 let billingMode = 'monthly';
 
 const AUTH_PRICES = {
-  monthly: { starter: '$49',    business: '$199',   enterprise: '$599' },
-  annual:  { starter: '$470',   business: '$1,910', enterprise: '$5,750' },
+  monthly: { starter: '$97',    business: '$297',   enterprise: '$797' },
+  annual:  { starter: '$940',   business: '$2,850', enterprise: '$7,650' },
 };
 const PRICE_SUFFIXES = {
   monthly: '<small style="font-size:.6em;font-weight:400">/mo</small>',
@@ -671,8 +671,8 @@ function setAuthBilling(mode) {
   if (isAnnual) {
     if (fieldsEl)  fieldsEl.style.display  = '';
     if (planSelEl) planSelEl.style.display = '';
-    if (titleEl)   titleEl.textContent = 'Annual Plan — save 20%';
-    if (subEl)     subEl.innerHTML     = 'Full year billed upfront &middot; No free trial &middot; Cancel anytime';
+    if (titleEl)   titleEl.textContent = 'Annual Plan';
+    if (subEl)     subEl.innerHTML     = 'One annual payment. Zero billing interruptions. Your security never lapses.';
     if (btnEl)   { btnEl.textContent   = 'Create account & pay annually →'; btnEl.onclick = handleSignup; }
     if (termsEl)   termsEl.innerHTML   = 'By creating an account you agree to our <a href="terms.html">Terms of Service</a> and <a href="privacy.html">Privacy Policy</a>. You\'ll be redirected to Stripe to complete payment.';
   } else {

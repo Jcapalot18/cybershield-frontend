@@ -1131,8 +1131,8 @@ footer{border-top:1px solid var(--border);padding:4rem 0 2rem;position:relative;
   <div class="wrap">
     <div class="sec-head center reveal">
       <div class="eyebrow center">Pricing</div>
-      <h2 class="sec-title">$49/month vs. a $200,000 breach</h2>
-      <p class="sec-sub" id="pricing-sub">One avoided breach pays for 340 years of CyberShield. Monthly plans include a 14-day free trial — no credit card. Save up to 20% with annual billing.</p>
+      <h2 class="sec-title">$97/month vs. a $200,000 breach</h2>
+      <p class="sec-sub" id="pricing-sub">One avoided breach pays for 170 years of CyberShield. Monthly plans include a 14-day free trial — no credit card. Save with annual billing.</p>
       <div class="bill-toggle">
         <button class="bill-opt active" id="bo-month" onclick="setBilling('month')">Monthly</button>
         <button class="bill-opt" id="bo-year" onclick="setBilling('year')">Annual<span class="bill-save">−20%</span></button>
@@ -1141,8 +1141,8 @@ footer{border-top:1px solid var(--border);padding:4rem 0 2rem;position:relative;
     <div class="pricing-grid">
       <div class="plan reveal rd1">
         <div class="plan-name">Starter</div>
-        <div class="plan-price"><span class="amt">$<span class="price" data-month="49" data-year="470">49</span></span><span class="per" id="per-starter">/mo</span></div>
-        <div class="plan-billing"><span style="color:var(--green);font-weight:800">Save $118/yr</span></div>
+        <div class="plan-price"><span class="amt">$<span class="price" data-month="97" data-year="940">97</span></span><span class="per" id="per-starter">/mo</span></div>
+        <div class="plan-billing"><span style="color:var(--green);font-weight:800">Save $224/yr</span></div>
         <div class="plan-desc">For teams up to 10 — the essentials to stay protected.</div>
         <ul class="plan-feats">
           <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>10 employee seats</li>
@@ -1156,8 +1156,8 @@ footer{border-top:1px solid var(--border);padding:4rem 0 2rem;position:relative;
       <div class="plan feat reveal rd2">
         <div class="plan-tag">Most popular</div>
         <div class="plan-name">Business</div>
-        <div class="plan-price"><span class="amt">$<span class="price" data-month="199" data-year="1910">199</span></span><span class="per" id="per-business">/mo</span></div>
-        <div class="plan-billing"><span style="color:var(--green);font-weight:800">Save $478/yr</span></div>
+        <div class="plan-price"><span class="amt">$<span class="price" data-month="297" data-year="2850">297</span></span><span class="per" id="per-business">/mo</span></div>
+        <div class="plan-billing"><span style="color:var(--green);font-weight:800">Save $714/yr</span></div>
         <div class="plan-desc">For growing teams up to 50 — full visibility and reporting.</div>
         <ul class="plan-feats">
           <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>50 employee seats</li>
@@ -1172,8 +1172,8 @@ footer{border-top:1px solid var(--border);padding:4rem 0 2rem;position:relative;
       <div class="plan ent reveal rd3">
         <div class="plan-tag">White-glove</div>
         <div class="plan-name">Enterprise</div>
-        <div class="plan-price"><span class="amt">$<span class="price" data-month="599" data-year="5750">599</span></span><span class="per" id="per-enterprise">/mo</span></div>
-        <div class="plan-billing"><span style="color:var(--green);font-weight:800">Save $1,438/yr</span></div>
+        <div class="plan-price"><span class="amt">$<span class="price" data-month="797" data-year="7650">797</span></span><span class="per" id="per-enterprise">/mo</span></div>
+        <div class="plan-billing"><span style="color:var(--green);font-weight:800">Save $1,914/yr</span></div>
         <div class="plan-desc">For larger orgs — unlimited seats and dedicated support.</div>
         <ul class="plan-feats">
           <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Unlimited seats</li>
@@ -1440,7 +1440,7 @@ function applyLoggedInPricingState(plan,trialing){
     }
   });
   const sub=document.getElementById('pricing-sub');
-  if(sub)sub.textContent='One avoided breach pays for 340 years of CyberShield. Save up to 20% with annual billing.';
+  if(sub)sub.textContent='One avoided breach pays for 170 years of CyberShield. Save with annual billing.';
 }
 
 async function initLoggedInPricing(){
