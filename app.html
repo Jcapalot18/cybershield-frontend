@@ -1281,19 +1281,18 @@ const PLAN_BREACH_LIMITS={starter:5,business:Infinity,enterprise:Infinity};
   const p=new URLSearchParams(window.location.search);
   if(p.get('upgraded')==='true'||p.get('payment')==='success'){
     history.replaceState({},'',location.pathname);
-    // Refresh company data so plan gates and subscription status are current
-    fetch(`${API}/auth/me`,{headers:{'Authorization':'Bearer '+authToken}})
-      .then(r=>r.ok?r.json():null)
-      .then(d=>{
-        if(d&&d.company){
-          companyData=d.company;
-          localStorage.setItem('cs_company',JSON.stringify(d.company));
-          localStorage.setItem('cs_plan',d.company.plan||'starter');
-        }
-      }).catch(()=>{}).finally(()=>{ initApp(); });
-  } else {
-    initApp();
   }
+  // Always fetch fresh company data to verify subscription status
+  fetch(`${API}/auth/me`,{headers:{'Authorization':'Bearer '+authToken}})
+    .then(r=>{if(!r.ok)throw new Error('auth');return r.json();})
+    .then(d=>{
+      if(d&&d.company){
+        companyData=d.company;
+        localStorage.setItem('cs_company',JSON.stringify(d.company));
+        localStorage.setItem('cs_plan',d.company.plan||'starter');
+      }
+      if(d&&d.user) { userData=d.user; localStorage.setItem('cs_user',JSON.stringify(d.user)); }
+    }).catch(()=>{}).finally(()=>{ initApp(); });
 })();
 
 function cap(s){return s?s.charAt(0).toUpperCase()+s.slice(1):'';}
@@ -1320,6 +1319,29 @@ function checkSubscriptionStatus(){
   if(status==='active') return;
   if(status==='trialing'&&companyData.stripe_subscription_id) return;
   document.getElementById('checkout-banner').style.display='block';
+  // Block dashboard access for incomplete/pending subscriptions
+  const content=document.querySelector('.content');
+  if(content){
+    content.style.filter='blur(4px)';
+    content.style.pointerEvents='none';
+    content.style.userSelect='none';
+    content.style.position='relative';
+  }
+  // Show paywall overlay
+  let overlay=document.getElementById('paywall-overlay');
+  if(!overlay){
+    overlay=document.createElement('div');
+    overlay.id='paywall-overlay';
+    overlay.style.cssText='position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);z-index:999;display:flex;align-items:center;justify-content:center;';
+    overlay.innerHTML='<div style="background:#1a1a2e;border:1px solid rgba(255,107,0,0.3);border-radius:16px;padding:3rem;max-width:480px;text-align:center;color:#fff">'
+      +'<div style="font-size:3rem;margin-bottom:1rem">🔒</div>'
+      +'<h2 style="font-size:1.5rem;margin-bottom:0.75rem;font-weight:700">Complete Your Setup</h2>'
+      +'<p style="color:#aaa;margin-bottom:1.5rem;line-height:1.6">You\'re one step away from protecting your business. Complete payment to unlock your 14-day free trial and full dashboard access.</p>'
+      +'<button onclick="resumeCheckout()" style="background:linear-gradient(90deg,#FF6B00,#e05500);color:#fff;border:none;padding:14px 32px;border-radius:8px;font-weight:700;cursor:pointer;font-size:1rem;width:100%;margin-bottom:0.75rem">Complete Setup →</button>'
+      +'<button onclick="doLogout()" style="background:none;border:1px solid rgba(255,255,255,0.15);padding:10px 24px;border-radius:8px;color:#aaa;cursor:pointer;font-size:0.85rem;width:100%">Sign out</button>'
+      +'</div>';
+    document.body.appendChild(overlay);
+  }
 }
 
 async function resumeCheckout(){
